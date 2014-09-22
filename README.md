@@ -11,6 +11,6 @@ Using the rdflib.js library originally developed for the browser environment
 and since ported to node.js, a linked data server supporting the POST and PATCH.
 Minimum requirement is to suport the client side of the same library, which currently (2015/09)
 uses a form of SPARQL-Patch via POST.
-In future may provide ACL management etc.  
+In future may provide ACL management, etc.  
 
 
