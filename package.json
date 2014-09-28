@@ -1,0 +1,10 @@
+{
+  "name": "node-lpd-httpd",
+  "description": "Read-write linked data web server based on express and rdflib.js",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "express": "3.x",
+    "mime": ""
+  }
+}
