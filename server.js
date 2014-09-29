@@ -13,7 +13,7 @@ var $rdf = require('rdflib.js')
 var uriBase = '/test/' // @@
 var fileBase = '/devel/github.com/linkeddata/node-ldp-httpd/test/'; //@@
 
-var uriFilter = /\/test\/.*/
+var uriFilter = uriBase + "*";
 
 var PATCH = $rdf.Namespace('http://www.w3.org/ns/pim/patch#');
 
