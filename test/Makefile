@@ -9,7 +9,7 @@ put2 :
 	diff put-input-2.html put-result-2.html
 
 post1:
-	cp patch-initial-1.ttl patch-initial-1-target.ttl
-	curl -HContent-type:application/sparql-update --data-binary @empty.spatch  $T/patch-initial-1-target.ttl
-	diff patch-initial-1-target.ttl patch-initial-1.ttl
+	cp patch-1-initial.ttl patch-1-initial-target.ttl
+	curl -HContent-type:application/sparql-update --data-binary @empty.spatch  $T/patch-1-initial-target.ttl
+	diff patch-1-initial-target.ttl patch-1-initial.ttl
 
