@@ -28,7 +28,7 @@ var path = require('path');
 var uriBase = process.env.URI_BASE || '/test/';
 var fileBase = process.env.FILE_BASE || path.resolve('./test/');
 
-var uriFilter = /\/test\/.*/
+var uriFilter = uriBase + "*";
 
 var PATCH = $rdf.Namespace('http://www.w3.org/ns/pim/patch#');
 
