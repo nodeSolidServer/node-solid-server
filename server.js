@@ -1,4 +1,17 @@
 
+
+//  See http://stackoverflow.com/questions/1911015/how-to-debug-node-js-applications
+
+// iff debug
+//var agent = require('webkit-devtools-agent')
+//agent.start()
+
+/* Install to your application, npm install webkit-devtools-agent
+Include in your application, agent = require('webkit-devtools-agent')
+Activate the agent: kill -SIGUSR2 <your node process id>
+Access the agent via the appropriate link
+*/
+
 // See http://expressjs.com/guide.html
 
 var express = require('express');
@@ -7,6 +20,7 @@ var app = express();
 var mime = require('mime');
 var fs = require('fs');
 var $rdf = require('rdflib.js')
+var responseTime = require('response-time'); // Add X-Response-Time headers
 
 // Should be command line params:
 
@@ -91,8 +105,10 @@ applySparqlPatch = function() {
   // write me
 }
 
+app.use(responseTime());
+
 app.post(uriFilter, function(req, res){
-    console.log('POST ' +req.path);
+    console.log('\nPOST ' +req.path);
     console.log(' text length: ' + (req.text ? req.text.length : 'undefined2'))
     var filename = uriToFilename(req.path);
     patchType = req.get('content-type');
@@ -112,12 +128,12 @@ app.post(uriFilter, function(req, res){
     switch(patchContentType) {
     case 'application/sparql-update':
         try { // Must parse relative to document's base address but patch doc should get diff URI
-            console.log("parsing patch ..." + req.text)
+            console.log("parsing patch ...")
             var patch = $rdf.sparqlUpdateParser(req.text, patchKB, patchURI);
         } catch(e) {
             return res.status(400).send("Patch format syntax error:\n" + e + '\n'); 
         }
-        console.log("reading file ...")
+        console.log("reading target file ...")
         fs.readFile(filename, 'utf8', function (err,data) {
             if (err) {
                 return res.status(404).send("Patch: Original file read error:" + err + '\n');
@@ -126,6 +142,8 @@ app.post(uriFilter, function(req, res){
             try {
                 console.log("parsing target file ...")
                 $rdf.parse(data, targetKB, targetURI, targetContentType);
+                console.log("Target parsed OK ");
+
             } catch(e) {
                 return res.status(500).send("Patch: Target " + targetContentType + " file syntax error:" + e);
             }
@@ -136,7 +154,7 @@ app.post(uriFilter, function(req, res){
             var writeFileBack = function() {
                 console.log("Writeback ");
                 var data = $rdf.serialize(target, targetKB, targetURI, targetContentType);
-                console.log("Writeback data: " + data);
+                // console.log("Writeback data: " + data);
 
                 fs.writeFile(filename, data, 'utf8', function(err){
                     if (err) {
@@ -150,22 +168,30 @@ app.post(uriFilter, function(req, res){
             
 
             var doPatch = function() {
-                console.log("doPatch ..." + patch)
+                console.log("doPatch ...")
+                
                 if (patch['delete']) {
                     console.log("doPatch delete "+patch['delete'])
                     var ds =  patch['delete']
                     if (bindings) ds = ds.substitute(bindings);
                     ds = ds.statements;
+                    var bad = [];
                     var ds2 = ds.map(function(st){ // Find the actual statemnts in the store
                         var sts = targetKB.statementsMatching(st.subject, st.predicate, st.object, target);
                         if (sts.length === 0) {
-                            return fail(409, "Couldn't find to delete: " + st);
+                            console.log("NOT FOUND deletable " + st);
+                            bad.push(st);
                         } else {
                             console.log("Found deletable " + st);
                             return sts[0]
                         }
                     });
-                    ds2.map(function(st){targetKB.remove(st)});
+                    if (bad.length) {
+                        return fail(409, "Couldn't find to delete: " + bad[0])
+                    }
+                    ds2.map(function(st){
+                        targetKB.remove(st);
+                    });
                 };
                 
                 if (patch['insert']) {
@@ -182,19 +208,25 @@ app.post(uriFilter, function(req, res){
 
             var bindings = null;
             if (patch.where) {
+                console.log("Processing WHERE: " + patch.where + '\n');
+
                 var query = new $rdf.Query('patch');
                 query.pat = patch.where;
-                query.pat.map(function(st){st.why = target});
+                query.pat.statements.map(function(st){st.why = target});
 
                 var bindingsFound = [];
-                kb.query(query, function onBinding(binding) {
+                console.log("Processing WHERE - launching query: " + query.pat);
+
+                targetKB.query(query, function onBinding(binding) {
                     bindingsFound.push(binding)
-                }, function onDone() {
+                },
+                targetKB.fetcher,
+                function onDone() {
                     if (bindingsFound.length == 0) {
-                        fail(409, "No match found to be patched:" + patch.where);
+                        return fail(409, "No match found to be patched:" + patch.where);
                     }
                     if (bindingsFound.length > 1) {
-                        fail(409, "Patch ambiguous. No patch done.");
+                        return fail(409, "Patch ambiguous. No patch done.");
                     }
                     bindings = bindingsFound[0];
                     doPatch();

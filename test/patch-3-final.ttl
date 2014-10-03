@@ -1,0 +1,28 @@
+@prefix schema: <http://schema.org/>.
+@prefix profile: <http://ogp.me/ns/profile#>.
+@prefix ex: <http://example.org/vocab#>.
+
+<#>
+    ex:preferredLanguages
+       ( "en" "fr" );
+    profile:first_name
+       "Timothy";
+    profile:last_name
+       "Berners-Lee";
+    schema:alternateName
+       "TimBL";
+    schema:performerIn
+            [ schema:name
+               "F2F5 - Linked Data Platform";
+            schema:url
+               <https://www.w3.org/2012/ldp/wiki/F2F5> ],
+            [ schema:name
+               "TED 2009";
+            schema:startDate
+               "2009-02-04";
+            schema:url
+               <http://conferences.ted.com/TED2009/>;
+            a    schema:Event ];
+    schema:workLocation
+       [ schema:name "W3C/MIT" ];
+    a    schema:Person.

@@ -2,7 +2,10 @@
 @prefix profile: <http://ogp.me/ns/profile#> .
 @prefix ex: <http://example.org/vocab#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
-<http://example.com/timbl#> a schema:Person ;
+
+# <http://example.com/timbl#> a schema:Person ;
+<#> a schema:Person ;
+
   schema:alternateName "TimBL" ;
   profile:first_name "Tim" ;
   profile:last_name "Berners-Lee" ;
