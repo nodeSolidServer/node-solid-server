@@ -7,11 +7,12 @@ var app = express();
 var mime = require('mime');
 var fs = require('fs');
 var $rdf = require('rdflib.js')
+var path = require('path');
 
 // Should be command line params:
 
-var uriBase = '/test/' // @@
-var fileBase = '/devel/github.com/linkeddata/node-ldp-httpd/test/'; //@@
+var uriBase = process.env.URI_BASE || '/test/';
+var fileBase = process.env.FILE_BASE || path.resolve('./test/');
 
 var uriFilter = /\/test\/.*/
 
