@@ -1,5 +1,5 @@
 {
-  "name": "node-lpd-httpd",
+  "name": "ldp-httpd",
   "description": "Read-write linked data web server based on express and rdflib.js",
   "version": "0.0.1",
   "private": true,
