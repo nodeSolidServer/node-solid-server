@@ -1,7 +1,22 @@
+// Read-Write Web:  Linked Data Server
+//
 
 
+var express = require('express'); // See http://expressjs.com/guide.html
+var app = express();
+
+var mime = require('mime');
+var fs = require('fs');
+var $rdf = require('rdflib.js')
+var responseTime = require('response-time'); // Add X-Response-Time headers
+var path = require('path');
+var regexp = require('node-regexp');
+
+
+
+
+// Debugging:
 //  See http://stackoverflow.com/questions/1911015/how-to-debug-node-js-applications
-
 // iff debug
 //var agent = require('webkit-devtools-agent')
 //agent.start()
@@ -12,39 +27,86 @@ Activate the agent: kill -SIGUSR2 <your node process id>
 Access the agent via the appropriate link
 */
 
-// See http://expressjs.com/guide.html
 
-var express = require('express');
-var app = express();
+/////////////////////////////////////////// ArgV handling ripped from http-server/bin/http-server
 
-var mime = require('mime');
-var fs = require('fs');
-var $rdf = require('rdflib.js')
-var responseTime = require('response-time'); // Add X-Response-Time headers
-var path = require('path');
+var argv = require('optimist').boolean('cors').boolean('v').argv;
 
-// Should be command line params:
+if (argv.h || argv.help || argv['?']) {
+  console.consoleLog([
+    "usage: ldp-httpd [path] [options]",
+    "",
+    "options:",
+    "  -p                 Port to use [3000]",
+    "  -a                 Address to use [0.0.0.0]",
+//    "  -d                 Show directory listings [true]",
+//    "  -i                 Display autoIndex [true]",
+//    "  -e --ext           Default file extension if none supplied [none]",
+    "  -v               log messages to console",
+    "  --cors             Enable CORS via the 'Access-Control-Allow-Origin' header",
+//    "  -o                 Open browser window after starting the server",
+    "  -c                 Set cache time (in seconds). e.g. -c10 for 10 seconds.",
+    "                     To disable caching, use -c-1.",
+    "",
+    "  -S --ssl           Enable https.",
+    "  -C --cert          Path to ssl cert file (default: cert.pem).",
+    "  -K --key           Path to ssl key file (default: key.pem).",
+    "",
+    "  -h --help          Print this list and exit."
+  ].join('\n'));
+  process.exit();
+}
 
-var uriBase = process.env.URI_BASE || '/test/';
-var fileBase = process.env.FILE_BASE || path.resolve('./test/');
+var options = {
+    uriBase:    argv.uriBase || process.env.URIBASE || 'http://localhost:3000'+process.cwd() + '/test/',
+    fileBase:   argv.fileBase || procss.env.FILEBASE || process.cwd() + '/test/',
+    address: argv.a || '0.0.0.0',
+    port:  parseInt(argv.p || process.env.PORT ||  3000),
+    verbose: argv.v,
+    ssl: argv.S,
+    cors: argv.cors
+};
 
-var uriFilter = /\/test\/.*/
+
+var consoleLog = function() {
+    if (options.verbose) console.log.apply(console, arguments);
+}
+
+
+consoleLog("   uriBase: " + options.uriBase);
+options.pathStart = '/' + options.uriBase.split('//')[1].split('/').slice(1).join('/');
+consoleLog("URI pathStart: " + options.pathStart);
+options.pathFilter = regexp().start(options.pathStart).toRegExp();
+consoleLog("URI path filter regexp: " + options.pathFilter);
+
+
+consoleLog("Verbose: "+options.verbose);
+
+if (process.platform !== 'win32') {
+  //
+  // Signal handlers don't work on Windows.
+  //
+  process.on('SIGINT', function () {
+    consoleLog('http-server stopped.');
+    process.exit();
+  });
+};
+
+
 
 var PATCH = $rdf.Namespace('http://www.w3.org/ns/pim/patch#');
 
 var uriToFilename = function(uri) {
-    if (uri.slice(0, uriBase.length) !== uriBase) {
-        throw "URI not starting with base: " + uriBase;
+    if (uri.slice(0, options.pathStart.length) !== options.pathStart) {
+        throw "Path '"+uri+"'not starting with base '" + options.pathStart +"'.";
     }
-    var filename = fileBase + uri.slice(uriBase.length);
-    console.log(' -- filename ' +filename);
+    var filename = options.fileBase + uri.slice(options.pathStart.length);
+    consoleLog(' -- filename ' +filename);
     return filename    
 };
 
 
-// See https://github.com/stream-utils/raw-body
-var getRawBody = require('raw-body')
-//var typer      = require('media-typer')
+var getRawBody = require('raw-body'); // See https://github.com/stream-utils/raw-body
 app.use(function (req, res, next) {
     getRawBody(req, {
         length: req.headers['content-length'],
@@ -61,56 +123,10 @@ app.use(function (req, res, next) {
 
 
 
-app.get(uriFilter, function(req, res){
-    console.log('GET -- ' +req.path);
-    var filename = uriToFilename(req.path);
-    fs.readFile(filename, function(err, data) {
-        if (err) {
-            console.log(' -- read error ' + err);
-            res.status(404).send("Can't read file: "+ err)
-        } else {
-            console.log(' -- read Ok ' + data.length);
-            ct = mime.lookup(filename);
-            res.set('content-type', ct)
-            console.log(' -- content-type ' + ct);
-            res.send(data);
-        };
-    });
-});
 
-app.put(uriFilter, function(req, res){
-    console.log('PUT ' +req.path);
-    console.log(' text length:' + (req.text ? req.text.length : 'undefined1'))
-    var filename = uriToFilename(req.path);
-    ct1 = req.get('content-type');
-    ct2 = mime.lookup(filename);
-    if (ct1 && ct2 && (ct1 !== ct2)) {
-        res.status(415).send("Content type mismatch with path file.extenstion");
-    }
-    if (!ct2) { // @@ Later, add the extension or track metadata
-        res.status(415).send("Sorry, Filename must have extension for content type");
-    }
-    fs.writeFile(filename, req.text,  function(err) {
-        if (err) {
-            console.log(' -- write error ' + err);
-            return res.status(500).send("Can't write file: "+ err);
-        } else {
-            console.log(' -- write Ok ' + req.text.length);
-            res.send();
-        }
-    }); // file write
-});
-
-
-applySparqlPatch = function() {
-  // write me
-}
-
-app.use(responseTime());
-
-app.post(uriFilter, function(req, res){
-    console.log('\nPOST ' +req.path);
-    console.log(' text length: ' + (req.text ? req.text.length : 'undefined2'))
+var postOrPatch = function(req, res) {
+    consoleLog('\nPOST ' +req.path);
+    consoleLog(' text length: ' + (req.text ? req.text.length : 'undefined2'))
     var filename = uriToFilename(req.path);
     patchType = req.get('content-type');
     fileType = mime.lookup(filename);
@@ -118,32 +134,32 @@ app.post(uriFilter, function(req, res){
     targetContentType = mime.lookup(filename);
     var targetURI = 'https://' + req.hostname + req.path;
     var patchURI = targetURI ;  // @@@ beware the triples from the pacth ending up in the same place
-    console.log('Content-type ' + patchContentType + " patching <" + targetURI + '>');
+    consoleLog('Content-type ' + patchContentType + " patching <" + targetURI + '>');
     var targetKB = $rdf.graph();
     var patchKB = $rdf.graph(); // Keep the patch in a sep KBas its URI is the same ! 
 
     var fail = function(status, message) {
-        console.log("FAIL "+status+ " " + message);
+        consoleLog("FAIL "+status+ " " + message);
         return res.status(status).send('<html><body>\n'+ message+ '\n</body></html>\n');
     }
     switch(patchContentType) {
     case 'application/sparql-update':
         try { // Must parse relative to document's base address but patch doc should get diff URI
-            console.log("parsing patch ...")
+            consoleLog("parsing patch ...")
             var patch = $rdf.sparqlUpdateParser(req.text, patchKB, patchURI);
         } catch(e) {
             return res.status(400).send("Patch format syntax error:\n" + e + '\n'); 
         }
-        console.log("reading target file ...")
+        consoleLog("reading target file ...")
         fs.readFile(filename, 'utf8', function (err,data) {
             if (err) {
                 return res.status(404).send("Patch: Original file read error:" + err + '\n');
             }
-            console.log("File read OK "+data.length);
+            consoleLog("File read OK "+data.length);
             try {
-                console.log("parsing target file ...")
+                consoleLog("parsing target file ...")
                 $rdf.parse(data, targetKB, targetURI, targetContentType);
-                console.log("Target parsed OK ");
+                consoleLog("Target parsed OK ");
 
             } catch(e) {
                 return res.status(500).send("Patch: Target " + targetContentType + " file syntax error:" + e);
@@ -151,17 +167,16 @@ app.post(uriFilter, function(req, res){
             
             var target = patchKB.sym(targetURI);
             
-            
             var writeFileBack = function() {
-                console.log("Writeback ");
+                consoleLog("Writeback ");
                 var data = $rdf.serialize(target, targetKB, targetURI, targetContentType);
-                // console.log("Writeback data: " + data);
+                // consoleLog("Writeback data: " + data);
 
                 fs.writeFile(filename, data, 'utf8', function(err){
                     if (err) {
                         return fail(500, "Failed to write file back after patch: "+ err);
                     } else {
-                        console.log("Patch applied OK");
+                        consoleLog("Patch applied OK");
                         return res.send("Patch applied OK\n");
                     };
                 }); // end write done
@@ -169,10 +184,10 @@ app.post(uriFilter, function(req, res){
             
 
             var doPatch = function() {
-                console.log("doPatch ...")
+                consoleLog("doPatch ...")
                 
                 if (patch['delete']) {
-                    console.log("doPatch delete "+patch['delete'])
+                    consoleLog("doPatch delete "+patch['delete'])
                     var ds =  patch['delete']
                     if (bindings) ds = ds.substitute(bindings);
                     ds = ds.statements;
@@ -180,10 +195,10 @@ app.post(uriFilter, function(req, res){
                     var ds2 = ds.map(function(st){ // Find the actual statemnts in the store
                         var sts = targetKB.statementsMatching(st.subject, st.predicate, st.object, target);
                         if (sts.length === 0) {
-                            console.log("NOT FOUND deletable " + st);
+                            consoleLog("NOT FOUND deletable " + st);
                             bad.push(st);
                         } else {
-                            console.log("Found deletable " + st);
+                            consoleLog("Found deletable " + st);
                             return sts[0]
                         }
                     });
@@ -196,12 +211,12 @@ app.post(uriFilter, function(req, res){
                 };
                 
                 if (patch['insert']) {
-                    console.log("doPatch insert "+patch['insert'])
+                    consoleLog("doPatch insert "+patch['insert'])
                     var ds =  patch['insert'];
                     if (bindings) ds = ds.substitute(bindings);
                     ds = ds.statements;
                     ds.map(function(st){st.why = target;
-                        console.log("Adding: " + st);
+                        consoleLog("Adding: " + st);
                         targetKB.add(st.subject, st.predicate, st.object, st.why)});
                 };
                 writeFileBack();
@@ -209,14 +224,14 @@ app.post(uriFilter, function(req, res){
 
             var bindings = null;
             if (patch.where) {
-                console.log("Processing WHERE: " + patch.where + '\n');
+                consoleLog("Processing WHERE: " + patch.where + '\n');
 
                 var query = new $rdf.Query('patch');
                 query.pat = patch.where;
                 query.pat.statements.map(function(st){st.why = target});
 
                 var bindingsFound = [];
-                console.log("Processing WHERE - launching query: " + query.pat);
+                consoleLog("Processing WHERE - launching query: " + query.pat);
 
                 targetKB.query(query, function onBinding(binding) {
                     bindingsFound.push(binding)
@@ -231,25 +246,65 @@ app.post(uriFilter, function(req, res){
                     }
                     bindings = bindingsFound[0];
                     doPatch();
-                }
-                );
-
+                });
             } else {
                 doPatch()
             };
-            
-         }); // end read done
-            
+         }); // end read done            
         break;
-    };
+    }; // switch content-type
+}; // postOrPatch
 
+
+//////////////////// Request handlers:
+
+app.get(options.pathFilter, function(req, res){
+    consoleLog('GET -- ' +req.path);
+    var filename = uriToFilename(req.path);
+    fs.readFile(filename, function(err, data) {
+        if (err) {
+            consoleLog(' -- read error ' + err);
+            res.status(404).send("Can't read file: "+ err)
+        } else {
+            consoleLog(' -- read Ok ' + data.length);
+            ct = mime.lookup(filename);
+            res.set('content-type', ct)
+            consoleLog(' -- content-type ' + ct);
+            res.send(data);
+        };
+    });
 });
 
-app.patch(uriFilter, function(req, res){
-  res.send('Hello World');
+app.put(options.pathFilter, function(req, res){
+    consoleLog('PUT ' +req.path);
+    consoleLog(' text length:' + (req.text ? req.text.length : 'undefined1'))
+    var filename = uriToFilename(req.path);
+    ct1 = req.get('content-type');
+    ct2 = mime.lookup(filename);
+    if (ct1 && ct2 && (ct1 !== ct2)) {
+        res.status(415).send("Content type mismatch with path file.extenstion");
+    }
+    if (!ct2) { // @@ Later, add the extension or track metadata
+        res.status(415).send("Sorry, Filename must have extension for content type");
+    }
+    fs.writeFile(filename, req.text,  function(err) {
+        if (err) {
+            consoleLog(' -- write error ' + err);
+            return res.status(500).send("Can't write file: "+ err);
+        } else {
+            consoleLog(' -- write Ok ' + req.text.length);
+            res.send();
+        }
+    }); // file write
 });
+
+
+app.use(responseTime());
+app.post(options.pathFilter, postOrPatch);
+app.patch(options.pathFilter, postOrPatch);
 
 var server = app.listen(3000, function() {
-    console.log('Listening on port %d', server.address().port);
+    consoleLog('Listening on port %d', server.address().port);
 });
+
 

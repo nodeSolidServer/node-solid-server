@@ -25,7 +25,7 @@ post1:
 	# diff post-1-result.ttl patch-1-initial.ttl
 	$C --n3 --ntriples < post-1-result.ttl > post-1-result.nt
 	$C --n3 --ntriples < patch-1-initial.ttl > patch-1-final.nt
-	$D --from=patch-1x-final.nt --diff=post-1-result.nt
+	$D --from=patch-1-final.nt --diff=post-1-result.nt
 
 
 #patch2:
