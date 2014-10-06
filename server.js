@@ -93,7 +93,6 @@ if (process.platform !== 'win32') {
 };
 
 
-
 var PATCH = $rdf.Namespace('http://www.w3.org/ns/pim/patch#');
 
 var uriToFilename = function(uri) {
