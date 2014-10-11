@@ -5,10 +5,10 @@ S=$W/2000/10/swap
 C=python $S/cwm.py --quiet
 D=python $S/cant.py
 
-all:  put1 put2  post1 post2 post2n post3 post4
+all:  put1 put2  post1 post2 post2n post3 post4 post5
 
 clean :
-	rm *result.ttl  *headers.txt *.nt
+	rm *result*  *headers.txt *.nt
 
 put1 :
 	curl --upload-file put-input.txt $T/put-result.txt
@@ -74,5 +74,15 @@ post4:
 	$D --from=patch-4-final.nt --diff=post-4-result.nt
 
 	
-#######
+#######   DELETE DATA
+
+post5:
+	cp patch-5-initial.ttl post-5-result.ttl
+	curl -HContent-type:application/sparql-update --data-binary @patch-5.spatch  \
+		--dump-header post-5-headers.txt $T/post-5-result.ttl
+	# diff patch-4-final.ttl post-4-result.ttl
+	$C --n3 --ntriples < post-5-result.ttl > post-5-result.nt
+	$C --n3 --ntriples < patch-5-final.ttl > patch-5-final.nt
+	$D --from=patch-5-final.nt --diff=post-5-result.nt
+
 
