@@ -33,7 +33,7 @@ Access the agent via the appropriate link
 var argv = require('optimist').boolean('cors').boolean('v').argv;
 
 if (argv.h || argv.help || argv['?']) {
-  console.consoleLog([
+  console.log([
     "usage: ldp-httpd [path] [options]",
     "",
     "options:",
@@ -126,6 +126,7 @@ app.use(function (req, res, next) {
 var postOrPatch = function(req, res) {
     consoleLog('\nPOST ' +req.path);
     consoleLog(' text length: ' + (req.text ? req.text.length : 'undefined2'))
+    res.header('MS-Author-Via' , 'SPARQL' );
     var filename = uriToFilename(req.path);
     patchType = req.get('content-type');
     fileType = mime.lookup(filename);
@@ -258,6 +259,7 @@ var postOrPatch = function(req, res) {
 //////////////////// Request handlers:
 
 app.get(options.pathFilter, function(req, res){
+    res.header('MS-Author-Via' , 'SPARQL' );
     consoleLog('GET -- ' +req.path);
     var filename = uriToFilename(req.path);
     fs.readFile(filename, function(err, data) {
@@ -277,6 +279,7 @@ app.get(options.pathFilter, function(req, res){
 app.put(options.pathFilter, function(req, res){
     consoleLog('PUT ' +req.path);
     consoleLog(' text length:' + (req.text ? req.text.length : 'undefined1'))
+    res.header('MS-Author-Via' , 'SPARQL' );
     var filename = uriToFilename(req.path);
     ct1 = req.get('content-type');
     ct2 = mime.lookup(filename);
@@ -302,7 +305,7 @@ app.use(responseTime());
 app.post(options.pathFilter, postOrPatch);
 app.patch(options.pathFilter, postOrPatch);
 
-var server = app.listen(3000, function() {
+var server = app.listen(options.port, function() {
     consoleLog('Listening on port %d', server.address().port);
 });
 
