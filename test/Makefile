@@ -5,21 +5,21 @@ S=$W/2000/10/swap
 C=python $S/cwm.py --quiet
 D=python $S/cant.py
 
-all:  put1 put2  post1 post2 post2n post3 post4 post5
+all:  put-1 put-2  post-1 post-2 post-2n post-3 post-4 post-5 delete-1
 
 clean :
 	rm *result*  *headers.txt *.nt
 
-put1 :
+put-1 :
 	curl --upload-file put-input.txt $T/put-result.txt
 	diff put-input.txt put-result.txt
 	
-put2 :
+put-2 :
 	curl --upload-file put-input-2.html $T/put-result-2.html
 	diff put-input-2.html put-result-2.html
 
 #   try an empty patch file -- nothing should change
-post1:
+post-1:
 	cp patch-1-initial.ttl post-1-result.ttl
 	curl -HContent-type:application/sparql-update --data-binary @empty.spatch  $T/post-1-result.ttl
 	# diff post-1-result.ttl patch-1-initial.ttl
@@ -28,12 +28,12 @@ post1:
 	$D --from=patch-1-final.nt --diff=post-1-result.nt
 
 
-#patch2:
+#patch-2:
 #	cp patch-2-initial.ttl patch-2-result.ttl
 #	curl --request PATCH -HContent-type:application/sparql-update --data-binary @patch-2.spatch  $T/patch-2-result.ttl
 #	diff patch-2-final.ttl patch-2-result.ttl
 
-post2n:   # Negative test
+post-2n:   # Negative test
 	cp patch-2-initial.ttl post-2n-result.ttl
 	curl --request POST -HContent-type:application/sparql-update --data-binary @patch-2n.spatch \
 	  --dump-header post-2n-headers.txt  $T/post-2n-result.ttl
@@ -43,7 +43,7 @@ post2n:   # Negative test
 	$D --from=patch-2n-final.nt --diff=post-2n-result.nt
 	grep 409 post-2n-headers.txt 
 
-post2:
+post-2:
 	cp patch-2-initial.ttl post-2-result.ttl
 	curl --request POST -HContent-type:application/sparql-update --data-binary @patch-2.spatch \
 	  --dump-header post-2-headers.txt  $T/post-2-result.ttl
@@ -55,7 +55,7 @@ post2:
 
 ################### LDPATCH example
 
-post3:
+post-3:
 	cp ldpatch-example-initial.ttl post-3-result.ttl
 	curl -HContent-type:application/sparql-update --data-binary @ldpatch-example-patch-1.spatch \
 		--dump-header post-3-headers.txt  $T/post-3-result.ttl
@@ -64,7 +64,7 @@ post3:
 	$C --n3 --ntriples < patch-3-final.ttl > patch-3-final.nt
 	$D --from=patch-3-final.nt --diff=post-3-result.nt
 
-post4:
+post-4:
 	cp ldpatch-example-initial.ttl post-4-result.ttl
 	curl -HContent-type:application/sparql-update --data-binary @ldpatch-example-patch-2.spatch  \
 		--dump-header post-4-headers.txt $T/post-4-result.ttl
@@ -74,9 +74,9 @@ post4:
 	$D --from=patch-4-final.nt --diff=post-4-result.nt
 
 	
-#######   DELETE DATA
+#######   "DELETE DATA" in patch
 
-post5:
+post-5:
 	cp patch-5-initial.ttl post-5-result.ttl
 	curl -HContent-type:application/sparql-update --data-binary @patch-5.spatch  \
 		--dump-header post-5-headers.txt $T/post-5-result.ttl
@@ -85,4 +85,14 @@ post5:
 	$C --n3 --ntriples < patch-5-final.ttl > patch-5-final.nt
 	$D --from=patch-5-final.nt --diff=post-5-result.nt
 
+###### DELETE method
 
+delete-1:
+	cp patch-5-initial.ttl del-1-result.ttl
+	curl --request DELETE \
+		--dump-header del-1-headers.txt $T/del-1-result.ttl
+	echo IGNORE_THIS_FILE > del-1-result.txt
+
+
+
+	

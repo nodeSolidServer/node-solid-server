@@ -58,6 +58,7 @@ if (argv.h || argv.help || argv['?']) {
 }
 
 var options = {
+    aclSuffix:  argv.aclSuffix || process.env.ACLSUFFIX  || ",acl",
     uriBase:    argv.uriBase || process.env.URIBASE || 'http://localhost:3000'+process.cwd() + '/test/',
     fileBase:   argv.fileBase || procss.env.FILEBASE || process.cwd() + '/test/',
     address: argv.a || '0.0.0.0',
@@ -131,10 +132,11 @@ var postOrPatch = function(req, res) {
     patchType = req.get('content-type');
     fileType = mime.lookup(filename);
     patchContentType = req.get('content-type');
+    patchContentType = patchContentType.split(';')[0].trim(); // Ignore parameters
     targetContentType = mime.lookup(filename);
     var targetURI = 'https://' + req.hostname + req.path;
     var patchURI = targetURI ;  // @@@ beware the triples from the pacth ending up in the same place
-    consoleLog('Content-type ' + patchContentType + " patching <" + targetURI + '>');
+    consoleLog("Patch Content-type " + patchContentType + " patching target " + targetContentType + " <" + targetURI + '>');
     var targetKB = $rdf.graph();
     var patchKB = $rdf.graph(); // Keep the patch in a sep KBas its URI is the same ! 
 
@@ -168,6 +170,7 @@ var postOrPatch = function(req, res) {
             var target = patchKB.sym(targetURI);
             
             var writeFileBack = function() {
+                consoleLog("Accumulated namespaces:" + targetKB.namespaces)
                 consoleLog("Writeback ");
                 var data = $rdf.serialize(target, targetKB, targetURI, targetContentType);
                 // consoleLog("Writeback data: " + data);
@@ -252,8 +255,16 @@ var postOrPatch = function(req, res) {
             };
          }); // end read done            
         break;
+        
+    default:
+        return fail(400, "Sorry unknowm patch content type: " + patchContentType)
     }; // switch content-type
 }; // postOrPatch
+
+
+
+
+app.use(responseTime());
 
 
 //////////////////// Request handlers:
@@ -291,17 +302,31 @@ app.put(options.pathFilter, function(req, res){
     }
     fs.writeFile(filename, req.text,  function(err) {
         if (err) {
-            consoleLog(' -- write error ' + err);
+            consoleLog(" ### Write error: " + err);
             return res.status(500).send("Can't write file: "+ err);
         } else {
-            consoleLog(' -- write Ok ' + req.text.length);
+            consoleLog(" -- write Ok " + req.text.length);
             res.send();
         }
     }); // file write
 });
 
+app.delete(options.pathFilter, function(req, res){
+    consoleLog('DELETE ' +req.path);
+//    res.header('MS-Author-Via' , 'SPARQL' );
+    var filename = uriToFilename(req.path);
+    fs.unlink(filename, function(err) {
+        if (err) {
+            consoleLog("   ### DELETE unlink() error: " + err);
+            return res.status(404).send("Can't delete file: "+ err); // @@ best 
+        } else {
+            consoleLog(" -- delete Ok " + req.text.length);
+            res.send();
+        }
+    }); // file delete
+});
 
-app.use(responseTime());
+
 app.post(options.pathFilter, postOrPatch);
 app.patch(options.pathFilter, postOrPatch);
 
