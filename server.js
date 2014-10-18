@@ -128,10 +128,10 @@ var postOrPatch = function(req, res) {
     consoleLog(' text length: ' + (req.text ? req.text.length : 'undefined2'))
     res.header('MS-Author-Via' , 'SPARQL' );
     var filename = uriToFilename(req.path);
-    patchType = req.get('content-type');
-    fileType = mime.lookup(filename);
-    patchContentType = req.get('content-type');
-    targetContentType = mime.lookup(filename);
+    var patchType = req.get('content-type');
+    var fileType = mime.lookup(filename);
+    var patchContentType = req.get('content-type');
+    var targetContentType = mime.lookup(filename);
     var targetURI = 'https://' + req.hostname + req.path;
     var patchURI = targetURI ;  // @@@ beware the triples from the pacth ending up in the same place
     consoleLog('Content-type ' + patchContentType + " patching <" + targetURI + '>');
