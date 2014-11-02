@@ -47,6 +47,7 @@ if (argv.h || argv.help || argv['?']) {
 //    "  -o                 Open browser window after starting the server",
     "  -c                 Set cache time (in seconds). e.g. -c10 for 10 seconds.",
     "                     To disable caching, use -c-1.",
+    "  --changesSuffix sss Change the URI suffix used for the URI of a change stream",
     "",
     "  -S --ssl           Enable https.",
     "  -C --cert          Path to ssl cert file (default: cert.pem).",
@@ -64,6 +65,7 @@ var options = {
     address: argv.a || '0.0.0.0',
     port:  parseInt(argv.p || process.env.PORT ||  3000),
     verbose: argv.v,
+    changesSuffix: argv.changesSuffix || ',changes',
     ssl: argv.S,
     cors: argv.cors
 };
@@ -73,9 +75,11 @@ var consoleLog = function() {
     if (options.verbose) console.log.apply(console, arguments);
 }
 
+var subscriptions = {}; // Map URI to array of watchers
 
 consoleLog("   uriBase: " + options.uriBase);
 options.pathStart = '/' + options.uriBase.split('//')[1].split('/').slice(1).join('/');
+options.prePathSlash =  options.uriBase.split('/').slice(0,3).join('/');
 consoleLog("URI pathStart: " + options.pathStart);
 options.pathFilter = regexp().start(options.pathStart).toRegExp();
 consoleLog("URI path filter regexp: " + options.pathFilter);
@@ -134,11 +138,11 @@ var postOrPatch = function(req, res) {
     patchContentType = req.get('content-type');
     patchContentType = patchContentType.split(';')[0].trim(); // Ignore parameters
     targetContentType = mime.lookup(filename);
-    var targetURI = 'https://' + req.hostname + req.path;
-    var patchURI = targetURI ;  // @@@ beware the triples from the pacth ending up in the same place
+    var targetURI = options.prePathSlash + req.path;
+    var patchURI = targetURI ;  // @@@ beware the triples from the patch ending up in the same place
     consoleLog("Patch Content-type " + patchContentType + " patching target " + targetContentType + " <" + targetURI + '>');
     var targetKB = $rdf.graph();
-    var patchKB = $rdf.graph(); // Keep the patch in a sep KBas its URI is the same ! 
+    var patchKB = $rdf.graph(); // Keep the patch in a sep KB as its URI is the same ! 
 
     var fail = function(status, message) {
         consoleLog("FAIL "+status+ " " + message);
@@ -171,7 +175,7 @@ var postOrPatch = function(req, res) {
             
             var writeFileBack = function() {
                 consoleLog("Accumulated namespaces:" + targetKB.namespaces)
-                consoleLog("Writeback ");
+                consoleLog("Writeback URI base " + targetURI);
                 var data = $rdf.serialize(target, targetKB, targetURI, targetContentType);
                 // consoleLog("Writeback data: " + data);
 
@@ -180,80 +184,93 @@ var postOrPatch = function(req, res) {
                         return fail(500, "Failed to write file back after patch: "+ err);
                     } else {
                         consoleLog("Patch applied OK");
-                        return res.send("Patch applied OK\n");
+                        res.send("Patch applied OK\n");
+                        return publishDelta(req, res, patchKB, targetURI);
                     };
                 }); // end write done
             };
             
-
-            var doPatch = function() {
-                consoleLog("doPatch ...")
-                
-                if (patch['delete']) {
-                    consoleLog("doPatch delete "+patch['delete'])
-                    var ds =  patch['delete']
-                    if (bindings) ds = ds.substitute(bindings);
-                    ds = ds.statements;
-                    var bad = [];
-                    var ds2 = ds.map(function(st){ // Find the actual statemnts in the store
-                        var sts = targetKB.statementsMatching(st.subject, st.predicate, st.object, target);
-                        if (sts.length === 0) {
-                            consoleLog("NOT FOUND deletable " + st);
-                            bad.push(st);
-                        } else {
-                            consoleLog("Found deletable " + st);
-                            return sts[0]
+/*
+            var performPatch = function(patch, targetKB, patchCallback) { // patchCallback(err)
+            
+                var doPatch = function(onDonePatch) {
+                    consoleLog("doPatch ...")
+                    
+                    if (patch['delete']) {
+                        consoleLog("doPatch delete "+patch['delete'])
+                        var ds =  patch['delete']
+                        if (bindings) ds = ds.substitute(bindings);
+                        ds = ds.statements;
+                        var bad = [];
+                        var ds2 = ds.map(function(st){ // Find the actual statemnts in the store
+                            var sts = targetKB.statementsMatching(st.subject, st.predicate, st.object, target);
+                            if (sts.length === 0) {
+                                consoleLog("NOT FOUND deletable " + st);
+                                bad.push(st);
+                            } else {
+                                consoleLog("Found deletable " + st);
+                                return sts[0]
+                            }
+                        });
+                        if (bad.length) {
+                            return fail(409, "Couldn't find to delete: " + bad[0])
                         }
-                    });
-                    if (bad.length) {
-                        return fail(409, "Couldn't find to delete: " + bad[0])
-                    }
-                    ds2.map(function(st){
-                        targetKB.remove(st);
-                    });
+                        ds2.map(function(st){
+                            targetKB.remove(st);
+                        });
+                    };
+                    
+                    if (patch['insert']) {
+                        consoleLog("doPatch insert "+patch['insert'])
+                        var ds =  patch['insert'];
+                        if (bindings) ds = ds.substitute(bindings);
+                        ds = ds.statements;
+                        ds.map(function(st){st.why = target;
+                            consoleLog("Adding: " + st);
+                            targetKB.add(st.subject, st.predicate, st.object, st.why)});
+                    };
+                    onDonePatch();
                 };
-                
-                if (patch['insert']) {
-                    consoleLog("doPatch insert "+patch['insert'])
-                    var ds =  patch['insert'];
-                    if (bindings) ds = ds.substitute(bindings);
-                    ds = ds.statements;
-                    ds.map(function(st){st.why = target;
-                        consoleLog("Adding: " + st);
-                        targetKB.add(st.subject, st.predicate, st.object, st.why)});
+
+                var bindings = null;
+                if (patch.where) {
+                    consoleLog("Processing WHERE: " + patch.where + '\n');
+
+                    var query = new $rdf.Query('patch');
+                    query.pat = patch.where;
+                    query.pat.statements.map(function(st){st.why = target});
+
+                    var bindingsFound = [];
+                    consoleLog("Processing WHERE - launching query: " + query.pat);
+
+                    targetKB.query(query, function onBinding(binding) {
+                        bindingsFound.push(binding)
+                    },
+                    targetKB.fetcher,
+                    function onDone() {
+                        if (bindingsFound.length == 0) {
+                            return patchCallback("No match found to be patched:" + patch.where);
+                        }
+                        if (bindingsFound.length > 1) {
+                            return patchCallback("Patch ambiguous. No patch done.");
+                        }
+                        bindings = bindingsFound[0];
+                        doPatch(patchCallback);
+                    });
+                } else {
+                    doPatch(patchCallback)
                 };
-                writeFileBack();
             };
-
-            var bindings = null;
-            if (patch.where) {
-                consoleLog("Processing WHERE: " + patch.where + '\n');
-
-                var query = new $rdf.Query('patch');
-                query.pat = patch.where;
-                query.pat.statements.map(function(st){st.why = target});
-
-                var bindingsFound = [];
-                consoleLog("Processing WHERE - launching query: " + query.pat);
-
-                targetKB.query(query, function onBinding(binding) {
-                    bindingsFound.push(binding)
-                },
-                targetKB.fetcher,
-                function onDone() {
-                    if (bindingsFound.length == 0) {
-                        return fail(409, "No match found to be patched:" + patch.where);
-                    }
-                    if (bindingsFound.length > 1) {
-                        return fail(409, "Patch ambiguous. No patch done.");
-                    }
-                    bindings = bindingsFound[0];
-                    doPatch();
-                });
-            } else {
-                doPatch()
-            };
-         }); // end read done            
+            */
+            targetKB.applyPatch(patch, target, function(err){
+                if (err) {
+                    return fail(409, err); // HTTP inconsistency error -- very important.
+                } else {
+                    writeFileBack();
+                };
+            });
+            
+         }); // end read file done            
         break;
         
     default:
@@ -262,6 +279,35 @@ var postOrPatch = function(req, res) {
 }; // postOrPatch
 
 
+var subscribeToChanges = function(req, res) {
+    var targetPath = req.path.slice(0, - options.changesSuffix.length); // lop off ',changes'
+    if (subscriptions[targetPath] === undefined) {
+        subscriptions[targetPath] = [];
+    }
+    subscriptions[targetPath].push({ 'request': req, 'response': res});
+    res.set('content-type', 'text/n3');
+    res.setTimeout(0); // Disable timeout (does this work??)
+    consoleLog("\nGET CHANGES: Now " + subscriptions[targetPath].length +  " subscriptions for " +  targetPath);
+}
+
+var publishDelta = function (req, res, patchKB, targetURI){
+    if (! subscriptions[req.path]) return; 
+    var target = $rdf.sym(targetURI); // @@ target below
+    var data = $rdf.serialize(undefined, patchKB, targetURI, 'text/n3');
+    consoleLog("-- Distributing change to " + req.path);
+//    consoleLog("                change is NT: <<<<<" + patchKB.toNT() + ">>>>>\n");
+//    consoleLog("                change is why: <<<<<" + patchKB.statements.map(function(st){
+//            return st.why.toNT()}).join(', ') + ">>>>>\n");
+    consoleLog("                change is: <<<<<" + data + ">>>>>\n");
+
+    subscriptions[req.path].map(function(subscription){
+        subscription.response.write(data);
+ //       foo.pipe(subscription.response, { 'end': false});
+//        subscription.response.send(data)
+    
+    });
+    
+}
 
 
 app.use(responseTime());
@@ -270,7 +316,13 @@ app.use(responseTime());
 //////////////////// Request handlers:
 
 app.get(options.pathFilter, function(req, res){
+
+    if (('' +req.path).slice(- options.changesSuffix.length) === options.changesSuffix) 
+        return subscribeToChanges(req, res);
+        
     res.header('MS-Author-Via' , 'SPARQL' );
+    // Note not yet in http://www.iana.org/assignments/link-relations/link-relations.xhtml
+    res.header('Link' , '' + req.path + options.changesSuffix + ' ; rel=changes' );
     consoleLog('GET -- ' +req.path);
     var filename = uriToFilename(req.path);
     fs.readFile(filename, function(err, data) {

@@ -91,7 +91,7 @@ delete-1:
 	cp patch-5-initial.ttl del-1-result.ttl
 	curl --request DELETE \
 		--dump-header del-1-headers.txt $T/del-1-result.ttl
-	echo IGNORE_THIS_FILE > del-1-result.txt
+	echo Ignore_this_file > del-1-result.txt
 
 
 
