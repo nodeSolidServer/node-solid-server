@@ -5,12 +5,15 @@
 var express = require('express'); // See http://expressjs.com/guide.html
 var app = express();
 
+var expressWs = require('express-ws')(app); //app = express app
 var mime = require('mime');
 var fs = require('fs');
 var $rdf = require('rdflib.js')
 var responseTime = require('response-time'); // Add X-Response-Time headers
 var path = require('path');
 var regexp = require('node-regexp');
+
+var redis   = require('redis'); // https://github.com/tomkersten/sses-node-example
 
 
 
@@ -48,6 +51,7 @@ if (argv.h || argv.help || argv['?']) {
     "  -c                 Set cache time (in seconds). e.g. -c10 for 10 seconds.",
     "                     To disable caching, use -c-1.",
     "  --changesSuffix sss Change the URI suffix used for the URI of a change stream",
+    "  --SSESuffix sss Change the URI suffix used for the URI of a SSE stream",
     "",
     "  -S --ssl           Enable https.",
     "  -C --cert          Path to ssl cert file (default: cert.pem).",
@@ -66,8 +70,10 @@ var options = {
     port:  parseInt(argv.p || process.env.PORT ||  3000),
     verbose: argv.v,
     changesSuffix: argv.changesSuffix || ',changes',
+    SSESuffix: argv.SSESuffix || ',events',
     ssl: argv.S,
-    cors: argv.cors
+    cors: argv.cors,
+    leavePatchConnectionOpen: false,
 };
 
 
@@ -185,83 +191,11 @@ var postOrPatch = function(req, res) {
                     } else {
                         consoleLog("Patch applied OK");
                         res.send("Patch applied OK\n");
-                        return publishDelta(req, res, patchKB, targetURI);
+                        return publishDelta_LongPoll(req, res, patchKB, targetURI);
                     };
                 }); // end write done
             };
             
-/*
-            var performPatch = function(patch, targetKB, patchCallback) { // patchCallback(err)
-            
-                var doPatch = function(onDonePatch) {
-                    consoleLog("doPatch ...")
-                    
-                    if (patch['delete']) {
-                        consoleLog("doPatch delete "+patch['delete'])
-                        var ds =  patch['delete']
-                        if (bindings) ds = ds.substitute(bindings);
-                        ds = ds.statements;
-                        var bad = [];
-                        var ds2 = ds.map(function(st){ // Find the actual statemnts in the store
-                            var sts = targetKB.statementsMatching(st.subject, st.predicate, st.object, target);
-                            if (sts.length === 0) {
-                                consoleLog("NOT FOUND deletable " + st);
-                                bad.push(st);
-                            } else {
-                                consoleLog("Found deletable " + st);
-                                return sts[0]
-                            }
-                        });
-                        if (bad.length) {
-                            return fail(409, "Couldn't find to delete: " + bad[0])
-                        }
-                        ds2.map(function(st){
-                            targetKB.remove(st);
-                        });
-                    };
-                    
-                    if (patch['insert']) {
-                        consoleLog("doPatch insert "+patch['insert'])
-                        var ds =  patch['insert'];
-                        if (bindings) ds = ds.substitute(bindings);
-                        ds = ds.statements;
-                        ds.map(function(st){st.why = target;
-                            consoleLog("Adding: " + st);
-                            targetKB.add(st.subject, st.predicate, st.object, st.why)});
-                    };
-                    onDonePatch();
-                };
-
-                var bindings = null;
-                if (patch.where) {
-                    consoleLog("Processing WHERE: " + patch.where + '\n');
-
-                    var query = new $rdf.Query('patch');
-                    query.pat = patch.where;
-                    query.pat.statements.map(function(st){st.why = target});
-
-                    var bindingsFound = [];
-                    consoleLog("Processing WHERE - launching query: " + query.pat);
-
-                    targetKB.query(query, function onBinding(binding) {
-                        bindingsFound.push(binding)
-                    },
-                    targetKB.fetcher,
-                    function onDone() {
-                        if (bindingsFound.length == 0) {
-                            return patchCallback("No match found to be patched:" + patch.where);
-                        }
-                        if (bindingsFound.length > 1) {
-                            return patchCallback("Patch ambiguous. No patch done.");
-                        }
-                        bindings = bindingsFound[0];
-                        doPatch(patchCallback);
-                    });
-                } else {
-                    doPatch(patchCallback)
-                };
-            };
-            */
             targetKB.applyPatch(patch, target, function(err){
                 if (err) {
                     return fail(409, err); // HTTP inconsistency error -- very important.
@@ -279,18 +213,78 @@ var postOrPatch = function(req, res) {
 }; // postOrPatch
 
 
-var subscribeToChanges = function(req, res) {
+///////////////  Server side Events SSE
+
+
+var SSEsubscriptions = {};
+
+var subscribeToChanges_SSE = function(req, res) {
+
+    console.log("Server Side Events subscription")
+    var targetPath = req.path.slice(0, - options.changesSuffix.length); // lop off ',events'
+    if (SSEsubscriptions[targetPath] === undefined) {
+        SSEsubscriptions[targetPath] = redis.createClient();
+    };
+    var subscriber = SSEsubscriptions[targetPath];
+    console.log("Server Side Events subscription: " + targetPath)
+
+    subscriber.subscribe('updates');
+
+    // In case we encounter an error...print it out to the console
+    subscriber.on('error', function(err) {
+        console.log("Redis Error: " + err);
+    });
+
+    // When we receive a message from the redis connection
+    subscriber.on('message', function(channel, message) {
+        messageCount++; // Increment our message count
+
+        res.write('id: ' + messageCount + '\n');
+        res.write("data: " + message + '\n\n'); // Note the extra newline
+    });
+
+    //send headers for event-stream connection
+    res.writeHead(200, {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive'
+    });
+    res.write('\n');
+
+    // The 'close' event is fired when a user closes their browser window.
+    // In that situation we want to make sure our redis channel subscription
+    // is properly shut down to prevent memory leaks.
+    
+    req.on("close", function() {
+        subscriber.unsubscribe();
+        subscriber.quit();
+    });
+    
+};
+
+var publishDelta_SSE = function (req, res, patchKB, targetURI){
+
+    var publisherClient = SSEsubscriptions[targetPath];
+    publisherClient.publish( 'updates', ('"' + targetPath + '" data changed visited') );
+};
+
+///////////////// Long poll
+
+var subscribeToChangesLongPoll = function(req, res) {
     var targetPath = req.path.slice(0, - options.changesSuffix.length); // lop off ',changes'
     if (subscriptions[targetPath] === undefined) {
         subscriptions[targetPath] = [];
     }
     subscriptions[targetPath].push({ 'request': req, 'response': res});
     res.set('content-type', 'text/n3');
-    res.setTimeout(0); // Disable timeout (does this work??)
+    // was: res.setTimeout
+    req.socket.setTimeout(0); // Disable timeout (does this work??)
+    
     consoleLog("\nGET CHANGES: Now " + subscriptions[targetPath].length +  " subscriptions for " +  targetPath);
+    consoleLog("    --- headersSent " + res.headersSent);
 }
 
-var publishDelta = function (req, res, patchKB, targetURI){
+var publishDelta_LongPoll = function (req, res, patchKB, targetURI){
     if (! subscriptions[req.path]) return; 
     var target = $rdf.sym(targetURI); // @@ target below
     var data = $rdf.serialize(undefined, patchKB, targetURI, 'text/n3');
@@ -301,7 +295,14 @@ var publishDelta = function (req, res, patchKB, targetURI){
     consoleLog("                change is: <<<<<" + data + ">>>>>\n");
 
     subscriptions[req.path].map(function(subscription){
-        subscription.response.write(data);
+        if (options.leavePatchConnectionOpen) {
+            subscription.response.write(data);
+        } else {
+            consoleLog("    --- headersSent 2  " + res.headersSent);
+            subscription.response.write(data);
+            subscription.response.end();
+            // @@@@@ unsubscribe
+        };
  //       foo.pipe(subscription.response, { 'end': false});
 //        subscription.response.send(data)
     
@@ -315,14 +316,41 @@ app.use(responseTime());
 
 //////////////////// Request handlers:
 
+app.mountpath = ''; //  needs to be set for addSocketRoute aka .ws()
+consoleLog("App mountpath: " + app.mountpath);
+/*
+app.ws('/echo', function(ws, req) {
+  ws.on('message', function(msg) {
+    ws.send(msg);
+  });
+});
+*/
+
+// was options.pathFilter
+app.ws('/', function(socket, res) {   // https://github.com/HenningM/express-ws
+    consoleLog("    WEB SOCKET incoming on " + socket.path);
+    socket.on('message', function(msg) {
+        console.log("Web socket message = "+msg);
+        // subscribeToChanges(socket, res);
+    });
+});
+
+
+
 app.get(options.pathFilter, function(req, res){
 
     if (('' +req.path).slice(- options.changesSuffix.length) === options.changesSuffix) 
-        return subscribeToChanges(req, res);
+        return subscribeToChangesLongPoll(req, res);
+    console.log('@@@ ' + options.SSESuffix + ' @@@ ' + req.path);
+    if (('' +req.path).slice(- options.SSESuffix.length) === options.SSESuffix) 
+        return subscribeToChanges_SSE(req, res);
         
     res.header('MS-Author-Via' , 'SPARQL' );
     // Note not yet in http://www.iana.org/assignments/link-relations/link-relations.xhtml
     res.header('Link' , '' + req.path + options.changesSuffix + ' ; rel=changes' );
+    res.header('Link' , '' + req.path + options.SSESuffix + ' ; rel=events' );
+    res.header('Updates-Via' , '' + req.path + options.changesSuffix );
+
     consoleLog('GET -- ' +req.path);
     var filename = uriToFilename(req.path);
     fs.readFile(filename, function(err, data) {
@@ -338,6 +366,8 @@ app.get(options.pathFilter, function(req, res){
         };
     });
 });
+
+
 
 app.put(options.pathFilter, function(req, res){
     consoleLog('PUT ' +req.path);

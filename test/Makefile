@@ -10,6 +10,14 @@ all:  put-1 put-2  post-1 post-2 post-2n post-3 post-4 post-5 delete-1
 clean :
 	rm *result*  *headers.txt *.nt
 
+ws-1 :
+	curl -v -i -N -H "Connection: Upgrade" -H "Upgrade: websocket" \
+	-H "Host: localhost:3333" -H "Origin: http://localhost:3333" $T/patch-1-initial.ttl,changes
+get-1 :
+	curl --dump-header get-1-headers.txt $T/patch-1-initial.ttl > get-1-result.ttl
+	diff patch-1-initial.ttl get-1-result.ttl
+	grep -i updates-via get-1-headers.txt
+
 put-1 :
 	curl --upload-file put-input.txt $T/put-result.txt
 	diff put-input.txt put-result.txt
