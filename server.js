@@ -7,7 +7,7 @@ var app = express();
 
 var mime = require('mime');
 var fs = require('fs');
-var $rdf = require('rdflib.js')
+var $rdf = require('rdflib');
 var responseTime = require('response-time'); // Add X-Response-Time headers
 var path = require('path');
 var regexp = require('node-regexp');
@@ -61,7 +61,7 @@ if (argv.h || argv.help || argv['?']) {
 var options = {
     aclSuffix:  argv.aclSuffix || process.env.ACLSUFFIX  || ",acl",
     uriBase:    argv.uriBase || process.env.URIBASE || 'http://localhost:3000'+process.cwd() + '/test/',
-    fileBase:   argv.fileBase || procss.env.FILEBASE || process.cwd() + '/test/',
+    fileBase:   argv.fileBase || process.env.FILEBASE || process.cwd() + '/test/',
     address: argv.a || '0.0.0.0',
     port:  parseInt(argv.p || process.env.PORT ||  3000),
     verbose: argv.v,
