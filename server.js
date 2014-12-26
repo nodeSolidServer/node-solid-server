@@ -198,15 +198,16 @@ var postOrPatch = function(req, res) {
                 return res.status(500).send("Patch: Target " + targetContentType + " file syntax error:" + e);
             }
                 
-            targetKB.check(); // @@
+            // consoleLog("Pre check ");
+            // targetKB.check(); // @@
             var target = patchKB.sym(targetURI);
-            targetKB.check(); // @@
+            consoleLog("Target parsed OK, patching... ");
                 
             targetKB.applyPatch(patchObject, target, function(err){
                 if (err) {
                     return fail(409, err); // HTTP inconsistency error -- very important.
                 };
-                consoleLog("Writeback URI base " + targetURI);
+                consoleLog("Patched. Writeback URI base " + targetURI);
                 var data = $rdf.serialize(target, targetKB, targetURI, targetContentType);
                 // consoleLog("Writeback data: " + data);
                 try {

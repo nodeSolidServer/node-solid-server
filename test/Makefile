@@ -101,6 +101,25 @@ delete-1:
 		--dump-header del-1-headers.txt $T/del-1-result.ttl
 	echo Ignore_this_file > del-1-result.txt
 
+######### Live update
+
+live-2:
+	./live-2.bash
+	mv live-2-result.n3 live-2-saved-result.n3
+	$C live-2-saved-result.n3 --no
+	grep insert live-2-saved-result.n3
+	grep logged live-2-saved-result.n3
+	
+#	curl http://localhost:3000/test/post-1-result.ttl,changes > live-2-result.n3 &
+#	cp patch-2-initial.ttl post-2-result.ttl
+#	curl --request POST -HContent-type:application/sparql-update --data-binary @patch-2.spatch \
+#	  --dump-header post-2-headers.txt  $T/post-2-result.ttl
+#	$C --n3 --ntriples < post-2-result.ttl > post-2-result.nt
+#	$C --n3 --ntriples < patch-2-final.ttl > patch-2-final.nt
+#	$D --from=patch-2-final.nt --diff=post-2-result.nt
+#	sleep 1
+#	mv live-2-result.n3 live-2-saved-result.n3
+#	$C live-2-saved-result.n3 --no
 
 
 	
