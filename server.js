@@ -70,6 +70,7 @@ var options = {
     address: argv.a || '0.0.0.0',
     port:  parseInt(argv.p || process.env.PORT ||  3000, 10),
     verbose: argv.v,
+    xssProxy: argv.xssProxy,
     live: argv.live,
     changesSuffix: argv.changesSuffix || ',changes',
     SSESuffix: argv.SSESuffix || ',events',
@@ -108,6 +109,7 @@ options.pathStart = '/' + options.uriBase.split('//')[1].split('/').slice(1).joi
 options.prePathSlash =  options.uriBase.split('/').slice(0,3).join('/');
 consoleLog("URI pathStart: " + options.pathStart);
 options.pathFilter = regexp().start(options.pathStart).toRegExp();
+options.proxyFilter = regexp().start(options.xssProxy).toRegExp();
 consoleLog("URI path filter regexp: " + options.pathFilter);
 
 
@@ -462,6 +464,21 @@ app.ws('/', function(socket, res) {   // https://github.com/HenningM/express-ws
     });
 });
 
+if (options.xssProxy) {
+    var request = require('request');
+    // https://www.npmjs.com/package/request
+    consoleLog('XSS Proxy listening to ' + (options.proxyFilter))
+    app.get(options.proxyFilter, function(req, res) {
+        var uri1 = req.path.indexOf('uri=');
+        if (!uri1) {
+            return res.status(400).send("Proxy has not uri param ");
+        }
+        var uri = decodeURIComponent(req.path.slice(uri1 + 4));
+        consoleLog('Proxy URI: ' + uri)
+        request.get(uri).pipe(res);
+    });
+};
+
 
 
 app.get(options.pathFilter, function(req, res){
@@ -536,6 +553,7 @@ app.delete(options.pathFilter, function(req, res){
 
 
 app.post(options.pathFilter, postOrPatch);
+
 app.patch(options.pathFilter, postOrPatch);
 
 /*
