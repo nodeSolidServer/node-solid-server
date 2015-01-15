@@ -10,6 +10,14 @@ all:  put-1 put-2  post-1 post-2 post-2n post-3 post-4 post-5 delete-1
 clean :
 	rm *result*  *headers.txt *.nt
 
+ws-1 :
+	curl -v -i -N -H "Connection: Upgrade" -H "Upgrade: websocket" \
+	-H "Host: localhost:3333" -H "Origin: http://localhost:3333" $T/patch-1-initial.ttl,changes
+get-1 :
+	curl --dump-header get-1-headers.txt $T/patch-1-initial.ttl > get-1-result.ttl
+	diff patch-1-initial.ttl get-1-result.ttl
+	grep -i updates-via get-1-headers.txt
+
 put-1 :
 	curl --upload-file put-input.txt $T/put-result.txt
 	diff put-input.txt put-result.txt
@@ -93,6 +101,25 @@ delete-1:
 		--dump-header del-1-headers.txt $T/del-1-result.ttl
 	echo Ignore_this_file > del-1-result.txt
 
+######### Live update
+
+live-2:
+	./live-2.bash
+	mv live-2-result.n3 live-2-saved-result.n3
+	$C live-2-saved-result.n3 --no
+	grep insert live-2-saved-result.n3
+	grep logged live-2-saved-result.n3
+	
+#	curl http://localhost:3000/test/post-1-result.ttl,changes > live-2-result.n3 &
+#	cp patch-2-initial.ttl post-2-result.ttl
+#	curl --request POST -HContent-type:application/sparql-update --data-binary @patch-2.spatch \
+#	  --dump-header post-2-headers.txt  $T/post-2-result.ttl
+#	$C --n3 --ntriples < post-2-result.ttl > post-2-result.nt
+#	$C --n3 --ntriples < patch-2-final.ttl > patch-2-final.nt
+#	$D --from=patch-2-final.nt --diff=post-2-result.nt
+#	sleep 1
+#	mv live-2-result.n3 live-2-saved-result.n3
+#	$C live-2-saved-result.n3 --no
 
 
 	

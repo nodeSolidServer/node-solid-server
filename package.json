@@ -13,6 +13,8 @@
     "bugs": "http://github.com/linkeddata/node-ldp-httpd/issues",
     "dependencies": {
         "express": "3.x",
+        "express-ws": ">=0.2.1",
+        "request": ">=2.51.0",
         "mime": "1.x",
         "node-regexp": "",
         "optimist": "0.6",
