@@ -1,28 +1,38 @@
 {
-    "name": "ldp-httpd",
-    "description": "Read-write linked data web server based on express and rdflib.js",
-    "version": "0.1.0",
-    "private": false,
-    "author": { "name": "Tim Berners-Lee", "email": "timbl@w3.org" },
-    "license": "MIT",
-    "repository": {
-      "type": "git",
-      "url": "https://github.com/linkeddata/node-ldp-httpd"
-    },
-    "homepage": "http://github.com/linkeddata/node-ldp-httpd",
-    "bugs": "http://github.com/linkeddata/node-ldp-httpd/issues",
-    "dependencies": {
-        "express": "3.x",
-        "mime": "1.x",
-        "node-regexp": "",
-        "optimist": "0.6",
-        "raw-body": "1.x",
-        "rdflib": "git://github.com/linkeddata/rdflib.js.git",
-        "response-time": "2.x"
-    },
-    "files": [ "server.js", "test", "Makefile"],
-    "main": "server.js",
-    "scripts": {
-        "start": "node server.js"
-    }
+  "name": "ldp-httpd",
+  "description": "Read-write linked data web server based on express and rdflib.js",
+  "version": "0.1.0",
+  "private": false,
+  "author": {
+    "name": "Tim Berners-Lee",
+    "email": "timbl@w3.org"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/linkeddata/node-ldp-httpd"
+  },
+  "homepage": "http://github.com/linkeddata/node-ldp-httpd",
+  "bugs": "http://github.com/linkeddata/node-ldp-httpd/issues",
+  "dependencies": {
+    "express": "4.x",
+    "mime": "1.x",
+    "node-regexp": "",
+    "optimist": "0.6",
+    "raw-body": "1.x",
+    "rdflib": "0.1.0",
+    "response-time": "2.x",
+    "li": "1.x",
+    "node-uuid": "1.x",
+    "acl": "0.4.x"
+  },
+  "files": [
+    "server.js",
+    "test",
+    "Makefile"
+  ],
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  }
 }
