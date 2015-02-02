@@ -175,6 +175,41 @@ var postOrPatch = function(req, res) {
         return res.status(status).send('<html><body>\n'+ message+ '\n</body></html>\n');
     };
     switch(patchContentType) {
+        case 'application/sparql':
+            consoleLog("parsing query ...");
+            var query = $rdf.SPARQLToQuery(req.text, false, patchKB, patchURI); // last param not used ATM
+            var dataIn;
+            try {
+                dataIn = fs.readFileSync(filename, { encoding: 'utf8'});
+            } catch (err) {
+                return res.status(404).send("Patch: Original file read error:" + err + '\n');
+            }
+            consoleLog("File read OK "+dataIn.length);
+            try {
+                consoleLog("parsing target file ...");
+                $rdf.parse(dataIn, targetKB, targetURI, targetContentType);
+                consoleLog("Target parsed OK ");
+            } catch(e) {
+                return res.status(500).send("Patch: Target " + targetContentType + " file syntax error:" + e);
+            }
+			
+            var bindingsArray = [];
+            var onBindings = function(bindings) {
+                consoleLog("    bindings: " + bindings);
+                bindingsArray.push(bindings);
+            };
+            var onDone = function() {
+                consoleLog("Query done, no. bindings: " + bindingsArray.length);
+                res.json(bindingsArray);
+    //          res.set('content-type', 'application/json')
+    //          res.send(dataOut);
+            };
+            var fetcher = new  $rdf.Fetcher(targetKB, 10000, true);
+            targetKB.query(query, onBindings, fetcher, onDone);
+			
+			
+        break;
+		
     case 'application/sparql-update':
         try { // Must parse relative to document's base address but patch doc should get diff URI
             consoleLog("parsing patch ...");
@@ -470,8 +505,8 @@ if (options.xssProxy) {
     consoleLog('XSS Proxy listening to ' + (options.proxyFilter))
     app.get(options.proxyFilter, function(req, res) {
         var uri1 = req.path.indexOf('uri=');
-        if (!uri1) {
-            return res.status(400).send("Proxy has not uri param ");
+        if (uri1 < 0) {
+            return res.status(400).send("Proxy has no uri= param ");
         }
         var uri = decodeURIComponent(req.path.slice(uri1 + 4));
         consoleLog('Proxy URI: ' + uri)
@@ -517,8 +552,8 @@ app.put(options.pathFilter, function(req, res){
     consoleLog(' text length:' + (req.text ? req.text.length : 'undefined1'))
     res.header('MS-Author-Via' , 'SPARQL' );
     var filename = uriToFilename(req.path);
-    ct1 = req.get('content-type');
-    ct2 = mime.lookup(filename);
+    var ct1 = req.get('content-type');
+    var ct2 = mime.lookup(filename);
     if (ct1 && ct2 && (ct1 !== ct2)) {
         res.status(415).send("Content type mismatch with path file.extenstion");
     }
@@ -565,7 +600,7 @@ process.on('uncaughtException', function(err) {
 */
 
 var server = app.listen(options.port, function() {
-    consoleLog('Listening on port' + server.address().port);
+    consoleLog("Listening on port " + server.address().port);
 });
 
 

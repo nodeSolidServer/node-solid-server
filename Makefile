@@ -4,11 +4,11 @@
 
 run-for-live-test:
 	NODE_PATH=.:../tabulator-firefox/content/js/rdf/dist/ node server.js \
-		-v --live --uriBase http://localhost:3000/test/ --fileBase `pwd`/test/
+		p 3456 -v --live --uriBase http://localhost:3456/test/ --fileBase `pwd`/test/
 
 run-for-test:
 	NODE_PATH=.:../tabulator-firefox/content/js/rdf/dist/ node server.js \
-		-v --uriBase http://localhost:3000/test/ --fileBase `pwd`/test/
+		-p 3456 -v --uriBase http://localhost:3456/test/ --fileBase `pwd`/test/
 
 
 

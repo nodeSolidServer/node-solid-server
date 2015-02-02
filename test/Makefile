@@ -1,5 +1,9 @@
+# Run tests on node server
+#
+# First do    make run-for-test
+# in parent directory.
 
-T=http://localhost:3000/test
+T=http://localhost:3456/test
 W=/devel/WWW
 S=$W/2000/10/swap
 C=python $S/cwm.py --quiet
@@ -101,6 +105,21 @@ delete-1:
 		--dump-header del-1-headers.txt $T/del-1-result.ttl
 	echo Ignore_this_file > del-1-result.txt
 
+#### Link-following Sparql
+
+
+lfs-0:
+	curl http://www.w3.org/2015/02/lf-sparql/example1/q0.sparql > lfs-0.sparql 
+	curl http://www.w3.org/2015/02/lf-sparql/example1/alice > lfs-1-target.ttl
+	curl -HContent-type:application/sparql --data-binary @lfs-0.sparql  \
+		--dump-header lfs-1-headers.txt $T/lfs-1-target.ttl > lfs-0-result.json
+
+lfs-1:
+	curl http://www.w3.org/2015/02/lf-sparql/example1/q1.sparql > lfs-1.sparql 
+	curl http://www.w3.org/2015/02/lf-sparql/example1/alice > lfs-1-target.ttl
+	curl -HContent-type:application/sparql --data-binary @lfs-1.sparql  \
+		--dump-header lfs-1-headers.txt $T/lfs-1-target.ttl > lfs-1-result.json
+
 ######### Live update
 
 live-2:
@@ -110,7 +129,7 @@ live-2:
 	grep insert live-2-saved-result.n3
 	grep logged live-2-saved-result.n3
 	
-#	curl http://localhost:3000/test/post-1-result.ttl,changes > live-2-result.n3 &
+#	curl http://localhost:3456/test/post-1-result.ttl,changes > live-2-result.n3 &
 #	cp patch-2-initial.ttl post-2-result.ttl
 #	curl --request POST -HContent-type:application/sparql-update --data-binary @patch-2.spatch \
 #	  --dump-header post-2-headers.txt  $T/post-2-result.ttl
