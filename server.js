@@ -517,8 +517,8 @@ app.put(options.pathFilter, function(req, res){
     consoleLog(' text length:' + (req.text ? req.text.length : 'undefined1'))
     res.header('MS-Author-Via' , 'SPARQL' );
     var filename = uriToFilename(req.path);
-    ct1 = req.get('content-type');
-    ct2 = mime.lookup(filename);
+    var ct1 = req.get('content-type');
+    var ct2 = mime.lookup(filename);
     if (ct1 && ct2 && (ct1 !== ct2)) {
         res.status(415).send("Content type mismatch with path file.extenstion");
     }
