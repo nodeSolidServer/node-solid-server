@@ -9,7 +9,7 @@ S=$W/2000/10/swap
 C=python $S/cwm.py --quiet
 D=python $S/cant.py
 
-all:  put-1 put-2  post-1 post-2 post-2n post-3 post-4 post-5 delete-1
+all:  clean put-1 put-2  post-1 post-2 post-2n post-3 post-4 post-5 delete-1
 
 clean :
 	rm *result*  *headers.txt *.nt
@@ -25,7 +25,7 @@ get-1 :
 put-1 :
 	curl --upload-file put-input.txt $T/put-result.txt
 	diff put-input.txt put-result.txt
-	
+
 put-2 :
 	curl --upload-file put-input-2.html $T/put-result-2.html
 	diff put-input-2.html put-result-2.html
@@ -85,7 +85,7 @@ post-4:
 	$C --n3 --ntriples < patch-4-final.ttl > patch-4-final.nt
 	$D --from=patch-4-final.nt --diff=post-4-result.nt
 
-	
+
 #######   "DELETE DATA" in patch
 
 post-5:

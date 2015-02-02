@@ -104,7 +104,7 @@ var consoleLog = function(message) {
 
 var subscriptions = {}; // Map URI to array of watchers
 
-consoleLog("   uriBase: " + options.uriBase);
+consoleLog("\n Starting, uriBase: " + options.uriBase);
 options.pathStart = '/' + options.uriBase.split('//')[1].split('/').slice(1).join('/');
 options.prePathSlash =  options.uriBase.split('/').slice(0,3).join('/');
 consoleLog("URI pathStart: " + options.pathStart);
@@ -450,7 +450,7 @@ var publishDelta = function (req, res, patchKB, targetURI){
     var patchData = $rdf.serialize(undefined, patchKB, targetURI, 'text/n3');
     
     consoleLog("Distributing change to " + req.path + ", patch is: " );
-    consoleLog("<<<<<" + patchData + ">>>>>\n");
+    consoleLog("[[[" + patchData + "]]]\n");
 
     publishDelta_LongPoll(req, res, patchData, targetURI);
 
@@ -504,12 +504,12 @@ if (options.xssProxy) {
     // https://www.npmjs.com/package/request
     consoleLog('XSS Proxy listening to ' + (options.proxyFilter))
     app.get(options.proxyFilter, function(req, res) {
-        var uri1 = req.path.indexOf('uri=');
-        if (uri1 < 0) {
-            return res.status(400).send("Proxy has no uri= param ");
+		consoleLog('originalUrl: ' + req.originalUrl);
+		var uri = req.query.uri; 
+        if (!uri) {
+            return res.status(400).send("Proxy has no uri param ");
         }
-        var uri = decodeURIComponent(req.path.slice(uri1 + 4));
-        consoleLog('Proxy URI: ' + uri)
+		consoleLog('Proxy destination URI: ' + uri)
         request.get(uri).pipe(res);
     });
 };
