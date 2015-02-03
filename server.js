@@ -195,12 +195,24 @@ var postOrPatch = function(req, res) {
 			
             var bindingsArray = [];
             var onBindings = function(bindings) {
-                consoleLog("    bindings: " + bindings);
-                bindingsArray.push(bindings);
+                var b = {}, v, x; // Map from array to object
+                for (v in bindings) if (bindings.hasOwnProperty(v)){
+                    x = bindings[v];
+                    b[v] = x.uri ? { 'type': 'uri', 'value': x.uri} :
+                                    { 'type': 'literal', 'value': x.value };
+                    if (x.lang) {
+                        b[v]['xml:lang'] = x.lang;
+                    }
+                    if (x.dt) {
+                        b[v]['dt'] = x.dt.uri;  // @@@ Correct? @@ check
+                    }
+                }
+                consoleLog("    bindings: " + JSON.stringify(b));
+                bindingsArray.push(b);
             };
             var onDone = function() {
                 consoleLog("Query done, no. bindings: " + bindingsArray.length);
-                res.json(bindingsArray);
+                res.json( { 'head': { 'vars': query.vars.map(function(v){return v.toNT();}) }, 'results': { 'bindings': bindingsArray}});
     //          res.set('content-type', 'application/json')
     //          res.send(dataOut);
             };
