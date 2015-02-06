@@ -15,7 +15,7 @@
   "homepage": "http://github.com/linkeddata/node-ldp-httpd",
   "bugs": "http://github.com/linkeddata/node-ldp-httpd/issues",
   "dependencies": {
-    "express": "3.x",
+    "express": "4.x",
     "express-ws": ">=0.2.1",
     "http-delayed-response": "0.0.4",
     "mime": "1.x",
@@ -25,7 +25,10 @@
     "rdflib": "git://github.com/linkeddata/rdflib.js.git",
     "redis": "^0.12.1",
     "request": ">=2.51.0",
-    "response-time": "2.x"
+    "response-time": "2.x",
+    "li": "1.x",
+    "node-uuid": "1.x",
+    "acl": "0.4.x"
   },
   "files": [
     "server.js",
