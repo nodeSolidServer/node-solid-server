@@ -1,6 +1,8 @@
 node-ldp-httpd
 ==============
 
+[![Join the chat at https://gitter.im/linkeddata/node-ldp-httpd](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/linkeddata/node-ldp-httpd?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 All you need to run distributed linked data apps on top of a bit of file system.  Typically used as a proxy, with Apache doing the ACLs and GETs, just to do the fast real-time patch of data resources.
 
 Linked Data Platform server based on rdflib.js and node.js
