@@ -31,8 +31,13 @@ module.exports.handler = function(req, res){
             return res.status(500).send("Can't write file: "+ err);
         } else {
             logging.log(" -- write Ok " + req.text.length);
-            metadata.writeMetadata(filename, fileMetadata, function(err) {});
-            res.send();
+            metadata.writeMetadata(filename, fileMetadata, function(err) {
+                if (err) {
+                    res.sendStatus(500);
+                } else {
+                    res.sendStatus(201);
+                }
+            });
         }
     }); // file write
 };
