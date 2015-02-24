@@ -1,5 +1,6 @@
 var mime = require('mime');
 var fs = require('fs');
+var $rdf = require('rdflib');
 
 var header = require('../header.js');
 var metadata = require('../metadata.js');
@@ -31,7 +32,7 @@ var get = function(req, res, includeBody) {
         header.addLink(res, req.path + options.changesSuffix, 'changes');
         // res.header('Link' , '' + req.path + options.SSESuffix + ' ; rel=events' );
         // overwrites the pevious
-        res.header('Updates-Via' , '' + req.path + options.changesSuffix );
+        res.header('Updates-Via', '' + req.path + options.changesSuffix);
     }
     if (includeBody)
         logging.log('GET -- ' + req.path);
@@ -67,10 +68,12 @@ var get = function(req, res, includeBody) {
             logging.log(' -- read Ok ' + data.length);
             ct = mime.lookup(filename);
             res.set('content-type', ct);
-            //TODO logging
-            //consoleLog(' -> GET ' + req.path + ' sent ' + data.length +' bytes of ' + ct);
             logging.log(' -- content-type ' + ct);
-            res.send(data);
+            if (ct === 'text/turtle') {
+                parseLinkedData(data);
+            } else {
+                res.status(200).send(data);
+            }
         }
     };
 
@@ -78,13 +81,28 @@ var get = function(req, res, includeBody) {
         if (err) {
             res.status(404).send("Not a container");
         } else {
-            var containerGraph;
-            try {
-                // TODO: parse rawContainer to check is a valid graph
-                res.status(200).send(rawContainer);
-            } catch (parseErr) {
-                res.status(404).send("Not a valid container");
-            }
+            parseLinkedData(rawContainer);
+        }
+    };
+
+    var parseLinkedData = function(turtleData) {
+        var accept = header.parseAcceptHeader(req);
+        if (accept === undefined) {
+            res.sendStatus(415);
+            return;
+        }
+
+        var baseUri = file.filenameToBaseUri(filename);
+        var resourceGraph = $rdf.graph();
+        $rdf.parse(turtleData, resourceGraph, baseUri, 'text/turtle');
+        serializedData = $rdf.serialize(undefined, resourceGraph, baseUri,
+            accept);
+
+        if (serializedData === undefined) {
+            res.sendStatus(500);
+        } else {
+            res.set('content-type', accept);
+            res.status(200).send(serializedData);
         }
     };
 };
