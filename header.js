@@ -52,3 +52,27 @@ module.exports.parseMetadataFromHeader = function(linkHeader) {
     }
     return fileMetadata;
 };
+
+module.exports.parseAcceptHeader = function(req) {
+    var acceptFinalValue;
+    var acceptHeader = req.get('Accept');
+    if (acceptHeader === undefined) {
+        acceptFinalValue = undefined;
+    } else {
+        switch (acceptHeader) {
+            case 'text/turtle':
+            case 'applicatoin/x-turtle':
+            case 'text/n3':
+            case 'application/rdf+xml':
+            case 'application/n3':
+            case 'application/json+ld':
+            case 'application/nquads':
+            case 'application/n-quads':
+                acceptFinalValue = acceptHeader;
+                break;
+            default:
+                acceptFinalValue = 'text/turtle';
+        }
+    }
+    return acceptFinalValue;
+};
