@@ -1,4 +1,5 @@
-//Server options
+/*jslint node: true*/
+"use strict";
 
 var logging = require('./logging.js');
 var regexp = require('node-regexp');

@@ -1,3 +1,6 @@
+/*jslint node: true*/
+"use strict";
+
 var mime = require('mime');
 var fs = require('fs');
 var $rdf = require('rdflib');

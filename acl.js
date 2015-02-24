@@ -1,3 +1,6 @@
+/*jslint node: true*/
+"use strict";
+
 var acl = require('acl');
 var fs = require('fs');
 var path = require('path');

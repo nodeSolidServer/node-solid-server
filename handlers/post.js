@@ -1,3 +1,6 @@
+/*jslint node: true*/
+"use strict";
+
 var path = require('path');
 var $rdf = require('rdflib');
 

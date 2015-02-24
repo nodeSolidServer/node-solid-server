@@ -1,3 +1,6 @@
+/*jslint node: true*/
+"use strict";
+
 var mime = require('mime');
 var fs = require('fs');
 var $rdf = require('rdflib');
@@ -174,4 +177,3 @@ module.exports.handler = function(req, res) {
         return fail(400, "Sorry unknowm patch content type: " + patchContentType);
     } // switch content-type
 }; // postOrPatch
-
