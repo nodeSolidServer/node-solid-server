@@ -28,7 +28,8 @@
     "response-time": "2.x",
     "li": "1.x",
     "node-uuid": "1.x",
-    "acl": "0.4.x"
+    "acl": "0.4.x",
+    "string": "^3.0.0"
   },
   "files": [
     "server.js",
