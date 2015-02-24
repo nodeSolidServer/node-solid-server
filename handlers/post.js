@@ -65,11 +65,9 @@ module.exports.handler = function(req, res) {
         }
 
         try {
-            var resourceURI = path.resourceURI = path.relative(options.fileBase,
-                resourcePath);
-            logging.log(options.uriBase + resourceURI);
+            var containerBaseUri = file.filenameToBaseUri(containerPath);
             $rdf.parse(rawContainer, containerGraph,
-                options.uriBase + resourceURI, 'text/turtle');
+                containerBaseUri, 'text/turtle');
         } catch (parseErr) {
             logging.log(parseErr);
             logging.log("Could not parse container:\n", rawContainer);
@@ -79,7 +77,8 @@ module.exports.handler = function(req, res) {
         }
 
         try {
-            $rdf.parse(req.text, resourceGraph, options.uriBase, contentType);
+            var resourceBaseUri = file.filenameToBaseUri(resourcePath);
+            $rdf.parse(req.text, resourceGraph, resourceBaseUri, contentType);
         } catch (parseErr) {
             logging.log(req.text);
             container.releaseResourceUri(resourcePath);
@@ -93,13 +92,16 @@ module.exports.handler = function(req, res) {
 
         if (resourceMetadata.isBasicContainer) {
             resourceMetadata.isContainer = true;
+            resourceMetadata.isResource = false;
             resourceType = ldpVocab.BasicContainer;
             resourcePath += '/';
         } else if (resourceMetadata.isDirectContainer) {
             resourceMetadata.isContainer = true;
+            resourceMetadata.isResource = false;
             resourceType = ldpVocab.DirectContainer;
         } else {
             resourceMetadata.isContainer = false;
+            resourceMetadata.isResource = true;
             resourceType = ldpVocab.Resource;
         }
 
@@ -107,36 +109,25 @@ module.exports.handler = function(req, res) {
         //TODO figure out if how to determine if RDFSource is true or false
         resourceMetadata.isSourceResource = true;
 
-        //TODO work on input verification. For now assume input is correct
-        //if (!container.verify(newResource, resourceType)) {
-        //container.releaseResourceUri(baseUri);
-        //res.send(400);
-        //return;
-        //}
-
         if (resourceMetadata.isBasicContainer) {
             container.createNewContainer(resourcePath, resourceGraph,
                 resourceMetadata, function(err) {
                     if (err) {
                         res.sendStatus(500);
                     } else {
-                        var resourceURI = path.relative(options.fileBase,
-                            resourcePath);
-                        res.set('Location', options.uriBase + resourceURI);
+                        res.set('Location', resourceBaseUri);
                         res.sendStatus(201);
                     }
                     return;
                 });
-        } else if (!resourceMetadata.isContainer) {
+        } else if (resourceMetadata.isResource) {
             container.createNewResource(containerPath, containerGraph, resourcePath,
                 resourceGraph, resourceMetadata, function(err) {
                     if (err) {
                         logging.log("Error creating resource:", err);
                         res.sendStatus(500);
                     } else {
-                        var resourceURI = path.relative(options.fileBase,
-                            resourcePath);
-                        res.set('Location', options.uriBase + resourceURI);
+                        res.set('Location', resourceBaseUri);
                         res.sendStatus(201);
                     }
                     return;
