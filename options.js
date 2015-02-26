@@ -45,6 +45,7 @@ module.exports.init = function(argv) {
     this.xssProxy = argv.xssProxy;
     this.proxyFilter = regexp().start(this.xssProxy).toRegExp();
     this.live = argv.live;
+    this.webid = argv.webid ? true : false;
     logging.log("URI path filter regexp: " + this.pathFilter);
     logging.log("Verbose: " + this.verbose);
     logging.log("Live: " + this.live);

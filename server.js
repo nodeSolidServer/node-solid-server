@@ -14,6 +14,8 @@ var responseTime = require('response-time'); // Add X-Response-Time headers
 var path = require('path');
 var regexp = require('node-regexp');
 var redis = require('redis'); // https://github.com/tomkersten/sses-node-example
+var session = require('express-session');
+var https = require('https');
 
 // Debugging:
 //  See http://stackoverflow.com/questions/1911015/how-to-debug-node-js-applications
@@ -30,6 +32,7 @@ Access the agent via the appropriate link
 var acl = require('./acl.js');
 var metadata = require('./metadata.js');
 var options = require('./options.js');
+var login = require('./login.js');
 var logging = require('./logging.js');
 var container = require('./container.js');
 
@@ -64,6 +67,7 @@ if (argv.h || argv.help || argv['?']) {
         "  -C --cert          Path to ssl cert file (default: cert.pem).",
         "  -K --key           Path to ssl key file (default: key.pem).",
         "",
+        "  --webid      Enable WebID authentication",
         "  -h --help          Print this list and exit."
     ].join('\n'));
     process.exit();
@@ -83,7 +87,16 @@ if (process.platform !== 'win32') {
 
 container.createRootContainer();
 
-var router = express.Router();
+var router = express.Router('/');
+
+// Authentication
+app.use(session({
+    secret: 'node-ldp',
+    saveUninitialized: false,
+    resave: false
+}));
+router.use('/*', login.loginHandler);
+
 
 // Request handlers
 
@@ -163,7 +176,20 @@ router.patch('/*', patchHandler.handler);
 
 app.use(options.pathStart, router);
 
-//Start server
-var server = app.listen(options.port, function() {
-    logging.log('Listening on port %d', server.address().port);
-});
+if (options.webid) {
+    //Start server
+    var credentials = {
+        key: fs.readFileSync(path.join(options.fileBase, 'key.pem')),
+        cert: fs.readFileSync(path.join(options.fileBase, 'cert.pem')),
+        requestCert: true
+    };
+    https.createServer(credentials, app).listen(options.port);
+} else {
+    app.listen(options.port);
+}
+
+logging.log('Listening on port ' + options.port);
+
+//var server = app.listen(options.port, function() {
+//logging.log('Listening on port %d', server.address().port);
+//});
