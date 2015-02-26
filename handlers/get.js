@@ -10,6 +10,7 @@ var metadata = require('../metadata.js');
 var options = require('../options.js');
 var logging = require('../logging.js');
 var file = require('../fileStore.js');
+var subscription = require('../subscription.js');
 
 module.exports.handler = function(req, res) {
     get(req, res, true);
@@ -69,7 +70,7 @@ var get = function(req, res, includeBody) {
             res.status(404).send("Can't read file: " + err);
         } else {
             logging.log(' -- read Ok ' + data.length);
-            ct = mime.lookup(filename);
+            var ct = mime.lookup(filename);
             res.set('content-type', ct);
             logging.log(' -- content-type ' + ct);
             if (ct === 'text/turtle') {
@@ -98,7 +99,7 @@ var get = function(req, res, includeBody) {
         var baseUri = file.filenameToBaseUri(filename);
         var resourceGraph = $rdf.graph();
         $rdf.parse(turtleData, resourceGraph, baseUri, 'text/turtle');
-        serializedData = $rdf.serialize(undefined, resourceGraph, baseUri,
+        var serializedData = $rdf.serialize(undefined, resourceGraph, baseUri,
             accept);
 
         if (serializedData === undefined) {
