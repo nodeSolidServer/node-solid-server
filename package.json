@@ -29,7 +29,10 @@
     "li": "1.x",
     "node-uuid": "1.x",
     "acl": "0.4.x",
-    "string": "^3.0.0"
+    "string": "^3.0.0",
+    "webid": "git://github.com/linkeddata/node-webid.git",
+    "underscore": "^1.8.2",
+    "express-session": "^1.10.3"
   },
   "files": [
     "server.js",
