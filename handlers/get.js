@@ -56,7 +56,7 @@ var get = function(req, res, includeBody) {
             }
         } else {
             if (includeBody)
-                fs.readFile(filename, fileHandler);
+                fs.readFile(filename, {encoding: "utf8"}, fileHandler);
             else {
                 res.status(200).send();
                 res.end();
