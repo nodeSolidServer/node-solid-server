@@ -99,14 +99,14 @@ var get = function(req, res, includeBody) {
         var baseUri = file.filenameToBaseUri(filename);
         var resourceGraph = $rdf.graph();
         $rdf.parse(turtleData, resourceGraph, baseUri, 'text/turtle');
-        var serializedData = $rdf.serialize(undefined, resourceGraph, baseUri,
-            accept);
-
-        if (serializedData === undefined) {
-            res.sendStatus(500);
-        } else {
-            res.set('content-type', accept);
-            res.status(200).send(serializedData);
-        }
+        var serializedData = $rdf.serialize(undefined, resourceGraph, "",
+            accept, function(err, result) {
+                if (result === undefined || err) {
+                res.sendStatus(500);
+            } else {
+                res.set('content-type', accept);
+                res.status(200).send(result);
+            }
+        });
     };
 };
