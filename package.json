@@ -32,7 +32,10 @@
     "string": "^3.0.0",
     "webid": "git://github.com/linkeddata/node-webid.git",
     "underscore": "^1.8.2",
-    "express-session": "^1.10.3"
+    "express-session": "^1.10.3",
+    "n3": "^0.4.2",
+    "jsonld": "^0.3.x",
+    "async": "^0.9.0"
   },
   "files": [
     "server.js",
