@@ -5,16 +5,28 @@ var N3 = require('n3');
 var jsonld = require('jsonld');
 var async = require('async');
 
+module.exports.parseHandler = function(req, res, next) {
+    var contentType = req.get('content-type');
+    module.exports.convertToTurtle(req.text, contentType, function(err, result) {
+        if (!err) {
+            req.text = result;
+        }
+        return next();
+    });
+};
+
 module.exports.convertToTurtle = function(rawDocument, contentType,
         convertCallback) {
-    if (contentType === 'text/turtle' || contentType === 'text/n3') {
+    if (contentType === 'application/json+ld' ||
+        contentType === 'application/nquads'|| contentType === 'application/n-quads') {
+        parse(rawDocument, contentType, convertCallback);
+    } else {
         convertCallback(null, rawDocument);
     }
-    parse(rawDocument, contentType, convertCallback);
 };
 
 var parse = function(rawDocument, contentType, convertCallback) {
-    var n3Parser = N3.Parse();
+    var n3Parser = N3.Parser();
     var n3Writer;
     var triples = [];
     var prefixes = {};

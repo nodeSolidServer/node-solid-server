@@ -35,6 +35,7 @@ var options = require('./options.js');
 var login = require('./login.js');
 var logging = require('./logging.js');
 var container = require('./container.js');
+var parse = require('./parse.js');
 
 //Request handlers
 var getHandler = require('./handlers/get.js');
@@ -157,6 +158,9 @@ router.use('/*', function(req, res, next) {
         next();
     });
 });
+
+// Convert json-ld and nquads to turtle
+router.use('/*', parse.parseHandler);
 
 // Add links headers
 router.use(metadata.linksHandler);
