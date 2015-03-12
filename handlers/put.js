@@ -22,10 +22,10 @@ module.exports.handler = function(req, res){
     var ct2 = mime.lookup(filename);
 
     if (ct1 && ct2 && (ct1 !== ct2)) {
-        res.status(415).send("Content type mismatch with path file.extenstion");
+        return res.status(415).send("Content type mismatch with path file.extenstion");
     }
     if (!ct2) {
-        res.status(415).send("Sorry, Filename must have extension for content type");
+        return res.status(415).send("Sorry, Filename must have extension for content type");
     }
 
     fs.writeFile(filename, req.text,  function(err) {
@@ -36,9 +36,9 @@ module.exports.handler = function(req, res){
             logging.log(" -- write Ok " + req.text.length);
             metadata.writeMetadata(filename, fileMetadata, function(err) {
                 if (err) {
-                    res.sendStatus(500);
+                    return res.sendStatus(500);
                 } else {
-                    res.sendStatus(201);
+                    return res.sendStatus(201);
                 }
             });
         }
