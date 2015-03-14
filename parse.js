@@ -6,8 +6,7 @@ var jsonld = require('jsonld');
 var async = require('async');
 
 module.exports.parseHandler = function(req, res, next) {
-    var contentType = req.get('content-type');
-    module.exports.convertToTurtle(req.text, contentType, function(err, result) {
+    module.exports.convertToTurtle(req.text, req, function(err, result) {
         if (!err) {
             req.text = result;
         }
@@ -15,10 +14,11 @@ module.exports.parseHandler = function(req, res, next) {
     });
 };
 
-module.exports.convertToTurtle = function(rawDocument, contentType,
-        convertCallback) {
-    if (contentType === 'application/json+ld' ||
-        contentType === 'application/nquads'|| contentType === 'application/n-quads') {
+module.exports.convertToTurtle = function(rawDocument, req,
+    convertCallback) {
+    if (req.is('application/json+ld') ||
+        req.is('application/nquads') || req.is('application/n-quads')) {
+        var contentType = req.get('content-type').split(';')[0].trim();
         parse(rawDocument, contentType, convertCallback);
     } else {
         convertCallback(null, rawDocument);
@@ -38,8 +38,9 @@ var parse = function(rawDocument, contentType, convertCallback) {
         } catch (err) {
             convertCallback(err, null);
         }
-        jsonld.toRDF(jsonDocument,
-            {format: 'application/nquads'}, nquadCallback);
+        jsonld.toRDF(jsonDocument, {
+            format: 'application/nquads'
+        }, nquadCallback);
     } else if (contentType === 'application/nquads' ||
         contentType === 'application/n-quads') {
         nquadCallback(null, rawDocument);
@@ -59,13 +60,15 @@ var parse = function(rawDocument, contentType, convertCallback) {
     }
 
     function tripleCallback(err, triple, prefixes) {
-        if(err) {
+        if (err) {
             convertCallback(err, null);
         }
         if (triple) {
             triples.push(triple);
         } else {
-            n3Writer = N3.Writer({prefixes: prefixes});
+            n3Writer = N3.Writer({
+                prefixes: prefixes
+            });
             for (var i = 0; i < triples.length; i++) {
                 n3Writer.addTriple(triples[i]);
             }
