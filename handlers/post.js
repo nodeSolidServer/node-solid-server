@@ -84,11 +84,19 @@ module.exports.handler = function(req, res) {
             return;
         }
 
+        // Get the request text
+        var requestText;
+        if (req.convertedText) {
+            requestText = req.convertedText;
+        } else {
+            requestText = req.text;
+        }
+
         try {
             var resourceBaseUri = file.filenameToBaseUri(resourcePath);
-            $rdf.parse(req.text, resourceGraph, resourceBaseUri, contentType);
+            $rdf.parse(requestText, resourceGraph, resourceBaseUri, contentType);
         } catch (parseErr) {
-            logging.log(req.text);
+            logging.log(requestText);
             container.releaseResourceUri(resourcePath);
             res.sendStatus(400);
             return;
