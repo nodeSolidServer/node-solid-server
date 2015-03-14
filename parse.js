@@ -8,7 +8,7 @@ var async = require('async');
 module.exports.parseHandler = function(req, res, next) {
     module.exports.convertToTurtle(req.text, req, function(err, result) {
         if (!err) {
-            req.text = result;
+            req.convertedText = result;
         }
         return next();
     });
