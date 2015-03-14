@@ -9,15 +9,20 @@ var file = require('../fileStore.js');
 var header = require('../header.js');
 var logging = require('../logging.js');
 var metadata = require('../metadata.js');
+var patch = require('./patch.js');
 
 var ldpVocab = require('../vocab/ldp.js');
 var rdfVocab = require('../vocab/rdf.js');
 
 module.exports.handler = function(req, res) {
-    var containerPath = file.uriToFilename(req.path);
-    if (metadata.isMetadataFile(containerPath))
-        return res.status(404).send();
-    metadata.readMetadata(containerPath, metadataCallback);
+    if (req.is('application/sparql')) {
+        return patch.handler(req, res);
+    } else {
+        var containerPath = file.uriToFilename(req.path);
+        if (metadata.isMetadataFile(containerPath))
+            return res.status(404).send();
+        metadata.readMetadata(containerPath, metadataCallback);
+    }
 
     function metadataCallback(err, rawMetadata) {
         if (err) {
