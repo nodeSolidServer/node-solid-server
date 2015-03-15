@@ -118,12 +118,9 @@ module.exports.handler = function(req, res) {
         } else {
             resourceMetadata.isContainer = false;
             resourceMetadata.isResource = true;
+            resourceMetadata.isSourceResource = true;
             resourceType = ldpVocab.Resource;
         }
-
-        resourceMetadata.isResource = true;
-        //TODO figure out if how to determine if RDFSource is true or false
-        resourceMetadata.isSourceResource = true;
 
         if (resourceMetadata.isBasicContainer) {
             container.createNewContainer(resourcePath, resourceGraph,
@@ -136,7 +133,7 @@ module.exports.handler = function(req, res) {
                     }
                     return;
                 });
-        } else if (resourceMetadata.isResource) {
+        } else if (resourceMetadata.isSourceResource) {
             container.createNewResource(containerPath, containerGraph, resourcePath,
                 resourceGraph, resourceMetadata, function(err) {
                     if (err) {
