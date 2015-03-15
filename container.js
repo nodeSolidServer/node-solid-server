@@ -40,10 +40,6 @@ module.exports.createRootContainer = function() {
         } else if (!metadata.hasContainerMetadata(options.fileBase)) {
             var rootContainer = $rdf.graph();
             addUriTriple(rootContainer, options.pathStart, rdfVocab.type,
-                ldpVocab.Resource);
-            addUriTriple(rootContainer, options.pathStart, rdfVocab.type,
-                ldpVocab.RDFSource);
-            addUriTriple(rootContainer, options.pathStart, rdfVocab.type,
                 ldpVocab.Container);
             addUriTriple(rootContainer, options.pathStart, rdfVocab.type,
                 ldpVocab.BasicContainer);
@@ -64,64 +60,6 @@ module.exports.createRootContainer = function() {
                 });
         }
     }
-};
-
-module.exports.createNewContainer = function(container, type, callback) {
-    fs.mkdir(container, function(err) {
-        if (err) {
-            this.releaseResourceUri(container);
-            callback(err);
-        } else {
-            var containerMetadata = new metadata.Metadata();
-            containerMetadata.filename = container;
-            containerMetadata.isResource = true;
-            containerMetadata.isContainer = true;
-            containerMetadata.isSourceResource = true;
-            if (type === ldpVocab.BasicContainer)
-                containerMetadata.isBasicContainer = true;
-            if (type === ldpVocab.DirectContainer)
-                containerMetadata.isDirectContainer = true;
-            metadata.writeMetadata(options.fileBase, rootMetadata, writeCallback);
-        }
-    });
-
-    function writeCallback(err) {
-        if (err) {
-            this.releaseResourceUri(container);
-            callback(err);
-        } else {
-            var newContainer = $rdf.graph();
-            addUriTriple(newContainer, options.pathStart, rdfVocab.type,
-                ldpVocab.Resource);
-            addUriTriple(newContainer, options.pathStart, rdfVocab.type,
-                ldpVocab.RDFSource);
-            addUriTriple(newContainer, options.pathStart, rdfVocab.type,
-                ldpVocab.Container);
-            if (type === ldpVocab.BasicContainer)
-                addUriTriple(newContainer, options.pathStart, rdfVocab.type,
-                    ldpVocab.BasicContainer);
-            else if (type === ldpVocab.DirectContainer)
-                addUriTriple(newContainer, options.pathStart, rdfVocab.type,
-                    ldpVocab.DirectContainer);
-
-            newContainer.add(newContainer.sym(options.pathStart),
-                newContainer.sym('http://purl.org/dc/terms/title'),
-                container);
-            var serializedContainer = $rdf.serialize(undefined, newContainer,
-                container, 'text/turtle');
-            metadata.writeContainerMetadata(container, serializedContainer,
-                function(err) {
-                    this.releaseResourceUri(container);
-                    if (err) {
-                        callback(err);
-                    } else {
-                        logging.log("Wrote new container");
-                        callback(err);
-                    }
-                });
-        }
-    }
-
 };
 
 module.exports.createResourceUri = function(containerURI, slug) {
@@ -170,7 +108,7 @@ module.exports.createNewResource = function(containerPath, containerGraph,
 
     function writeResourceCallback(err) {
         if (err) {
-            container.releaseResourceUri(resoucePath);
+            module.exports.releaseResourceUri(resourcePath);
             callback(err);
         } else {
             addUriTriple(containerGraph, containerURI, ldpVocab.contains,
