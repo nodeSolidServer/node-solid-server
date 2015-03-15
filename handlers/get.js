@@ -91,7 +91,9 @@ var get = function(req, res, includeBody) {
 
     var parseLinkedData = function(turtleData) {
         var accept = header.parseAcceptHeader(req);
-        if (accept === undefined) {
+        if (accept === undefined || accept === 'text/turtle' ||
+            accept === 'text/n3' || accept == 'application/turtle' ||
+            accept === 'application/n3') {
             res.status(200).send(turtleData);
             return;
         }
