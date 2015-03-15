@@ -92,7 +92,7 @@ var get = function(req, res, includeBody) {
     var parseLinkedData = function(turtleData) {
         var accept = header.parseAcceptHeader(req);
         if (accept === undefined) {
-            res.sendStatus(415);
+            res.status(200).send(turtleData);
             return;
         }
 
