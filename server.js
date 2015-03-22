@@ -179,6 +179,7 @@ router.post('/*', postHandler.handler);
 router.patch('/*', patchHandler.handler);
 
 app.use(options.pathStart, router);
+logging.log("Router attached to " + options.pathStart);
 
 if (options.webid) {
     //Start server
@@ -187,13 +188,11 @@ if (options.webid) {
         cert: fs.readFileSync(path.join(options.fileBase, 'cert.pem')),
         requestCert: true
     };
+    logging.log("Private Key: " + credentials.key);
+    logging.log("Certificate: "+ credentials.cert);
     https.createServer(credentials, app).listen(options.port);
 } else {
     app.listen(options.port);
 }
 
 logging.log('Listening on port ' + options.port);
-
-//var server = app.listen(options.port, function() {
-//logging.log('Listening on port %d', server.address().port);
-//});

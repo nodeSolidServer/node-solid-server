@@ -5,10 +5,14 @@ var N3 = require('n3');
 var jsonld = require('jsonld');
 var async = require('async');
 
+var logging = require('./logging.js');
+
 module.exports.parseHandler = function(req, res, next) {
     module.exports.convertToTurtle(req.text, req, function(err, result) {
         if (!err) {
             req.convertedText = result;
+        } else {
+            logging.log("Parse -- Error parsing request: " + err);
         }
         return next();
     });
@@ -50,6 +54,7 @@ var parse = function(rawDocument, contentType, convertCallback) {
 
     function nquadCallback(err, nquads) {
         if (err) {
+            logging.log("Parse -- Error parsing nquads: " + err);
             convertCallback(err, null);
         }
         try {

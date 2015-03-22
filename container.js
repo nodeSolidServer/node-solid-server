@@ -21,7 +21,7 @@ var usedURIs = {};
 
 module.exports.createRootContainer = function() {
     if (!metadata.hasMetadata(options.fileBase)) {
-        logging.log("Creating root metadata");
+        logging.log("Container -- Creating root metadata");
         var rootMetadata = new metadata.Metadata();
         rootMetadata.filename = options.fileBase;
         rootMetadata.isResource = true;
@@ -34,7 +34,6 @@ module.exports.createRootContainer = function() {
     //TODO handle case when .container file does not exist
 
     function writeCallback(err) {
-        logging.log(options.pathStart);
         if (err) {
             process.exit(1);
         } else if (!metadata.hasContainerMetadata(options.fileBase)) {
@@ -48,14 +47,13 @@ module.exports.createRootContainer = function() {
                 '"Root Container"');
             var serializedContainer = $rdf.serialize(undefined, rootContainer,
                 options.pathStart, 'text/turtle');
-            logging.log("Root container: ", serializedContainer);
             metadata.writeContainerMetadata(options.fileBase,
                 serializedContainer, function(err) {
                     if (err) {
                         //TODO handle error
-                        logging.log("Could not write root container");
+                        logging.log("Container -- Could not write root container");
                     } else {
-                        logging.log("Wrote root container to " + options.fileBase);
+                        logging.log("Container -- Wrote root container to " + options.fileBase);
                     }
                 });
         }
@@ -91,10 +89,6 @@ module.exports.verify = function(containerGraph, type) {
     }
 };
 
-module.exports.verifyDirectContainer = function(containerGraph) {
-
-};
-
 module.exports.createNewResource = function(containerPath, containerGraph,
     resourcePath, resourceGraph, resourceMetadata, callback) {
     var containerURI = path.relative(options.fileBase, containerPath);
@@ -102,12 +96,12 @@ module.exports.createNewResource = function(containerPath, containerGraph,
     //TODO replace url with resource url
     var rawResource = $rdf.serialize(undefined,
         resourceGraph, options.baseUri + resourceURI, 'text/turtle');
-    logging.log("Writing new resource to ", resourcePath);
-    logging.log(rawResource);
+    logging.log("Container -- Writing new resource to " + resourcePath);
     fs.writeFile(resourcePath, rawResource, writeResourceCallback);
 
     function writeResourceCallback(err) {
         if (err) {
+            logging.log("Container -- Error writing resource: " + err);
             module.exports.releaseResourceUri(resourcePath);
             callback(err);
         } else {
@@ -122,6 +116,7 @@ module.exports.createNewResource = function(containerPath, containerGraph,
 
     function writeContainerCallback(err) {
         if (err) {
+            logging.log("Container -- Error writing container: " + err);
             module.exports.releaseResourceUri(resourcePath);
             return callback(err);
         } else {
@@ -131,6 +126,9 @@ module.exports.createNewResource = function(containerPath, containerGraph,
     }
 
     function writeMetadataCallback(err) {
+        if (err) {
+            logging.log("Container -- Error writing metadata: " + err);
+        }
         module.exports.releaseResourceUri(resourcePath);
         return callback(err);
     }
@@ -142,6 +140,7 @@ module.exports.createNewContainer = function(containerPath, containerGraph,
 
     function mkdirCallback(err) {
         if (err) {
+            logging.log("Container -- Error creating directory for new container: " + err);
             module.exports.releaseResourceUri(containerPath);
             return callback(err);
         } else {
@@ -154,6 +153,7 @@ module.exports.createNewContainer = function(containerPath, containerGraph,
 
     function writeContainerCallback(err) {
         if (err) {
+            logging.log("Container -- Error writing container: " + err);
             module.exports.releaseResourceUri(containerPath);
             return callback(err);
         } else {
@@ -163,6 +163,9 @@ module.exports.createNewContainer = function(containerPath, containerGraph,
     }
 
     function writeMetadataCallback(err) {
+        if (err) {
+            logging.log("Container -- Error writing metadata: " + err);
+        }
         module.exports.releaseResourceUri(containerPath);
         return callback(err);
     }

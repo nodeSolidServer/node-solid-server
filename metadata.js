@@ -54,7 +54,7 @@ module.exports.parseMetadata = function(rawMetadata) {
             'isDirectContainer');
         return fileMetadata;
     } catch (err) {
-        logging.log("Could not parse metadata from source");
+        logging.log("Metadata -- Error parsing metadata: " + err);
         return Error("Invalid metadata");
     }
 };
@@ -98,8 +98,8 @@ module.exports.linksHandler = function(req, res, next) {
     var filename = file.uriToFilename(req.url);
     filename = path.join(filename, req.path);
     if (module.exports.isMetadataFile(filename)) {
-        res.send(404);
-        return;
+        logging.log("Metadata -- Trying to access metadata file as regular file.");
+        return res.send(404);
     }
     var fileMetadata = new module.exports.Metadata();
     module.exports.readMetadata(filename, function(err, rawMetadata) {
@@ -109,8 +109,8 @@ module.exports.linksHandler = function(req, res, next) {
             try {
                 fileMetadata = module.exports.parseMetadata(rawMetadata);
             } catch (parseErr) {
-                res.send(500);
-                return next(parseErr);
+                logging.log("Metadata -- Error parsing metadata: " + parseErr);
+                return res.send(500);
             }
         }
         header.addLinks(res, fileMetadata);
