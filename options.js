@@ -1,6 +1,8 @@
 /*jslint node: true*/
 "use strict";
 
+var path = require('path');
+
 var logging = require('./logging.js');
 var regexp = require('node-regexp');
 
@@ -20,6 +22,8 @@ module.exports.SSESuffix = "";
 module.exports.xssProxy = "";
 module.exports.leavePatchConnectionOpen = false;
 module.exports.live = false;
+module.exports.privateKey = "";
+module.exports.cert = "";
 
 module.exports.init = function(argv) {
     this.aclSuffix = argv.aclSuffix || process.env.ACLSUFFIX || ",acl";
@@ -46,6 +50,8 @@ module.exports.init = function(argv) {
     this.proxyFilter = regexp().start(this.xssProxy).toRegExp();
     this.live = argv.live;
     this.webid = argv.webid ? true : false;
+    this.privateKey = argv.privateKey || path.join(this.fileBase, 'key.pem');
+    this.cert = argv.cert || path.join(this.fileBase, 'cert.pem');
     logging.log("URI path filter regexp: " + this.pathFilter);
     logging.log("Verbose: " + this.verbose);
     logging.log("Live: " + this.live);

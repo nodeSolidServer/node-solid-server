@@ -68,7 +68,9 @@ if (argv.h || argv.help || argv['?']) {
         "  -C --cert          Path to ssl cert file (default: cert.pem).",
         "  -K --key           Path to ssl key file (default: key.pem).",
         "",
-        "  --webid      Enable WebID authentication",
+        "  --webid            Enable WebID authentication",
+        "  --privateKey       Path to the private key used to enable webid authentication",
+        "  --cert             Path to the private key used to enable webid authentication",
         "  -h --help          Print this list and exit."
     ].join('\n'));
     process.exit();
@@ -184,8 +186,8 @@ logging.log("Router attached to " + options.pathStart);
 if (options.webid) {
     //Start server
     var credentials = {
-        key: fs.readFileSync(path.join(options.fileBase, 'key.pem')),
-        cert: fs.readFileSync(path.join(options.fileBase, 'cert.pem')),
+        key: fs.readFileSync(options.privateKey),
+        cert: fs.readFileSync(options.cert),
         requestCert: true
     };
     logging.log("Private Key: " + credentials.key);
