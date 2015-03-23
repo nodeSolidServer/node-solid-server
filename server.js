@@ -200,6 +200,7 @@ if (options.webid) {
     };
     logging.log("Private Key: " + credentials.key);
     logging.log("Certificate: "+ credentials.cert);
+    acl.initializePermissions();
     https.createServer(credentials, app).listen(options.port);
 } else {
     app.listen(options.port);
