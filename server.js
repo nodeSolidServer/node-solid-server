@@ -184,10 +184,18 @@ app.use(options.pathStart, router);
 logging.log("Router attached to " + options.pathStart);
 
 if (options.webid) {
+    try {
+        var key = fs.readFileSync(options.privateKey);
+        var cert = fs.readFileSync(options.cert);
+    } catch (err ){
+        logging.log("Server -- Error reading private key or certificate: " +
+            err);
+        process.exit(1);
+    }
     //Start server
     var credentials = {
-        key: fs.readFileSync(options.privateKey),
-        cert: fs.readFileSync(options.cert),
+        key: key,
+        cert: cert,
         requestCert: true
     };
     logging.log("Private Key: " + credentials.key);
