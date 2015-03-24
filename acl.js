@@ -35,12 +35,14 @@ module.exports.initializePermissions = function() {
                         rIndex < jsonPermissions.roles.length; rIndex++) {
                         acl.allow(jsonPermissions.roles[rIndex][0],
                             jsonPermissions.roles[rIndex][1],
-                            jsonPermissions.roles[rIndex][2]);
+                            jsonPermissions.roles[rIndex][2],
+                            setPermissionCallback);
                     }
                     for (var uIndex = 0;
                         uIndex < jsonPermissions.users.length; uIndex++) {
                         acl.addUserRoles(jsonPermissions.users[uIndex][0],
-                            jsonPermissions.users[uIndex][1]);
+                            jsonPermissions.users[uIndex][1],
+                            setPermissionCallback);
                     }
                     aclEnabled = true;
                     return;
@@ -52,6 +54,13 @@ module.exports.initializePermissions = function() {
                 logging.log("ACL -- Invalid permission file.");
                 process.exit(1);
             }
+        }
+    }
+
+    function setPermissionCallback(err) {
+        if (err) {
+            logging.log("ACL -- Error setting permissions:" + err);
+            process.exit(1);
         }
     }
 };
@@ -81,6 +90,5 @@ module.exports.aclHandler = function(req, res, next) {
                 return res.sendStatus(403);
             }
         }
-
     }
 };
