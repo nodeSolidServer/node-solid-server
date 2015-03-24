@@ -15,6 +15,7 @@ var path = require('path');
 var regexp = require('node-regexp');
 var redis = require('redis'); // https://github.com/tomkersten/sses-node-example
 var session = require('express-session');
+var http = require('http');
 var https = require('https');
 
 // Debugging:
@@ -192,7 +193,7 @@ if (options.webid) {
             err);
         process.exit(1);
     }
-    //Start server
+    //Set up credentials
     var credentials = {
         key: key,
         cert: cert,
@@ -200,7 +201,9 @@ if (options.webid) {
     };
     logging.log("Private Key: " + credentials.key);
     logging.log("Certificate: "+ credentials.cert);
+    // Initialize permissions
     acl.initializePermissions();
+    // Initialize server
     https.createServer(credentials, app).listen(options.port);
 } else {
     app.listen(options.port);
