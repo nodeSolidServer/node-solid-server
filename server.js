@@ -84,7 +84,7 @@ options.init(argv);
 if (process.platform !== 'win32') {
     // Signal handlers don't work on Windows.
     process.on('SIGINT', function() {
-        logging.log('http-server stopped.');
+        logging.log("Server -- http-server stopped.");
         process.exit();
     });
 }
@@ -182,7 +182,7 @@ router.post('/*', postHandler.handler);
 router.patch('/*', patchHandler.handler);
 
 app.use(options.pathStart, router);
-logging.log("Router attached to " + options.pathStart);
+logging.log("Server -- Router attached to " + options.pathStart);
 
 if (options.webid) {
     try {
@@ -199,8 +199,8 @@ if (options.webid) {
         cert: cert,
         requestCert: true
     };
-    logging.log("Private Key: " + credentials.key);
-    logging.log("Certificate: "+ credentials.cert);
+    logging.log("Server -- Private Key: " + credentials.key);
+    logging.log("Server -- Certificate: " + credentials.cert);
     // Initialize permissions
     acl.initializePermissions();
     // Initialize server
@@ -209,4 +209,4 @@ if (options.webid) {
     app.listen(options.port);
 }
 
-logging.log('Listening on port ' + options.port);
+logging.log("Server -- Listening on port " + options.port);

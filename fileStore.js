@@ -13,7 +13,6 @@ module.exports.uriToFilename = function(uri) {
     //}
     //var filename = options.fileBase + uri.slice(options.pathStart.length);
     var filename = path.join(options.fileBase, uri);
-    logging.log(' -- filename ' +filename);
     return filename;
 };
 
