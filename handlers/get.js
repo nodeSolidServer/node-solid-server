@@ -93,12 +93,6 @@ var get = function(req, res, includeBody) {
 
     var parseLinkedData = function(turtleData) {
         var accept = header.parseAcceptHeader(req);
-        if (accept === undefined || accept === 'text/turtle' ||
-            accept === 'text/n3' || accept == 'application/turtle' ||
-            accept === 'application/n3') {
-            return res.status(200).send(turtleData);
-        }
-
         var baseUri = file.filenameToBaseUri(filename);
         var resourceGraph = $rdf.graph();
         try {
@@ -107,7 +101,19 @@ var get = function(req, res, includeBody) {
             logging.log("GET/HEAD -- Error parsing data: " + err);
             return res.status(500).send(err);
         }
-        var serializedData = $rdf.serialize(undefined, resourceGraph, "",
+
+        // Handle Turtle Accept header
+        if (accept === undefined || accept === 'text/turtle' ||
+            accept === 'text/n3' || accept == 'application/turtle' ||
+            accept === 'application/n3') {
+            if (accept === undefined) {
+                accept = 'text/turtle';
+            }
+            var serializedData = $rdf.serialize(undefined, resourceGraph, null, accept);
+            return res.status(200).send(serializedData);
+        }
+
+        $rdf.serialize(undefined, resourceGraph, null,
             accept, function(err, result) {
                 if (result === undefined || err) {
                     logging.log("GET/HEAD -- Serialization error: " + err);
