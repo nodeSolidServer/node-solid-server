@@ -35,10 +35,6 @@ module.exports.handler = function(req, res) {
         } else {
             var fileMetadata = metadata.parseMetadata(rawMetadata);
             if (fileMetadata.isContainer) {
-                // Containers are always directories so it's safe to add a final slash
-                // if it does not exist already
-                if (containerPath.charAt(containerPath.length - 1) !== '/')
-                    containerPath += '/';
                 metadata.readContainerMetadata(containerPath, containerCallback);
             } else {
                 logging.log("POST -- Requested resource is not a container");

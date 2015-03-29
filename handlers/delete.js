@@ -15,8 +15,6 @@ module.exports.handler = function(req, res) {
             logging.log("DELETE -- unlink() error: " + err);
             return res.status(404).send("Can't delete file: " + err);
         } else if (stats.isDirectory()) {
-            if (filename.charAt(filename.length - 1) !== '/')
-                filename += '/';
             metadata.deleteContainerMetadata(filename, containerCallback);
         } else {
             fs.unlink(filename, fileCallback);
