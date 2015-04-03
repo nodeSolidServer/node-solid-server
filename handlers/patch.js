@@ -5,6 +5,7 @@ var mime = require('mime');
 var fs = require('fs');
 var $rdf = require('rdflib');
 
+var file = require('../fileStore.js');
 var subscription = require('../subscription.js');
 var options = require('../options.js');
 var logging = require('../logging.js');
@@ -13,7 +14,7 @@ module.exports.handler = function(req, res) {
     logging.log('\nPOST ' +req.path);
     logging.log(' text length: ' + (req.text ? req.text.length : 'undefined2'));
     res.header('MS-Author-Via' , 'SPARQL' );
-    var filename = uriToFilename(req.path);
+    var filename = file.uriToFilename(req.path);
     var patchContentType = req.get('content-type').split(';')[0].trim(); // Ignore parameters
     var targetContentType = mime.lookup(filename);
     var targetURI = options.prePathSlash + req.path;
@@ -26,11 +27,11 @@ module.exports.handler = function(req, res) {
         logging.log("FAIL "+status+ " " + message);
         return res.status(status).send('<html><body>\n'+ message+ '\n</body></html>\n');
     };
+    var dataIn;
     switch(patchContentType) {
         case 'application/sparql':
             logging.log("parsing query ...");
             var query = $rdf.SPARQLToQuery(req.text, false, patchKB, patchURI); // last param not used ATM
-            var dataIn;
             try {
                 dataIn = fs.readFileSync(filename, { encoding: 'utf8'});
             } catch (err) {
@@ -84,7 +85,6 @@ module.exports.handler = function(req, res) {
         logging.log("reading target file ...");
 
         if (true) {  /// USe synchronous style to prevent interruption
-            var dataIn;
             try {
                 dataIn = fs.readFileSync(filename, { encoding: 'utf8'});
             } catch (err) {
@@ -119,7 +119,7 @@ module.exports.handler = function(req, res) {
                 logging.log("Patch applied OK (sync)");
                 res.send("Patch applied OK\n");
                 if (options.live) {
-                    publishDelta(req, res, patchKB, targetURI);
+                    subscription.publishDelta(req, res, patchKB, targetURI);
                 }
                 return;
             });
@@ -155,7 +155,7 @@ module.exports.handler = function(req, res) {
                         logging.log("Patch applied OK");
                         res.send("Patch applied OK\n");
                         if (options.live) {
-                            publishDelta(req, res, patchKB, targetURI);
+                            subscription.publishDelta(req, res, patchKB, targetURI);
                         }
                         return;
                     }); // end write done
