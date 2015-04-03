@@ -1,0 +1,11 @@
+PREFIX foaf: <http://xmlns.com/foaf/0.1/>
+PREFIX vcard: <http://www.w3.org/2006/vcard/ns#>
+PREFIX alice: <http://www.w3.org/2015/02/lf-sparql/example1/alice#>
+PREFIX bob: <http://www.w3.org/2015/02/lf-sparql/example1/bob#>
+PREFIX carol: <http://www.w3.org/2015/02/lf-sparql/example1/carol#>
+PREFIX dave: <http://www.w3.org/2015/02/lf-sparql/example1/dave#>
+SELECT ?name WHERE {
+  alice:this foaf:knows ?x.
+  ?x vcard:locality "BobTown".
+  ?x foaf:name ?name.
+}
