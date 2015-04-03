@@ -71,7 +71,7 @@ module.exports.parseAcceptHeader = function(req) {
                 acceptFinalValue = acceptHeader;
                 break;
             default:
-                acceptFinalValue = 'text/turtle';
+                acceptFinalValue = undefined;
         }
     }
     return acceptFinalValue;

@@ -12,8 +12,8 @@ var options = require('../options.js');
 var logging = require('../logging.js');
 
 module.exports.handler = function(req, res){
-    logging.log('PUT ' + req.path);
-    logging.log('text length:' + (req.text ? req.text.length : 'undefined'));
+    logging.log("PUT -- Request path: " + req.path);
+    logging.log("PUT -- Text length: " + (req.text ? req.text.length : 'undefined'));
     res.header('MS-Author-Via' , 'SPARQL' );
 
     var fileMetadata = header.parseMetadataFromHeader(req.get('Link'));
@@ -30,14 +30,16 @@ module.exports.handler = function(req, res){
 
     fs.writeFile(filename, req.text,  function(err) {
         if (err) {
-            logging.log(" ### Write error: " + err);
+            logging.log("PUT -- Write error: " + err);
             return res.status(500).send("Can't write file: "+ err);
         } else {
-            logging.log(" -- write Ok " + req.text.length);
+            logging.log("PUT -- Write Ok. Bytes written: " + req.text.length);
             metadata.writeMetadata(filename, fileMetadata, function(err) {
                 if (err) {
+                    logging.log("PUT -- Error writing metadata: " + err);
                     return res.sendStatus(500);
                 } else {
+                    logging.log("PUT -- Metadata written.");
                     return res.sendStatus(201);
                 }
             });

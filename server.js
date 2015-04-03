@@ -15,6 +15,7 @@ var path = require('path');
 var regexp = require('node-regexp');
 var redis = require('redis'); // https://github.com/tomkersten/sses-node-example
 var session = require('express-session');
+var http = require('http');
 var https = require('https');
 
 // Debugging:
@@ -68,7 +69,9 @@ if (argv.h || argv.help || argv['?']) {
         "  -C --cert          Path to ssl cert file (default: cert.pem).",
         "  -K --key           Path to ssl key file (default: key.pem).",
         "",
-        "  --webid      Enable WebID authentication",
+        "  --webid            Enable WebID authentication",
+        "  --privateKey       Path to the private key used to enable webid authentication",
+        "  --cert             Path to the private key used to enable webid authentication",
         "  -h --help          Print this list and exit."
     ].join('\n'));
     process.exit();
@@ -81,7 +84,7 @@ options.init(argv);
 if (process.platform !== 'win32') {
     // Signal handlers don't work on Windows.
     process.on('SIGINT', function() {
-        logging.log('http-server stopped.');
+        logging.log("Server -- http-server stopped.");
         process.exit();
     });
 }
@@ -179,21 +182,31 @@ router.post('/*', postHandler.handler);
 router.patch('/*', patchHandler.handler);
 
 app.use(options.pathStart, router);
+logging.log("Server -- Router attached to " + options.pathStart);
 
 if (options.webid) {
-    //Start server
+    try {
+        var key = fs.readFileSync(options.privateKey);
+        var cert = fs.readFileSync(options.cert);
+    } catch (err ){
+        logging.log("Server -- Error reading private key or certificate: " +
+            err);
+        process.exit(1);
+    }
+    //Set up credentials
     var credentials = {
-        key: fs.readFileSync(path.join(options.fileBase, 'key.pem')),
-        cert: fs.readFileSync(path.join(options.fileBase, 'cert.pem')),
+        key: key,
+        cert: cert,
         requestCert: true
     };
+    logging.log("Server -- Private Key: " + credentials.key);
+    logging.log("Server -- Certificate: " + credentials.cert);
+    // Initialize permissions
+    acl.initializePermissions();
+    // Initialize server
     https.createServer(credentials, app).listen(options.port);
 } else {
     app.listen(options.port);
 }
 
-logging.log('Listening on port ' + options.port);
-
-//var server = app.listen(options.port, function() {
-//logging.log('Listening on port %d', server.address().port);
-//});
+logging.log("Server -- Listening on port " + options.port);
