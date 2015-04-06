@@ -18,6 +18,9 @@ module.exports.handler = function(req, res) {
     if (req.is('application/sparql')) {
         logging.log("POST -- Handling sparql query");
         return patch.handler(req, res);
+    } else if (req.is('application/sparql-update')) {
+        logging.log("POST -- Handling sparql-update query");
+        return patch.handler(req, res);
     } else {
         var containerPath = file.uriToFilename(req.path);
         logging.log("POST -- Container path: " +  containerPath);

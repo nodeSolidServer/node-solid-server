@@ -94,23 +94,21 @@ var get = function(req, res, includeBody) {
     var parseLinkedData = function(turtleData) {
         var accept = header.parseAcceptHeader(req);
         var baseUri = file.filenameToBaseUri(filename);
+
+        // Handle Turtle Accept header
+        if (accept === undefined || accept === 'text/turtle' ||
+            accept === 'text/n3' || accept == 'application/turtle' ||
+            accept === 'application/n3') {
+            return res.status(200).send(turtleData);
+        }
+
+        //Handle other file types
         var resourceGraph = $rdf.graph();
         try {
             $rdf.parse(turtleData, resourceGraph, baseUri, 'text/turtle');
         } catch (err) {
             logging.log("GET/HEAD -- Error parsing data: " + err);
             return res.status(500).send(err);
-        }
-
-        // Handle Turtle Accept header
-        if (accept === undefined || accept === 'text/turtle' ||
-            accept === 'text/n3' || accept == 'application/turtle' ||
-            accept === 'application/n3') {
-            if (accept === undefined) {
-                accept = 'text/turtle';
-            }
-            var serializedData = $rdf.serialize(undefined, resourceGraph, null, accept);
-            return res.status(200).send(serializedData);
         }
 
         $rdf.serialize(undefined, resourceGraph, null,
@@ -122,6 +120,6 @@ var get = function(req, res, includeBody) {
                     res.set('content-type', accept);
                     return res.status(200).send(result);
                 }
-            });
+        });
     };
 };
