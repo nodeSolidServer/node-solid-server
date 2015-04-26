@@ -77,19 +77,11 @@ module.exports.handler = function(req, res) {
 
             if (resourceMetadata.isBasicContainer) {
                 resourcePath += '/';
-            }
-
-            if (resourceMetadata.isBasicContainer) {
                 container.createNewContainer(resourcePath, resourceGraph,
                     containerCallback);
-            } else if (resourceMetadata.isResource) {
+            } else {
                 container.createNewResource(resourcePath,
                     resourceGraph, resourceCallback);
-            } else {
-                logging.log("POST -- Invalid metadata.");
-                return res.status(400).send(
-                    "Invalid metadata. Check Link headers specify " +
-                    "a resource or a basic container");
             }
         } else {
             logging.log("POST -- Requested resource is not a container");
