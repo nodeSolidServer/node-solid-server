@@ -3,14 +3,14 @@
 
 var fs = require('fs');
 var path = require('path');
+var S = require('string');
 
 var file = require('./fileStore.js');
 var header = require('./header.js');
 var logging = require('./logging.js');
 var ldpVocab = require('./vocab/ldp.js');
 
-var metadataExtension = ".metadata";
-var containerExtension = ".container";
+var containerExtension = ".meta";
 
 module.exports.Metadata = function() {
     this.filename = "";
@@ -22,58 +22,9 @@ module.exports.Metadata = function() {
 };
 
 module.exports.isMetadataFile = function(filename) {
-    if (path.extname(filename) === metadataExtension ||
-        path.extname(filename) === containerExtension)
+    if (path.extname(filename) === containerExtension)
         return true;
     return false;
-};
-
-module.exports.hasMetadata = function(filename) {
-    return fs.existsSync(filename + metadataExtension);
-};
-
-module.exports.parseMetadata = function(rawMetadata) {
-    var getProperty = function(object, property) {
-        if (object[property] !== undefined) return object[property];
-        else throw new ReferenceError('Property does not exists');
-
-    };
-
-    try {
-        var jsonMetadata = JSON.parse(rawMetadata);
-        var fileMetadata = new module.exports.Metadata();
-        fileMetadata.filename = getProperty(jsonMetadata, 'filename');
-        fileMetadata.isResource = getProperty(jsonMetadata, 'isResource');
-        fileMetadata.isSourceResource = getProperty(jsonMetadata,
-            'isSourceResource');
-        fileMetadata.isContainer = getProperty(jsonMetadata,
-            'isContainer');
-        fileMetadata.isBasicContainer = getProperty(jsonMetadata,
-            'isBasicContainer');
-        fileMetadata.isDirectContainer = getProperty(jsonMetadata,
-            'isDirectContainer');
-        return fileMetadata;
-    } catch (err) {
-        logging.log("Metadata -- Error parsing metadata: " + err);
-        return Error("Invalid metadata");
-    }
-};
-
-module.exports.writeMetadata = function(filename, metadata, callback) {
-    var rawMetadata = JSON.stringify(metadata);
-    fs.writeFile(filename + metadataExtension, rawMetadata, {
-        'encoding': 'utf8'
-    }, callback);
-};
-
-module.exports.readMetadata = function(filename, callback) {
-    fs.readFile(filename + metadataExtension, {
-        'encoding': 'utf8'
-    }, callback);
-};
-
-module.exports.deleteMetadata = function(filename, callback) {
-    fs.unlink(filename + metadataExtension, callback);
 };
 
 module.exports.hasContainerMetadata = function(directory) {
@@ -102,18 +53,10 @@ module.exports.linksHandler = function(req, res, next) {
         return res.send(404);
     }
     var fileMetadata = new module.exports.Metadata();
-    module.exports.readMetadata(filename, function(err, rawMetadata) {
-        if (err) {
-            fileMetadata.isResource = true;
-        } else {
-            try {
-                fileMetadata = module.exports.parseMetadata(rawMetadata);
-            } catch (parseErr) {
-                logging.log("Metadata -- Error parsing metadata: " + parseErr);
-                return res.send(500);
-            }
-        }
-        header.addLinks(res, fileMetadata);
-        next();
-    });
+    if (S(filename).endsWith('/'))
+        fileMetadata.isContainer = true;
+    else
+        fileMetadata.isResource = true;
+    header.addLinks(res, fileMetadata);
+    next();
 };

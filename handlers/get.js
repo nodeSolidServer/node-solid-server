@@ -4,6 +4,7 @@
 var mime = require('mime');
 var fs = require('fs');
 var $rdf = require('rdflib');
+var S = require('string');
 
 var header = require('../header.js');
 var metadata = require('../metadata.js');
@@ -11,6 +12,8 @@ var options = require('../options.js');
 var logging = require('../logging.js');
 var file = require('../fileStore.js');
 var subscription = require('../subscription.js');
+
+var ldpVocab = require('../vocab/ldp.js');
 
 module.exports.handler = function(req, res) {
     get(req, res, true);
@@ -87,7 +90,7 @@ var get = function(req, res, includeBody) {
             logging.log("GET/HEAD -- Not a valid container");
             res.status(404).send("Not a container");
         } else {
-            parseLinkedData(rawContainer);
+            parseContainer(rawContainer);
         }
     };
 
@@ -120,6 +123,50 @@ var get = function(req, res, includeBody) {
                     res.set('content-type', accept);
                     return res.status(200).send(result);
                 }
-        });
+            });
+    };
+
+    var parseContainer = function(containerData) {
+        //Handle other file types
+        var baseUri = file.filenameToBaseUri(filename);
+        var resourceGraph = $rdf.graph();
+        try {
+            $rdf.parse(containerData, resourceGraph, baseUri, 'text/turtle');
+        } catch (err) {
+            logging.log("GET/HEAD -- Error parsing data: " + err);
+            return res.status(500).send(err);
+        }
+        logging.log("GET/HEAD -- Reading directory");
+        fs.readdir(filename, readdirCallback);
+
+        function readdirCallback(err, files) {
+            if (err) {
+                logging.log("GET/HEAD -- Error reading files: " + err);
+                return res.sendStatus(404);
+            } else {
+                for (var i = 0; i < files.length; i++) {
+                    if (!S(files[i]).startsWith('.')) {
+                        try {
+                            var stats = fs.statSync(filename + files[i]);
+                            if (stats.isFile()) {
+                                resourceGraph.add(resourceGraph.sym(baseUri),
+                                    resourceGraph.sym(ldpVocab.contains),
+                                    resourceGraph.sym(files[i]));
+                            }
+                        } catch (statErr) {
+                            continue;
+                        }
+                    }
+                }
+                try {
+                    var turtleData = $rdf.serialize(undefined, resourceGraph,
+                        null, 'text/turtle');
+                    parseLinkedData(turtleData);
+                } catch (parseErr) {
+                    logging.log("GET/HEAD -- Error serializing container: " + parseErr);
+                    return res.sendStatus(500);
+                }
+            }
+        }
     };
 };
