@@ -30,7 +30,7 @@ Activate the agent: kill -SIGUSR2 <your node process id>
 Access the agent via the appropriate link
 */
 
-var acl = require('./acl.js');
+var acl = require('./acl2.js');
 var metadata = require('./metadata.js');
 var options = require('./options.js');
 var login = require('./login.js');
@@ -101,7 +101,6 @@ app.use(session({
 }));
 router.use('/*', login.loginHandler);
 
-
 // Request handlers
 
 app.mountpath = ''; //  needs to be set for addSocketRoute aka .ws()
@@ -162,6 +161,14 @@ router.use('/*', function(req, res, next) {
     });
 });
 
+//ACL handlers
+router.get("/*", acl.allowReadHandler);
+router.head("/*", acl.allowReadHandler);
+router.post("/*", acl.allowWriteHandler);
+router.patch("/*", acl.allowWriteHandler);
+router.put("/*", acl.allowWriteHandler);
+router.delete("/*", acl.allowWriteHandler);
+
 // Convert json-ld and nquads to turtle
 router.use('/*', parse.parseHandler);
 
@@ -170,8 +177,6 @@ router.use(metadata.linksHandler);
 
 // Add response time
 router.use(responseTime());
-
-router.use(acl.aclHandler);
 
 // HTTP methods handlers
 router.get('/*', getHandler.handler);
@@ -202,7 +207,7 @@ if (options.webid) {
     logging.log("Server -- Private Key: " + credentials.key);
     logging.log("Server -- Certificate: " + credentials.cert);
     // Initialize permissions
-    acl.initializePermissions();
+    //acl.initializePermissions();
     // Initialize server
     https.createServer(credentials, app).listen(options.port);
 } else {
