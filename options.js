@@ -2,9 +2,10 @@
 "use strict";
 
 var path = require('path');
+var regexp = require('node-regexp');
+var S = require('string');
 
 var logging = require('./logging.js');
-var regexp = require('node-regexp');
 
 module.exports.aclSuffix = "";
 module.exports.uriBase = "";
@@ -31,6 +32,9 @@ module.exports.init = function(argv) {
         'http://localhost:3000' + process.cwd() + '/test/';
     this.fileBase = argv.fileBase || process.env.FILEBASE ||
         process.cwd() + '/test/';
+    if (!(S(this.fileBase).endsWith('/'))) {
+        this.fileBase += '/';
+    }
     this.address = argv.a || '0.0.0.0';
     this.port = parseInt(argv.p || process.env.PORT || 3000);
     this.verbose = argv.v;
