@@ -22,6 +22,12 @@ module.exports.uriToFilename = function(uri) {
     return filename;
 };
 
+module.exports.uriToRelativeFilename = function(uri) {
+    var filename = this.uriToFilename(uri);
+    var relative = path.relative(options.fileBase, filename);
+    return relative;
+};
+
 module.exports.filenameToBaseUri = function(filename) {
     var uriPath = S(filename).strip(options.fileBase).toString();
     return path.join(options.uriBase, uriPath);
