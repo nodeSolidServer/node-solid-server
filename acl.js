@@ -76,7 +76,7 @@ module.exports.isAllowed = function(userId, resource, permissions, callback) {
 module.exports.aclHandler = function(req, res, next) {
     var filename = file.uriToFilename(req.path);
     var resource = path.relative(options.fileBase, filename);
-    var userId = req.session.profile;
+    var userId = req.session.userId;
 
     module.exports.isAllowed(userId, resource, req.method, aclCallback);
 
