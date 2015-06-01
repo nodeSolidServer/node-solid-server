@@ -9,6 +9,7 @@ var options = require('./options.js');
 
 module.exports.loginHandler = function(req, res, next) {
     if (!options.webid) {
+        setEmptySession(req);
         return next();
     }
     if (req.session.profile && req.session.identified) {
@@ -19,9 +20,9 @@ module.exports.loginHandler = function(req, res, next) {
         if (!_.isEmpty(certificate)) {
             var verifAgent = new webid.VerificationAgent(certificate);
             verifAgent.verify(function(result) {
-                req.session.profile = result;
+                req.session.userId = result;
                 req.session.identified = true;
-                logging.log("Login -- Identified user: " + req.session.profile);
+                logging.log("Login -- Identified user: " + req.session.userId);
                 return next();
             }, function(result) {
                 var message;
@@ -43,11 +44,18 @@ module.exports.loginHandler = function(req, res, next) {
                         break;
                 }
                 logging.log("Login -- Error processing certificate: " + message);
+                setEmptySession(req);
                 return res.status(403).send(message);
             });
         } else {
             logging.log("Login -- Empty certificate");
+            setEmptySession(req);
             return res.sendStatus(403);
         }
+    }
+
+    function setEmptySession(req) {
+        req.session.userId = "";
+        req.session.identified = false;
     }
 };
