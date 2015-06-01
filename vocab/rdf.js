@@ -29,3 +29,34 @@ define('prefix', 'rdf');
 
 // Properties
 define('type', ns + 'type');
+
+module.exports.brack = function(s) {
+    if (s.length > 0 && s[0] == "<") {
+        return s;
+    }
+    if (s.length > 0 && s[s.length - 1] == ">") {
+        return s;
+    }
+    return "<" + s + ">";
+};
+
+module.exports.debrack = function(s) {
+    if (s.length < 2) {
+        return s;
+    }
+    if (s[0] != "<") {
+        return s;
+    }
+    if (s[s.length - 1] != ">") {
+        return s;
+    }
+    return s.substring(1, s.length - 1);
+};
+
+module.exports.defrag = function(s) {
+    var lst = s.split("#");
+    if (lst.length < 2) {
+        return s;
+    }
+    return lst[0];
+};
