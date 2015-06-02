@@ -99,10 +99,14 @@ var get = function(req, res, includeBody) {
         var baseUri = file.filenameToBaseUri(filename);
 
         // Handle Turtle Accept header
-        if (accept === undefined || accept === 'text/turtle' ||
-            accept === 'text/n3' || accept == 'application/turtle' ||
-            accept === 'application/n3') {
-            return res.status(200).send(turtleData);
+        if (accept === undefined || accept === null) {
+            accept = 'text/turtle';
+        }
+        if (accept === 'text/turtle' || accept === 'text/n3' ||
+            accept == 'application/turtle' || accept === 'application/n3') {
+            return res.status(200)
+                .set('content-type', accept)
+                .send(turtleData);
         }
 
         //Handle other file types
