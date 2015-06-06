@@ -45,7 +45,9 @@ module.exports.handler = function(req, res) {
             logging.log("POST -- Content Type: " + contentType);
 
             var slug = req.get('Slug');
-            var resourcePath = container.createResourceUri(containerPath, slug);
+            var resourceMetadata = header.parseMetadataFromHeader(req.get('Link'));
+            var resourcePath = container.createResourceUri(containerPath, slug,
+                resourceMetadata.isBasicContainer);
             var resourceGraph = $rdf.graph();
 
             if (resourcePath === null) {
@@ -72,7 +74,6 @@ module.exports.handler = function(req, res) {
                 return res.sendStatus(400);
             }
 
-            var resourceMetadata = header.parseMetadataFromHeader(req.get('Link'));
             header.addLinks(res, resourceMetadata);
 
             if (resourceMetadata.isBasicContainer) {
