@@ -30,5 +30,5 @@ module.exports.uriToRelativeFilename = function(uri) {
 
 module.exports.filenameToBaseUri = function(filename) {
     var uriPath = S(filename).strip(options.fileBase).toString();
-    return path.join(options.uriBase, uriPath);
+    return options.uriBase + uriPath;
 };
