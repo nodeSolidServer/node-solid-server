@@ -4,6 +4,7 @@
 var mime = require('mime');
 var fs = require('fs');
 var $rdf = require('rdflib');
+var S = require('string');
 
 var file = require('../fileStore.js');
 var header = require('../header.js');
@@ -16,6 +17,12 @@ module.exports.handler = function(req, res){
     res.header('MS-Author-Via' , 'SPARQL' );
 
     var filename = file.uriToFilename(req.path);
+
+    // PUT requests not supported on containers. Use POST instead
+    if (S(filename).endsWith('/')) {
+        return res.status(409).send("PUT to containers not supported. Use POST method instead");
+    }
+
     var ct1 = req.get('content-type');
     var ct2 = mime.lookup(filename);
 
