@@ -53,10 +53,12 @@ module.exports.linksHandler = function(req, res, next) {
         return res.send(404);
     }
     var fileMetadata = new module.exports.Metadata();
-    if (S(filename).endsWith('/'))
+    if (S(filename).endsWith('/')) {
         fileMetadata.isContainer = true;
-    else
+        fileMetadata.isBasicContainer = true;
+    } else {
         fileMetadata.isResource = true;
+    }
     header.addLinks(res, fileMetadata);
     next();
 };
