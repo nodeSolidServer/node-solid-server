@@ -49,16 +49,24 @@ module.exports.createRootContainer = function() {
     }
 };
 
-module.exports.createResourceUri = function(containerURI, slug) {
+module.exports.createResourceUri = function(containerURI, slug, isBasicContainer) {
     var newPath;
     if (slug) {
         if (S(slug).endsWith(turtleExtension)) {
             newPath = path.join(containerURI, slug);
         } else {
-            newPath = path.join(containerURI, slug + turtleExtension);
+            if (isBasicContainer) {
+                newPath = path.join(containerURI, slug);
+            } else {
+                newPath = path.join(containerURI, slug + turtleExtension);
+            }
         }
     } else {
-        newPath = path.join(containerURI, uuid.v1() + turtleExtension);
+        if (isBasicContainer) {
+            newPath = path.join(containerURI, uuid.v1());
+        } else {
+            newPath = path.join(containerURI, uuid.v1() + turtleExtension);
+        }
     }
     if (!(fs.existsSync(newPath) || containerURI in usedURIs)) {
         usedURIs[newPath] = true;
