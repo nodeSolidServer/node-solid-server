@@ -10,7 +10,7 @@ var header = require('./header.js');
 var logging = require('./logging.js');
 var ldpVocab = require('./vocab/ldp.js');
 
-var containerExtension = ".meta";
+var metadataExtension = ".meta";
 
 module.exports.Metadata = function() {
     this.filename = "";
@@ -22,27 +22,27 @@ module.exports.Metadata = function() {
 };
 
 module.exports.isMetadataFile = function(filename) {
-    if (path.extname(filename) === containerExtension)
+    if (path.extname(filename) === metadataExtension)
         return true;
     return false;
 };
 
 module.exports.hasContainerMetadata = function(directory) {
-    return fs.existsSync(directory + containerExtension);
+    return fs.existsSync(directory + metadataExtension);
 };
 
 module.exports.writeContainerMetadata = function(directory, container, callback) {
-    fs.writeFile(directory + containerExtension, container, callback);
+    fs.writeFile(directory + metadataExtension, container, callback);
 };
 
 module.exports.readContainerMetadata = function(directory, callback) {
-    fs.readFile(directory + containerExtension, {
+    fs.readFile(directory + metadataExtension, {
         'encoding': 'utf8'
     }, callback);
 };
 
 module.exports.deleteContainerMetadata = function(directory, callback) {
-    fs.unlink(directory + containerExtension, callback);
+    fs.unlink(directory + metadataExtension, callback);
 };
 
 module.exports.linksHandler = function(req, res, next) {
