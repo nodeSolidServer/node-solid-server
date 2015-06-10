@@ -30,7 +30,7 @@ Activate the agent: kill -SIGUSR2 <your node process id>
 Access the agent via the appropriate link
 */
 
-var acl = require('./acl2.js');
+var acl = require('./acl.js');
 var metadata = require('./metadata.js');
 var options = require('./options.js');
 var login = require('./login.js');
