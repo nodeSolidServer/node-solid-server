@@ -8,6 +8,8 @@ var supertest = require('supertest');
 var address = 'http://localhost:3456/test/';
 var server = supertest(address);
 
+process.chdir('./test', undefined);
+
 describe('Hello World', function() {
     it('Should return "Hello, World!"', function(done) {
         server.get('/hello.html')

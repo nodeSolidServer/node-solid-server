@@ -49,6 +49,7 @@
   ],
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "./node_modules/mocha/bin/mocha ./test/test.js"
   }
 }
