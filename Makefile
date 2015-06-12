@@ -20,3 +20,12 @@ run-for-test-special-debug:
 		-p 3456 -v --uriBase http://localhost:3456/test/ --fileBase `pwd`/test/
 	# Then run node-inspector and open Chrome as it suggests
 	# (If necessary, npm install -g node-inspector)
+
+test-all : 
+	(make run-for-test-special) &
+	sleep 5
+	(cd test; make all);
+	make shutdown
+	
+shutdown :
+	kill `ps aux | grep 3456 | grep -v grep | awk '{print $2}'`

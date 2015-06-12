@@ -5,16 +5,32 @@ var N3 = require('n3');
 var jsonld = require('jsonld');
 var async = require('async');
 
-module.exports.convertToTurtle = function(rawDocument, contentType,
-        convertCallback) {
-    if (contentType === 'text/turtle' || contentType === 'text/n3') {
+var logging = require('./logging.js');
+
+module.exports.parseHandler = function(req, res, next) {
+    module.exports.convertToTurtle(req.text, req, function(err, result) {
+        if (!err) {
+            req.convertedText = result;
+        } else {
+            logging.log("Parse -- Error parsing request: " + err);
+        }
+        return next();
+    });
+};
+
+module.exports.convertToTurtle = function(rawDocument, req,
+    convertCallback) {
+    if (req.is('application/json+ld') ||
+        req.is('application/nquads') || req.is('application/n-quads')) {
+        var contentType = req.get('content-type').split(';')[0].trim();
+        parse(rawDocument, contentType, convertCallback);
+    } else {
         convertCallback(null, rawDocument);
     }
-    parse(rawDocument, contentType, convertCallback);
 };
 
 var parse = function(rawDocument, contentType, convertCallback) {
-    var n3Parser = N3.Parse();
+    var n3Parser = N3.Parser();
     var n3Writer;
     var triples = [];
     var prefixes = {};
@@ -26,8 +42,9 @@ var parse = function(rawDocument, contentType, convertCallback) {
         } catch (err) {
             convertCallback(err, null);
         }
-        jsonld.toRDF(jsonDocument,
-            {format: 'application/nquads'}, nquadCallback);
+        jsonld.toRDF(jsonDocument, {
+            format: 'application/nquads'
+        }, nquadCallback);
     } else if (contentType === 'application/nquads' ||
         contentType === 'application/n-quads') {
         nquadCallback(null, rawDocument);
@@ -37,6 +54,7 @@ var parse = function(rawDocument, contentType, convertCallback) {
 
     function nquadCallback(err, nquads) {
         if (err) {
+            logging.log("Parse -- Error parsing nquads: " + err);
             convertCallback(err, null);
         }
         try {
@@ -47,13 +65,15 @@ var parse = function(rawDocument, contentType, convertCallback) {
     }
 
     function tripleCallback(err, triple, prefixes) {
-        if(err) {
+        if (err) {
             convertCallback(err, null);
         }
         if (triple) {
             triples.push(triple);
         } else {
-            n3Writer = N3.Writer({prefixes: prefixes});
+            n3Writer = N3.Writer({
+                prefixes: prefixes
+            });
             for (var i = 0; i < triples.length; i++) {
                 n3Writer.addTriple(triples[i]);
             }

@@ -8,28 +8,22 @@ var logging = require('./logging.js');
 var options = require('./options.js');
 
 module.exports.loginHandler = function(req, res, next) {
-    logging.log("Login handler");
-    logging.log(options.webid);
     if (!options.webid) {
-        next();
-        return;
+        setEmptySession(req);
+        return next();
     }
     if (req.session.profile && req.session.identified) {
-        logging.log("User: ", req.session.profile);
-        next();
-        return;
+        logging.log("Login -- User: " + req.session.profile);
+        return next();
     } else {
-        logging.log("Requesting certificate");
         var certificate = req.connection.getPeerCertificate();
-        logging.log("certificate requested");
         if (!_.isEmpty(certificate)) {
             var verifAgent = new webid.VerificationAgent(certificate);
             verifAgent.verify(function(result) {
-                req.session.profile = result;
+                req.session.userId = result;
                 req.session.identified = true;
-                logging.log("Identified user:", req.session.profile);
-                next();
-                return;
+                logging.log("Login -- Identified user: " + req.session.userId);
+                return next();
             }, function(result) {
                 var message;
                 switch (result) {
@@ -49,11 +43,19 @@ module.exports.loginHandler = function(req, res, next) {
                         message = "Unknown WebID error";
                         break;
                 }
-                res.status(500).send(message);
-                return;
+                logging.log("Login -- Error processing certificate: " + message);
+                setEmptySession(req);
+                return res.status(403).send(message);
             });
         } else {
+            logging.log("Login -- Empty certificate");
+            setEmptySession(req);
             return res.sendStatus(403);
         }
+    }
+
+    function setEmptySession(req) {
+        req.session.userId = "";
+        req.session.identified = false;
     }
 };

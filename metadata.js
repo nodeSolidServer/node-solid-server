@@ -3,14 +3,14 @@
 
 var fs = require('fs');
 var path = require('path');
+var S = require('string');
 
 var file = require('./fileStore.js');
 var header = require('./header.js');
 var logging = require('./logging.js');
 var ldpVocab = require('./vocab/ldp.js');
 
-var metadataExtension = ".metadata";
-var containerExtension = ".container";
+var metadataExtension = ".meta";
 
 module.exports.Metadata = function() {
     this.filename = "";
@@ -22,98 +22,43 @@ module.exports.Metadata = function() {
 };
 
 module.exports.isMetadataFile = function(filename) {
-    if (path.extname(filename) === metadataExtension ||
-        path.extname(filename) === containerExtension)
+    if (path.extname(filename) === metadataExtension)
         return true;
     return false;
 };
 
-module.exports.hasMetadata = function(filename) {
-    return fs.existsSync(filename + metadataExtension);
-};
-
-module.exports.parseMetadata = function(rawMetadata) {
-    var getProperty = function(object, property) {
-        if (object[property] !== undefined) return object[property];
-        else throw new ReferenceError('Property does not exists');
-
-    };
-
-    try {
-        var jsonMetadata = JSON.parse(rawMetadata);
-        var fileMetadata = new module.exports.Metadata();
-        fileMetadata.filename = getProperty(jsonMetadata, 'filename');
-        fileMetadata.isResource = getProperty(jsonMetadata, 'isResource');
-        fileMetadata.isSourceResource = getProperty(jsonMetadata,
-            'isSourceResource');
-        fileMetadata.isContainer = getProperty(jsonMetadata,
-            'isContainer');
-        fileMetadata.isBasicContainer = getProperty(jsonMetadata,
-            'isBasicContainer');
-        fileMetadata.isDirectContainer = getProperty(jsonMetadata,
-            'isDirectContainer');
-        return fileMetadata;
-    } catch (err) {
-        logging.log("Could not parse metadata from source");
-        return Error("Invalid metadata");
-    }
-};
-
-module.exports.writeMetadata = function(filename, metadata, callback) {
-    var rawMetadata = JSON.stringify(metadata);
-    fs.writeFile(filename + metadataExtension, rawMetadata, {
-        'encoding': 'utf8'
-    }, callback);
-};
-
-module.exports.readMetadata = function(filename, callback) {
-    fs.readFile(filename + metadataExtension, {
-        'encoding': 'utf8'
-    }, callback);
-};
-
-module.exports.deleteMetadata = function(filename, callback) {
-    fs.unlink(filename + metadataExtension, callback);
-};
-
 module.exports.hasContainerMetadata = function(directory) {
-    return fs.existsSync(directory + containerExtension);
+    return fs.existsSync(directory + metadataExtension);
 };
 
 module.exports.writeContainerMetadata = function(directory, container, callback) {
-    fs.writeFile(directory + containerExtension, container, callback);
+    fs.writeFile(directory + metadataExtension, container, callback);
 };
 
 module.exports.readContainerMetadata = function(directory, callback) {
-    fs.readFile(directory + containerExtension, {
+    fs.readFile(directory + metadataExtension, {
         'encoding': 'utf8'
     }, callback);
 };
 
 module.exports.deleteContainerMetadata = function(directory, callback) {
-    fs.unlink(directory + containerExtension, callback);
+    fs.unlink(directory + metadataExtension, callback);
 };
 
 module.exports.linksHandler = function(req, res, next) {
     var filename = file.uriToFilename(req.url);
     filename = path.join(filename, req.path);
     if (module.exports.isMetadataFile(filename)) {
-        res.send(404);
-        return;
+        logging.log("Metadata -- Trying to access metadata file as regular file.");
+        return res.send(404);
     }
     var fileMetadata = new module.exports.Metadata();
-    module.exports.readMetadata(filename, function(err, rawMetadata) {
-        if (err) {
-            fileMetadata.isResource = true;
-        } else {
-            try {
-                fileMetadata = module.exports.parseMetadata(rawMetadata);
-            } catch (parseErr) {
-                res.send(500);
-                return next(parseErr);
-            }
-        }
-        header.addLinks(res, fileMetadata);
-        next();
-    });
+    if (S(filename).endsWith('/')) {
+        fileMetadata.isContainer = true;
+        fileMetadata.isBasicContainer = true;
+    } else {
+        fileMetadata.isResource = true;
+    }
+    header.addLinks(res, fileMetadata);
+    next();
 };

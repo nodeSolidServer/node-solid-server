@@ -1,0 +1,5 @@
+@prefix test: <>.
+@prefix terms: <http://purl.org/dc/terms/>.
+@prefix ldp: <http://www.w3.org/ns/ldp#>.
+
+   test: terms:title "\"Root Container\""; a ldp:BasicContainer, ldp:Container .

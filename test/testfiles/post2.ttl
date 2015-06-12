@@ -1,0 +1,6 @@
+@prefix dcterms: <http://purl.org/dc/terms/>.
+@prefix o: <http://example.org/ontology>.
+
+<> a <http://www.w3.org/ns/ldp#BasicContainer> ;
+     dcterms:title "Home loans" ;
+     o:limit 500000.00 .

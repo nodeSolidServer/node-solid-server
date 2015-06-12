@@ -1,8 +1,11 @@
 /*jslint node: true*/
 "use strict";
 
-var logging = require('./logging.js');
+var path = require('path');
 var regexp = require('node-regexp');
+var S = require('string');
+
+var logging = require('./logging.js');
 
 module.exports.aclSuffix = "";
 module.exports.uriBase = "";
@@ -20,6 +23,8 @@ module.exports.SSESuffix = "";
 module.exports.xssProxy = "";
 module.exports.leavePatchConnectionOpen = false;
 module.exports.live = false;
+module.exports.privateKey = "";
+module.exports.cert = "";
 
 module.exports.init = function(argv) {
     this.aclSuffix = argv.aclSuffix || process.env.ACLSUFFIX || ",acl";
@@ -27,6 +32,9 @@ module.exports.init = function(argv) {
         'http://localhost:3000' + process.cwd() + '/test/';
     this.fileBase = argv.fileBase || process.env.FILEBASE ||
         process.cwd() + '/test/';
+    if (!(S(this.fileBase).endsWith('/'))) {
+        this.fileBase += '/';
+    }
     this.address = argv.a || '0.0.0.0';
     this.port = parseInt(argv.p || process.env.PORT || 3000);
     this.verbose = argv.v;
@@ -46,6 +54,8 @@ module.exports.init = function(argv) {
     this.proxyFilter = regexp().start(this.xssProxy).toRegExp();
     this.live = argv.live;
     this.webid = argv.webid ? true : false;
+    this.privateKey = argv.privateKey || path.join(this.fileBase, 'key.pem');
+    this.cert = argv.cert || path.join(this.fileBase, 'cert.pem');
     logging.log("URI path filter regexp: " + this.pathFilter);
     logging.log("Verbose: " + this.verbose);
     logging.log("Live: " + this.live);

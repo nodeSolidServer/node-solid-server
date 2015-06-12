@@ -9,7 +9,7 @@ S=$W/2000/10/swap
 C=python $S/cwm.py --quiet
 D=python $S/cant.py
 
-all:  clean put-1 put-2  post-1 post-2 post-2n post-3 post-4 post-5 delete-1
+all:  get-1 put-1 put-2  post-1 post-2 post-2n post-3 post-4 post-5 delete-1
 
 clean :
 	rm *result*  *headers.txt *.nt || echo Never mind
@@ -20,7 +20,7 @@ ws-1 :
 get-1 :
 	curl --dump-header get-1-headers.txt $T/patch-1-initial.ttl > get-1-result.ttl
 	diff patch-1-initial.ttl get-1-result.ttl
-	grep -i updates-via get-1-headers.txt
+	# grep -i updates-via get-1-headers.txt
 
 put-1 :
 	curl --upload-file put-input.txt $T/put-result.txt
@@ -113,12 +113,14 @@ lfs-0:
 	curl http://www.w3.org/2015/02/lf-sparql/example1/alice > lfs-1-target.ttl
 	curl -HContent-type:application/sparql --data-binary @lfs-0.sparql  \
 		--dump-header lfs-1-headers.txt $T/lfs-1-target.ttl > lfs-0-result.json
+	diff lfs-0-result.json lfs-0-final.json 
 
 lfs-1:
 	curl http://www.w3.org/2015/02/lf-sparql/example1/q1.sparql > lfs-1.sparql 
 	curl http://www.w3.org/2015/02/lf-sparql/example1/alice > lfs-1-target.ttl
 	curl -HContent-type:application/sparql --data-binary @lfs-1.sparql  \
 		--dump-header lfs-1-headers.txt $T/lfs-1-target.ttl > lfs-1-result.json
+	diff lfs-1-result.json lfs-1-final.json 
 
 ######### Live update
 
