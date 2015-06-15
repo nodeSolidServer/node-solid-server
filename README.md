@@ -22,4 +22,28 @@ Goals (see issues):
 - real-time live updates using websokets (etc)
 
 
+* Install
 
+Run
+
+    npm install
+
+to install all dependencies. All dependencies are installed to the local node_modules directory and no other steps are necessary.
+
+* Tests
+
+To run the test suite run
+
+    npm test
+
+from the main directory. The test suite assumes the test server is already running. To start the server run
+
+    make
+
+from the main directory in another terminal.
+
+There is another suite of tests in the test directory that covers the SPARQL-PATCH functionality. To run it run
+
+    make
+
+from the test directory. This suite also assumes the test server is already running. Eventually all tests in this second suite will be moved to the first one.
