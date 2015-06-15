@@ -12,7 +12,7 @@ D=python $S/cant.py
 all:  get-1 put-1 put-2  post-1 post-2 post-2n post-3 post-4 post-5 delete-1
 
 clean :
-	rm *result*  *headers.txt *.nt
+	rm *result*  *headers.txt *.nt || echo Never mind
 
 ws-1 :
 	curl -v -i -N -H "Connection: Upgrade" -H "Upgrade: websocket" \
