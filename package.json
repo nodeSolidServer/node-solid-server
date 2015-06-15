@@ -40,7 +40,8 @@
   },
   "devDependencies" : {
       "mocha": "2.*",
-      "supertest": "1.*"
+      "supertest": "1.*",
+      "coffee-script": ">=1.6.0"
   },
   "files": [
     "server.js",
