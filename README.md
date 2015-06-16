@@ -22,7 +22,8 @@ Goals (see issues):
 - real-time live updates using websokets (etc)
 
 
-* Install
+Install
+-------
 
 Run
 
@@ -30,7 +31,8 @@ Run
 
 to install all dependencies. All dependencies are installed to the local node_modules directory and no other steps are necessary.
 
-* Tests
+Tests
+------
 
 To run the test suite run
 
