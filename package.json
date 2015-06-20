@@ -37,7 +37,8 @@
     "jsonld": "^0.3.x",
     "async": "^0.9.0",
     "underscore": "^1.8.3",
-    "fs-extra": "0.20.0"
+    "fs-extra": "0.20.0",
+    "glob": "^5.0.10"
   },
   "devDependencies" : {
       "mocha": "2.*",

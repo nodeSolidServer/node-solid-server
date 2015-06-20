@@ -82,6 +82,11 @@ describe('GET API', function() {
             .expect('Link', /http:\/\/www.w3.org\/ns\/ldp#Resource/)
             .expect(200, done);
     });
+    it('Should have glob support', function(done) {
+        server.get('/testfiles/example*')
+            .expect('content-type', /text\/turtle/)
+            .expect(200, done);
+    });
 });
 
 describe('HEAD API', function() {

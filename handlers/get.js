@@ -1,8 +1,10 @@
 /*jslint node: true*/
 "use strict";
 
+var _ = require('underscore');
 var mime = require('mime');
 var fs = require('fs');
+var glob = require('glob');
 var $rdf = require('rdflib');
 var S = require('string');
 
@@ -40,15 +42,23 @@ var get = function(req, res, includeBody) {
         // overwrites the pevious
         res.header('Updates-Via', '' + req.path + options.changesSuffix);
     }
-    if (includeBody)
+
+    if (includeBody) {
         logging.log('GET -- ' + req.path);
-    else
+    } else {
         logging.log('HEAD -- ' + req.path);
+    }
+
     var filename = file.uriToFilename(req.path);
     fs.stat(filename, function(err, stats) {
         if (err) {
-            logging.log('GET/HEAD -- Read error: ' + err);
-            res.status(404).send("Can't read file: " + err);
+            if (glob.hasMagic(filename)) {
+                logging.log("GET/HEAD -- Glob request");
+                globHandler();
+            } else {
+                logging.log('GET/HEAD -- Read error: ' + err);
+                return res.status(404).send("Can't read file: " + err);
+            }
         } else if (stats.isDirectory()) {
             if (includeBody) {
                 metadata.readContainerMetadata(filename, containerHandler);
@@ -94,6 +104,35 @@ var get = function(req, res, includeBody) {
         }
     };
 
+    var globHandler = function() {
+        glob(filename, globOptions, function(err, matches) {
+            if(err || matches.length === 0) {
+                logging.log("GET/HEAD -- No files matching the pattern");
+                return res.sendStatus(404);
+            } else {
+                logging.log("matches " + matches);
+                var globGraph = $rdf.graph();
+                _.each(matches, function(match) {
+                    try {
+                        var fileData = fs.readFileSync(match,
+                            {encoding: "utf8"});
+                        var baseUri = file.filenameToBaseUri(match);
+                        //TODO integrate ACL
+                        if (S(match).endsWith(".ttl")) {
+                            $rdf.parse(fileData, globGraph, baseUri,
+                                'text/turtle');
+                        }
+                    } catch (readErr) {
+                        return;
+                    }
+                });
+                var turtleData = $rdf.serialize(undefined, globGraph,
+                    null, 'text/turtle');
+                parseLinkedData(turtleData);
+            }
+        });
+    };
+
     var parseLinkedData = function(turtleData) {
         var accept = header.parseAcceptHeader(req);
         var baseUri = file.filenameToBaseUri(filename);
@@ -118,6 +157,7 @@ var get = function(req, res, includeBody) {
             return res.status(500).send(err);
         }
 
+        //TODO rdflib callbacks
         $rdf.serialize(undefined, resourceGraph, null,
             accept, function(err, result) {
                 if (result === undefined || err) {
@@ -174,3 +214,5 @@ var get = function(req, res, includeBody) {
         }
     };
 };
+
+var globOptions = {noext: true, nobrace: true};
