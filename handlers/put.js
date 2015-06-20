@@ -3,6 +3,8 @@
 
 var mime = require('mime');
 var fs = require('fs');
+var fse = require('fs-extra');
+var path = require('path');
 var $rdf = require('rdflib');
 var S = require('string');
 
@@ -33,13 +35,34 @@ module.exports.handler = function(req, res){
         return res.status(415).send("Sorry, Filename must have extension for content type");
     }
 
-    fs.writeFile(filename, req.text,  function(err) {
-        if (err) {
-            logging.log("PUT -- Write error: " + err);
-            return res.status(500).send("Can't write file: "+ err);
-        } else {
-            logging.log("PUT -- Write Ok. Bytes written: " + req.text.length);
-            return res.sendStatus(201);
+    createDir();
+
+    function createDir() {
+        var directory = path.dirname(filename);
+        fs.exists(directory, function(exists) {
+            if (exists) {
+                writeFile(null);
+            } else {
+                fse.mkdirp(directory, writeFile);
+            }
+        });
+    }
+
+    function writeFile(mkdirErr) {
+        if (mkdirErr) {
+            logging.log("PUT -- Error creating directory: " + mkdirErr);
+            return res.status(500).send("Can't create directory");
         }
-    }); // file write
+        fs.writeFile(filename, req.text,  function(err) {
+            if (err) {
+                logging.log("PUT -- Write error: " + err);
+                return res.status(500).send("Can't write file: "+ err);
+            } else {
+                logging.log("PUT -- Write Ok. Bytes written: " + req.text.length);
+                return res.sendStatus(201);
+            }
+        }); // file write
+    }
 };
+
+

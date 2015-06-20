@@ -36,12 +36,12 @@
     "n3": "^0.4.2",
     "jsonld": "^0.3.x",
     "async": "^0.9.0",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "fs-extra": "0.20.0"
   },
   "devDependencies" : {
       "mocha": "2.*",
-      "supertest": "1.*",
-      "coffee-script": ">=1.6.0"
+      "supertest": "1.*"
   },
   "files": [
     "server.js",

@@ -105,6 +105,17 @@ describe('PUT API', function() {
             .set('content-type', 'text/turtle')
             .expect(201, done);
     });
+    it('Should create directories if they do not exist', function (done) {
+        server.put('/foo/bar/baz.ttl')
+            .send(putRequestBody)
+            .set('content-type', 'text/turtle')
+            .expect(function() {
+                fs.unlinkSync('./foo/bar/baz.ttl');
+                fs.rmdirSync('./foo/bar/');
+                fs.rmdirSync('./foo/');
+            })
+            .expect(201, done);
+    });
     it('Should return 409 code when trying to put to a container', function(done) {
         server.put('/')
             .expect(409, done);
