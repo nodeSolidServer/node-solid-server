@@ -53,5 +53,8 @@
   "scripts": {
     "start": "node server.js",
     "test": "./node_modules/mocha/bin/mocha ./test/test.js"
+  },
+  "bin": {
+    "ldnode": "./server.js"
   }
 }
