@@ -4,29 +4,29 @@ var logging = require('./logging.js');
 var metadata = require('./metadata.js');
 var ldpVocab = require('./vocab/ldp.js');
 
-module.exports.addLink = function(res, value, rel) {
+function addLink(res, value, rel) {
     var oldLink = res.get('Link');
     if (oldLink === undefined)
         res.set('Link', '<' + value + '>; rel=\'' + rel + '\'');
     else
         res.set('Link', oldLink + ', ' + '<' + value +
             '>; rel=\'' + rel + '\'');
-};
+}
 
-module.exports.addLinks = function(res, fileMetadata) {
+function addLinks(res, fileMetadata) {
     if (fileMetadata.isResource)
-        module.exports.addLink(res, ldpVocab.Resource, 'type');
+        addLink(res, ldpVocab.Resource, 'type');
     if (fileMetadata.isSourceResource)
-        module.exports.addLink(res, ldpVocab.RDFSource, 'type');
+        addLink(res, ldpVocab.RDFSource, 'type');
     if (fileMetadata.isContainer)
-        module.exports.addLink(res, ldpVocab.Container, 'type');
+        addLink(res, ldpVocab.Container, 'type');
     if (fileMetadata.isBasicContainer)
-        module.exports.addLink(res, ldpVocab.BasicContainer, 'type');
+        addLink(res, ldpVocab.BasicContainer, 'type');
     if (fileMetadata.isDirectContainer)
-        module.exports.addLink(res, ldpVocab.DirectContainer, 'type');
-};
+        addLink(res, ldpVocab.DirectContainer, 'type');
+}
 
-module.exports.parseMetadataFromHeader = function(linkHeader) {
+function parseMetadataFromHeader(linkHeader) {
     var fileMetadata = new metadata.Metadata();
     if (linkHeader === undefined)
         return fileMetadata;
@@ -51,9 +51,9 @@ module.exports.parseMetadataFromHeader = function(linkHeader) {
         }
     }
     return fileMetadata;
-};
+}
 
-module.exports.parseAcceptHeader = function(req) {
+function parseAcceptHeader(req) {
     var acceptFinalValue;
     var acceptHeader = req.get('Accept');
     if (acceptHeader === undefined) {
@@ -75,4 +75,9 @@ module.exports.parseAcceptHeader = function(req) {
         }
     }
     return acceptFinalValue;
-};
+}
+
+module.exports.addLink = addLink;
+module.exports.addLinks = addLinks;
+module.exports.parseMetadataFromHeader = parseMetadataFromHeader;
+module.exports.parseAcceptHeader = parseAcceptHeader;

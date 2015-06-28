@@ -7,7 +7,7 @@ var webid = require('webid');
 var logging = require('./logging.js');
 var options = require('./options.js');
 
-module.exports.loginHandler = function(req, res, next) {
+function loginHandler(req, res, next) {
     if (!options.webid) {
         setEmptySession(req);
         return next();
@@ -58,4 +58,6 @@ module.exports.loginHandler = function(req, res, next) {
         req.session.userId = "";
         req.session.identified = false;
     }
-};
+}
+
+exports.loginHandler = loginHandler;

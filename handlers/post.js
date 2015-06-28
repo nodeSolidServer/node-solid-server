@@ -15,7 +15,7 @@ var patch = require('./patch.js');
 var ldpVocab = require('../vocab/ldp.js');
 var rdfVocab = require('../vocab/rdf.js');
 
-module.exports.handler = function(req, res) {
+function handler(req, res) {
     if (req.is('application/sparql')) {
         logging.log("POST -- Handling sparql query");
         return patch.handler(req, res);
@@ -113,4 +113,6 @@ module.exports.handler = function(req, res) {
             return res.sendStatus(201);
         }
     }
-};
+}
+
+exports.handler = handler;

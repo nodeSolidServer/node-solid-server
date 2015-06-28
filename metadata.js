@@ -12,40 +12,40 @@ var ldpVocab = require('./vocab/ldp.js');
 
 var metadataExtension = ".meta";
 
-module.exports.Metadata = function() {
+function Metadata() {
     this.filename = "";
     this.isResource = false;
     this.isSourceResource = false;
     this.isContainer = false;
     this.isBasicContainer = false;
     this.isDirectContainer = false;
-};
+}
 
-module.exports.isMetadataFile = function(filename) {
+function isMetadataFile(filename) {
     if (path.extname(filename) === metadataExtension)
         return true;
     return false;
-};
+}
 
-module.exports.hasContainerMetadata = function(directory) {
+function hasContainerMetadata(directory) {
     return fs.existsSync(directory + metadataExtension);
-};
+}
 
-module.exports.writeContainerMetadata = function(directory, container, callback) {
+function writeContainerMetadata(directory, container, callback) {
     fs.writeFile(directory + metadataExtension, container, callback);
-};
+}
 
-module.exports.readContainerMetadata = function(directory, callback) {
+function readContainerMetadata(directory, callback) {
     fs.readFile(directory + metadataExtension, {
         'encoding': 'utf8'
     }, callback);
-};
+}
 
-module.exports.deleteContainerMetadata = function(directory, callback) {
+function deleteContainerMetadata(directory, callback) {
     fs.unlink(directory + metadataExtension, callback);
-};
+}
 
-module.exports.linksHandler = function(req, res, next) {
+function linksHandler(req, res, next) {
     var filename = file.uriToFilename(req.url);
     filename = path.join(filename, req.path);
     if (module.exports.isMetadataFile(filename)) {
@@ -61,4 +61,12 @@ module.exports.linksHandler = function(req, res, next) {
     }
     header.addLinks(res, fileMetadata);
     next();
-};
+}
+
+exports.Metadata = Metadata;
+exports.isMetadataFile = isMetadataFile;
+exports.hasContainerMetadata = hasContainerMetadata;
+exports.writeContainerMetadata = writeContainerMetadata;
+exports.readContainerMetadata = readContainerMetadata;
+exports.deleteContainerMetadata = deleteContainerMetadata;
+exports.linksHandler = linksHandler;

@@ -13,7 +13,7 @@ var header = require('../header.js');
 var options = require('../options.js');
 var logging = require('../logging.js');
 
-module.exports.handler = function(req, res){
+function handler(req, res) {
     logging.log("PUT -- Request path: " + req.path);
     logging.log("PUT -- Text length: " + (req.text ? req.text.length : 'undefined'));
     res.header('MS-Author-Via' , 'SPARQL' );
@@ -63,6 +63,6 @@ module.exports.handler = function(req, res){
             }
         }); // file write
     }
-};
+}
 
-
+exports.handler = handler;

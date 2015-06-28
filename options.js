@@ -7,26 +7,26 @@ var S = require('string');
 
 var logging = require('./logging.js');
 
-module.exports.aclSuffix = "";
-module.exports.uriBase = "";
-module.exports.fileBase = "";
-module.exports.address = "";
-module.exports.port = 3000;
-module.exports.verbose = false;
-module.exports.changesSuffix = "";
-module.exports.ssl = false;
-module.exports.cors = false;
-module.exports.pathStart = "";
-module.exports.prePathSlash = "";
-module.exports.pathFilter = "";
-module.exports.SSESuffix = "";
-module.exports.xssProxy = "";
-module.exports.leavePatchConnectionOpen = false;
-module.exports.live = false;
-module.exports.privateKey = "";
-module.exports.cert = "";
+exports.aclSuffix = "";
+exports.uriBase = "";
+exports.fileBase = "";
+exports.address = "";
+exports.port = 3000;
+exports.verbose = false;
+exports.changesSuffix = "";
+exports.ssl = false;
+exports.cors = false;
+exports.pathStart = "";
+exports.prePathSlash = "";
+exports.pathFilter = "";
+exports.SSESuffix = "";
+exports.xssProxy = "";
+exports.leavePatchConnectionOpen = false;
+exports.live = false;
+exports.privateKey = "";
+exports.cert = "";
 
-module.exports.init = function(argv) {
+exports.init = function(argv) {
     this.aclSuffix = argv.aclSuffix || process.env.ACLSUFFIX || ",acl";
     this.uriBase = argv.uriBase || process.env.URIBASE ||
         'http://localhost:3000' + process.cwd() + '/test/';

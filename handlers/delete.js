@@ -7,7 +7,7 @@ var file = require('../fileStore.js');
 var logging = require('../logging.js');
 var metadata = require('../metadata.js');
 
-module.exports.handler = function(req, res) {
+function handler(req, res) {
     logging.log('DELETE -- ' + req.path);
     var filename = file.uriToFilename(req.path);
     fs.stat(filename, function(err, stats) {
@@ -40,4 +40,6 @@ module.exports.handler = function(req, res) {
             res.sendStatus(200);
         }
     }
-};
+}
+
+exports.handler = handler;

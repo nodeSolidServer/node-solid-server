@@ -8,7 +8,7 @@ var S = require('string');
 var options = require('./options.js');
 var logging = require('./logging.js');
 
-module.exports.uriToFilename = function(uri) {
+function uriToFilename(uri) {
     var filename = path.join(options.fileBase, uri);
     // Make sure filename ends with '/'  if filename exists and is a directory.
     try {
@@ -20,15 +20,19 @@ module.exports.uriToFilename = function(uri) {
         }
     } catch (err) {}
     return filename;
-};
+}
 
-module.exports.uriToRelativeFilename = function(uri) {
-    var filename = this.uriToFilename(uri);
+function uriToRelativeFilename(uri) {
+    var filename = uriToFilename(uri);
     var relative = path.relative(options.fileBase, filename);
     return relative;
-};
+}
 
-module.exports.filenameToBaseUri = function(filename) {
+function filenameToBaseUri(filename) {
     var uriPath = S(filename).strip(options.fileBase).toString();
     return options.uriBase + uriPath;
-};
+}
+
+exports.uriToFilename = uriToFilename;
+exports.uriToRelativeFilename = uriToRelativeFilename;
+exports.filenameToBaseUri = filenameToBaseUri;

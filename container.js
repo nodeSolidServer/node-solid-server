@@ -22,7 +22,7 @@ var usedURIs = {};
 
 var turtleExtension = ".ttl";
 
-module.exports.createRootContainer = function() {
+function createRootContainer() {
     if (!metadata.hasContainerMetadata(options.fileBase)) {
         var rootContainer = $rdf.graph();
         addUriTriple(rootContainer, options.pathStart,
@@ -47,9 +47,9 @@ module.exports.createRootContainer = function() {
                 }
             });
     }
-};
+}
 
-module.exports.createResourceUri = function(containerURI, slug, isBasicContainer) {
+function createResourceUri(containerURI, slug, isBasicContainer) {
     var newPath;
     if (slug) {
         if (S(slug).endsWith(turtleExtension)) {
@@ -74,13 +74,13 @@ module.exports.createResourceUri = function(containerURI, slug, isBasicContainer
         return null;
     }
     return newPath;
-};
+}
 
-module.exports.releaseResourceUri = function(uri) {
+function releaseResourceUri(uri) {
     delete usedURIs[uri];
-};
+}
 
-module.exports.createNewResource = function(resourcePath,
+function createNewResource(resourcePath,
     resourceGraph, callback) {
     var resourceURI = path.relative(options.fileBase, resourcePath);
     //TODO write files with relative URIS.
@@ -98,9 +98,9 @@ module.exports.createNewResource = function(resourcePath,
             return callback(err);
         }
     }
-};
+}
 
-module.exports.createNewContainer = function(containerPath,
+function createNewContainer(containerPath,
     containerGraph, callback) {
     fs.mkdir(containerPath, mkdirCallback);
 
@@ -128,4 +128,10 @@ module.exports.createNewContainer = function(containerPath,
             return callback(err);
         }
     }
-};
+}
+
+exports.createRootContainer = createRootContainer;
+exports.createResourceUri = createResourceUri;
+exports.releaseResourceUri = releaseResourceUri;
+exports.createNewResource = createNewResource;
+exports.createNewContainer = createNewContainer;

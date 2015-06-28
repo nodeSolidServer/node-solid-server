@@ -13,7 +13,7 @@ var SSEsubscriptions = {};
 
 var PATCH = $rdf.Namespace('http://www.w3.org/ns/pim/patch#');
 
-module.exports.subscribeToChanges_SSE = function(req, res) {
+exports.subscribeToChanges_SSE = function(req, res) {
 
     var messageCount;
     console.log("Server Side Events subscription");
@@ -58,7 +58,7 @@ module.exports.subscribeToChanges_SSE = function(req, res) {
 
 };
 
-module.exports.publishDelta_SSE = function (req, res, patchKB, targetURI){
+exports.publishDelta_SSE = function (req, res, patchKB, targetURI){
     // @@ TODO
     var targetPath = req.path.slice(0, - options.changesSuffix.length); // lop off ',changes'
     var publisherClient = SSEsubscriptions[targetPath];
@@ -71,7 +71,7 @@ var DelayedResponse = require('http-delayed-response');
 // try this.  https://www.npmjs.org/package/http-delayed-response
 
 
-module.exports.subscribeToChangesLongPoll = function(req, res) {
+exports.subscribeToChangesLongPoll = function(req, res) {
     var targetPath = req.path.slice(0, - options.changesSuffix.length); // lop off ',changes'
     if (subscriptions[targetPath] === undefined) {
         subscriptions[targetPath] = [];
@@ -125,14 +125,14 @@ module.exports.subscribeToChangesLongPoll = function(req, res) {
 };
 
 // Find the patch operation itself withing a patch graph
-module.exports.patchOperation = function(patchKB) {
+exports.patchOperation = function(patchKB) {
     // logging.log("PatchKb = " + patchKB.statements.map(function(st){return st.toNT()}))
     var sts = patchKB.statementsMatching(undefined, PATCH('insert'), undefined, undefined)
         .concat(patchKB.statementsMatching(undefined, PATCH('delete'), undefined, undefined));
     return sts.length ? sts[0].subject : null;
 };
 
-module.exports.publishDelta = function (req, res, patchKB, targetURI){
+exports.publishDelta = function (req, res, patchKB, targetURI){
 
     var operation = this.patchOperation(patchKB);
     if (!operation) {
@@ -149,7 +149,7 @@ module.exports.publishDelta = function (req, res, patchKB, targetURI){
 
 };
 
-module.exports.publishDelta_LongPoll = function (req, res, patchData, targetURI){
+exports.publishDelta_LongPoll = function (req, res, patchData, targetURI){
     logging.log("    Long poll change subscription count " + (subscriptions[req.path] || []).length);
     if (! subscriptions[req.path]) return;
     subscriptions[req.path].map(function(subscription){
@@ -166,6 +166,3 @@ module.exports.publishDelta_LongPoll = function (req, res, patchData, targetURI)
     subscriptions[req.path] = []; // one-off polll
     logging.log("LONG POLL : Now NO subscriptions for " +  targetURI);
 };
-
-
-

@@ -17,15 +17,7 @@ var subscription = require('../subscription.js');
 
 var ldpVocab = require('../vocab/ldp.js');
 
-module.exports.handler = function(req, res) {
-    get(req, res, true);
-};
-
-module.exports.headHandler = function(req, res) {
-    get(req, res, false);
-};
-
-var get = function(req, res, includeBody) {
+function get(req, res, includeBody) {
     // Add request to subscription service
     if (('' + req.path).slice(-options.changesSuffix.length) ===
         options.changesSuffix) {
@@ -78,7 +70,7 @@ var get = function(req, res, includeBody) {
         }
     });
 
-    var fileHandler = function(err, data) {
+    function fileHandler(err, data) {
         if (err) {
             logging.log('GET/HEAD -- Read error:' + err);
             res.status(404).send("Can't read file: " + err);
@@ -93,18 +85,18 @@ var get = function(req, res, includeBody) {
                 res.status(200).send(data);
             }
         }
-    };
+    }
 
-    var containerHandler = function(err, rawContainer) {
+    function containerHandler(err, rawContainer) {
         if (err) {
             logging.log("GET/HEAD -- Not a valid container");
             res.status(404).send("Not a container");
         } else {
             parseContainer(rawContainer);
         }
-    };
+    }
 
-    var globHandler = function() {
+    function globHandler() {
         glob(filename, globOptions, function(err, matches) {
             if(err || matches.length === 0) {
                 logging.log("GET/HEAD -- No files matching the pattern");
@@ -131,9 +123,9 @@ var get = function(req, res, includeBody) {
                 parseLinkedData(turtleData);
             }
         });
-    };
+    }
 
-    var parseLinkedData = function(turtleData) {
+    function parseLinkedData(turtleData) {
         var accept = header.parseAcceptHeader(req);
         var baseUri = file.filenameToBaseUri(filename);
 
@@ -168,9 +160,9 @@ var get = function(req, res, includeBody) {
                     return res.status(200).send(result);
                 }
             });
-    };
+    }
 
-    var parseContainer = function(containerData) {
+    function parseContainer(containerData) {
         //Handle other file types
         var baseUri = file.filenameToBaseUri(filename);
         var resourceGraph = $rdf.graph();
@@ -212,7 +204,18 @@ var get = function(req, res, includeBody) {
                 }
             }
         }
-    };
-};
+    }
+}
 
 var globOptions = {noext: true, nobrace: true};
+
+function getHandler(req, res) {
+    get(req, res, true);
+}
+
+function headHandler(req, res) {
+    get(req, res, false);
+}
+
+exports.handler = getHandler;
+exports.headHandler = headHandler;

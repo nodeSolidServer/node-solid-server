@@ -7,8 +7,8 @@ var async = require('async');
 
 var logging = require('./logging.js');
 
-module.exports.parseHandler = function(req, res, next) {
-    module.exports.convertToTurtle(req.text, req, function(err, result) {
+function parseHandler(req, res, next) {
+    convertToTurtle(req.text, req, function(err, result) {
         if (!err) {
             req.convertedText = result;
         } else {
@@ -16,9 +16,9 @@ module.exports.parseHandler = function(req, res, next) {
         }
         return next();
     });
-};
+}
 
-module.exports.convertToTurtle = function(rawDocument, req,
+function convertToTurtle(rawDocument, req,
     convertCallback) {
     if (req.is('application/json+ld') ||
         req.is('application/nquads') || req.is('application/n-quads')) {
@@ -27,9 +27,9 @@ module.exports.convertToTurtle = function(rawDocument, req,
     } else {
         convertCallback(null, rawDocument);
     }
-};
+}
 
-var parse = function(rawDocument, contentType, convertCallback) {
+function parse(rawDocument, contentType, convertCallback) {
     var n3Parser = N3.Parser();
     var n3Writer;
     var triples = [];
@@ -84,4 +84,7 @@ var parse = function(rawDocument, contentType, convertCallback) {
     function prefixCallback(prefix, iri) {
         prefixes[prefix] = iri;
     }
-};
+}
+
+exports.parseHandler = parseHandler;
+exports.convertToTurtle = convertToTurtle;

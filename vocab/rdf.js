@@ -30,7 +30,7 @@ define('prefix', 'rdf');
 // Properties
 define('type', ns + 'type');
 
-module.exports.brack = function(s) {
+function brack(s) {
     if (s.length > 0 && s[0] == "<") {
         return s;
     }
@@ -38,9 +38,9 @@ module.exports.brack = function(s) {
         return s;
     }
     return "<" + s + ">";
-};
+}
 
-module.exports.debrack = function(s) {
+function debrack(s) {
     if (s.length < 2) {
         return s;
     }
@@ -51,12 +51,16 @@ module.exports.debrack = function(s) {
         return s;
     }
     return s.substring(1, s.length - 1);
-};
+}
 
-module.exports.defrag = function(s) {
+function defrag(s) {
     var lst = s.split("#");
     if (lst.length < 2) {
         return s;
     }
     return lst[0];
-};
+}
+
+exports.brack = brack;
+exports.debrack = debrack;
+exports.defrag = defrag;
