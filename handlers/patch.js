@@ -10,7 +10,7 @@ var subscription = require('../subscription.js');
 var options = require('../options.js');
 var logging = require('../logging.js');
 
-module.exports.handler = function(req, res) {
+function handler(req, res) {
     logging.log('\nPOST ' +req.path);
     logging.log(' text length: ' + (req.text ? req.text.length : 'undefined2'));
     res.header('MS-Author-Via' , 'SPARQL' );
@@ -176,4 +176,6 @@ module.exports.handler = function(req, res) {
     default:
         return fail(400, "Sorry unknowm patch content type: " + patchContentType);
     } // switch content-type
-}; // postOrPatch
+} // postOrPatch
+
+exports.handler = handler;
