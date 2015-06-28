@@ -50,7 +50,7 @@ var argv = require('optimist').boolean('cors').boolean('v').boolean('live').argv
 
 if (argv.h || argv.help || argv['?']) {
     console.log([
-        "usage: ldp-httpd [path] [options]",
+        "usage: ldnode [path] [options]",
         "",
         "options:",
         "  --uriBase          Address, port, and default path of the server. (Example: http://localhost:3000/test/)",
