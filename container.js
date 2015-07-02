@@ -87,6 +87,7 @@ function createNewResource(resourcePath,
     var rawResource = $rdf.serialize(undefined,
         resourceGraph, options.uriBase + resourceURI, 'text/turtle');
     logging.log("Container -- Writing new resource to " + resourcePath);
+    logging.log("Container -- Resource:\n" + rawResource);
     fs.writeFile(resourcePath, rawResource, writeResourceCallback);
 
     function writeResourceCallback(err) {
@@ -113,6 +114,7 @@ function createNewContainer(containerPath,
         } else {
             var rawContainer = $rdf.serialize(undefined, containerGraph,
                 options.uriBase, 'text/turtle');
+            logging.log("rawContainer " + rawContainer);
             metadata.writeContainerMetadata(containerPath, rawContainer,
                 writeContainerCallback);
         }
@@ -124,6 +126,7 @@ function createNewContainer(containerPath,
             module.exports.releaseResourceUri(containerPath);
             return callback(err);
         } else {
+            logging.log("Container -- Wrote container to " + containerPath);
             module.exports.releaseResourceUri(containerPath);
             return callback(err);
         }
