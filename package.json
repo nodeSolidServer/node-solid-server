@@ -22,7 +22,7 @@
     "node-regexp": "",
     "optimist": "0.6",
     "raw-body": "1.x",
-    "rdflib": "git://github.com/linkeddata/rdflib.js.git",
+    "rdflib": "^0.2.6",
     "redis": "^0.12.1",
     "request": ">=2.51.0",
     "response-time": "2.x",
