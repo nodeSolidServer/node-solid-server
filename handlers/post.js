@@ -67,7 +67,8 @@ function handler(req, res) {
 
             try {
                 var resourceBaseUri = file.filenameToBaseUri(resourcePath);
-                $rdf.parse(requestText, resourceGraph, resourceBaseUri, contentType);
+                $rdf.parse(requestText, resourceGraph,
+                           resourceBaseUri, 'text/turtle');
             } catch (parseErr) {
                 logging.log("POST -- Error parsing resource: " + parseErr);
                 container.releaseResourceUri(resourcePath);
