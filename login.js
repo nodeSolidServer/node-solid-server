@@ -1,7 +1,6 @@
 /*jslint node: true*/
 "use strict";
 
-var _ = require('underscore');
 var webid = require('webid');
 
 var logging = require('./logging.js');
@@ -17,7 +16,7 @@ function loginHandler(req, res, next) {
         return next();
     } else {
         var certificate = req.connection.getPeerCertificate();
-        if (!_.isEmpty(certificate)) {
+        if (!(certificate === null || Object.keys(certificate).length === 0))  {
             var verifAgent = new webid.VerificationAgent(certificate);
             verifAgent.verify(function(err, result) {
                 if (err) {
