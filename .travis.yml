@@ -4,8 +4,8 @@ node_js:
 
 before_script:
   - npm install --quiet -g grunt-cli karma bower
-
-script: make
+  - make &
+  - sleep 1
 
 after_script: killall node
 
