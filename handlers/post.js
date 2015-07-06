@@ -65,8 +65,9 @@ function handler(req, res) {
                 requestText = req.text;
             }
 
+            var resourceBaseUri;
             try {
-                var resourceBaseUri = file.filenameToBaseUri(resourcePath);
+                resourceBaseUri = file.filenameToBaseUri(resourcePath);
                 $rdf.parse(requestText, resourceGraph,
                            resourceBaseUri, 'text/turtle');
             } catch (parseErr) {
@@ -79,6 +80,7 @@ function handler(req, res) {
 
             if (resourceMetadata.isBasicContainer) {
                 resourcePath += '/';
+                resourceBaseUri += '/';
                 container.createNewContainer(resourcePath, resourceGraph,
                     containerCallback);
             } else {
