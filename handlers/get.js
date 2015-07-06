@@ -5,6 +5,7 @@ var _ = require('underscore');
 var mime = require('mime');
 var fs = require('fs');
 var glob = require('glob');
+var path = require('path');
 var $rdf = require('rdflib');
 var S = require('string');
 
@@ -16,6 +17,8 @@ var file = require('../fileStore.js');
 var subscription = require('../subscription.js');
 
 var ldpVocab = require('../vocab/ldp.js');
+var aclExtension = '.acl';
+var metaExtension = '.meta';
 
 function get(req, res, includeBody) {
     // Add request to subscription service
@@ -78,7 +81,12 @@ function get(req, res, includeBody) {
             logging.log('GET/HEAD -- Read Ok. Bytes read: ' + data.length);
             var ct = mime.lookup(filename);
             res.set('content-type', ct);
-            logging.log('content-type: ' + ct);
+            logging.log('GET/HEAD -- content-type: ' + ct);
+            if (path.extname(filename) === aclExtension ||
+                path.basename(filename) === aclExtension ||
+                path.basename(filename) === metaExtension) {
+                ct = 'text/turtle';
+            }
             if (ct === 'text/turtle') {
                 parseLinkedData(data);
             } else {
