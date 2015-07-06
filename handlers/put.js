@@ -25,15 +25,17 @@ function handler(req, res) {
         return res.status(409).send("PUT to containers not supported. Use POST method instead");
     }
 
-    var ct1 = req.get('content-type');
-    var ct2 = mime.lookup(filename);
+    // var ct1 = req.get('content-type');
+    // var ct2 = mime.lookup(filename);
 
-    if (ct1 && ct2 && (ct1 !== ct2)) {
-        return res.status(415).send("Content type mismatch with path file.extenstion");
-    }
-    if (!ct2) {
-        return res.status(415).send("Sorry, Filename must have extension for content type");
-    }
+    // if (ct1 && ct2 && (ct1 !== ct2)) {
+    //     logging.log("PUT -- MIME mismatch. Content-type: " + ct1 +
+    //                 ". MIME: " + ct2);
+    //     return res.status(415).send("Content type mismatch with path file.extenstion");
+    // }
+    // if (!ct2) {
+    //     return res.status(415).send("Sorry, Filename must have extension for content type");
+    // }
 
     createDir();
 
