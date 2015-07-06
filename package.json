@@ -39,7 +39,8 @@
     "glob": "^5.0.10"
   },
   "devDependencies" : {
-      "mocha": "2.*",
+      "mocha": "*",
+      "chai": "*",
       "supertest": "1.*"
   },
   "files": [
