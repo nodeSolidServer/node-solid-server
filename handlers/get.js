@@ -1,7 +1,6 @@
 /*jslint node: true*/
 "use strict";
 
-var _ = require('underscore');
 var mime = require('mime');
 var fs = require('fs');
 var glob = require('glob');
@@ -112,7 +111,7 @@ function get(req, res, includeBody) {
             } else {
                 logging.log("matches " + matches);
                 var globGraph = $rdf.graph();
-                _.each(matches, function(match) {
+                matches.forEach(function(match) {
                     try {
                         var fileData = fs.readFileSync(match,
                             {encoding: "utf8"});

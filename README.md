@@ -1,6 +1,8 @@
 ldnode
 ==============
 
+[![Build Status](https://api.travis-ci.org/linkeddata/ldnode.svg)](https://travis-ci.org/linkeddata/ldnode)
+
 All you need to run distributed linked data apps on top of a bit of file system.  Typically used as a proxy, with Apache doing the ACLs and GETs, just to do the fast real-time patch of data resources.
 
 Linked Data Platform server based on rdflib.js and node.js
