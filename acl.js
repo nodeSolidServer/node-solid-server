@@ -11,13 +11,15 @@ var file = require('./fileStore.js');
 var logging = require('./logging.js');
 var options = require('./options.js');
 
-var ns = require('./vocab/ns.js');
+var ns = require('./vocab/ns.js').ns;
 var rdfVocab = require('./vocab/rdf.js');
 
 var aclExtension = ".acl";
 
 function allow(mode, req, res) {
-    var origin = req.get('Origin');
+    var origin = req.get('origin');
+    origin = origin ? origin : '';
+
     var accessType = "accessTo";
 
     var filepath = file.uriToFilename(req.path);
@@ -40,46 +42,51 @@ function allow(mode, req, res) {
         var aclData;
         var aclGraph = $rdf.graph();
         try {
-            aclData = fs.readFileSync(pathAcl);
-            $rdf.parse(aclData, aclGraph, pathAclUri, 'text/turtle');
+            aclData = fs.readFileSync(pathAcl, {encoding: 'utf8'});
+            $rdf.parse(aclData, aclGraph, pathUri, 'text/turtle');
         } catch (parseErr) {
+            logging.log("ACL -- Error parsing ACL policy: " + parseErr);
             //Resetting graph to prevent the code from taking the next if brach.
             aclGraph = $rdf.graph();
         }
 
+
         if (aclGraph.statements.length > 0) {
             logging.log("ACL -- Found policies in " + pathAcl);
-            var controlStatements = aclGraph.any(undefined, ns.acl("mode"),
+            var controlStatements = aclGraph.each(undefined, ns.acl("mode"),
                 ns.acl("Control"));
-            controlStatements.forEach(function(controlElem) {
-                var accessStatements = aclGraph.any(controlElem.subject,
+            for(var controlIndex in controlStatements) {
+                var controlElem = controlStatements[controlIndex];
+                var accessStatements = aclGraph.each(controlElem,
                     ns.acl(accessType), aclGraph.sym(pathUri));
-                accessStatements.forEach(function(accessElem, accessIndex) {
-                    var ownerStatements = aclGraph.any(accessElem.subject,
+                for(var accessIndex in accessStatements) {
+                    var accessElem = accessStatements[accessIndex];
+                    var ownerStatements = aclGraph.each(accessElem,
                         ns.acl("owner"), aclGraph.sym(req.session.userId));
-                    ownerStatements.forEach(function(ownerElem) {
+                    for(var ownerIndex in ownerStatements) {
                         logging.log("ACL -- " + mode + " access allowed (as owner)" +
                             " for: " + req.session.userId);
                         return {
                             status: 200,
                             err: null
                         };
-                    });
-                    var agentStatements = aclGraph.any(controlElem.subject,
+                    }
+                    var agentStatements = aclGraph.each(controlElem,
                         ns.acl("agent"), aclGraph.sym(req.session.userId));
-                    agentStatements.forEach(function(agentElem) {
+                    for(var agentIndex in agentStatements) {
                         logging.log("ACL -- " + mode + " access allowed (as agent)" +
                             " for: " + req.session.userId);
                         return {
                             status: 200,
                             err: null
                         };
-                    });
-                    var agentClassStatements = aclGraph.any(controlElem.subject,
+                    }
+                    var agentClassStatements = aclGraph.each(controlElem,
                         ns.acl("agentClass"), undefined);
-                    agentClassStatements.forEach(function(agentClassElem) {
+                    for (var agentClassIndex in agentClassStatements) {
+                        var agentClassElem = agentClassStatements[agentClassIndex];
                         logging.log("ACL -- Found agentClass policy");
-                        if (agentClassElem.object.sameTerm(ns.foaf("Agent"))) {
+                        if (agentClassElem.sameTerm(ns.foaf("Agent"))) {
                             logging.log("ACL -- " + mode +
                                 " access allowed as FOAF agent");
                             return {
@@ -88,53 +95,63 @@ function allow(mode, req, res) {
                             };
                         }
 
-                        var groupURI = rdfVocab.debrack(agentClassElem.object.toString());
+                        var groupURI = rdfVocab.debrack(agentClassElem.toString());
                         var groupGraph = $rdf.graph();
                         var groupFetcher = $rdf.fetcher(groupGraph, 3000, false);
                         groupFetcher.nowOrWhenFetched(groupURI, null, function(ok, err) {});
-                        var typeStatements = groupGraph.any(agentClassElem.object,
+                        var typeStatements = groupGraph.each(agentClassElem,
                             ns.rdf("type"), ns.foaf("Group"));
                         if (groupGraph.statements.length > 0 &&
                             typeStatements.length > 0) {
-                            var memberStatements = groupGraph.any(
-                                agentClassElem.object, ns.foaf("member"),
+                            var memberStatements = groupGraph.each(
+                                agentClassElem, ns.foaf("member"),
                                 groupGraph.sym(req.session.userId));
-                            memberStatements.forEach(function(memberElem) {
+                            for(var memberIndex in memberStatements) {
                                 logging.log("ACL -- " + req.session.userId +
                                     " listed as member of the group " + groupURI);
                                 return {
                                     status: 200,
                                     err: null
                                 };
-                            });
+                            }
                         }
-                    });
-                });
-            });
+                    }
+                }
+            }
 
-            var modeStatements = aclGraph.any(undefined, ns.acl("mode"), ns.acl(mode));
-            modeStatements.forEach(function(modeElem) {
+            var modeStatements = aclGraph.each(undefined, ns.acl("mode"), ns.acl(mode));
+            for(var modeIndex in modeStatements) {
+                var modeElem = modeStatements[modeIndex];
                 logging.log("ACL -- Found " + accessType + " policy for <" + mode + ">");
-
-                var accessTypeStatements = aclGraph.any(modeElem.subject, ns.acl(accessType),
+                var accessTypeStatements = aclGraph.each(modeElem, ns.acl(accessType),
                     aclGraph.sym(pathUri));
-                accessTypeStatements.forEach(function(accessTypeElem) {
-                    var origins = aclGraph.any(modeElem.subject, ns.acl("origin"), undefined);
+                for(var accessTypeIndex in accessTypeStatements) {
+                    var accessTypeElem = accessTypeStatements[accessTypeIndex];
+                    var origins = aclGraph.each(modeElem, ns.acl("origin"), undefined);
+                    var originValue;
                     if (origin.length > 0 && origins.length > 0) {
                         logging.log("ACL -- Origin set to: " + rdfVocab.brack(origin));
-                        origins.forEach(function(originsElem) {
-                            if (rdfVocab.brack(origin) === originsElem.object.toString()) {
+                        for(var originsIndex in origins) {
+                            var originsElem = origins[originsIndex];
+                            if (rdfVocab.brack(origin) === originsElem.toString()) {
                                 logging.log("ACL -- Found policy for origin: " +
-                                    originsElem.object.toString());
-                                return allowOrigin(mode, req, res, aclGraph, accessTypeElem);
+                                    originsElem.toString());
+                                originValue = allowOrigin(mode, req, res, aclGraph, modeElem);
+                                if (originValue) {
+                                    return originValue;
+                                }
                             }
-                        });
+                        }
+                        continue;
                     } else {
                         logging.log("ACL -- No origin found, moving on.");
                     }
-                    return allowOrigin(mode, req, res, aclGraph, accessTypeElem);
-                });
-            });
+                    originValue = allowOrigin(mode, req, res, aclGraph, modeElem);
+                    if (originValue) {
+                        return originValue;
+                    }
+                }
+            }
 
             if (req.session.userId.length === 0 || req.session.identified === false)  {
                 logging.log("ACL -- Authentication required");
@@ -178,54 +195,59 @@ function allow(mode, req, res) {
     };
 }
 
-function allowOrigin(mode, req, res, aclGraph, triple) {
+function allowOrigin(mode, req, res, aclGraph, subject) {
     logging.log("ACL -- In allow origin");
-    var ownerStatements = aclGraph.any(triple.subject, ns.acl("owner"),
+    var ownerStatements = aclGraph.each(subject, ns.acl("owner"),
         aclGraph.sym(req.session.userId));
-    ownerStatements.forEach(function(ownerElem) {
+    for (var ownerIndex in ownerStatements) {
         logging.log("ACL -- " + mode + " access allowed (as owner) for: " + req.session.userId);
         return {
             status: 200,
             err: null
         };
-    });
-    var agentStatements = aclGraph.any(triple.subject, ns.acl("agent"),
+    }
+    var agentStatements = aclGraph.each(subject, ns.acl("agent"),
         aclGraph.sym(req.session.userId));
-    agentStatements.forEach(function(agentElem) {
+    logging.log(subject);
+    logging.log(ns.acl("agent"));
+    logging.log(aclGraph.sym(req.session.userId));
+    logging.log("agentStatements " + agentStatements);
+    for (var agentIndex in agentStatements) {
         logging.log("ACL -- " + mode + " access allowed (as agent) for: " + req.session.userId);
         return {
             status: 200,
             return: null
         };
-    });
-    var agentClassStatements = aclGraph.any(triple.subject, ns.acl("agentClass"), undefined);
-    agentClassStatements.forEach(function(agentClassElem) {
+    }
+    var agentClassStatements = aclGraph.each(subject, ns.acl("agentClass"), undefined);
+    for (var agentClassIndex in agentClassStatements) {
+        var agentClassElem = agentClassStatements[agentClassIndex];
         //Check for FOAF groups
         logging.log("ACL -- Found agentClass policy");
-        if (agentClassElem.object.sameTerm(ns.foaf("Agent"))) {
+        if (agentClassElem.sameTerm(ns.foaf("Agent"))) {
             logging.log("ACL -- " + mode + " allowed access as FOAF agent");
             return {
                 status: 200,
                 err: null
             };
         }
-        var groupURI = rdfVocab.debrack(agentClassElem.object.toString());
+        var groupURI = rdfVocab.debrack(agentClassElem.toString());
         var groupGraph = $rdf.graph();
         var groupFetcher = $rdf.fetcher(groupGraph, 3000, false);
         groupFetcher.nowOrWhenFetched(groupURI, null, function(ok, err) {});
-        var typeStatements = groupGraph.any(agentClassElem.object, ns.rdf("type"), ns.foaf("Group"));
+        var typeStatements = groupGraph.each(agentClassElem, ns.rdf("type"), ns.foaf("Group"));
         if (groupGraph.statements.length > 0 && typeStatements.length > 0) {
-            var memberStatements = groupGraph.any(agentClassElem.object, ns.foaf("member"),
+            var memberStatements = groupGraph.each(agentClassElem, ns.foaf("member"),
                 groupGraph.sym(req.session.userId));
-            memberStatements.forEach(function(memberElem) {
+            for (var memberIndex in memberStatements) {
                 logging.log("ACL -- " + req.session.userId + " listed as member of the group " + groupURI);
                 return {
                     status: 200,
                     err: null
                 };
-            });
+            }
         }
-    });
+    }
 }
 
 function allowIfACLEnabled(mode, req, res, next) {
