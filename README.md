@@ -1,42 +1,26 @@
-ldnode
-==============
+# ldnode
 
 [![Build Status](https://api.travis-ci.org/linkeddata/ldnode.svg)](https://travis-ci.org/linkeddata/ldnode)
 
-All you need to run distributed linked data apps on top of a bit of file system.  Typically used as a proxy, with Apache doing the ACLs and GETs, just to do the fast real-time patch of data resources.
+Linked Data Platform server based on [rdflib.js](https://github.com/linkeddata/rdflib.js) and [node.js](https://nodejs.org/). This is all you need to run distributed linked data apps on top of the file system.
 
-Linked Data Platform server based on rdflib.js and node.js
+## Features
 
-Using the rdflib.js library originally developed for the browser environment
-and since ported to node.js, a linked data server supporting the POST and PATCH.
-Minimum requirement is to suport the client side of the same library, which currently (September 2014)
-uses a form of SPARQL-Patch via POST.
-
-Features
-
-- handles GET, PUT and PATCH
-- includes proxy for cross-site data access
-
-Goals (see issues):
-
-- provide Access control using RDF ACLs
-- provide authentication using webid
-- real-time live updates using websokets (etc)
+- [x] GET, PUT and PATCH support
+- [x] Proxy for cross-site data access
+- [x] Access control using RDF ACLs
+- [x] WebID Authentication
+- [x] Real-time live updates (using websokets)
+- [ ] Mount as express' router
 
 
-Install
--------
+## Install
 
-    npm install
+```
+npm install
+```
 
-All dependencies are installed to the local node_modules directory and no other steps are necessary.
-
-
-Command line tool
------------------
-
-You can run `ldnode` straight from your command line, by running `server.js` or installing `ldnode` globally.
-
+## Command line tool
 
     npm install -g ldnode
 
@@ -66,21 +50,13 @@ The command line tool has the following options
       --cert             Path to the private key used to enable webid authentication
       -h --help          Print this list and exit.
 
-Tests
-------
+## Tests
 
-To run the test suite run
+The tests assume that there is a running ldnode.
 
-    npm test
-
-from the main directory. The test suite assumes the test server is already running. To start the server run
-
-    make
-
-from the main directory in another terminal.
-
-There is another suite of tests in the test directory that covers the SPARQL-PATCH functionality. To run it run
-
-    make
-
-from the test directory. This suite also assumes the test server is already running. Eventually all tests in this second suite will be moved to the first one.
+```bash
+# on a terminal
+make
+# on another terminal
+npm test
+```
