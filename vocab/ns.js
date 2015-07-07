@@ -10,5 +10,5 @@ exports.ns = {
     cert: $rdf.Namespace("http://www.w3.org/ns/auth/cert#"),
     foaf: $rdf.Namespace("http://xmlns.com/foaf/0.1/"),
     stat: $rdf.Namespace("http://www.w3.org/ns/posix/stat#"),
-    dct:  $rdf.Namespace("http://purl.org/dc/terms/"),
+    dct:  $rdf.Namespace("http://purl.org/dc/terms/")
 };
