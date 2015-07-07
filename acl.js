@@ -27,9 +27,10 @@ function allow(mode, req, res) {
     var depth = relativePath.split('/');
 
     for (var i = 0; i < depth.length; i++) {
-        var pathAcl = filepath + aclExtension;
+        var pathAcl = S(filepath).endsWith(aclExtension) ?
+                filepath : filepath + aclExtension;
         var pathUri = file.filenameToBaseUri(filepath);
-        var pathAclUri = file.filenameToBaseUri(filepath + aclExtension);
+        var pathAclUri = file.filenameToBaseUri(pathAcl);
 
         if (!fs.existsSync(filepath) || !fs.existsSync(pathAcl)) {
             continue;
@@ -57,10 +58,36 @@ function allow(mode, req, res) {
                 ns.acl("Control"));
             for(var controlIndex in controlStatements) {
                 var controlElem = controlStatements[controlIndex];
+
                 var accessStatements = aclGraph.each(controlElem,
                     ns.acl(accessType), aclGraph.sym(pathUri));
                 for(var accessIndex in accessStatements) {
                     var accessElem = accessStatements[accessIndex];
+
+                    var originsControl = aclGraph.each(modeElem, ns.acl("origin"), undefined);
+                    var originControlValue;
+                    if (origin.length > 0 && originsControl.length > 0) {
+                        logging.log("ACL -- Origin set to: " + rdfVocab.brack(origin));
+                        for(var originsControlIndex in originsControl) {
+                            var originsControlElem = originsControl[originsControlIndex];
+                            if (rdfVocab.brack(origin) === originsControlElem.toString()) {
+                                logging.log("ACL -- Found policy for origin: " +
+                                    originsControlElem.toString());
+                                originControlValue = allowOrigin(mode, req, res, aclGraph, controlElem);
+                                if (originControlValue) {
+                                    return originControlValue;
+                                }
+                            }
+                        }
+                        continue;
+                    } else {
+                        logging.log("ACL -- No origin found, moving on.");
+                    }
+                    originControlValue = allowOrigin(mode, req, res, aclGraph, controlElem);
+                    if (originControlValue) {
+                        return originControlValue;
+                    }
+
                     var ownerStatements = aclGraph.each(accessElem,
                         ns.acl("owner"), aclGraph.sym(req.session.userId));
                     for(var ownerIndex in ownerStatements) {
@@ -71,6 +98,7 @@ function allow(mode, req, res) {
                             err: null
                         };
                     }
+
                     var agentStatements = aclGraph.each(controlElem,
                         ns.acl("agent"), aclGraph.sym(req.session.userId));
                     for(var agentIndex in agentStatements) {
@@ -81,6 +109,7 @@ function allow(mode, req, res) {
                             err: null
                         };
                     }
+
                     var agentClassStatements = aclGraph.each(controlElem,
                         ns.acl("agentClass"), undefined);
                     for (var agentClassIndex in agentClassStatements) {
