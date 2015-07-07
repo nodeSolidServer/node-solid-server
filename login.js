@@ -51,7 +51,7 @@ function loginHandler(req, res, next) {
         } else {
             logging.log("Login -- Empty certificate");
             setEmptySession(req);
-            return res.sendStatus(403);
+            next();
         }
     }
 
