@@ -1,13 +1,10 @@
 /*jslint node: true*/
+var supertest = require('supertest');
+var path = require('path');
+var ldnode = require('../index');
+var fs = require('fs');
 
 describe('ldnode', function() {
-  var assert = require('assert');
-  var fs = require('fs');
-  var S = require('string');
-  var supertest = require('supertest');
-  var path = require('path');
-  var ldnode = require('../index');
-
   var address = 'http://localhost:3457/test/';
   var ldp = ldnode({
     uriBase: address,

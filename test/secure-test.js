@@ -1,16 +1,16 @@
 /*jslint node: true*/
+var assert = require('chai').assert;
+var fs = require('fs');
+var request = require('request');
+var path = require('path');
+var $rdf = require('rdflib');
+var supertest = require('supertest');
+var S = require('string')
 
 describe('acl', function() {
-  var assert = require('chai').assert;
-  var path = require('path');
-  var fs = require('fs');
-  var $rdf = require('rdflib');
-  var request = require('request');
   var S = require('string');
-  var supertest = require('supertest');
   var ns = require('../vocab/ns.js').ns;
 
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
   var address = 'https://localhost:3456/test/';
   var ldnode = require('../index');
   var ldp = ldnode({
