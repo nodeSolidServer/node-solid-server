@@ -1,7 +1,5 @@
 var fs = require('fs');
-var ldnode = require('../index');
-var express = require('express');
-var session = require('express-session');
+var ldnode = require('../server');
 var options = require('../options.js');
 var logging = require('../logging.js');
 
@@ -53,35 +51,10 @@ if (process.platform !== 'win32') {
     });
 }
 
-var app = express();
-app.use(session({
-  secret: 'node-ldp',
-  saveUninitialized: false,
-  resave: false
-}));
-
-ldnode(app, options)
-
-if (options.webid) {
-  try {
-    var key = fs.readFileSync(options.privateKey);
-    var cert = fs.readFileSync(options.cert);
-  } catch (err) {
-    logging.log("Server -- Error reading private key or certificate: " + err);
+ldnode(options, function(err) {
+  if (err) {
     process.exit(1);
   }
-
-  var credentials = {
-    key: key,
-    cert: cert,
-    requestCert: true
-  };
-  logging.log("Server -- Private Key: " + credentials.key);
-  logging.log("Server -- Certificate: " + credentials.cert);
-  https.createServer(credentials, app).listen(options.port);
-} else {
-  app.listen(options.port);
-}
-
-logging.log("Server -- Listening on port " + options.port);
+  logging.log('LDP started!');
+})
 

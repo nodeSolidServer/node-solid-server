@@ -6,6 +6,15 @@ var S = require('string');
 var supertest = require('supertest');
 
 var address = 'http://localhost:3456/test/';
+var ldnode = require('../index');
+var express = require('express');
+
+var ldp = ldnode({
+  uriBase: address,
+  fileBase: __dirname
+});
+ldp.listen(3456);
+
 var server = supertest(address);
 
 process.chdir('./test', undefined);

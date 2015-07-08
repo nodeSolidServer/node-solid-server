@@ -50,7 +50,7 @@ function createOptions(path, user) {
     return options;
 }
 
-describe.only('Basic HTTPS Test', function() {
+describe('Basic HTTPS Test', function() {
     it('Should return "Hello, World!"', function(done) {
         var options = createOptions('hello.html', 'user1');
         console.log(options)

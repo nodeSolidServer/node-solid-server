@@ -30,16 +30,45 @@ var putHandler = require('./handlers/put.js');
 var deleteHandler = require('./handlers/delete.js');
 var patchHandler = require('./handlers/patch.js');
 
-function ldnode (app, options) {
+function ldnode (opts, callback) {
+  var app = express();
+
+  // Session [TODO]
+  app.use(session({
+    secret: 'node-ldp',
+    saveUninitialized: false,
+    resave: false
+  }));
+
+  // Creating root container
   container.createRootContainer();
 
+  // Adding proxy
   if (options.xssProxy) {
     proxy(app, options.proxyFilter);
   }
 
+  // Setup Express app
+  options.init(opts);
   app.use(options.pathStart, routes());
   ws(app);
   logging.log("Server -- Router attached to " + options.pathStart);
+  logging.log("Server -- Listening on port " + options.port);
+
+  if (!options.webid) {
+    return app;
+  }
+
+  var credentials = {
+    key: fs.readFileSync(key),
+    cert: fs.readFileSync(cert),
+    requestCert: true
+  };
+
+  logging.log("Server -- Private Key: " + credentials.key);
+  logging.log("Server -- Certificate: " + credentials.cert);
+
+  return https.createServer(credentials, app);
 }
 
 function proxy (app, path) {
