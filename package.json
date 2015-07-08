@@ -46,7 +46,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node bin/ldnode.js",
-    "test": "./node_modules/mocha/bin/mocha ./test/test.js"
+    "test": "./node_modules/mocha/bin/mocha ./test/*.js"
   },
   "bin": {
     "ldnode": "../bin/ldnode.js"

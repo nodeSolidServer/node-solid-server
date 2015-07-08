@@ -4,11 +4,9 @@ var assert = require('assert');
 var fs = require('fs');
 var S = require('string');
 var supertest = require('supertest');
-
+var path = require('path');
 var address = 'http://localhost:3456/test/';
 var ldnode = require('../index');
-var express = require('express');
-
 var ldp = ldnode({
   uriBase: address,
   fileBase: __dirname
@@ -17,7 +15,7 @@ ldp.listen(3456);
 
 var server = supertest(address);
 
-process.chdir('./test', undefined);
+// process.chdir('./test', undefined);
 
 describe('Hello World', function() {
     it('Should return "Hello, World!"', function(done) {
@@ -110,7 +108,8 @@ describe('HEAD API', function() {
 });
 
 describe('PUT API', function() {
-    var putRequestBody = fs.readFileSync('./testfiles/put1.ttl', {
+    console.log(__dirname)
+    var putRequestBody = fs.readFileSync(__dirname + '/testfiles/put1.ttl', {
         'encoding': 'utf8'
     });
     it('Should create new resource', function(done) {
@@ -124,9 +123,9 @@ describe('PUT API', function() {
             .send(putRequestBody)
             .set('content-type', 'text/turtle')
             .expect(function() {
-                fs.unlinkSync('./foo/bar/baz.ttl');
-                fs.rmdirSync('./foo/bar/');
-                fs.rmdirSync('./foo/');
+                fs.unlinkSync(__dirname + '/foo/bar/baz.ttl');
+                fs.rmdirSync(__dirname + '/foo/bar/');
+                fs.rmdirSync(__dirname + '/foo/');
             })
             .expect(201, done);
     });
@@ -149,10 +148,10 @@ describe('DELETE API', function() {
 });
 
 describe('POST API', function() {
-    var postRequest1Body = fs.readFileSync('./testfiles/put1.ttl', {
+    var postRequest1Body = fs.readFileSync(__dirname + '/testfiles/put1.ttl', {
         'encoding': 'utf8'
     });
-    var postRequest2Body = fs.readFileSync('./testfiles/post2.ttl', {
+    var postRequest2Body = fs.readFileSync(__dirname + '/testfiles/post2.ttl', {
         'encoding': 'utf8'
     });
     it('Should create new resource', function(done) {
@@ -202,8 +201,8 @@ describe('POST API', function() {
         server.get('/loans')
             .expect('content-type', /text\/turtle/)
             .expect(function() {
-                fs.unlinkSync('./loans/.meta');
-                fs.rmdirSync('./loans/');
+                fs.unlinkSync(__dirname + '/loans/.meta');
+                fs.rmdirSync(__dirname + '/loans/');
             })
             .expect(200, done);
     });

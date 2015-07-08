@@ -1,6 +1,7 @@
 /*jslint node: true*/
 
 var assert = require('chai').assert;
+var path = require('path');
 var fs = require('fs');
 var $rdf = require('rdflib');
 var request = require('request');
@@ -9,10 +10,19 @@ var supertest = require('supertest');
 
 var ns = require('../vocab/ns.js').ns;
 
-process.chdir('./test', undefined);
+// process.chdir('./test', undefined);
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-var address = 'https://localhost:3456/test/';
+var address = 'https://localhost:3457/test/';
+
+var ldnode = require('../index');
+var ldp = ldnode({
+  uriBase: address,
+  fileBase: __dirname,
+  webid: true
+});
+ldp.listen(3457);
+
 var aclExtension = '.acl';
 var server = supertest(address);
 
@@ -31,12 +41,12 @@ var user1 = "https://user1.databox.me/profile/card#me";
 var user2 = "https://user2.databox.me/profile/card#me";
 var userCredentials = {
     user1: {
-        cert: fs.readFileSync('testfiles/user1-cert.pem'),
-        key: fs.readFileSync('testfiles/user1-key.pem')
+        cert: fs.readFileSync(__dirname + '/testfiles/user1-cert.pem'),
+        key: fs.readFileSync(__dirname + '/testfiles/user1-key.pem')
     },
     user2: {
-        cert: fs.readFileSync('testfiles/user2-cert.pem'),
-        key: fs.readFileSync('testfiles/user2-key.pem')
+        cert: fs.readFileSync(__dirname + '/testfiles/user2-cert.pem'),
+        key: fs.readFileSync(__dirname + '/testfiles/user2-key.pem')
     }
 };
 
@@ -53,7 +63,6 @@ function createOptions(path, user) {
 describe('Basic HTTPS Test', function() {
     it('Should return "Hello, World!"', function(done) {
         var options = createOptions('hello.html', 'user1');
-        console.log(options)
         request(options, function(error, response, body) {
             assert.notOk(error);
             assert.equal(response.statusCode, 200);

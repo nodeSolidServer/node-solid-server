@@ -60,8 +60,8 @@ function ldnode (opts, callback) {
   }
 
   var credentials = {
-    key: fs.readFileSync(key),
-    cert: fs.readFileSync(cert),
+    key: fs.readFileSync(options.privateKey),
+    cert: fs.readFileSync(options.cert),
     requestCert: true
   };
 
