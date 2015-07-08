@@ -20,7 +20,38 @@ Linked Data Platform server based on [rdflib.js](https://github.com/linkeddata/r
 npm install
 ```
 
-## Command line tool
+## Usage
+
+### Simple
+
+```javascript
+var ldnode = require('ldnode')
+
+var ldp = ldnode({
+  uriBase: "http://example.com/test/",
+  fileBase: __dirname + '/test/'
+})
+ldp.listen(1234, function() {
+  // Started Linked Data Platform
+})
+```
+
+### Advanced
+
+You can integrate it with your existing express app
+
+```javascript
+var ldnode = require('ldnode')
+var app = require('express')()
+// Add LDP endpoints
+app.use('/test', ldnode.routes())
+// Add ws support
+ldnode.ws(app)
+// add proxy
+ldnode.proxy(app, '/proxy')
+```
+
+### Command line tool
 
     npm install -g ldnode
 
