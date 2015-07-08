@@ -43,17 +43,12 @@
       "chai": "*",
       "supertest": "1.*"
   },
-  "files": [
-    "server.js",
-    "test",
-    "Makefile"
-  ],
-  "main": "server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "node bin/ldnode.js",
     "test": "./node_modules/mocha/bin/mocha ./test/test.js"
   },
   "bin": {
-    "ldnode": "./server.js"
+    "ldnode": "../bin/ldnode.js"
   }
 }

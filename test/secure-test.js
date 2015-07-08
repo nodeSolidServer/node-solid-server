@@ -50,10 +50,12 @@ function createOptions(path, user) {
     return options;
 }
 
-describe('Basic HTTPS Test', function() {
+describe.only('Basic HTTPS Test', function() {
     it('Should return "Hello, World!"', function(done) {
         var options = createOptions('hello.html', 'user1');
+        console.log(options)
         request(options, function(error, response, body) {
+            assert.notOk(error);
             assert.equal(response.statusCode, 200);
             assert.match(response.headers['content-type'], /text\/html/);
             done();
