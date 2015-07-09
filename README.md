@@ -27,7 +27,7 @@ npm install
 ```javascript
 var ldnode = require('ldnode')
 
-var ldp = ldnode({
+var ldp = ldnode.createServer({
   uriBase: "http://example.com/test/",
   fileBase: __dirname + '/test/'
 })
@@ -43,12 +43,8 @@ You can integrate it with your existing express app
 ```javascript
 var ldnode = require('ldnode')
 var app = require('express')()
-// Add LDP endpoints
-app.use('/test', ldnode.routes())
-// Add ws support
-ldnode.ws(app)
-// add proxy
-ldnode.proxy(app, '/proxy')
+app.use('/test', ldnode(opts))
+...
 ```
 
 ### Command line tool
