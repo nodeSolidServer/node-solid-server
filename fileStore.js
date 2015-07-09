@@ -7,6 +7,7 @@ var S = require('string');
 var logging = require('./logging.js');
 
 function uriToFilename(uri, fileBase) {
+    console.log(uri, fileBase)
     var filename = path.join(fileBase, uri);
     // Make sure filename ends with '/'  if filename exists and is a directory.
     try {
@@ -21,7 +22,7 @@ function uriToFilename(uri, fileBase) {
 }
 
 function uriToRelativeFilename(uri, fileBase) {
-    var filename = uriToFilename(uri);
+    var filename = uriToFilename(uri, fileBase);
     var relative = path.relative(fileBase, filename);
     return relative;
 }

@@ -67,7 +67,8 @@ function ldnode (argv) {
 
 function createServer(argv) {
 
-  var app = ldnode(argv)
+  var app = ldnode(argv);
+  var opts = app.locals.ldp;
 
   if (app.locals.ldp && app.locals.ldp.webid) {
     var credentials = {

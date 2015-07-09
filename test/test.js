@@ -3,7 +3,7 @@ var supertest = require('supertest');
 var path = require('path');
 var ldnode = require('../index');
 var fs = require('fs');
-var S = require('string')
+var S = require('string');
 
 describe('ldnode', function() {
   var address = 'http://localhost:3457/test/';
@@ -108,7 +108,6 @@ describe('ldnode', function() {
   });
 
   describe('PUT API', function() {
-      console.log(__dirname)
       var putRequestBody = fs.readFileSync(__dirname + '/testfiles/put1.ttl', {
           'encoding': 'utf8'
       });

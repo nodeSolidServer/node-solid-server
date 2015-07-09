@@ -17,7 +17,7 @@ var rdfVocab = require('./vocab/rdf.js');
 var aclExtension = ".acl";
 
 function allow(mode, req, res) {
-    var options = req.app.local.ldp;
+    var options = req.app.locals.ldp;
     var origin = req.get('origin');
     origin = origin ? origin : '';
 
