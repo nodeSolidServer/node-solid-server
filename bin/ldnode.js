@@ -1,6 +1,5 @@
 var fs = require('fs');
-var ldnode = require('../server');
-var options = require('../options.js');
+var ldnode = require('../index');
 var logging = require('../logging.js');
 
 var argv = require('optimist')
@@ -38,9 +37,6 @@ if (argv.h || argv.help || argv['?']) {
     process.exit();
 }
 
-// Initialize options
-options.init(argv);
-
 // Command line handling
 // Signal handling
 if (process.platform !== 'win32') {
@@ -50,11 +46,8 @@ if (process.platform !== 'win32') {
         process.exit();
     });
 }
-
-ldnode(options, function(err) {
-  if (err) {
-    process.exit(1);
-  }
-  logging.log('LDP started!');
-})
-
+process.env.DEBUG = argv.v;
+var app = ldnode.createServer(argv)
+app.listen(argv.p, function() {
+    logging.log('LDP started on port ' + argv.p);
+});
