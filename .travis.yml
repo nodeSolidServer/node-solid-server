@@ -3,8 +3,3 @@ language: node_js
 node_js:
   - "0.12"
 
-before_script:
-  - npm install --quiet -g grunt-cli karma bower
-
-after_script: killall node
-
