@@ -1,6 +1,6 @@
 # ldnode
 
-[![Build Status](https://api.travis-ci.org/linkeddata/ldnode.svg)](https://travis-ci.org/linkeddata/ldnode)
+[![Build Status](https://travis-ci.org/linkeddata/ldnode.svg?branch=master)](https://travis-ci.org/linkeddata/ldnode)
 
 Linked Data Platform server based on [rdflib.js](https://github.com/linkeddata/rdflib.js) and [node.js](https://nodejs.org/). This is all you need to run distributed linked data apps on top of the file system.
 
