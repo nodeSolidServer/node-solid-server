@@ -82,8 +82,5 @@ The command line tool has the following options
 The tests assume that there is a running ldnode.
 
 ```bash
-# on a terminal
-make
-# on another terminal
-npm test
+$ npm test
 ```
