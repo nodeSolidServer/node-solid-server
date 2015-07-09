@@ -3,6 +3,7 @@
 "use strict";
 
 var fs = require('fs');
+var glob = require('glob');
 var path = require('path');
 var $rdf = require('rdflib');
 var S = require('string');
@@ -26,15 +27,19 @@ function allow(mode, req, res) {
     var relativePath = file.uriToRelativeFilename(req.path);
     var depth = relativePath.split('/');
 
+    //Handle glob requests
+    if (req.method === 'GET' && glob.hasMagic(filepath)) {
+        return {
+            status: 200,
+            err: null
+        };
+    }
+
     for (var i = 0; i < depth.length; i++) {
         var pathAcl = S(filepath).endsWith(aclExtension) ?
                 filepath : filepath + aclExtension;
         var pathUri = file.filenameToBaseUri(filepath);
-        var pathAclUri = file.filenameToBaseUri(pathAcl);
-
-        if (!fs.existsSync(filepath) || !fs.existsSync(pathAcl)) {
-            continue;
-        }
+        relativePath = path.relative(options.fileBase, filepath);
 
         logging.log("ACL -- Checking " + accessType + "<" + mode + "> to " +
             pathUri + " for WebID: " + req.session.userId);
@@ -198,25 +203,28 @@ function allow(mode, req, res) {
 
         accessType = "defaultForNew";
         if (i === 0) {
-            if (S(filepath).endsWith('/')) {
-                if (path.dirname(path.dirname(filepath)) === ".") {
-                    filepath = options.fileBase;
-                } else {
-                    filepath = options.fileBase + path.dirname(path.dirname(filepath));
-                }
+            if (path.dirname(path.dirname(relativePath)) == '.') {
+                filepath = options.fileBase;
+            } else if (S(relativePath).endsWith("/")) {
+                filepath = options.fileBase + path.dirname(path.dirname(relativePath));
+            } else {
+                filepath = options.fileBase + path.dirname(relativePath);
             }
         } else {
-            if (filepath.length === 0) {
+            if (relativePath.length === 0) {
                 break;
-            } else if (path.dirname(path.dirname(filepath)) === ".") {
+            } else if (path.dirname(path.dirname(relativePath)) === '.') {
                 filepath = options.fileBase;
             } else {
-                filepath = options.fileBase + path.dirname(path.dirname(filepath));
+                filepath = options.fileBase + path.dirname(path.dirname(relativePath));
             }
         }
 
-        filepath += "/";
+        if (!S(filepath).endsWith("/")) {
+            filepath += "/";
+        }
     }
+
     logging.log("ACL -- No ACL policies present - access allowed");
     return {
         status: 200,
@@ -237,10 +245,6 @@ function allowOrigin(mode, req, res, aclGraph, subject) {
     }
     var agentStatements = aclGraph.each(subject, ns.acl("agent"),
         aclGraph.sym(req.session.userId));
-    logging.log(subject);
-    logging.log(ns.acl("agent"));
-    logging.log(aclGraph.sym(req.session.userId));
-    logging.log("agentStatements " + agentStatements);
     for (var agentIndex in agentStatements) {
         logging.log("ACL -- " + mode + " access allowed (as agent) for: " + req.session.userId);
         return {
@@ -292,12 +296,36 @@ function allowIfACLEnabled(mode, req, res, next) {
     }
 }
 
+exports.allow = allow;
+
 exports.allowReadHandler = function(req, res, next) {
     allowIfACLEnabled("Read", req, res, next);
 };
 
 exports.allowWriteHandler = function(req, res, next) {
     allowIfACLEnabled("Write", req, res, next);
+};
+
+exports.allowAppendHandler = function(req, res, next) {
+    allowIfACLEnabled("Append", req, res, next);
+};
+
+exports.allowAppendThenWriteHandler = function(req, res, next) {
+    if (!options.webid) {
+        return next();
+    } else {
+        var allowAppendValue = allow("Append", req, res, next);
+        if (allowAppendValue.status == 200) {
+            return next();
+        } else {
+            var allowWriteValue = allow("Write", req, res, next);
+            if(allowWriteValue.status == 200) {
+                return next();
+            } else {
+                return res.status(allowWriteValue.status).send(allowWriteValue.err);
+            }
+        }
+    }
 };
 
 exports.allowControlHandler = function(req, res, next) {
