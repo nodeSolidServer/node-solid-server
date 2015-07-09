@@ -4,7 +4,6 @@
 var N3 = require('n3');
 var jsonld = require('jsonld');
 var async = require('async');
-
 var logging = require('./logging.js');
 
 function parseHandler(req, res, next) {

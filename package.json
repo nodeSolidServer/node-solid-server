@@ -58,7 +58,7 @@
     "test": "./node_modules/mocha/bin/mocha ./test/*.js"
   },
   "bin": {
-    "ldnode": "../bin/ldnode.js"
+    "ldnode": "./bin/ldnode.js"
   }
 }
 

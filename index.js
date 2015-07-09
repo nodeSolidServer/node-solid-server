@@ -30,12 +30,16 @@ var putHandler = require('./handlers/put.js');
 var deleteHandler = require('./handlers/delete.js');
 var patchHandler = require('./handlers/patch.js');
 
-function ldnode (opts, callback) {
+function ldnode (argv, callback) {
+  var opts = options(argv);
   var app = express();
+
+  // Setting options as local variable
+  app.locals.ldp = opts;
 
   // Session [TODO]
   app.use(session({
-    secret: 'node-ldp',
+    secret: opts.sessionSecret || 'node-ldp',
     saveUninitialized: false,
     resave: false
   }));
@@ -43,33 +47,39 @@ function ldnode (opts, callback) {
   // Creating root container
   container.createRootContainer();
 
+  // Setting up routes
+  app.use(opts.pathStart, routes());
+
   // Adding proxy
-  if (options.xssProxy) {
-    proxy(app, options.proxyFilter);
+  if (opts.xssProxy) {
+    proxy(app, opts.proxyFilter);
   }
 
   // Setup Express app
-  options.init(opts);
-  app.use(options.pathStart, routes());
-  ws(app);
-  logging.log("Server -- Router attached to " + options.pathStart);
-  logging.log("Server -- Listening on port " + options.port);
-
-  if (!options.webid) {
-    return app;
+  if (opts.live) {
+    ws(app);
   }
 
-  var credentials = {
-    key: fs.readFileSync(options.privateKey),
-    cert: fs.readFileSync(options.cert),
-    requestCert: true
-  };
-
-  logging.log("Server -- Private Key: " + credentials.key);
-  logging.log("Server -- Certificate: " + credentials.cert);
-
-  return https.createServer(credentials, app);
+  logging.log("Server -- Router attached to " + opts.pathStart);
 }
+
+function createServer(app) {
+  logging.log("Server -- Listening on port " + opts.port);
+
+  if (app.locals.ldp && app.locals.ldp.webid) {
+    var credentials = {
+      key: fs.readFileSync(opts.privateKey),
+      cert: fs.readFileSync(opts.cert),
+      requestCert: true
+    };
+    logging.log("Server -- Private Key: " + credentials.key);
+    logging.log("Server -- Certificate: " + credentials.cert);
+
+    return https.createServer(credentials, app);
+  }
+
+  return app;
+ }
 
 function proxy (app, path) {
   logging.log('XSS Proxy listening to ' + path);
@@ -148,6 +158,7 @@ function ws (app) {
 ldnode.proxy = proxy;
 ldnode.ws = ws;
 ldnode.routes = routes;
+ldnode.run = run;
 
 module.exports = ldnode;
 

@@ -16,7 +16,7 @@ describe('ldnode', function() {
 
   // process.chdir('./test', undefined);
 
-  describe('Hello World', function() {
+  describe.only('Hello World', function() {
       it('Should return "Hello, World!"', function(done) {
           server.get('/hello.html')
               .expect('Content-type', /text\/html/)
