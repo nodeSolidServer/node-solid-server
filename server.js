@@ -164,9 +164,9 @@ router.use('/*', function(req, res, next) {
 //ACL handlers
 router.get("/*", acl.allowReadHandler);
 router.head("/*", acl.allowReadHandler);
-router.post("/*", acl.allowWriteHandler);
-router.patch("/*", acl.allowWriteHandler);
-router.put("/*", acl.allowWriteHandler);
+router.post("/*", acl.allowAppendThenWriteHandler);
+router.patch("/*", acl.allowAppendThenWriteHandler);
+router.put("/*", acl.allowAppendThenWriteHandler);
 router.delete("/*", acl.allowWriteHandler);
 
 // Convert json-ld and nquads to turtle
