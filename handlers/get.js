@@ -8,6 +8,7 @@ var path = require('path');
 var $rdf = require('rdflib');
 var S = require('string');
 
+var acl = require('../acl.js');
 var header = require('../header.js');
 var metadata = require('../metadata.js');
 var options = require('../options.js');
@@ -117,7 +118,7 @@ function get(req, res, includeBody) {
                             {encoding: "utf8"});
                         var baseUri = file.filenameToBaseUri(match);
                         //TODO integrate ACL
-                        if (S(match).endsWith(".ttl")) {
+                        if (S(match).endsWith(".ttl") && aclAllow(match)) {
                             $rdf.parse(fileData, globGraph, baseUri,
                                 'text/turtle');
                         }
@@ -130,6 +131,22 @@ function get(req, res, includeBody) {
                 parseLinkedData(turtleData);
             }
         });
+    }
+
+    function aclAllow(match) {
+        if (!options.webid) {
+            return true;
+        } else {
+            var relativePath = '/' +
+                    path.relative(options.fileBase, match);
+            req.path = relativePath;
+            var allow = acl.allow("Read", req, res);
+            if (allow.status === 200) {
+                return true;
+            } else {
+                return false;
+            }
+        }
     }
 
     function parseLinkedData(turtleData) {
