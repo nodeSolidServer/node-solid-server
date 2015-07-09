@@ -16,6 +16,7 @@ var ldpVocab = require('../vocab/ldp.js');
 var rdfVocab = require('../vocab/rdf.js');
 
 function handler(req, res) {
+    var options = req.app.locals.ldp;
     if (req.is('application/sparql')) {
         logging.log("POST -- Handling sparql query");
         return patch.handler(req, res);
@@ -23,7 +24,7 @@ function handler(req, res) {
         logging.log("POST -- Handling sparql-update query");
         return patch.handler(req, res);
     } else {
-        var containerPath = file.uriToFilename(req.path);
+        var containerPath = file.uriToFilename(req.path, options.fileBase);
         logging.log("POST -- Container path: " + containerPath);
         if (metadata.isMetadataFile(containerPath)) {
             logging.log("POST -- Invalid container.");
@@ -46,12 +47,12 @@ function handler(req, res) {
 
             var slug = req.get('Slug');
             var resourceMetadata = header.parseMetadataFromHeader(req.get('Link'));
-            var resourcePath = container.createResourceUri(containerPath, slug,
+            var resourcePath = container.createResourceUri(options, containerPath, slug,
                 resourceMetadata.isBasicContainer);
             var resourceGraph = $rdf.graph();
 
             if (resourcePath === null) {
-                container.releaseResourceUri(resourcePath);
+                container.releaseResourceUri(options, resourcePath);
                 logging.log("POST -- URI already exists or in use");
                 return res.sendStatus(400);
             }
@@ -67,12 +68,12 @@ function handler(req, res) {
 
             var resourceBaseUri;
             try {
-                resourceBaseUri = file.filenameToBaseUri(resourcePath);
+                resourceBaseUri = file.filenameToBaseUri(resourcePath, options.uriBase, options.fileBase);
                 $rdf.parse(requestText, resourceGraph,
                            resourceBaseUri, 'text/turtle');
             } catch (parseErr) {
                 logging.log("POST -- Error parsing resource: " + parseErr);
-                container.releaseResourceUri(resourcePath);
+                container.releaseResourceUri(options, resourcePath);
                 return res.sendStatus(400);
             }
 
@@ -81,10 +82,10 @@ function handler(req, res) {
             if (resourceMetadata.isBasicContainer) {
                 resourcePath += '/';
                 resourceBaseUri += '/';
-                container.createNewContainer(resourcePath, resourceGraph,
+                container.createNewContainer(options, resourcePath, resourceGraph,
                     containerCallback);
             } else {
-                container.createNewResource(resourcePath,
+                container.createNewResource(options, resourcePath,
                     resourceGraph, resourceCallback);
             }
         } else {

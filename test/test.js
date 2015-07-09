@@ -3,10 +3,11 @@ var supertest = require('supertest');
 var path = require('path');
 var ldnode = require('../index');
 var fs = require('fs');
+var S = require('string')
 
 describe('ldnode', function() {
   var address = 'http://localhost:3457/test/';
-  var ldp = ldnode({
+  var ldp = ldnode.createServer({
     uriBase: address,
     fileBase: __dirname
   });
@@ -16,7 +17,7 @@ describe('ldnode', function() {
 
   // process.chdir('./test', undefined);
 
-  describe.only('Hello World', function() {
+  describe('Hello World', function() {
       it('Should return "Hello, World!"', function(done) {
           server.get('/hello.html')
               .expect('Content-type', /text\/html/)

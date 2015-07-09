@@ -14,11 +14,12 @@ var options = require('../options.js');
 var logging = require('../logging.js');
 
 function handler(req, res) {
+    var options = req.app.locals.ldp;
     logging.log("PUT -- Request path: " + req.path);
     logging.log("PUT -- Text length: " + (req.text ? req.text.length : 'undefined'));
     res.header('MS-Author-Via' , 'SPARQL' );
 
-    var filename = file.uriToFilename(req.path);
+    var filename = file.uriToFilename(req.path, options.fileBase);
 
     // PUT requests not supported on containers. Use POST instead
     if (S(filename).endsWith('/')) {

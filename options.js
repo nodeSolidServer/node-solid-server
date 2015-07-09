@@ -46,6 +46,9 @@ function params(argv) {
   opts.webid = argv.webid ? true : false;
   opts.privateKey = argv.privateKey || path.join(opts.fileBase, 'key.pem');
   opts.cert = argv.cert || path.join(opts.fileBase, 'cert.pem');
+
+  // TODO this should be an attribute of an object
+  opts.usedURIs = {};
   
   logging.log("URI path filter regexp: " + opts.pathFilter);
   logging.log("Verbose: " + opts.verbose);

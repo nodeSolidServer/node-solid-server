@@ -30,7 +30,7 @@ var putHandler = require('./handlers/put.js');
 var deleteHandler = require('./handlers/delete.js');
 var patchHandler = require('./handlers/patch.js');
 
-function ldnode (argv, callback) {
+function ldnode (argv) {
   var opts = options(argv);
   var app = express();
 
@@ -45,7 +45,7 @@ function ldnode (argv, callback) {
   }));
 
   // Creating root container
-  container.createRootContainer();
+  container.createRootContainer(opts);
 
   // Setting up routes
   app.use(opts.pathStart, routes());
@@ -61,10 +61,13 @@ function ldnode (argv, callback) {
   }
 
   logging.log("Server -- Router attached to " + opts.pathStart);
+
+  return app
 }
 
-function createServer(app) {
-  logging.log("Server -- Listening on port " + opts.port);
+function createServer(argv) {
+
+  var app = ldnode(argv)
 
   if (app.locals.ldp && app.locals.ldp.webid) {
     var credentials = {
@@ -158,7 +161,7 @@ function ws (app) {
 ldnode.proxy = proxy;
 ldnode.ws = ws;
 ldnode.routes = routes;
-ldnode.run = run;
+ldnode.createServer = createServer;
 
 module.exports = ldnode;
 
