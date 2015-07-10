@@ -3,8 +3,8 @@
 
 var $rdf = require('rdflib');
 var redis = require('redis');
+var debug = require('./logging').subscription;
 
-var logging = require('./logging.js');
 var time = require('./time.js');
 
 var subscriptions = {}; // Map URI to array of watchers
@@ -16,19 +16,19 @@ exports.subscribeToChanges_SSE = function(req, res) {
     var options = req.app.locals.ldp;
 
     var messageCount;
-    console.log("Server Side Events subscription");
+    debug("Server Side Events subscription");
     var targetPath = req.path.slice(0, - options.changesSuffix.length); // lop off ',events'
     if (SSEsubscriptions[targetPath] === undefined) {
         SSEsubscriptions[targetPath] = redis.createClient();
     }
     var subscriber = SSEsubscriptions[targetPath];
-    console.log("Server Side Events subscription: " + targetPath);
+    debug("Server Side Events subscription: " + targetPath);
 
     subscriber.subscribe('updates');
 
     // In case we encounter an error...print it out to the console
     subscriber.on('error', function(err) {
-        console.log("Redis Error: " + err);
+        debug("Redis Error: " + err);
     });
 
     // When we receive a message from the redis connection
@@ -90,29 +90,29 @@ exports.subscribeToChangesLongPoll = function(req, res) {
         for (var i=0; i < subscriptions[targetPath].length; i++) {
             if (subscriptions[targetPath][i] === subscription) {
                 subscriptions[targetPath] = subscriptions[targetPath].splice(i, 1);
-                logging.log("UNSUBSCRIBED " + targetPath + " now " + subscriptions[targetPath].length);
+                debug("UNSUBSCRIBED " + targetPath + " now " + subscriptions[targetPath].length);
                 return;
             }
         }
-        logging.log("ERROR - COULD NOT FIND SUB of " + subscription.timestamp +
+        debug("ERROR - COULD NOT FIND SUB of " + subscription.timestamp +
             " for " + targetPath + " now " + subscriptions[targetPath].length);
 
     };
 
     delayed.on('error', function(e) {
-        logging.log("DeleyaedResponse error " + e);
+        debug("DeleyaedResponse error " + e);
         unsubscribe();
     });
     delayed.on('done', function(e) {
-        logging.log("DeleyaedResponse done " + e);
+        debug("DeleyaedResponse done " + e);
         unsubscribe();
     });
     delayed.on('abort', function(e) {// eg the other end disconnected
-        logging.log("DeleyaedResponse abort " + e);
+        debug("DeleyaedResponse abort " + e);
         unsubscribe();
     });
     delayed.on('cancel', function(e) {
-        logging.log("DeleyaedResponse cancel " + e);
+        debug("DeleyaedResponse cancel " + e);
         unsubscribe();
     });
     delayed.wait();
@@ -122,13 +122,13 @@ exports.subscribeToChangesLongPoll = function(req, res) {
     // was: res.setTimeout
     req.socket.setTimeout(0); // Disable timeout (does this work??)
 
-    logging.log("LONG POLL : Now " + subscriptions[targetPath].length +  " subscriptions for " +  targetPath);
+    debug("LONG POLL : Now " + subscriptions[targetPath].length +  " subscriptions for " +  targetPath);
 
 };
 
 // Find the patch operation itself withing a patch graph
 exports.patchOperation = function(patchKB) {
-    // logging.log("PatchKb = " + patchKB.statements.map(function(st){return st.toNT()}))
+    // debug("PatchKb = " + patchKB.statements.map(function(st){return st.toNT()}))
     var sts = patchKB.statementsMatching(undefined, PATCH('insert'), undefined, undefined)
         .concat(patchKB.statementsMatching(undefined, PATCH('delete'), undefined, undefined));
     return sts.length ? sts[0].subject : null;
@@ -138,14 +138,14 @@ exports.publishDelta = function (req, res, patchKB, targetURI){
 
     var operation = this.patchOperation(patchKB);
     if (!operation) {
-        logging.log("Dummy patch, no opreration. Publish aborted.");
+        debug("Dummy patch, no opreration. Publish aborted.");
         return;
     }
     patchKB.add(operation, PATCH('logged'), new Date()); // @@ also add user
     var patchData = $rdf.serialize(undefined, patchKB, targetURI, 'text/n3');
 
-    logging.log("Distributing change to " + req.path + ", patch is: " );
-    logging.log("[[[" + patchData + "]]]\n");
+    debug("Distributing change to " + req.path + ", patch is: " );
+    debug("[[[" + patchData + "]]]\n");
 
     this.publishDelta_LongPoll(req, res, patchData, targetURI);
 
@@ -153,20 +153,19 @@ exports.publishDelta = function (req, res, patchKB, targetURI){
 
 exports.publishDelta_LongPoll = function (req, res, patchData, targetURI){
     var options = req.app.locals.ldp;
-    logging.log("    Long poll change subscription count " + (subscriptions[req.path] || []).length);
+    debug("    Long poll change subscription count " + (subscriptions[req.path] || []).length);
     if (! subscriptions[req.path]) return;
     subscriptions[req.path].map(function(subscription){
-        logging.log("    Long poll change to " + req.path);
+        debug("    Long poll change to " + req.path);
         if (options.leavePatchConnectionOpen) {
             subscription.response.write(patchData);
         } else {
-            // logging.log("    --- headersSent 2  " + res.headersSent);
+            // debug("    --- headersSent 2  " + res.headersSent);
             subscription.response.write(patchData);
             subscription.response.end();
         }
     });
 
     subscriptions[req.path] = []; // one-off polll
-    logging.log("LONG POLL : Now NO subscriptions for " +  targetURI);
+    debug("LONG POLL : Now NO subscriptions for " +  targetURI);
 };
-

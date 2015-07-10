@@ -1,15 +1,11 @@
-/*jslint node: true*/
-"use strict";
+var debug = require('debug');
 
-var time = require('./time.js');
-
-function log(message) {
-    // TODO substitute with npm debug
-    if (process.env.DEBUG) {
-        //console.log.apply(console, arguments); // was arguments
-        console.log(time.timestamp() + ' ' + message ); // was arguments
-    }
-}
-
-exports.log = log;
-
+exports.handlers = debug('ldnode:handlers');
+exports.ACL = debug('ldnode:ACL');
+exports.parse = debug('ldnode:parse');
+exports.metadata = debug('ldnode:metadata');
+exports.login = debug('ldnode:login');
+exports.settings = debug('ldnode:settings');
+exports.server = debug('ldnode:server');
+exports.ws = debug('ldnode:ws');
+exports.container = debug('ldnode:container');

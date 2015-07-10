@@ -1,6 +1,6 @@
 var fs = require('fs');
+var debug = require('../logging').server;
 var ldnode = require('../index');
-var logging = require('../logging.js');
 
 var argv = require('optimist')
   .boolean('cors')
@@ -42,12 +42,12 @@ if (argv.h || argv.help || argv['?']) {
 if (process.platform !== 'win32') {
     // Signal handlers don't work on Windows.
     process.on('SIGINT', function() {
-        logging.log("Server -- http-server stopped.");
+        debug("http-server stopped.");
         process.exit();
     });
 }
-process.env.DEBUG = argv.v;
-var app = ldnode.createServer(argv)
+process.env.DEBUG = argv.v ? '*' : false;
+var app = ldnode.createServer(argv);
 app.listen(argv.p, function() {
-    logging.log('LDP started on port ' + argv.p);
+    debug('LDP started on port ' + argv.p);
 });

@@ -1,6 +1,5 @@
 var li = require('li');
 
-var logging = require('./logging.js');
 var metadata = require('./metadata.js');
 var ldpVocab = require('./vocab/ldp.js');
 

@@ -8,11 +8,11 @@ var path = require('path');
 var $rdf = require('rdflib');
 var S = require('string');
 
+var debug = require('../logging').handlers;
 var acl = require('../acl.js');
 var header = require('../header.js');
 var metadata = require('../metadata.js');
 var options = require('../options.js');
-var logging = require('../logging.js');
 var file = require('../fileStore.js');
 var subscription = require('../subscription.js');
 
@@ -26,7 +26,7 @@ function get(req, res, includeBody) {
     // Add request to subscription service
     if (('' + req.path).slice(-options.changesSuffix.length) ===
         options.changesSuffix) {
-        logging.log("Subscribed to ", req.path);
+        debug("GET -- Subscribed to ", req.path);
         return subscription.subscribeToChanges(req, res);
     }
     // Set headers
@@ -41,19 +41,19 @@ function get(req, res, includeBody) {
     }
 
     if (includeBody) {
-        logging.log('GET -- ' + req.path);
+        debug('GET -- ' + req.path);
     } else {
-        logging.log('HEAD -- ' + req.path);
+        debug('HEAD -- ' + req.path);
     }
 
     var filename = file.uriToFilename(req.path, options.fileBase);
     fs.stat(filename, function(err, stats) {
         if (err) {
             if (glob.hasMagic(filename)) {
-                logging.log("GET/HEAD -- Glob request");
+                debug("GET/HEAD -- Glob request");
                 globHandler();
             } else {
-                logging.log('GET/HEAD -- Read error: ' + err);
+                debug('GET/HEAD -- Read error: ' + err);
                 return res.status(404).send("Can't read file: " + err);
             }
         } else if (stats.isDirectory()) {
@@ -77,13 +77,13 @@ function get(req, res, includeBody) {
 
     function fileHandler(err, data) {
         if (err) {
-            logging.log('GET/HEAD -- Read error:' + err);
+            debug('GET/HEAD -- Read error:' + err);
             res.status(404).send("Can't read file: " + err);
         } else {
-            logging.log('GET/HEAD -- Read Ok. Bytes read: ' + data.length);
+            debug('GET/HEAD -- Read Ok. Bytes read: ' + data.length);
             var ct = mime.lookup(filename);
             res.set('content-type', ct);
-            logging.log('GET/HEAD -- content-type: ' + ct);
+            debug('GET/HEAD -- content-type: ' + ct);
             if (path.extname(filename) === aclExtension ||
                 path.basename(filename) === aclExtension ||
                 path.basename(filename) === metaExtension) {
@@ -99,7 +99,7 @@ function get(req, res, includeBody) {
 
     function containerHandler(err, rawContainer) {
         if (err) {
-            logging.log("GET/HEAD -- Not a valid container");
+            debug("GET/HEAD -- Not a valid container");
             res.status(404).send("Not a container");
         } else {
             parseContainer(rawContainer);
@@ -109,10 +109,10 @@ function get(req, res, includeBody) {
     function globHandler() {
         glob(filename, globOptions, function(err, matches) {
             if(err || matches.length === 0) {
-                logging.log("GET/HEAD -- No files matching the pattern");
+                debug("GET/HEAD -- No files matching the pattern");
                 return res.sendStatus(404);
             } else {
-                logging.log("matches " + matches);
+                debug("matches " + matches);
                 var globGraph = $rdf.graph();
                 matches.forEach(function(match) {
                     try {
@@ -171,7 +171,7 @@ function get(req, res, includeBody) {
         try {
             $rdf.parse(turtleData, resourceGraph, baseUri, 'text/turtle');
         } catch (err) {
-            logging.log("GET/HEAD -- Error parsing data: " + err);
+            debug("GET/HEAD -- Error parsing data: " + err);
             return res.status(500).send(err);
         }
 
@@ -179,7 +179,7 @@ function get(req, res, includeBody) {
         $rdf.serialize(undefined, resourceGraph, null,
             accept, function(err, result) {
                 if (result === undefined || err) {
-                    logging.log("GET/HEAD -- Serialization error: " + err);
+                    debug("GET/HEAD -- Serialization error: " + err);
                     return res.sendStatus(500);
                 } else {
                     res.set('content-type', accept);
@@ -195,15 +195,15 @@ function get(req, res, includeBody) {
         try {
             $rdf.parse(containerData, resourceGraph, baseUri, 'text/turtle');
         } catch (err) {
-            logging.log("GET/HEAD -- Error parsing data: " + err);
+            debug("GET/HEAD -- Error parsing data: " + err);
             return res.status(500).send(err);
         }
-        logging.log("GET/HEAD -- Reading directory");
+        debug("GET/HEAD -- Reading directory");
         fs.readdir(filename, readdirCallback);
 
         function readdirCallback(err, files) {
             if (err) {
-                logging.log("GET/HEAD -- Error reading files: " + err);
+                debug("GET/HEAD -- Error reading files: " + err);
                 return res.sendStatus(404);
             } else {
                 for (var i = 0; i < files.length; i++) {
@@ -225,7 +225,7 @@ function get(req, res, includeBody) {
                         null, 'text/turtle');
                     parseLinkedData(turtleData);
                 } catch (parseErr) {
-                    logging.log("GET/HEAD -- Error serializing container: " + parseErr);
+                    debug("GET/HEAD -- Error serializing container: " + parseErr);
                     return res.sendStatus(500);
                 }
             }
