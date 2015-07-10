@@ -5,7 +5,6 @@ var $rdf = require('rdflib');
 var redis = require('redis');
 
 var logging = require('./logging.js');
-var options = require('./options.js');
 var time = require('./time.js');
 
 var subscriptions = {}; // Map URI to array of watchers
@@ -14,6 +13,7 @@ var SSEsubscriptions = {};
 var PATCH = $rdf.Namespace('http://www.w3.org/ns/pim/patch#');
 
 exports.subscribeToChanges_SSE = function(req, res) {
+    var options = req.app.locals.ldp;
 
     var messageCount;
     console.log("Server Side Events subscription");
@@ -60,6 +60,7 @@ exports.subscribeToChanges_SSE = function(req, res) {
 
 exports.publishDelta_SSE = function (req, res, patchKB, targetURI){
     // @@ TODO
+    var options = req.app.locals.ldp;
     var targetPath = req.path.slice(0, - options.changesSuffix.length); // lop off ',changes'
     var publisherClient = SSEsubscriptions[targetPath];
     publisherClient.publish( 'updates', ('"' + targetPath + '" data changed visited') );
@@ -72,6 +73,7 @@ var DelayedResponse = require('http-delayed-response');
 
 
 exports.subscribeToChangesLongPoll = function(req, res) {
+    var options = req.app.locals.ldp;
     var targetPath = req.path.slice(0, - options.changesSuffix.length); // lop off ',changes'
     if (subscriptions[targetPath] === undefined) {
         subscriptions[targetPath] = [];
@@ -150,6 +152,7 @@ exports.publishDelta = function (req, res, patchKB, targetURI){
 };
 
 exports.publishDelta_LongPoll = function (req, res, patchData, targetURI){
+    var options = req.app.locals.ldp;
     logging.log("    Long poll change subscription count " + (subscriptions[req.path] || []).length);
     if (! subscriptions[req.path]) return;
     subscriptions[req.path].map(function(subscription){
@@ -166,3 +169,4 @@ exports.publishDelta_LongPoll = function (req, res, patchData, targetURI){
     subscriptions[req.path] = []; // one-off polll
     logging.log("LONG POLL : Now NO subscriptions for " +  targetURI);
 };
+

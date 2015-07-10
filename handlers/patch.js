@@ -11,6 +11,7 @@ var options = require('../options.js');
 var logging = require('../logging.js');
 
 function handler(req, res) {
+    var options = req.app.locals.ldp;
     logging.log('\nPOST ' +req.path);
     logging.log(' text length: ' + (req.text ? req.text.length : 'undefined2'));
     res.header('MS-Author-Via' , 'SPARQL' );

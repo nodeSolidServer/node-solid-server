@@ -2,11 +2,10 @@
 "use strict";
 
 var webid = require('webid');
-
 var logging = require('./logging.js');
-var options = require('./options.js');
 
 function loginHandler(req, res, next) {
+    var options = req.app.locals.ldp;
     if (!options.webid) {
         setEmptySession(req);
         return next();

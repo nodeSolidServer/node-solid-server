@@ -10,7 +10,6 @@ var S = require('string');
 
 var file = require('./fileStore.js');
 var logging = require('./logging.js');
-var options = require('./options.js');
 
 var ns = require('./vocab/ns.js').ns;
 var rdfVocab = require('./vocab/rdf.js');
@@ -18,13 +17,14 @@ var rdfVocab = require('./vocab/rdf.js');
 var aclExtension = ".acl";
 
 function allow(mode, req, res) {
+    var options = req.app.locals.ldp;
     var origin = req.get('origin');
     origin = origin ? origin : '';
 
     var accessType = "accessTo";
 
-    var filepath = file.uriToFilename(req.path);
-    var relativePath = file.uriToRelativeFilename(req.path);
+    var filepath = file.uriToFilename(req.path, options.fileBase);
+    var relativePath = file.uriToRelativeFilename(req.path, options.fileBase);
     var depth = relativePath.split('/');
 
     //Handle glob requests
@@ -38,7 +38,7 @@ function allow(mode, req, res) {
     for (var i = 0; i < depth.length; i++) {
         var pathAcl = S(filepath).endsWith(aclExtension) ?
                 filepath : filepath + aclExtension;
-        var pathUri = file.filenameToBaseUri(filepath);
+        var pathUri = file.filenameToBaseUri(filepath, options.uriBase, options.fileBase);
         relativePath = path.relative(options.fileBase, filepath);
 
         logging.log("ACL -- Checking " + accessType + "<" + mode + "> to " +
@@ -284,6 +284,7 @@ function allowOrigin(mode, req, res, aclGraph, subject) {
 }
 
 function allowIfACLEnabled(mode, req, res, next) {
+    var options = req.app.locals.ldp;
     if (!options.webid) {
         return next();
     } else {
@@ -311,6 +312,7 @@ exports.allowAppendHandler = function(req, res, next) {
 };
 
 exports.allowAppendThenWriteHandler = function(req, res, next) {
+    var options = req.app.locals.ldp;
     if (!options.webid) {
         return next();
     } else {

@@ -8,8 +8,9 @@ var logging = require('../logging.js');
 var metadata = require('../metadata.js');
 
 function handler(req, res) {
+    var options = req.app.locals.ldp;
     logging.log('DELETE -- ' + req.path);
-    var filename = file.uriToFilename(req.path);
+    var filename = file.uriToFilename(req.path, options.fileBase);
     fs.stat(filename, function(err, stats) {
         if (err) {
             logging.log("DELETE -- unlink() error: " + err);

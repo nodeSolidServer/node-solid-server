@@ -1,11 +1,11 @@
 /*jslint node: true*/
 "use strict";
 
-var options = require('./options.js');
 var time = require('./time.js');
 
 function log(message) {
-    if (options.verbose) {
+    // TODO substitute with npm debug
+    if (process.env.DEBUG) {
         //console.log.apply(console, arguments); // was arguments
         console.log(time.timestamp() + ' ' + message ); // was arguments
     }

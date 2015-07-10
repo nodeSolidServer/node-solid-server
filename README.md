@@ -20,7 +20,34 @@ Linked Data Platform server based on [rdflib.js](https://github.com/linkeddata/r
 npm install
 ```
 
-## Command line tool
+## Usage
+
+### Simple
+
+```javascript
+var ldnode = require('ldnode')
+
+var ldp = ldnode.createServer({
+  uriBase: "http://example.com/test/",
+  fileBase: __dirname + '/test/'
+})
+ldp.listen(1234, function() {
+  // Started Linked Data Platform
+})
+```
+
+### Advanced
+
+You can integrate it with your existing express app
+
+```javascript
+var ldnode = require('ldnode')
+var app = require('express')()
+app.use('/test', ldnode(opts))
+...
+```
+
+### Command line tool
 
     npm install -g ldnode
 
@@ -55,8 +82,5 @@ The command line tool has the following options
 The tests assume that there is a running ldnode.
 
 ```bash
-# on a terminal
-make
-# on another terminal
-npm test
+$ npm test
 ```
