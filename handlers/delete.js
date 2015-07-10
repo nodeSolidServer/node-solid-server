@@ -2,17 +2,18 @@
 "use strict";
 
 var fs = require('fs');
+var debug = require('../logging').handlers;
 
 var file = require('../fileStore.js');
-var logging = require('../logging.js');
 var metadata = require('../metadata.js');
 
 function handler(req, res) {
-    logging.log('DELETE -- ' + req.path);
-    var filename = file.uriToFilename(req.path);
+    var options = req.app.locals.ldp;
+    debug('DELETE -- ' + req.path);
+    var filename = file.uriToFilename(req.path, options.fileBase);
     fs.stat(filename, function(err, stats) {
         if (err) {
-            logging.log("DELETE -- unlink() error: " + err);
+            debug("DELETE -- unlink() error: " + err);
             return res.status(404).send("Can't delete file: " + err);
         } else if (stats.isDirectory()) {
             metadata.deleteContainerMetadata(filename, containerCallback);
@@ -23,20 +24,20 @@ function handler(req, res) {
 
     function fileCallback(err) {
         if (err) {
-            logging.log("DELETE -- unlink() error: " + err);
+            debug("DELETE -- unlink() error: " + err);
             return res.status(404).send("Can't delete file: " + err);
         } else {
-            logging.log("DELETE -- Ok. Bytes deleted: " + req.text.length);
+            debug("DELETE -- Ok. Bytes deleted: " + req.text.length);
             res.sendStatus(200);
         }
     }
 
     function containerCallback(err) {
         if (err) {
-            logging.log("DELETE -- unlink() error: " + err);
+            debug("DELETE -- unlink() error: " + err);
             return res.status(404).send("Can't delete container: " + err);
         } else {
-            logging.log("DELETE -- Ok.");
+            debug("DELETE -- Ok.");
             res.sendStatus(200);
         }
     }

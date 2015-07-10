@@ -1,6 +1,5 @@
 var li = require('li');
 
-var logging = require('./logging.js');
 var metadata = require('./metadata.js');
 var ldpVocab = require('./vocab/ldp.js');
 
@@ -34,7 +33,6 @@ function parseMetadataFromHeader(linkHeader) {
     for (var linkIndex in links) {
         var link = links[linkIndex];
         var parsedLinks = li.parse(link);
-        console.log(parsedLinks, link);
         for (var rel in parsedLinks) {
             if (rel === 'type') {
                 if (parsedLinks[rel] === ldpVocab.Resource)
