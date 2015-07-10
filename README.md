@@ -47,6 +47,20 @@ app.use('/test', ldnode(opts))
 ...
 ```
 
+#### Logging
+
+If you are running your own app
+
+```bash
+$ DEBUG="ldnode:*" node app.js
+```
+
+or simply
+
+```bash
+$ ldnode -v
+```
+
 ### Command line tool
 
     npm install -g ldnode
