@@ -13,13 +13,15 @@ var session = require('express-session');
 var http = require('http');
 var https = require('https');
 var request = require('request');
+var debug = require('./logging').settings;
+var debugWs = require('./logging').ws;
+var debugServer = require('./logging').server;
 
 // ldnode dependencies
 var acl = require('./acl.js');
 var metadata = require('./metadata.js');
 var options = require('./options.js');
 var login = require('./login.js');
-var logging = require('./logging.js');
 var container = require('./container.js');
 var parse = require('./parse.js');
 
@@ -29,6 +31,7 @@ var postHandler = require('./handlers/post.js');
 var putHandler = require('./handlers/put.js');
 var deleteHandler = require('./handlers/delete.js');
 var patchHandler = require('./handlers/patch.js');
+
 
 function ldnode (argv) {
     var opts = options(argv);
@@ -60,7 +63,7 @@ function ldnode (argv) {
         ws(app);
     }
 
-    logging.log("Server -- Router attached to " + opts.pathStart);
+    debugServer("Router attached to " + opts.pathStart);
 
     return app;
 }
@@ -76,8 +79,8 @@ function createServer(argv) {
             cert: fs.readFileSync(opts.cert),
             requestCert: true
         };
-        logging.log("Server -- Private Key: " + credentials.key);
-        logging.log("Server -- Certificate: " + credentials.cert);
+        debug("Private Key: " + credentials.key);
+        debug("Certificate: " + credentials.cert);
 
         return https.createServer(credentials, app);
     }
@@ -86,9 +89,9 @@ function createServer(argv) {
 }
 
 function proxy (app, path) {
-    logging.log('XSS Proxy listening to ' + path);
+    debug('XSS Proxy listening to ' + path);
     app.get(path, function (req, res) {
-        logging.log('originalUrl: ' + req.originalUrl);
+        debug('originalUrl: ' + req.originalUrl);
         var uri = req.query.uri;
         if (!uri) {
             return res
@@ -96,7 +99,7 @@ function proxy (app, path) {
                 .send("Proxy has no uri param ");
         }
 
-        logging.log('Proxy destination URI: ' + uri);
+        debug('Proxy destination URI: ' + uri);
         request.get(uri).pipe(res);
     });
 }
@@ -151,9 +154,9 @@ function ws (app) {
     app.mountpath = ''; //  needs to be set for addSocketRoute aka .ws()
     // was options.pathFilter
     app.ws('/', function(socket, res) {
-        logging.log("    WEB SOCKET incoming on " + socket.path);
+        debugWs("incoming on " + socket.path);
         socket.on('message', function(msg) {
-            console.log("Web socket message = " + msg);
+            debugWs("message = " + msg);
             // subscribeToChanges(socket, res);
         });
     });

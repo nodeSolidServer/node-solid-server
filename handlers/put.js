@@ -8,15 +8,15 @@ var path = require('path');
 var $rdf = require('rdflib');
 var S = require('string');
 
+var debug = require('../logging').handlers;
 var file = require('../fileStore.js');
 var header = require('../header.js');
 var options = require('../options.js');
-var logging = require('../logging.js');
 
 function handler(req, res) {
     var options = req.app.locals.ldp;
-    logging.log("PUT -- Request path: " + req.path);
-    logging.log("PUT -- Text length: " + (req.text ? req.text.length : 'undefined'));
+    debug("PUT -- Request path: " + req.path);
+    debug("PUT -- Text length: " + (req.text ? req.text.length : 'undefined'));
     res.header('MS-Author-Via' , 'SPARQL' );
 
     var filename = file.uriToFilename(req.path, options.fileBase);
@@ -30,7 +30,7 @@ function handler(req, res) {
     // var ct2 = mime.lookup(filename);
 
     // if (ct1 && ct2 && (ct1 !== ct2)) {
-    //     logging.log("PUT -- MIME mismatch. Content-type: " + ct1 +
+    //     debug("PUT -- MIME mismatch. Content-type: " + ct1 +
     //                 ". MIME: " + ct2);
     //     return res.status(415).send("Content type mismatch with path file.extenstion");
     // }
@@ -53,15 +53,15 @@ function handler(req, res) {
 
     function writeFile(mkdirErr) {
         if (mkdirErr) {
-            logging.log("PUT -- Error creating directory: " + mkdirErr);
+            debug("PUT -- Error creating directory: " + mkdirErr);
             return res.status(500).send("Can't create directory");
         }
         fs.writeFile(filename, req.text,  function(err) {
             if (err) {
-                logging.log("PUT -- Write error: " + err);
+                debug("PUT -- Write error: " + err);
                 return res.status(500).send("Can't write file: "+ err);
             } else {
-                logging.log("PUT -- Write Ok. Bytes written: " + req.text.length);
+                debug("PUT -- Write Ok. Bytes written: " + req.text.length);
                 return res.sendStatus(201);
             }
         }); // file write

@@ -2,7 +2,7 @@
 "use strict";
 
 var webid = require('webid');
-var logging = require('./logging.js');
+var debug = require('./logging').login;
 
 function loginHandler(req, res, next) {
     var options = req.app.locals.ldp;
@@ -11,7 +11,7 @@ function loginHandler(req, res, next) {
         return next();
     }
     if (req.session.profile && req.session.identified) {
-        logging.log("Login -- User: " + req.session.profile);
+        debug("User: " + req.session.profile);
         return next();
     } else {
         var certificate = req.connection.getPeerCertificate();
@@ -37,18 +37,18 @@ function loginHandler(req, res, next) {
                         message = "Unknown WebID error";
                         break;
                     }
-                    logging.log("Login -- Error processing certificate: " + message);
+                    debug("Error processing certificate: " + message);
                     setEmptySession(req);
                     return res.status(403).send(message);
                 } else {
                     req.session.userId = result;
                     req.session.identified = true;
-                    logging.log("Login -- Identified user: " + req.session.userId);
+                    debug("Identified user: " + req.session.userId);
                     return next();
                 }
             });
         } else {
-            logging.log("Login -- Empty certificate");
+            debug("Empty certificate");
             setEmptySession(req);
             next();
         }

@@ -4,12 +4,12 @@
 var path = require('path');
 var regexp = require('node-regexp');
 var S = require('string');
-var logging = require('./logging.js');
+var debug = require('./logging').settings;
 
 module.exports = params;
 
 function params(argv) {
-  var opts = {}
+  var opts = {};
   opts.leavePatchConnectionOpen = false;
   opts.aclSuffix = argv.aclSuffix || ",acl";
   opts.uriBase = argv.uriBase ||
@@ -24,7 +24,7 @@ function params(argv) {
   opts.SSESuffix = argv.SSESuffix || ',events';
   opts.ssl = argv.S;
   opts.cors = argv.cors;
-  logging.log("   uriBase: " + opts.uriBase);
+  debug("uriBase: " + opts.uriBase);
 
   opts.pathStart = '/' +
     opts.uriBase
@@ -38,7 +38,7 @@ function params(argv) {
     .slice(0, 3)
     .join('/');
 
-  logging.log("URI pathStart: " + opts.pathStart);
+  debug("URI pathStart: " + opts.pathStart);
   opts.pathFilter = regexp().start(opts.pathStart).toRegExp();
   opts.xssProxy = argv.xssProxy;
   opts.proxyFilter = regexp().start(opts.xssProxy).toRegExp();
@@ -50,9 +50,9 @@ function params(argv) {
   // TODO this should be an attribute of an object
   opts.usedURIs = {};
   
-  logging.log("URI path filter regexp: " + opts.pathFilter);
-  logging.log("Verbose: " + opts.verbose);
-  logging.log("Live: " + opts.live);
+  debug("URI path filter regexp: " + opts.pathFilter);
+  debug("Verbose: " + opts.verbose);
+  debug("Live: " + opts.live);
 
   return opts
 }

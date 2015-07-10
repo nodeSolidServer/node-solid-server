@@ -5,10 +5,10 @@ var path = require('path');
 var $rdf = require('rdflib');
 var S = require('string');
 
+var debug = require('../logging').handlers;
 var container = require('../container.js');
 var file = require('../fileStore.js');
 var header = require('../header.js');
-var logging = require('../logging.js');
 var metadata = require('../metadata.js');
 var patch = require('./patch.js');
 
@@ -18,16 +18,16 @@ var rdfVocab = require('../vocab/rdf.js');
 function handler(req, res) {
     var options = req.app.locals.ldp;
     if (req.is('application/sparql')) {
-        logging.log("POST -- Handling sparql query");
+        debug("POST -- Handling sparql query");
         return patch.handler(req, res);
     } else if (req.is('application/sparql-update')) {
-        logging.log("POST -- Handling sparql-update query");
+        debug("POST -- Handling sparql-update query");
         return patch.handler(req, res);
     } else {
         var containerPath = file.uriToFilename(req.path, options.fileBase);
-        logging.log("POST -- Container path: " + containerPath);
+        debug("POST -- Container path: " + containerPath);
         if (metadata.isMetadataFile(containerPath)) {
-            logging.log("POST -- Invalid container.");
+            debug("POST -- Invalid container.");
             return res.status(404).send();
         }
         if (S(containerPath).endsWith('/')) {
@@ -40,10 +40,10 @@ function handler(req, res) {
                 contentType = 'application/rdf+xml';
             else {
                 //TODO Handle json and nquad content types
-                logging.log("POST -- Invalid Content Type");
+                debug("POST -- Invalid Content Type");
                 return res.status(415).send("Invalid Content Type");
             }
-            logging.log("POST -- Content Type: " + contentType);
+            debug("POST -- Content Type: " + contentType);
 
             var slug = req.get('Slug');
             var resourceMetadata = header.parseMetadataFromHeader(req.get('Link'));
@@ -53,7 +53,7 @@ function handler(req, res) {
 
             if (resourcePath === null) {
                 container.releaseResourceUri(options, resourcePath);
-                logging.log("POST -- URI already exists or in use");
+                debug("POST -- URI already exists or in use");
                 return res.sendStatus(400);
             }
 
@@ -72,7 +72,7 @@ function handler(req, res) {
                 $rdf.parse(requestText, resourceGraph,
                            resourceBaseUri, 'text/turtle');
             } catch (parseErr) {
-                logging.log("POST -- Error parsing resource: " + parseErr);
+                debug("POST -- Error parsing resource: " + parseErr);
                 container.releaseResourceUri(options, resourcePath);
                 return res.sendStatus(400);
             }
@@ -89,18 +89,18 @@ function handler(req, res) {
                     resourceGraph, resourceCallback);
             }
         } else {
-            logging.log("POST -- Requested resource is not a container");
+            debug("POST -- Requested resource is not a container");
             return res.set('Allow', 'GET,HEAD,PUT,DELETE').sendStatus(405);
         }
     }
 
     function containerCallback(err) {
         if (err) {
-            logging.log(
+            debug(
                 "POST -- Error creating new container: " + err);
             return res.sendStatus(500);
         } else {
-            logging.log(
+            debug(
                 "POST -- Created new container " + resourceBaseUri);
             res.set('Location', resourceBaseUri);
             return res.sendStatus(201);
@@ -109,7 +109,7 @@ function handler(req, res) {
 
     function resourceCallback(err) {
         if (err) {
-            logging.log(
+            debug(
                 "POST -- Error creating resource: " + err);
             return res.sendStatus(500);
         } else {

@@ -4,10 +4,8 @@
 var fs = require('fs');
 var path = require('path');
 var S = require('string');
-var logging = require('./logging.js');
 
 function uriToFilename(uri, fileBase) {
-    console.log(uri, fileBase)
     var filename = path.join(fileBase, uri);
     // Make sure filename ends with '/'  if filename exists and is a directory.
     try {

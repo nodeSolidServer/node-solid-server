@@ -4,10 +4,10 @@
 var fs = require('fs');
 var path = require('path');
 var S = require('string');
+var debug = require('./logging').metadata;
 
 var file = require('./fileStore.js');
 var header = require('./header.js');
-var logging = require('./logging.js');
 var ldpVocab = require('./vocab/ldp.js');
 
 var metadataExtension = ".meta";
@@ -50,7 +50,7 @@ function linksHandler(req, res, next) {
     var filename = file.uriToFilename(req.url, options.fileBase);
     filename = path.join(filename, req.path);
     if (module.exports.isMetadataFile(filename)) {
-        logging.log("Metadata -- Trying to access metadata file as regular file.");
+        debug("Trying to access metadata file as regular file.");
         return res.send(404);
     }
     var fileMetadata = new module.exports.Metadata();
