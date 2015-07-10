@@ -99,3 +99,7 @@ The tests assume that there is a running ldnode.
 ```bash
 $ npm test
 ```
+
+## License
+
+MIT
