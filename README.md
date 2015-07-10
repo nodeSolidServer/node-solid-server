@@ -100,6 +100,8 @@ The tests assume that there is a running ldnode.
 
 ```bash
 $ npm test
+# running the tests with logs
+$ DEBUG="ldnode:*" npm test
 ```
 
 ## License
