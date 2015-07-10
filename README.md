@@ -22,7 +22,8 @@ npm install
 
 ## Usage
 
-### Simple
+### Library
+#### Simple
 
 ```javascript
 var ldnode = require('ldnode')
@@ -36,7 +37,7 @@ ldp.listen(1234, function() {
 })
 ```
 
-### Advanced
+#### Advanced
 
 You can integrate it with your existing express app
 
@@ -47,7 +48,7 @@ app.use('/test', ldnode(opts))
 ...
 ```
 
-#### Logging
+##### Logging
 
 If you are running your own app
 
