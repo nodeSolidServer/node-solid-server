@@ -1,6 +1,4 @@
-var fs = require('fs');
-var debug = require('../logging').server;
-var ldnode = require('../index');
+#!/bin/env node
 
 var argv = require('optimist')
   .boolean('cors')
@@ -37,17 +35,22 @@ if (argv.h || argv.help || argv['?']) {
     process.exit();
 }
 
-// Command line handling
+process.env.DEBUG = argv.v ? 'ldnode:*' : false;
+var debug = require('../logging').server;
+var ldnode = require('../index');
+
 // Signal handling
 if (process.platform !== 'win32') {
     // Signal handlers don't work on Windows.
     process.on('SIGINT', function() {
-        debug("http-server stopped.");
+        debug("LDP stopped.");
         process.exit();
     });
 }
-process.env.DEBUG = argv.v ? '*' : false;
+
+// Starting ldnode
 var app = ldnode.createServer(argv);
 app.listen(argv.p, function() {
     debug('LDP started on port ' + argv.p);
 });
+
