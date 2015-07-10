@@ -11,7 +11,7 @@ Linked Data Platform server based on [rdflib.js](https://github.com/linkeddata/r
 - [x] Access control using RDF ACLs
 - [x] WebID Authentication
 - [x] Real-time live updates (using websokets)
-- [ ] Mount as express' router
+- [x] Mount as express' router
 
 
 ## Install
