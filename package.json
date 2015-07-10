@@ -46,7 +46,7 @@
     "request": "^2.58.0",
     "response-time": "^2.3.1",
     "string": "^3.3.0",
-    "webid": "git://github.com/linkeddata/node-webid.git"
+    "webid": "^0.2.2"
   },
   "devDependencies": {
     "chai": "^3.0.0",
