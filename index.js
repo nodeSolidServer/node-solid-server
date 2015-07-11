@@ -42,7 +42,7 @@ function ldnode (argv) {
 
     // Session [TODO]
     app.use(session({
-        secret: opts.sessionSecret || 'node-ldp',
+        secret: opts.secret || 'node-ldp',
         saveUninitialized: false,
         resave: false
     }));
