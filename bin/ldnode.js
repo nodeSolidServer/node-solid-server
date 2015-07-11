@@ -4,6 +4,7 @@ var fs = require('fs');
 var path = require('path');
 
 var argv = require('nomnom')
+  .script('ldnode')
   .option('verbose', {
     abbr: 'v',
     flag: true,
