@@ -72,8 +72,10 @@ function createServer(argv) {
 
     var app = ldnode(argv);
     var opts = app.locals.ldp;
-  
+
     if (opts && (opts.webid || opts.key || opts.cert) ) {
+        debug("SSL Private Key path: " + opts.key);
+        debug("SSL Certificate path: " + opts.cert);
         var credentials = {
             key: fs.readFileSync(opts.key),
             cert: fs.readFileSync(opts.cert),

@@ -9,7 +9,8 @@ describe('ldnode', function() {
   var address = 'http://localhost:3457/test/';
   var ldp = ldnode.createServer({
     uriBase: address,
-    fileBase: __dirname
+    fileBase: __dirname,
+    webid: false
   });
   ldp.listen(3457);
 
