@@ -47,7 +47,8 @@ var argv = require('nomnom')
     abbr: 'K',
     full: 'ssl-key'
   })
-  .option('ssl-cert', {
+  .option('sslCert', {
+    full: 'ssl-cert',
     help: 'Path to the ssl cert',
     abbr: 'C'
   })
@@ -94,7 +95,9 @@ if (argv.noSsl) {
 // Set up debug environment
 process.env.DEBUG = argv.verbose ? 'ldnode:*' : false;
 var debug = require('../logging').server;
-var ldnode = require('../index');
+
+// Set up port
+argv.port = argv.port || 3456;
 
 // Signal handling (e.g. CTRL+C)
 if (process.platform !== 'win32') {
@@ -106,6 +109,7 @@ if (process.platform !== 'win32') {
 }
 
 // Finally starting ldnode
+var ldnode = require('../index');
 var app = ldnode.createServer(argv);
 app.listen(argv.port, function() {
     debug('LDP started on port ' + argv.port);
