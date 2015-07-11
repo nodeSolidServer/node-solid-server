@@ -51,8 +51,8 @@ function params(argv) {
   opts.usedURIs = {};
   
   debug("URI path filter regexp: " + opts.pathFilter);
-  debug("Verbose: " + opts.verbose);
-  debug("Live: " + opts.live);
+  debug("Verbose: " + !!opts.verbose);
+  debug("Live: " + !!opts.live);
 
   return opts
 }
