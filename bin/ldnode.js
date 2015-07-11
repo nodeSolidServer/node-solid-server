@@ -59,7 +59,8 @@ var argv = require('nomnom')
   .option('noLive', {
     full: 'no-live',
     help: 'Disable live support through WebSockets',
-    abbr: 's'
+    abbr: 's',
+    flag: true
   })
   .parse();
 
@@ -68,19 +69,9 @@ if (argv.version) {
   return;
 }
 
-// Set up webid
-if (argv.noWebid) {
-  argv.webid = {key: argv.webidKey, cert: argv.webidCert}
-} else {
-  argv.webid = false;
-}
-
-// Set up ssl
-if (argv.noSsl) {
-  argv.ssl = {key: argv.sslKey, cert: argv.sslCert}
-} else {
-  argv.ssl = false;
-}
+// Set up --no-*
+argv.webid = !argv.noWebid;
+argv.live = !argv.noLive;
 
 // Set up debug environment
 process.env.DEBUG = argv.verbose ? 'ldnode:*' : false;
