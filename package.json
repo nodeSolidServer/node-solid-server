@@ -39,7 +39,7 @@
     "n3": "^0.4.3",
     "node-regexp": "^0.1.1",
     "node-uuid": "^1.4.3",
-    "optimist": "^0.6.1",
+    "nomnom": "^1.8.1",
     "raw-body": "^2.1.2",
     "rdflib": "^0.2.6",
     "redis": "^0.12.1",

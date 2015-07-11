@@ -1,41 +1,73 @@
 #!/bin/env node
 
-var argv = require('optimist')
-  .boolean('cors')
-  .boolean('v')
-  .boolean('live')
-  .argv;
+var argv = require('nomnom')
+  .option('verbose', {
+    abbr: 'v',
+    flag: true,
+    help: 'Print the logs to console'
+  })
+  .option('version', {
+    flag: true,
+    help: 'Print current ldnode version',
+    callback: function () {
+      fs.readFile(path.resolve(__dirname, '../package.json'), 'utf-8', function(err, file) {
+        console.log(JSON.parse(file).version);
+      });
+    }
+  })
+  .option('uriBase', {
+    full: 'uri',
+    abbr: 'u',
+    metavar: 'URI',
+    help: 'Default address of the server (e.g. http[s]://host:port/path)'
+  })
+  .option('fileBase', {
+    abbr: 'b',
+    metavar: 'PATH',
+    full: 'path',
+    help: 'Base location to serve resources'
+  })
+  .option('port', {
+    abbr: 'p',
+    help: 'Port to use'
+  })
+  .option('cache', {
+    abbr: 'c',
+    help: 'Set cache time (in seconds), 0 for no cache'
+  })
+  .option('noSsl', {
+    help: 'Run ldnode with without ssl, so in http',
+    full: 'no-ssl',
+    flag: true
+  })
+  .option('sslKey', {
+    help: 'Path to the ssl key',
+    abbr: 'K',
+    full: 'ssl-key'
+  })
+  .option('ssl-cert', {
+    help: 'Path to the ssl cert',
+    abbr: 'C'
+  })
+  .option('noWebid', {
+    help: 'Path to the ssl key',
+    full: 'no-webid',
+    flag: true
+  })
+  .option('webidKey', {
+    help: 'Path to the webid key',
+    full: 'webid-key',
+    abbr: 'k'
+  })
+  .option('webidCert', {
+    help: 'Path to the webid cert',
+    full: 'webid-cert',
+    abbr: 'c'
+  })
+  .parse();
 
-if (argv.h || argv.help || argv['?']) {
-    console.log([
-        "usage: ldnode [path] [options]",
-        "",
-        "options:",
-        "  --uriBase          Address, port, and default path of the server. (Example: http://localhost:3000/test/)",
-        "  --fileBase         Base location to serve resources. Requests whose paths do not have fileBase as a prefix will be ignored",
-        "  --live            Offer and support live updates",
-        "  -p                 Port to use",
-        "  -v                 Log messages to console",
-        "  --changesSuffix    The suffix that will be used to identify the requests that will subscribe to changes to the object requested. Defaults to ,changes",
-        "  --cors             Enable CORS via the 'Access-Control-Allow-Origin' header",
-        "  -c                 Set cache time (in seconds). e.g. -c10 for 10 seconds.",
-        "                     To disable caching, use -c-1.",
-        "  --changesSuffix sss Change the URI suffix used for the URI of a change stream",
-        "  --SSESuffix sss   Change the URI suffix used for the URI of a SSE stream",
-        "",
-        "  -S --ssl           Enable https.",
-        "  -C --cert          Path to ssl cert file (default: cert.pem).",
-        "  -K --key           Path to ssl key file (default: key.pem).",
-        "",
-        "  --webid            Enable WebID authentication",
-        "  --privateKey       Path to the private key used to enable webid authentication",
-        "  --cert             Path to the private key used to enable webid authentication",
-        "  -h --help          Print this list and exit."
-    ].join('\n'));
-    process.exit();
-}
-
-process.env.DEBUG = argv.v ? 'ldnode:*' : false;
+argv.webid = !argv.noWebid;
+process.env.DEBUG = argv.verbose ? 'ldnode:*' : false;
 var debug = require('../logging').server;
 var ldnode = require('../index');
 
