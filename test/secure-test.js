@@ -17,10 +17,8 @@ describe('ACL', function() {
     var ldp = ldnode.createServer({
         uriBase: address,
         fileBase: __dirname,
-        webid: {
-            key: __dirname + '/key.pem',
-            cert: __dirname + '/cert.pem'
-        }
+        key: __dirname + '/key.pem',
+        cert: __dirname + '/cert.pem'
     });
     ldp.listen(3456);
 

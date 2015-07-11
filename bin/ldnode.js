@@ -37,18 +37,13 @@ var argv = require('nomnom')
     abbr: 'c',
     help: 'Set cache time (in seconds), 0 for no cache'
   })
-  .option('noSsl', {
-    help: 'Disable SSL, hence run on http',
-    full: 'no-ssl',
-    flag: true
-  })
-  .option('sslKey', {
+  .option('key', {
     help: 'Path to the ssl key',
     abbr: 'K',
-    full: 'ssl-key'
+    full: 'key'
   })
-  .option('sslCert', {
-    full: 'ssl-cert',
+  .option('cert', {
+    full: 'cert',
     help: 'Path to the ssl cert',
     abbr: 'C'
   })
@@ -56,16 +51,6 @@ var argv = require('nomnom')
     help: 'Disable WebID+TLS authentication',
     full: 'no-webid',
     flag: true
-  })
-  .option('webidKey', {
-    help: 'Path to the webid key',
-    full: 'webid-key',
-    abbr: 'k'
-  })
-  .option('webidCert', {
-    help: 'Path to the webid cert',
-    full: 'webid-cert',
-    abbr: 'c',
   })
   .option('secret', {
     help: 'HTTP Session secret key (e.g. "your secret phrase")',

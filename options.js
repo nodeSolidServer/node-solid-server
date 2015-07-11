@@ -17,11 +17,12 @@ function params(argv) {
   opts.path = opts.fileBase = argv.fileBase || process.cwd();
   opts.port = argv.port;
   opts.secret = argv.secret;
-  opts.ssl = argv.ssl;
+  opts.cert = argv.cert;
+  opts.key = argv.key;
   // TODO no need of uriBase
   opts.uri = opts.uriBase = argv.uriBase;
   opts.verbose = argv.verbose;
-  opts.webid = argv.webid;
+  opts.webid = argv.webid === undefined ? true : argv.webid;
 
   // Processed
   opts.leavePatchConnectionOpen = false;
@@ -56,6 +57,7 @@ function params(argv) {
   debug("pathStart: " + opts.pathStart);
   debug("URI path filter regexp: " + opts.pathFilter);
   debug("Verbose: " + !!opts.verbose);
+  debug("WebID: " + !!opts.webid);
   debug("Live: " + !!opts.live);
 
   return opts
