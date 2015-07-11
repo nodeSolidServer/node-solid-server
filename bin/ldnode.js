@@ -70,16 +70,31 @@ var argv = require('nomnom')
   })
   .parse();
 
+// Print version and leave
 if (argv.version) {
   return;
 }
 
-argv.webid = !argv.noWebid;
+// Set up webid
+if (argv.noWebid) {
+  argv.webid = {key: argv.webidKey, cert: argv.webidCert}
+} else {
+  argv.webid = false;
+}
+
+// Set up ssl
+if (argv.noSsl) {
+  argv.ssl = {key: argv.sslKey, cert: argv.sslCert}
+} else {
+  argv.ssl = false;
+}
+
+// Set up debug environment
 process.env.DEBUG = argv.verbose ? 'ldnode:*' : false;
 var debug = require('../logging').server;
 var ldnode = require('../index');
 
-// Signal handling
+// Signal handling (e.g. CTRL+C)
 if (process.platform !== 'win32') {
     // Signal handlers don't work on Windows.
     process.on('SIGINT', function() {
@@ -88,9 +103,9 @@ if (process.platform !== 'win32') {
     });
 }
 
-// Starting ldnode
+// Finally starting ldnode
 var app = ldnode.createServer(argv);
-app.listen(argv.p, function() {
-    debug('LDP started on port ' + argv.p);
+app.listen(argv.port, function() {
+    debug('LDP started on port ' + argv.port);
 });
 
