@@ -1,5 +1,8 @@
 #!/bin/env node
 
+var fs = require('fs');
+var path = require('path');
+
 var argv = require('nomnom')
   .option('verbose', {
     abbr: 'v',
@@ -65,6 +68,10 @@ var argv = require('nomnom')
     abbr: 'c'
   })
   .parse();
+
+if (argv.version) {
+  return;
+}
 
 argv.webid = !argv.noWebid;
 process.env.DEBUG = argv.verbose ? 'ldnode:*' : false;
