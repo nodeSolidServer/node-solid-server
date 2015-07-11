@@ -22,7 +22,7 @@ function params(argv) {
   opts.verbose = argv.v;
   opts.changesSuffix = argv.changesSuffix || ',changes';
   opts.SSESuffix = argv.SSESuffix || ',events';
-  opts.ssl = argv.S;
+  opts.ssl = argv.ssl;
   opts.cors = argv.cors;
   debug("uriBase: " + opts.uriBase);
 

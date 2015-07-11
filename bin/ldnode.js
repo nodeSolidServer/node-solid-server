@@ -38,7 +38,7 @@ var argv = require('nomnom')
     help: 'Set cache time (in seconds), 0 for no cache'
   })
   .option('noSsl', {
-    help: 'Run ldnode with without ssl, so in http',
+    help: 'Disable SSL, hence run on http',
     full: 'no-ssl',
     flag: true
   })
@@ -53,7 +53,7 @@ var argv = require('nomnom')
     abbr: 'C'
   })
   .option('noWebid', {
-    help: 'Path to the ssl key',
+    help: 'Disable WebID+TLS authentication',
     full: 'no-webid',
     flag: true
   })
@@ -69,6 +69,11 @@ var argv = require('nomnom')
   })
   .option('secret', {
     help: 'HTTP Session secret key (e.g. "your secret phrase")',
+    abbr: 's'
+  })
+  .option('noLive', {
+    full: 'no-live',
+    help: 'Disable live support through WebSockets',
     abbr: 's'
   })
   .parse();
