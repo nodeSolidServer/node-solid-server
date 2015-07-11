@@ -19,14 +19,13 @@ var argv = require('nomnom')
       });
     }
   })
-  .option('uriBase', {
-    full: 'uri',
+  .option('uri', {
     abbr: 'u',
     help: 'Default address of the server (e.g. http[s]://host:port/path)'
   })
-  .option('fileBase', {
+  .option('base', {
     abbr: 'b',
-    full: 'path',
+    full: 'base',
     help: 'Base location to serve resources'
   })
   .option('port', {
@@ -47,9 +46,9 @@ var argv = require('nomnom')
     help: 'Path to the ssl cert',
     abbr: 'C'
   })
-  .option('noWebid', {
-    help: 'Disable WebID+TLS authentication',
-    full: 'no-webid',
+  .option('webid', {
+    help: 'Enable WebID+TLS authentication',
+    full: 'webid',
     flag: true
   })
   .option('secret', {
@@ -70,7 +69,6 @@ if (argv.version) {
 }
 
 // Set up --no-*
-argv.webid = !argv.noWebid;
 argv.live = !argv.noLive;
 
 // Set up debug environment

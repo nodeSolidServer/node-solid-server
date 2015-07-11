@@ -15,10 +15,11 @@ describe('ACL', function() {
 
     var ldnode = require('../index');
     var ldp = ldnode.createServer({
-        uriBase: address,
-        fileBase: __dirname,
+        uri: address,
+        base: __dirname,
         key: __dirname + '/key.pem',
-        cert: __dirname + '/cert.pem'
+        cert: __dirname + '/cert.pem',
+        webid: true
     });
     ldp.listen(3456);
 

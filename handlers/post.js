@@ -24,7 +24,7 @@ function handler(req, res) {
         debug("POST -- Handling sparql-update query");
         return patch.handler(req, res);
     } else {
-        var containerPath = file.uriToFilename(req.path, options.fileBase);
+        var containerPath = file.uriToFilename(req.path, options.base);
         debug("POST -- Container path: " + containerPath);
         if (metadata.isMetadataFile(containerPath)) {
             debug("POST -- Invalid container.");
@@ -68,7 +68,7 @@ function handler(req, res) {
 
             var resourceBaseUri;
             try {
-                resourceBaseUri = file.filenameToBaseUri(resourcePath, options.uriBase, options.fileBase);
+                resourceBaseUri = file.filenameToBaseUri(resourcePath, options.uri, options.base);
                 $rdf.parse(requestText, resourceGraph,
                            resourceBaseUri, 'text/turtle');
             } catch (parseErr) {

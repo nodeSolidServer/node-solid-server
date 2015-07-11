@@ -31,8 +31,8 @@ npm install
 var ldnode = require('ldnode')
 
 var ldp = ldnode.createServer({
-  uriBase: "http://example.com/test/",
-  fileBase: __dirname + '/test/'
+  uri: "http://example.com/test/",
+  base: __dirname + '/test/'
 })
 ldp.listen(1234, function() {
   // Started Linked Data Platform
@@ -73,8 +73,8 @@ The command line tool has the following options
     usage: ldnode [path] [options]
     
     options:
-      --uriBase          Address, port, and default path of the server. (Example: http://localhost:3000/test/)
-      --fileBase         Base location to serve resources. Requests whose paths do not have fileBase as a prefix will be ignored
+      --uri          Address, port, and default path of the server. (Example: http://localhost:3000/test/)
+      --base         Base location to serve resources. Requests whose paths do not have base as a prefix will be ignored
       --live            Offer and support live updates
       -p                 Port to use
       -v                 Log messages to console

@@ -55,6 +55,7 @@ function ldnode (argv) {
 
     // Adding proxy
     if (opts.xssProxy) {
+      console.log(proxyFilter)
         proxy(app, opts.proxyFilter);
     }
 
@@ -69,7 +70,6 @@ function ldnode (argv) {
 }
 
 function createServer(argv) {
-
     var app = ldnode(argv);
     var opts = app.locals.ldp;
 

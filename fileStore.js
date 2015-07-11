@@ -5,8 +5,8 @@ var fs = require('fs');
 var path = require('path');
 var S = require('string');
 
-function uriToFilename(uri, fileBase) {
-    var filename = path.join(fileBase, uri);
+function uriToFilename(uri, base) {
+    var filename = path.join(base, uri);
     // Make sure filename ends with '/'  if filename exists and is a directory.
     try {
         var fileStats = fs.statSync(filename);
@@ -19,15 +19,15 @@ function uriToFilename(uri, fileBase) {
     return filename;
 }
 
-function uriToRelativeFilename(uri, fileBase) {
-    var filename = uriToFilename(uri, fileBase);
-    var relative = path.relative(fileBase, filename);
+function uriToRelativeFilename(uri, base) {
+    var filename = uriToFilename(uri, base);
+    var relative = path.relative(base, filename);
     return relative;
 }
 
-function filenameToBaseUri(filename, uriBase, fileBase) {
-    var uriPath = S(filename).strip(fileBase).toString();
-    return uriBase + uriPath;
+function filenameToBaseUri(filename, uri, base) {
+    var uriPath = S(filename).strip(base).toString();
+    return uri + uriPath;
 }
 
 exports.uriToFilename = uriToFilename;

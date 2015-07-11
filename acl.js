@@ -22,8 +22,8 @@ function allow(mode, req, res) {
 
     var accessType = "accessTo";
 
-    var filepath = file.uriToFilename(req.path, options.fileBase);
-    var relativePath = file.uriToRelativeFilename(req.path, options.fileBase);
+    var filepath = file.uriToFilename(req.path, options.base);
+    var relativePath = file.uriToRelativeFilename(req.path, options.base);
     var depth = relativePath.split('/');
 
     //Handle glob requests
@@ -37,8 +37,8 @@ function allow(mode, req, res) {
     for (var i = 0; i < depth.length; i++) {
         var pathAcl = S(filepath).endsWith(aclExtension) ?
                 filepath : filepath + aclExtension;
-        var pathUri = file.filenameToBaseUri(filepath, options.uriBase, options.fileBase);
-        relativePath = path.relative(options.fileBase, filepath);
+        var pathUri = file.filenameToBaseUri(filepath, options.uri, options.base);
+        relativePath = path.relative(options.base, filepath);
 
         debug("Checking " + accessType + "<" + mode + "> to " +
             pathUri + " for WebID: " + req.session.userId);
@@ -203,19 +203,19 @@ function allow(mode, req, res) {
         accessType = "defaultForNew";
         if (i === 0) {
             if (path.dirname(path.dirname(relativePath)) == '.') {
-                filepath = options.fileBase;
+                filepath = options.base;
             } else if (S(relativePath).endsWith("/")) {
-                filepath = options.fileBase + path.dirname(path.dirname(relativePath));
+                filepath = options.base + path.dirname(path.dirname(relativePath));
             } else {
-                filepath = options.fileBase + path.dirname(relativePath);
+                filepath = options.base + path.dirname(relativePath);
             }
         } else {
             if (relativePath.length === 0) {
                 break;
             } else if (path.dirname(path.dirname(relativePath)) === '.') {
-                filepath = options.fileBase;
+                filepath = options.base;
             } else {
-                filepath = options.fileBase + path.dirname(path.dirname(relativePath));
+                filepath = options.base + path.dirname(path.dirname(relativePath));
             }
         }
 

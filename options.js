@@ -14,34 +14,34 @@ function params(argv) {
   // From input
   opts.cache = argv.cache;
   opts.live = argv.live;
-  opts.path = opts.fileBase = argv.fileBase || process.cwd();
+  opts.path = opts.base = argv.base || process.cwd();
   opts.port = argv.port;
   opts.secret = argv.secret;
   opts.cert = argv.cert;
   opts.key = argv.key;
-  // TODO no need of uriBase
-  opts.uri = opts.uriBase = argv.uriBase;
+  // TODO no need of uri
+  opts.uri = opts.uri = argv.uri;
   opts.verbose = argv.verbose;
-  opts.webid = argv.webid === undefined ? true : argv.webid;
+  opts.webid = argv.webid;
 
   // Processed
   opts.leavePatchConnectionOpen = false;
   opts.aclSuffix = argv.aclSuffix || ",acl";
 
-  if (!(S(opts.fileBase).endsWith('/'))) {
-      opts.fileBase += '/';
+  if (!(S(opts.base).endsWith('/'))) {
+      opts.base += '/';
   }
   opts.changesSuffix = argv.changesSuffix || ',changes';
   opts.SSESuffix = argv.SSESuffix || ',events';
 
   opts.pathStart = '/' +
-    opts.uriBase
+    opts.uri
     .split('//')[1]
     .split('/')
     .slice(1)
     .join('/');
 
-  opts.prePathSlash = opts.uriBase
+  opts.prePathSlash = opts.uri
     .split('/')
     .slice(0, 3)
     .join('/');
@@ -53,7 +53,7 @@ function params(argv) {
   // TODO this should be an attribute of an object
   opts.usedURIs = {};
 
-  debug("uriBase: " + opts.uriBase);
+  debug("uri: " + opts.uri);
   debug("pathStart: " + opts.pathStart);
   debug("URI path filter regexp: " + opts.pathFilter);
   debug("Verbose: " + !!opts.verbose);
@@ -62,3 +62,4 @@ function params(argv) {
 
   return opts
 }
+

@@ -8,15 +8,12 @@ var S = require('string');
 describe('ldnode', function() {
   var address = 'http://localhost:3457/test/';
   var ldp = ldnode.createServer({
-    uriBase: address,
-    fileBase: __dirname,
-    webid: false
+    uri: address,
+    base: __dirname
   });
   ldp.listen(3457);
 
   var server = supertest(address);
-
-  // process.chdir('./test', undefined);
 
   describe('Hello World', function() {
       it('Should return "Hello, World!"', function(done) {
@@ -208,3 +205,4 @@ describe('ldnode', function() {
       });
   });
 });
+

@@ -19,7 +19,7 @@ var addUriTriple = function(kb, s, o, p) {
 var turtleExtension = ".ttl";
 
 function createRootContainer(options) {
-    if (!metadata.hasContainerMetadata(options.fileBase)) {
+    if (!metadata.hasContainerMetadata(options.base)) {
         var rootContainer = $rdf.graph();
         addUriTriple(rootContainer, options.pathStart,
             rdfVocab.type, ldpVocab.Container);
@@ -30,13 +30,13 @@ function createRootContainer(options) {
             '"Root Container"');
         var serializedContainer = $rdf.serialize(undefined, rootContainer,
             options.pathStart, 'text/turtle');
-        metadata.writeContainerMetadata(options.fileBase,
+        metadata.writeContainerMetadata(options.base,
             serializedContainer, function(err) {
                 if (err) {
                     //TODO handle error
                     debug("Could not write root container");
                 } else {
-                    debug("Wrote root container to " + options.fileBase);
+                    debug("Wrote root container to " + options.base);
                 }
             });
     }
@@ -74,10 +74,10 @@ function releaseResourceUri(options, uri) {
 }
 
 function createNewResource(options, resourcePath, resourceGraph, callback) {
-    var resourceURI = path.relative(options.fileBase, resourcePath);
+    var resourceURI = path.relative(options.base, resourcePath);
     //TODO write files with relative URIS.
     var rawResource = $rdf.serialize(undefined,
-        resourceGraph, options.uriBase + resourceURI, 'text/turtle');
+        resourceGraph, options.uri + resourceURI, 'text/turtle');
     debug("Writing new resource to " + resourcePath);
     debug("Resource:\n" + rawResource);
     fs.writeFile(resourcePath, rawResource, writeResourceCallback);
@@ -103,7 +103,7 @@ function createNewContainer(options, containerPath, containerGraph, callback) {
             return callback(err);
         } else {
             var rawContainer = $rdf.serialize(undefined, containerGraph,
-                options.uriBase, 'text/turtle');
+                options.uri, 'text/turtle');
             debug("rawContainer " + rawContainer);
             metadata.writeContainerMetadata(containerPath, rawContainer,
                 writeContainerCallback);
