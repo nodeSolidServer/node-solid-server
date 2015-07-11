@@ -22,12 +22,10 @@ var argv = require('nomnom')
   .option('uriBase', {
     full: 'uri',
     abbr: 'u',
-    metavar: 'URI',
     help: 'Default address of the server (e.g. http[s]://host:port/path)'
   })
   .option('fileBase', {
     abbr: 'b',
-    metavar: 'PATH',
     full: 'path',
     help: 'Base location to serve resources'
   })
@@ -66,7 +64,11 @@ var argv = require('nomnom')
   .option('webidCert', {
     help: 'Path to the webid cert',
     full: 'webid-cert',
-    abbr: 'c'
+    abbr: 'c',
+  })
+  .option('secret', {
+    help: 'HTTP Session secret key (e.g. "your secret phrase")',
+    abbr: 's'
   })
   .parse();
 
