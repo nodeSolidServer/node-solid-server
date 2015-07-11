@@ -14,7 +14,7 @@ function params(argv) {
   opts.aclSuffix = argv.aclSuffix || ",acl";
   opts.uriBase = argv.uriBase ||
       'http://localhost:3000' + process.cwd() + '/test/';
-  opts.fileBase = argv.fileBase || process.cwd() + '/test/';
+  opts.fileBase = argv.fileBase || process.cwd();
   if (!(S(opts.fileBase).endsWith('/'))) {
       opts.fileBase += '/';
   }
@@ -49,7 +49,7 @@ function params(argv) {
 
   // TODO this should be an attribute of an object
   opts.usedURIs = {};
-  
+
   debug("URI path filter regexp: " + opts.pathFilter);
   debug("Verbose: " + !!opts.verbose);
   debug("Live: " + !!opts.live);
