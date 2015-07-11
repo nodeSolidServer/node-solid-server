@@ -6,7 +6,7 @@ var request = require('request');
 var S = require('string');
 var supertest = require('supertest');
 
-describe('acl', function() {
+describe('ACL', function() {
     this.timeout(10000);
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
@@ -17,7 +17,10 @@ describe('acl', function() {
     var ldp = ldnode.createServer({
         uriBase: address,
         fileBase: __dirname,
-        webid: true
+        webid: {
+            key: __dirname + '/key.pem',
+            cert: __dirname + '/cert.pem'
+        }
     });
     ldp.listen(3456);
 
