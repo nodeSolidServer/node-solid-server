@@ -70,21 +70,25 @@ $ ldnode -v
 
 The command line tool has the following options
 
-    Usage: ldnode [options]
+```
+Usage: ldnode [options]
 
-    Options:
-       -v, --verbose   Print the logs to console
-       --version       Print current ldnode version
-       -u, --uri       Default address of the server (e.g. http[s]://host:port/path)
-       -b, --base      Base location to serve resources
-       -p, --port      Port to use
-       -c, --cache     Set cache time (in seconds), 0 for no cache
-       -K, --key       Path to the ssl key
-       -C, --cert      Path to the ssl cert
-       --webid         Enable WebID+TLS authentication
-       -s, --secret    HTTP Session secret key (e.g. "your secret phrase")
-       -s, --no-live   Disable live support through WebSockets
-
+Options:
+   -v, --verbose           Print the logs to console
+   --version               Print current ldnode version
+   -u, --uri               Default address of the server (e.g. http[s]://host:port/path)
+   -b, --base              Base location to serve resources
+   -p, --port              Port to use
+   -c, --cache             Set cache time (in seconds), 0 for no cache
+   -K, --key               Path to the ssl key
+   -C, --cert              Path to the ssl cert
+   --webid                 Enable WebID+TLS authentication
+   -s, --secret            HTTP Session secret key (e.g. "your secret phrase")
+   -s, --no-live           Disable live support through WebSockets
+   -sA, --suffix-acl       Suffix for acl files (default: '.acl')
+   -sC, --suffix-changes   Suffix for acl files (default: '.changes')
+   -sE, --suffix-sse       Suffix for SSE files (default: '.events')
+```
 
 ## Tests
 
