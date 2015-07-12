@@ -6,32 +6,32 @@ describe('params', function () {
 
   describe('uri', function () {
 
-    describe('not passed', function () {
+  //   describe('not passed', function () {
 
-      var ldp = ldnode.createServer({
-        base: __dirname
-      });
-      ldp.listen(3456);
+  //     var ldp = ldnode.createServer({
+  //       base: __dirname
+  //     });
+  //     ldp.listen(3456);
 
-      it('should be the proxy value if exist', function (done) {
-        done();
-      })
+  //     it('should be the proxy value if exist', function (done) {
+  //       done();
+  //     })
 
-      it('should be localhost if no proxy', function (done) {
-        done();
-      })
-    })
+  //     it('should be localhost if no proxy', function (done) {
+  //       done();
+  //     })
+  //   })
 
-    describe('passed', function() {
-      var ldp = ldnode.createServer({
-        uri: 'http://example.com',
-        base: __dirname
-      });
-      ldp.listen(3456);
-      it ('should not use proxy', function (done) {
-        done();
-      })
-    })
+  //   describe('passed', function() {
+  //     var ldp = ldnode.createServer({
+  //       uri: 'http://example.com',
+  //       base: __dirname
+  //     });
+  //     ldp.listen(3456);
+  //     it ('should not use proxy', function (done) {
+  //       done();
+  //     })
+  //   })
   })
 
   describe('base', function () {
