@@ -15,13 +15,13 @@ function params(argv) {
   // From input
   opts.cache = argv.cache;
   opts.live = argv.live;
-  opts.path = opts.base = argv.base || process.cwd();
+  opts.path = opts.base = argv.base || argv.fileBase || process.cwd();
   opts.port = argv.port;
   opts.secret = argv.secret;
   opts.cert = argv.cert;
   opts.key = argv.key;
   // TODO no need of uri
-  opts.uri = opts.uri = argv.uri;
+  opts.uri = opts.uri = argv.uri || argv.uriBase;
   opts.verbose = argv.verbose;
   opts.webid = argv.webid;
 
