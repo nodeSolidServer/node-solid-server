@@ -58,7 +58,6 @@ var argv = require('nomnom')
   .option('noLive', {
     full: 'no-live',
     help: 'Disable live support through WebSockets',
-    abbr: 's',
     flag: true
   })
   .parse();

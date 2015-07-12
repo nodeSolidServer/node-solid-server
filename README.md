@@ -83,7 +83,7 @@ The command line tool has the following options
        -C, --cert      Path to the ssl cert
        --webid         Enable WebID+TLS authentication
        -s, --secret    HTTP Session secret key (e.g. "your secret phrase")
-       -s, --no-live   Disable live support through WebSockets
+       --no-live   Disable live support through WebSockets
 
 ## Tests
 
