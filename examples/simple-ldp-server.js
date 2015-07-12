@@ -14,18 +14,6 @@ app.get('/', function (req, res) {
 var ldp = ldnode({
   uri: 'http://localhost:3000/ldp'
 })
-var ldp1 = ldnode({
-  uri: 'http://localhost:3000/ldp/asd'
-})
-ldp.get('/jj', function (req, res) {
-  res.send(req.hostname + '\n' + req.baseUrl)
-  console.log(req.ip)
-})
-ldp1.get('/jj', function (req, res) {
-  res.send(req.hostname + '\n' + req.baseUrl)
-  console.log(req.ip)
-})
-ldp.use('/asd', ldp1)
 app.use('/ldp', ldp)
 
 // Starting server
