@@ -15,7 +15,7 @@ function handler(req, res) {
     debug('PATCH -- ' +req.path);
     debug('PATCH -- text length: ' + (req.text ? req.text.length : 'undefined2'));
     res.header('MS-Author-Via' , 'SPARQL' );
-    var filename = file.uriToFilename(req.path);
+    var filename = file.uriToFilename(req.path, options.fileBase);
     var patchContentType = req.get('content-type').split(';')[0].trim(); // Ignore parameters
     var targetContentType = mime.lookup(filename);
     var targetURI = options.prePathSlash + req.path;
