@@ -13,10 +13,10 @@ var file = require('./fileStore.js');
 var ns = require('./vocab/ns.js').ns;
 var rdfVocab = require('./vocab/rdf.js');
 
-var aclExtension = ".acl";
-
 function allow(mode, req, res) {
     var options = req.app.locals.ldp;
+    var aclExtension = options.aclSuffix;
+
     var origin = req.get('origin');
     origin = origin ? origin : '';
 

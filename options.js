@@ -11,7 +11,8 @@ module.exports = params;
 function params(argv) {
   var opts = {};
   opts.leavePatchConnectionOpen = false;
-  opts.aclSuffix = argv.aclSuffix || ",acl";
+  opts.aclSuffix = argv.aclSuffix || ".acl";
+  opts.metaSuffix = argv.metaSuffix || ".meta";
   opts.uriBase = argv.uriBase ||
       'http://localhost:3000' + process.cwd() + '/test/';
   opts.fileBase = argv.fileBase || process.cwd() + '/test/';
@@ -20,7 +21,7 @@ function params(argv) {
   }
   opts.address = argv.a || '0.0.0.0';
   opts.verbose = argv.v;
-  opts.changesSuffix = argv.changesSuffix || ',changes';
+  opts.changesSuffix = argv.changesSuffix || '.changes';
   opts.SSESuffix = argv.SSESuffix || ',events';
   opts.ssl = argv.S;
   opts.cors = argv.cors;
@@ -49,7 +50,7 @@ function params(argv) {
 
   // TODO this should be an attribute of an object
   opts.usedURIs = {};
-  
+
   debug("URI path filter regexp: " + opts.pathFilter);
   debug("Verbose: " + opts.verbose);
   debug("Live: " + opts.live);
