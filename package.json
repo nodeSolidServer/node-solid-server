@@ -58,7 +58,8 @@
     "start": "node bin/ldnode.js",
     "test": "DEBUG='ldnode:*' ./node_modules/mocha/bin/mocha ./test/*.js",
     "test-acl": "./node_modules/mocha/bin/mocha ./test/secure-test.js",
-    "test-params": "./node_modules/mocha/bin/mocha ./test/params.js"
+    "test-params": "./node_modules/mocha/bin/mocha ./test/params.js",
+    "test-http": "./node_modules/mocha/bin/mocha ./test/test.js"
   },
   "bin": {
     "ldnode": "./bin/ldnode.js"

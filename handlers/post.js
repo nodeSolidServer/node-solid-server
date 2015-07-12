@@ -17,106 +17,122 @@ var rdfVocab = require('../vocab/rdf.js');
 
 function handler(req, res) {
     var options = req.app.locals.ldp;
-    if (req.is('application/sparql')) {
+    var contentType = req.get('content-type');
+
+    // Handle SPARQL query
+    if (contentType === 'application/sparql') {
         debug("POST -- Handling sparql query");
         return patch.handler(req, res);
-    } else if (req.is('application/sparql-update')) {
+    }
+
+    // Handle SPARQL-update query
+    if (contentType === 'application/sparql-update') {
         debug("POST -- Handling sparql-update query");
         return patch.handler(req, res);
+    }
+
+    // Error on invalid content-type
+    if (contentType != 'text/turtle' &&
+        contentType != 'text/n3' &&
+        contentType != 'application/rdf+xml') {
+        //TODO Handle json and nquad content types
+        debug("POST -- Invalid Content Type: " + contentType);
+        return res.status(415).send("Invalid Content Type");
+    }
+
+
+    var containerPath = file.uriToFilename(req.path, options.base);
+    debug("POST -- Container path: " + containerPath);
+    
+    // Container not found/invalid
+    if (metadata.isMetadataFile(containerPath)) {
+        debug("POST -- Invalid container.");
+        return res.sendStatus(404);
+    }
+
+    // Not a container
+    if (containerPath[containerPath.length - 1] != '/') {
+        debug("POST -- Requested resource is not a container");
+        return res.set('Allow', 'GET,HEAD,PUT,DELETE')
+            .sendStatus(405);
+    }
+
+    debug("POST -- Content Type: " + contentType);
+
+    var slug = req.get('Slug');
+    var resourceMetadata = header.parseMetadataFromHeader(req.get('Link'));
+    var resourcePath = container.createResourceUri(
+        options,
+        containerPath,
+        slug,
+        resourceMetadata.isBasicContainer);
+
+    if (resourcePath === null) {
+        container.releaseResourceUri(options, resourcePath);
+        debug("POST -- URI already exists or in use");
+        return res.sendStatus(400);
+    }
+    var resourceGraph = $rdf.graph();
+
+    // Get the request text
+    // TODO make sure correct text is selected
+    var requestText = req.convertedText || req.text;
+
+    var resourceBaseUri;
+    try {
+        resourceBaseUri = file.filenameToBaseUri(
+            resourcePath,
+            options.uri,
+            options.base);
+
+        $rdf.parse(
+            requestText,
+            resourceGraph,
+            resourceBaseUri,
+            'text/turtle');
+    } catch (parseErr) {
+        debug("POST -- Error parsing resource: " + parseErr);
+        container.releaseResourceUri(options, resourcePath);
+        return res.sendStatus(400);
+    }
+
+    header.addLinks(res, resourceMetadata);
+
+    if (resourceMetadata.isBasicContainer) {
+        resourcePath += '/';
+        resourceBaseUri += '/';
+        container.createNewContainer(
+            options,
+            resourcePath,
+            resourceGraph,
+            containerCallback);
     } else {
-        var containerPath = file.uriToFilename(req.path, options.base);
-        debug("POST -- Container path: " + containerPath);
-        if (metadata.isMetadataFile(containerPath)) {
-            debug("POST -- Invalid container.");
-            return res.status(404).send();
-        }
-        if (S(containerPath).endsWith('/')) {
-            var contentType = "";
-            if (req.is('text/turtle'))
-                contentType = 'text/turtle';
-            else if (req.is('text/n3'))
-                contentType = 'text/n3';
-            else if (req.is('application/rdf+xml'))
-                contentType = 'application/rdf+xml';
-            else {
-                //TODO Handle json and nquad content types
-                debug("POST -- Invalid Content Type");
-                return res.status(415).send("Invalid Content Type");
-            }
-            debug("POST -- Content Type: " + contentType);
-
-            var slug = req.get('Slug');
-            var resourceMetadata = header.parseMetadataFromHeader(req.get('Link'));
-            var resourcePath = container.createResourceUri(options, containerPath, slug,
-                resourceMetadata.isBasicContainer);
-            var resourceGraph = $rdf.graph();
-
-            if (resourcePath === null) {
-                container.releaseResourceUri(options, resourcePath);
-                debug("POST -- URI already exists or in use");
-                return res.sendStatus(400);
-            }
-
-            // Get the request text
-            // TODO make sure correct text is selected
-            var requestText;
-            if (req.convertedText) {
-                requestText = req.convertedText;
-            } else {
-                requestText = req.text;
-            }
-
-            var resourceBaseUri;
-            try {
-                resourceBaseUri = file.filenameToBaseUri(resourcePath, options.uri, options.base);
-                $rdf.parse(requestText, resourceGraph,
-                           resourceBaseUri, 'text/turtle');
-            } catch (parseErr) {
-                debug("POST -- Error parsing resource: " + parseErr);
-                container.releaseResourceUri(options, resourcePath);
-                return res.sendStatus(400);
-            }
-
-            header.addLinks(res, resourceMetadata);
-
-            if (resourceMetadata.isBasicContainer) {
-                resourcePath += '/';
-                resourceBaseUri += '/';
-                container.createNewContainer(options, resourcePath, resourceGraph,
-                    containerCallback);
-            } else {
-                container.createNewResource(options, resourcePath,
-                    resourceGraph, resourceCallback);
-            }
-        } else {
-            debug("POST -- Requested resource is not a container");
-            return res.set('Allow', 'GET,HEAD,PUT,DELETE').sendStatus(405);
-        }
+        container.createNewResource(
+            options,
+            resourcePath,
+            resourceGraph,
+            resourceCallback);
     }
 
     function containerCallback(err) {
         if (err) {
-            debug(
-                "POST -- Error creating new container: " + err);
+            debug("POST -- Error creating new container: " + err);
             return res.sendStatus(500);
-        } else {
-            debug(
-                "POST -- Created new container " + resourceBaseUri);
-            res.set('Location', resourceBaseUri);
-            return res.sendStatus(201);
         }
+        debug("POST -- Created new container " + resourceBaseUri);
+        res.set('Location', resourceBaseUri);
+        return res.sendStatus(201);
     }
 
     function resourceCallback(err) {
         if (err) {
-            debug(
-                "POST -- Error creating resource: " + err);
+            debug("POST -- Error creating resource: " + err);
             return res.sendStatus(500);
-        } else {
-            res.set('Location', resourceBaseUri);
-            return res.sendStatus(201);
         }
+        res.set('Location', resourceBaseUri);
+        return res.sendStatus(201);
     }
 }
+
 
 exports.handler = handler;
