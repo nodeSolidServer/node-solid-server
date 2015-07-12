@@ -24,8 +24,8 @@ function get(req, res, includeBody) {
     var options = req.app.locals.ldp;
 
     // Add request to subscription service
-    if (('' + req.path).slice(-options.changesSuffix.length) ===
-        options.changesSuffix) {
+    if (('' + req.path).slice(-options.suffixChanges.length) ===
+        options.suffixChanges) {
         debug("GET -- Subscribed to ", req.path);
         return subscription.subscribeToChanges(req, res);
     }
@@ -34,10 +34,10 @@ function get(req, res, includeBody) {
     if (options.live) {
         // Note not yet in
         // http://www.iana.org/assignments/link-relations/link-relations.xhtml
-        header.addLink(res, req.path + options.changesSuffix, 'changes');
-        // res.header('Link' , '' + req.path + options.SSESuffix + ' ; rel=events' );
+        header.addLink(res, req.path + options.suffixChanges, 'changes');
+        // res.header('Link' , '' + req.path + options.suffixSSE + ' ; rel=events' );
         // overwrites the pevious
-        res.header('Updates-Via', '' + req.path + options.changesSuffix);
+        res.header('Updates-Via', '' + req.path + options.suffixChanges);
     }
 
     if (includeBody) {
