@@ -1,45 +1,84 @@
 #!/bin/env node
 
-var argv = require('optimist')
-  .boolean('cors')
-  .boolean('v')
-  .boolean('live')
-  .argv;
+var fs = require('fs');
+var path = require('path');
 
-if (argv.h || argv.help || argv['?']) {
-    console.log([
-        "usage: ldnode [path] [options]",
-        "",
-        "options:",
-        "  --uriBase          Address, port, and default path of the server. (Example: http://localhost:3000/test/)",
-        "  --fileBase         Base location to serve resources. Requests whose paths do not have fileBase as a prefix will be ignored",
-        "  --live            Offer and support live updates",
-        "  -p                 Port to use",
-        "  -v                 Log messages to console",
-        "  --changesSuffix    The suffix that will be used to identify the requests that will subscribe to changes to the object requested. Defaults to ,changes",
-        "  --cors             Enable CORS via the 'Access-Control-Allow-Origin' header",
-        "  -c                 Set cache time (in seconds). e.g. -c10 for 10 seconds.",
-        "                     To disable caching, use -c-1.",
-        "  --changesSuffix sss Change the URI suffix used for the URI of a change stream",
-        "  --SSESuffix sss   Change the URI suffix used for the URI of a SSE stream",
-        "",
-        "  -S --ssl           Enable https.",
-        "  -C --cert          Path to ssl cert file (default: cert.pem).",
-        "  -K --key           Path to ssl key file (default: key.pem).",
-        "",
-        "  --webid            Enable WebID authentication",
-        "  --privateKey       Path to the private key used to enable webid authentication",
-        "  --cert             Path to the private key used to enable webid authentication",
-        "  -h --help          Print this list and exit."
-    ].join('\n'));
-    process.exit();
+var argv = require('nomnom')
+  .script('ldnode')
+  .option('verbose', {
+    abbr: 'v',
+    flag: true,
+    help: 'Print the logs to console'
+  })
+  .option('version', {
+    flag: true,
+    help: 'Print current ldnode version',
+    callback: function () {
+      fs.readFile(path.resolve(__dirname, '../package.json'), 'utf-8', function(err, file) {
+        console.log(JSON.parse(file).version);
+      });
+    }
+  })
+  .option('uri', {
+    abbr: 'u',
+    help: 'Default address of the server (e.g. http[s]://host:port/path)'
+  })
+  .option('base', {
+    abbr: 'b',
+    full: 'base',
+    help: 'Base location to serve resources'
+  })
+  .option('port', {
+    abbr: 'p',
+    help: 'Port to use'
+  })
+  .option('cache', {
+    abbr: 'c',
+    help: 'Set cache time (in seconds), 0 for no cache'
+  })
+  .option('key', {
+    help: 'Path to the ssl key',
+    abbr: 'K',
+    full: 'key'
+  })
+  .option('cert', {
+    full: 'cert',
+    help: 'Path to the ssl cert',
+    abbr: 'C'
+  })
+  .option('webid', {
+    help: 'Enable WebID+TLS authentication',
+    full: 'webid',
+    flag: true
+  })
+  .option('secret', {
+    help: 'HTTP Session secret key (e.g. "your secret phrase")',
+    abbr: 's'
+  })
+  .option('noLive', {
+    full: 'no-live',
+    help: 'Disable live support through WebSockets',
+    abbr: 's',
+    flag: true
+  })
+  .parse();
+
+// Print version and leave
+if (argv.version) {
+  return;
 }
 
-process.env.DEBUG = argv.v ? 'ldnode:*' : false;
-var debug = require('../logging').server;
-var ldnode = require('../index');
+// Set up --no-*
+argv.live = !argv.noLive;
 
-// Signal handling
+// Set up debug environment
+process.env.DEBUG = argv.verbose ? 'ldnode:*' : false;
+var debug = require('../logging').server;
+
+// Set up port
+argv.port = argv.port || 3456;
+
+// Signal handling (e.g. CTRL+C)
 if (process.platform !== 'win32') {
     // Signal handlers don't work on Windows.
     process.on('SIGINT', function() {
@@ -48,9 +87,10 @@ if (process.platform !== 'win32') {
     });
 }
 
-// Starting ldnode
+// Finally starting ldnode
+var ldnode = require('../index');
 var app = ldnode.createServer(argv);
-app.listen(argv.p, function() {
-    debug('LDP started on port ' + argv.p);
+app.listen(argv.port, function() {
+    debug('LDP started on port ' + argv.port);
 });
 

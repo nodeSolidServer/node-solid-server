@@ -5,18 +5,20 @@ var $rdf = require('rdflib');
 var request = require('request');
 var S = require('string');
 var supertest = require('supertest');
+var ldnode = require('../index');
 
-describe('acl', function() {
+describe('ACL', function() {
     this.timeout(10000);
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
     var ns = require('../vocab/ns.js').ns;
     var address = 'https://localhost:3456/test/';
 
-    var ldnode = require('../index');
     var ldp = ldnode.createServer({
-        uriBase: address,
-        fileBase: __dirname,
+        uri: address,
+        base: __dirname,
+        key: __dirname + '/key.pem',
+        cert: __dirname + '/cert.pem',
         webid: true
     });
     ldp.listen(3456);

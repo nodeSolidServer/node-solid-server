@@ -42,7 +42,7 @@ function ldnode (argv) {
 
     // Session [TODO]
     app.use(session({
-        secret: opts.sessionSecret || 'node-ldp',
+        secret: opts.secret || 'node-ldp',
         saveUninitialized: false,
         resave: false
     }));
@@ -55,6 +55,7 @@ function ldnode (argv) {
 
     // Adding proxy
     if (opts.xssProxy) {
+      console.log(proxyFilter)
         proxy(app, opts.proxyFilter);
     }
 
@@ -69,13 +70,14 @@ function ldnode (argv) {
 }
 
 function createServer(argv) {
-
     var app = ldnode(argv);
     var opts = app.locals.ldp;
 
-    if (app.locals.ldp && app.locals.ldp.webid) {
+    if (opts && (opts.webid || opts.key || opts.cert) ) {
+        debug("SSL Private Key path: " + opts.key);
+        debug("SSL Certificate path: " + opts.cert);
         var credentials = {
-            key: fs.readFileSync(opts.privateKey),
+            key: fs.readFileSync(opts.key),
             cert: fs.readFileSync(opts.cert),
             requestCert: true
         };

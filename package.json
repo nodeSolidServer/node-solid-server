@@ -39,7 +39,7 @@
     "n3": "^0.4.3",
     "node-regexp": "^0.1.1",
     "node-uuid": "^1.4.3",
-    "optimist": "^0.6.1",
+    "nomnom": "^1.8.1",
     "raw-body": "^2.1.2",
     "rdflib": "^0.2.6",
     "redis": "^0.12.1",
@@ -56,7 +56,11 @@
   "main": "index.js",
   "scripts": {
     "start": "node bin/ldnode.js",
-    "test": "./node_modules/mocha/bin/mocha ./test/*.js"
+    "test": "./node_modules/mocha/bin/mocha ./test/*.js",
+    "test-debug": "DEBUG='ldnode:*' ./node_modules/mocha/bin/mocha ./test/*.js",
+    "test-acl": "./node_modules/mocha/bin/mocha ./test/secure-test.js",
+    "test-params": "./node_modules/mocha/bin/mocha ./test/params.js",
+    "test-http": "./node_modules/mocha/bin/mocha ./test/test.js"
   },
   "bin": {
     "ldnode": "./bin/ldnode.js"

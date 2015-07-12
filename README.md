@@ -31,8 +31,8 @@ npm install
 var ldnode = require('ldnode')
 
 var ldp = ldnode.createServer({
-  uriBase: "http://example.com/test/",
-  fileBase: __dirname + '/test/'
+  uri: "http://example.com/test/",
+  base: __dirname + '/test/'
 })
 ldp.listen(1234, function() {
   // Started Linked Data Platform
@@ -70,29 +70,20 @@ $ ldnode -v
 
 The command line tool has the following options
 
-    usage: ldnode [path] [options]
-    
-    options:
-      --uriBase          Address, port, and default path of the server. (Example: http://localhost:3000/test/)
-      --fileBase         Base location to serve resources. Requests whose paths do not have fileBase as a prefix will be ignored
-      --live            Offer and support live updates
-      -p                 Port to use
-      -v                 Log messages to console
-      --changesSuffix    The suffix that will be used to identify the requests that will subscribe to changes to the object requested. Defaults to ,changes
-      --cors             Enable CORS via the 'Access-Control-Allow-Origin' header
-      -c                 Set cache time (in seconds). e.g. -c10 for 10 seconds.
-                     To disable caching, use -c-1.
-      --changesSuffix sss Change the URI suffix used for the URI of a change stream
-      --SSESuffix sss   Change the URI suffix used for the URI of a SSE stream
-    
-      -S --ssl           Enable https.
-      -C --cert          Path to ssl cert file (default: cert.pem).
-      -K --key           Path to ssl key file (default: key.pem).
-    
-      --webid            Enable WebID authentication
-      --privateKey       Path to the private key used to enable webid authentication
-      --cert             Path to the private key used to enable webid authentication
-      -h --help          Print this list and exit.
+    Usage: ldnode [options]
+
+    Options:
+       -v, --verbose   Print the logs to console
+       --version       Print current ldnode version
+       -u, --uri       Default address of the server (e.g. http[s]://host:port/path)
+       -b, --base      Base location to serve resources
+       -p, --port      Port to use
+       -c, --cache     Set cache time (in seconds), 0 for no cache
+       -K, --key       Path to the ssl key
+       -C, --cert      Path to the ssl cert
+       --webid         Enable WebID+TLS authentication
+       -s, --secret    HTTP Session secret key (e.g. "your secret phrase")
+       -s, --no-live   Disable live support through WebSockets
 
 ## Tests
 
