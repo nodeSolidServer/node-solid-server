@@ -17,7 +17,7 @@ exports.subscribeToChanges_SSE = function(req, res) {
 
     var messageCount;
     debug("Server Side Events subscription");
-    var targetPath = req.path.slice(0, - options.changesSuffix.length); // lop off ',events'
+    var targetPath = req.path.slice(0, - options.suffixChanges.length); // lop off ',events'
     if (SSEsubscriptions[targetPath] === undefined) {
         SSEsubscriptions[targetPath] = redis.createClient();
     }
@@ -61,7 +61,7 @@ exports.subscribeToChanges_SSE = function(req, res) {
 exports.publishDelta_SSE = function (req, res, patchKB, targetURI){
     // @@ TODO
     var options = req.app.locals.ldp;
-    var targetPath = req.path.slice(0, - options.changesSuffix.length); // lop off ',changes'
+    var targetPath = req.path.slice(0, - options.suffixChanges.length); // lop off ',changes'
     var publisherClient = SSEsubscriptions[targetPath];
     publisherClient.publish( 'updates', ('"' + targetPath + '" data changed visited') );
 };
@@ -74,7 +74,7 @@ var DelayedResponse = require('http-delayed-response');
 
 exports.subscribeToChangesLongPoll = function(req, res) {
     var options = req.app.locals.ldp;
-    var targetPath = req.path.slice(0, - options.changesSuffix.length); // lop off ',changes'
+    var targetPath = req.path.slice(0, - options.suffixChanges.length); // lop off ',changes'
     if (subscriptions[targetPath] === undefined) {
         subscriptions[targetPath] = [];
     }

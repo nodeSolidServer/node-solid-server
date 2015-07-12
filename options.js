@@ -27,13 +27,13 @@ function params(argv) {
 
   // Processed
   opts.leavePatchConnectionOpen = false;
-  opts.aclSuffix = argv.aclSuffix || ",acl";
+  opts.suffixAcl = argv.suffixAcl || ".acl";
+  opts.suffixChanges = argv.suffixChanges || '.changes';
+  opts.suffixSSE = argv.suffixSSE || '.events';
 
   if (!(S(opts.base).endsWith('/'))) {
       opts.base += '/';
   }
-  opts.changesSuffix = argv.changesSuffix || ',changes';
-  opts.SSESuffix = argv.SSESuffix || ',events';
 
   opts.pathStart = '/' +
     opts.uri
