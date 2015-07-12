@@ -13,8 +13,6 @@ var file = require('./fileStore.js');
 var ns = require('./vocab/ns.js').ns;
 var rdfVocab = require('./vocab/rdf.js');
 
-var aclExtension = ".acl";
-
 function allow(mode, req, res) {
     var options = req.app.locals.ldp;
     var origin = req.get('origin');
@@ -35,8 +33,8 @@ function allow(mode, req, res) {
     }
 
     for (var i = 0; i < depth.length; i++) {
-        var pathAcl = S(filepath).endsWith(aclExtension) ?
-                filepath : filepath + aclExtension;
+        var pathAcl = S(filepath).endsWith(options.suffixAcl) ?
+                filepath : filepath + options.suffixAcl;
         var pathUri = file.filenameToBaseUri(filepath, options.uri, options.base);
         relativePath = path.relative(options.base, filepath);
 
