@@ -84,7 +84,7 @@ Options:
    -C, --cert              Path to the ssl cert
    --webid                 Enable WebID+TLS authentication
    -s, --secret            HTTP Session secret key (e.g. "your secret phrase")
-   -s, --no-live           Disable live support through WebSockets
+   --no-live           Disable live support through WebSockets
    -sA, --suffix-acl       Suffix for acl files (default: '.acl')
    -sC, --suffix-changes   Suffix for acl files (default: '.changes')
    -sE, --suffix-sse       Suffix for SSE files (default: '.events')
