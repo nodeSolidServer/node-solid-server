@@ -57,7 +57,8 @@
   "scripts": {
     "start": "node bin/ldnode.js",
     "test": "DEBUG='ldnode:*' ./node_modules/mocha/bin/mocha ./test/*.js",
-    "test-acl": "./node_modules/mocha/bin/mocha ./test/secure-test.js"
+    "test-acl": "./node_modules/mocha/bin/mocha ./test/secure-test.js",
+    "test-params": "./node_modules/mocha/bin/mocha ./test/params.js"
   },
   "bin": {
     "ldnode": "./bin/ldnode.js"

@@ -9,6 +9,7 @@ var debug = require('./logging').settings;
 module.exports = params;
 
 function params(argv) {
+  argv = argv || {};
   var opts = {};
 
   // From input

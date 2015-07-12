@@ -5,6 +5,7 @@ var $rdf = require('rdflib');
 var request = require('request');
 var S = require('string');
 var supertest = require('supertest');
+var ldnode = require('../index');
 
 describe('ACL', function() {
     this.timeout(10000);
@@ -13,7 +14,6 @@ describe('ACL', function() {
     var ns = require('../vocab/ns.js').ns;
     var address = 'https://localhost:3456/test/';
 
-    var ldnode = require('../index');
     var ldp = ldnode.createServer({
         uri: address,
         base: __dirname,
