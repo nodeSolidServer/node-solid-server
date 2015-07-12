@@ -61,6 +61,21 @@ var argv = require('nomnom')
     abbr: 's',
     flag: true
   })
+  .option('suffixAcl', {
+    full: 'suffix-acl',
+    help: 'Suffix for acl files (default: \'.acl\')',
+    abbr: 'sA'
+  })
+  .option('suffixChanges', {
+    full: 'suffix-changes',
+    help: 'Suffix for acl files (default: \'.changes\')',
+    abbr: 'sC'
+  })
+  .option('suffixSSE', {
+    full: 'suffix-sse',
+    help: 'Suffix for SSE files (default: \'.events\')',
+    abbr: 'sE'
+  })
   .parse();
 
 // Print version and leave

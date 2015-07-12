@@ -85,6 +85,7 @@ The command line tool has the following options
        -s, --secret    HTTP Session secret key (e.g. "your secret phrase")
        -s, --no-live   Disable live support through WebSockets
 
+
 ## Tests
 
 The tests assume that there is a running ldnode.
