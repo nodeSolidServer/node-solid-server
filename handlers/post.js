@@ -77,14 +77,13 @@ function handler(req, res) {
     // Get the request text
     // TODO make sure correct text is selected
     var requestText = req.convertedText || req.text;
-    var uri = options.uri || file.uriAbs(req);
+    var uri = file.uriAbs(req);
     var resourceBaseUri = file.filenameToBaseUri(
         resourcePath,
         uri,
         options.base);
 
     try {
-        console.log(requestText);
         $rdf.parse(
             requestText,
             resourceGraph,

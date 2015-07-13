@@ -19,9 +19,9 @@ var argv = require('nomnom')
       });
     }
   })
-  .option('uri', {
-    abbr: 'u',
-    help: 'Default address of the server (e.g. http[s]://host:port/path)'
+  .option('mount', {
+    abbr: 'm',
+    help: 'Where to mount Linked Data Platform (default: \'/\')'
   })
   .option('base', {
     abbr: 'b',

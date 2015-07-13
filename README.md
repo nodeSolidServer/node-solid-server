@@ -30,10 +30,7 @@ npm install
 ```javascript
 var ldnode = require('ldnode')
 
-var ldp = ldnode.createServer({
-  uri: "http://example.com/test/",
-  base: __dirname + '/test/'
-})
+var ldp = ldnode.createServer()
 ldp.listen(1234, function() {
   // Started Linked Data Platform
 })
@@ -46,7 +43,7 @@ You can integrate it with your existing express app
 ```javascript
 var ldnode = require('ldnode')
 var app = require('express')()
-app.use('/test', ldnode(opts))
+app.use('/test', ldnode())
 ...
 ```
 
@@ -76,7 +73,7 @@ Usage: ldnode [options]
 Options:
    -v, --verbose           Print the logs to console
    --version               Print current ldnode version
-   -u, --uri               Default address of the server (e.g. http[s]://host:port/path)
+   -m, --mount             Where to mount Linked Data Platform (default: '/')
    -b, --base              Base location to serve resources
    -p, --port              Port to use
    -c, --cache             Set cache time (in seconds), 0 for no cache
@@ -84,10 +81,11 @@ Options:
    -C, --cert              Path to the ssl cert
    --webid                 Enable WebID+TLS authentication
    -s, --secret            HTTP Session secret key (e.g. "your secret phrase")
-   --no-live           Disable live support through WebSockets
+   --no-live               Disable live support through WebSockets
    -sA, --suffix-acl       Suffix for acl files (default: '.acl')
    -sC, --suffix-changes   Suffix for acl files (default: '.changes')
    -sE, --suffix-sse       Suffix for SSE files (default: '.events')
+
 ```
 
 ## Tests

@@ -22,7 +22,7 @@ var metaExtension = '.meta';
 
 function get(req, res, includeBody) {
     var options = req.app.locals.ldp;
-    var uri = options.uri || file.uriAbs(req);
+    var uri = file.uriAbs(req);
 
     // Add request to subscription service
     if (('' + req.path).slice(-options.suffixChanges.length) ===
