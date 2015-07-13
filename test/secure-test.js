@@ -75,6 +75,14 @@ describe('ACL', function() {
                 done();
             });
         });
+        it("Should return User header", function(done) {
+            var options = createOptions('hello.html', 'user1');
+            request(options, function(error, response, body) {
+                assert.equal(response.statusCode, 200);
+                assert.equal(response.headers.user, user1);
+                done();
+            });
+        });
     });
 
     describe("Empty ACL Test", function() {

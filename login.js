@@ -10,8 +10,9 @@ function loginHandler(req, res, next) {
         setEmptySession(req);
         return next();
     }
-    if (req.session.profile && req.session.identified) {
+    if (req.session.userId && req.session.identified) {
         debug("User: " + req.session.profile);
+        res.set('User', req.session.userId);
         return next();
     } else {
         var certificate = req.connection.getPeerCertificate();
@@ -44,6 +45,7 @@ function loginHandler(req, res, next) {
                     req.session.userId = result;
                     req.session.identified = true;
                     debug("Identified user: " + req.session.userId);
+                    res.set('User', req.session.userId);
                     return next();
                 }
             });
