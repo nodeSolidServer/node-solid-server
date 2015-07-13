@@ -35,7 +35,8 @@ function allow(mode, req, res) {
     for (var i = 0; i < depth.length; i++) {
         var pathAcl = S(filepath).endsWith(options.suffixAcl) ?
                 filepath : filepath + options.suffixAcl;
-        var pathUri = file.filenameToBaseUri(filepath, options.uri, options.base);
+        var uri = options.uri || file.uriAbs(req);
+        var pathUri = file.filenameToBaseUri(filepath, uri, options.base);
         relativePath = path.relative(options.base, filepath);
 
         debug("Checking " + accessType + "<" + mode + "> to " +

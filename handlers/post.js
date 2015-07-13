@@ -78,18 +78,19 @@ function handler(req, res) {
     // TODO make sure correct text is selected
     var requestText = req.convertedText || req.text;
 
-    var resourceBaseUri;
-    try {
-        resourceBaseUri = file.filenameToBaseUri(
-            resourcePath,
-            options.uri,
-            options.base);
+    var uri = options.uri || file.uriAbs(req);
+    var resourceBaseUri = file.filenameToBaseUri(
+        resourcePath,
+        uri,
+        options.base);
 
+    try {
+        console.log(requestText);
         $rdf.parse(
             requestText,
             resourceGraph,
-            resourceBaseUri,
-            'text/turtle');
+            uri,
+            contentType);
     } catch (parseErr) {
         debug("POST -- Error parsing resource: " + parseErr);
         container.releaseResourceUri(options, resourcePath);

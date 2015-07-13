@@ -22,6 +22,7 @@ var metaExtension = '.meta';
 
 function get(req, res, includeBody) {
     var options = req.app.locals.ldp;
+    var uri = options.uri || file.uriAbs(req);
 
     // Add request to subscription service
     if (('' + req.path).slice(-options.suffixChanges.length) ===
@@ -118,7 +119,7 @@ function get(req, res, includeBody) {
                     try {
                         var fileData = fs.readFileSync(match,
                             {encoding: "utf8"});
-                        var baseUri = file.filenameToBaseUri(match, options.uri, options.base);
+                        var baseUri = file.filenameToBaseUri(match, uri, options.base);
                         //TODO integrate ACL
                         if (S(match).endsWith(".ttl") && aclAllow(match)) {
                             $rdf.parse(fileData, globGraph, baseUri,
@@ -153,7 +154,7 @@ function get(req, res, includeBody) {
 
     function parseLinkedData(turtleData) {
         var accept = header.parseAcceptHeader(req);
-        var baseUri = file.filenameToBaseUri(filename, options.uri, options.base);
+        var baseUri = file.filenameToBaseUri(filename, uri, options.base);
 
         // Handle Turtle Accept header
         if (accept === undefined || accept === null) {
@@ -190,7 +191,7 @@ function get(req, res, includeBody) {
 
     function parseContainer(containerData) {
         //Handle other file types
-        var baseUri = file.filenameToBaseUri(filename, options.uri, options.base);
+        var baseUri = file.filenameToBaseUri(filename, uri, options.base);
         var resourceGraph = $rdf.graph();
         try {
             $rdf.parse(containerData, resourceGraph, baseUri, 'text/turtle');
