@@ -52,7 +52,7 @@ function ldnode (argv) {
     container.createRootContainer(opts.fileBase, opts.pathStart);
 
     // Setting up routes
-    app.use('/', routes());
+    app.use(opts.pathStart, routes());
 
     // Adding proxy
     if (opts.xssProxy) {
