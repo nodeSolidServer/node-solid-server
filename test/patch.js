@@ -6,16 +6,19 @@ var expect = require('chai').expect;
 var assert = require('chai').assert;
 var path = require('path');
 
+// Helper functions for the FS
 function cp (src, dest) {
   return fsExtra.copySync(
     __dirname + '/' + src,
     __dirname + '/' + dest);
 }
+
 function read (file) {
   return fs.readFileSync(__dirname + '/' + file, {
       'encoding': 'utf8'
     });
 }
+
 function rm (file) {
   return fs.unlinkSync(__dirname + '/' + file);
 }
@@ -24,8 +27,8 @@ function write (text, file) {
   return fs.writeFileSync(__dirname + '/' + file, text);
 }
 
-
 describe('PATCH', function () {
+  // Starting LDP
   var ldp = ldnode.createServer({
     base: __dirname + '/testfiles',
     mount: '/test'
