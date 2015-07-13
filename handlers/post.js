@@ -87,7 +87,7 @@ function handler(req, res) {
         $rdf.parse(
             requestText,
             resourceGraph,
-            uri,
+            resourceBaseUri,
             contentType);
     } catch (parseErr) {
         debug("POST -- Error parsing resource: " + parseErr);
