@@ -11,9 +11,7 @@ app.get('/', function (req, res) {
 })
 
 // Mounting ldnode on /ldp
-var ldp = ldnode({
-  uri: 'http://localhost:3000/ldp'
-})
+var ldp = ldnode()
 app.use('/ldp', ldp)
 
 // Starting server
