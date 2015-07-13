@@ -30,8 +30,8 @@ describe('PATCH', function () {
     base: __dirname + '/testfiles',
     mount: '/test'
   });
-  ldp.listen(3456);
-  var server = supertest('http://localhost:3456/test');
+  ldp.listen(3453);
+  var server = supertest('http://localhost:3453/test');
 
   describe('POST', function() {
     write(
