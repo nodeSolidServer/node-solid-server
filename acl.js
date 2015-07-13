@@ -20,8 +20,8 @@ function allow(mode, req, res) {
 
     var accessType = "accessTo";
 
-    var filepath = file.uriToFilename(req.path, options.base);
-    var relativePath = file.uriToRelativeFilename(req.path, options.base);
+    var filepath = file.uriToFilename(req.path, options.root);
+    var relativePath = file.uriToRelativeFilename(req.path, options.root);
     var depth = relativePath.split('/');
 
     //Handle glob requests
@@ -36,8 +36,8 @@ function allow(mode, req, res) {
         var pathAcl = S(filepath).endsWith(options.suffixAcl) ?
                 filepath : filepath + options.suffixAcl;
         var uri = file.uriAbs(req);
-        var pathUri = file.filenameToBaseUri(filepath, uri, options.base);
-        relativePath = path.relative(options.base, filepath);
+        var pathUri = file.filenameToBaseUri(filepath, uri, options.root);
+        relativePath = path.relative(options.root, filepath);
 
         debug("Checking " + accessType + "<" + mode + "> to " +
             pathUri + " for WebID: " + req.session.userId);
@@ -202,19 +202,19 @@ function allow(mode, req, res) {
         accessType = "defaultForNew";
         if (i === 0) {
             if (path.dirname(path.dirname(relativePath)) == '.') {
-                filepath = options.base;
+                filepath = options.root;
             } else if (S(relativePath).endsWith("/")) {
-                filepath = options.base + path.dirname(path.dirname(relativePath));
+                filepath = options.root + path.dirname(path.dirname(relativePath));
             } else {
-                filepath = options.base + path.dirname(relativePath);
+                filepath = options.root + path.dirname(relativePath);
             }
         } else {
             if (relativePath.length === 0) {
                 break;
             } else if (path.dirname(path.dirname(relativePath)) === '.') {
-                filepath = options.base;
+                filepath = options.root;
             } else {
-                filepath = options.base + path.dirname(path.dirname(relativePath));
+                filepath = options.root + path.dirname(path.dirname(relativePath));
             }
         }
 

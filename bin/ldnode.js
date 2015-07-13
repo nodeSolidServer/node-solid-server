@@ -23,10 +23,9 @@ var argv = require('nomnom')
     abbr: 'm',
     help: 'Where to mount Linked Data Platform (default: \'/\')'
   })
-  .option('base', {
-    abbr: 'b',
-    full: 'base',
-    help: 'Base location to serve resources'
+  .option('root', {
+    abbr: 'r',
+    help: 'Root location on the filesystem to serve resources'
   })
   .option('port', {
     abbr: 'p',

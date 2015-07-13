@@ -46,7 +46,7 @@ function get(req, res, includeBody) {
         debug('HEAD -- ' + req.path);
     }
 
-    var filename = file.uriToFilename(req.path, options.base);
+    var filename = file.uriToFilename(req.path, options.root);
     fs.stat(filename, function(err, stats) {
         if (err) {
             if (glob.hasMagic(filename)) {
@@ -118,7 +118,7 @@ function get(req, res, includeBody) {
                     try {
                         var fileData = fs.readFileSync(match,
                             {encoding: "utf8"});
-                        var baseUri = file.filenameToBaseUri(match, uri, options.base);
+                        var baseUri = file.filenameToBaseUri(match, uri, options.root);
                         //TODO integrate ACL
                         if (S(match).endsWith(".ttl") && aclAllow(match)) {
                             $rdf.parse(fileData, globGraph, baseUri,
@@ -140,7 +140,7 @@ function get(req, res, includeBody) {
             return true;
         } else {
             var relativePath = '/' +
-                    path.relative(options.base, match);
+                    path.relative(options.root, match);
             req.path = relativePath;
             var allow = acl.allow("Read", req, res);
             if (allow.status === 200) {
@@ -153,7 +153,7 @@ function get(req, res, includeBody) {
 
     function parseLinkedData(turtleData) {
         var accept = header.parseAcceptHeader(req);
-        var baseUri = file.filenameToBaseUri(filename, uri, options.base);
+        var baseUri = file.filenameToBaseUri(filename, uri, options.root);
 
         // Handle Turtle Accept header
         if (accept === undefined || accept === null) {
@@ -190,7 +190,7 @@ function get(req, res, includeBody) {
 
     function parseContainer(containerData) {
         //Handle other file types
-        var baseUri = file.filenameToBaseUri(filename, uri, options.base);
+        var baseUri = file.filenameToBaseUri(filename, uri, options.root);
         var resourceGraph = $rdf.graph();
         try {
             $rdf.parse(containerData, resourceGraph, baseUri, 'text/turtle');

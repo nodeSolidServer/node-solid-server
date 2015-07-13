@@ -16,7 +16,7 @@ describe('ACL', function() {
 
     var ldp = ldnode.createServer({
         mount: '/test',
-        base: __dirname,
+        root: __dirname,
         key: __dirname + '/key.pem',
         cert: __dirname + '/cert.pem',
         webid: true

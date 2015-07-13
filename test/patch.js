@@ -11,11 +11,13 @@ function cp (src, dest) {
     __dirname + '/' + src,
     __dirname + '/' + dest);
 }
+
 function read (file) {
   return fs.readFileSync(__dirname + '/' + file, {
       'encoding': 'utf8'
     });
 }
+
 function rm (file) {
   return fs.unlinkSync(__dirname + '/' + file);
 }
@@ -27,7 +29,7 @@ function write (text, file) {
 
 describe('PATCH', function () {
   var ldp = ldnode.createServer({
-    base: __dirname + '/testfiles',
+    root: __dirname + '/testfiles',
     mount: '/test'
   });
   ldp.listen(3453);
@@ -50,6 +52,5 @@ describe('PATCH', function () {
           done(err);
         });
     });
-
   });
 });

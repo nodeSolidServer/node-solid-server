@@ -41,7 +41,7 @@ function handler(req, res) {
     }
 
 
-    var containerPath = file.uriToFilename(req.path, options.base);
+    var containerPath = file.uriToFilename(req.path, options.root);
     debug("POST -- Container path: " + containerPath);
     
     // Container not found/invalid
@@ -81,7 +81,7 @@ function handler(req, res) {
     var resourceBaseUri = file.filenameToBaseUri(
         resourcePath,
         uri,
-        options.base);
+        options.root);
 
     try {
         $rdf.parse(
@@ -109,7 +109,7 @@ function handler(req, res) {
     } else {
         container.createNewResource(
             options.usedURIs,
-            options.base,
+            options.root,
             uri,
             resourcePath,
             resourceGraph,
