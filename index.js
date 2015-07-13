@@ -48,14 +48,15 @@ function ldnode (argv) {
     }));
 
     // Creating root container
-    container.createRootContainer(opts);
+    // TODO make sure pathStart is where it is mounted
+    container.createRootContainer(opts.fileBase, opts.pathStart);
 
     // Setting up routes
-    app.use(opts.pathStart, routes());
+    app.use('/', routes());
 
     // Adding proxy
     if (opts.xssProxy) {
-      console.log(proxyFilter)
+      console.log(opts.proxyFilter);
         proxy(app, opts.proxyFilter);
     }
 
