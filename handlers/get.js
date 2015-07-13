@@ -17,7 +17,6 @@ var file = require('../fileStore.js');
 var subscription = require('../subscription.js');
 
 var ldpVocab = require('../vocab/ldp.js');
-var aclExtension = '.acl';
 var metaExtension = '.meta';
 
 function get(req, res, includeBody) {
@@ -85,8 +84,8 @@ function get(req, res, includeBody) {
             var ct = mime.lookup(filename);
             res.set('content-type', ct);
             debug('GET/HEAD -- content-type: ' + ct);
-            if (path.extname(filename) === aclExtension ||
-                path.basename(filename) === aclExtension ||
+            if (path.extname(filename) === options.suffixAcl ||
+                path.basename(filename) === options.suffixAcl ||
                 path.basename(filename) === metaExtension) {
                 ct = 'text/turtle';
             }
