@@ -6,9 +6,8 @@ var fs = require('fs');
 var S = require('string');
 
 describe('ldnode', function() {
-  var address = 'http://localhost:3457/test/';
+  var address = 'http://localhost:3457';
   var ldp = ldnode.createServer({
-    uri: address,
     base: __dirname
   });
   ldp.listen(3457);
@@ -156,7 +155,7 @@ describe('ldnode', function() {
               .send(postRequest1Body)
               .set('content-type', 'text/turtle')
               .set('slug', 'post-resource-1')
-              .expect('location', address + 'post-resource-1.ttl')
+              .expect('location', address + '/post-resource-1.ttl')
               .expect(201, done);
       });
       it('Should reject requests to existing resources', function(done) {

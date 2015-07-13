@@ -27,9 +27,14 @@ function uriToRelativeFilename(uri, base) {
 
 function filenameToBaseUri(filename, uri, base) {
     var uriPath = S(filename).strip(base).toString();
-    return uri + uriPath;
+    return uri + '/' + uriPath;
+}
+
+function uriBase(req) {
+    return req.protocol + '://' + req.get('host') + (req.baseUrl || '');
 }
 
 exports.uriToFilename = uriToFilename;
 exports.uriToRelativeFilename = uriToRelativeFilename;
 exports.filenameToBaseUri = filenameToBaseUri;
+exports.uriAbs = uriBase;

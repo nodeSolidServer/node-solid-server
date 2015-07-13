@@ -15,7 +15,7 @@ describe('ACL', function() {
     var address = 'https://localhost:3456/test/';
 
     var ldp = ldnode.createServer({
-        uri: address,
+        mount: '/test',
         base: __dirname,
         key: __dirname + '/key.pem',
         cert: __dirname + '/cert.pem',

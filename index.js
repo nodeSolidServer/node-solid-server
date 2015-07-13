@@ -48,14 +48,14 @@ function ldnode (argv) {
     }));
 
     // Creating root container
-    container.createRootContainer(opts);
+    container.createRootContainer(opts.fileBase, opts.mount);
 
     // Setting up routes
-    app.use(opts.pathStart, routes());
+    app.use('/', routes());
 
     // Adding proxy
     if (opts.xssProxy) {
-      console.log(proxyFilter)
+      console.log(opts.proxyFilter);
         proxy(app, opts.proxyFilter);
     }
 
@@ -64,14 +64,16 @@ function ldnode (argv) {
         ws(app);
     }
 
-    debugServer("Router attached to " + opts.pathStart);
+    debugServer("Router attached to " + opts.mount);
 
     return app;
 }
 
 function createServer(argv) {
-    var app = ldnode(argv);
-    var opts = app.locals.ldp;
+    var app = express();
+    var ldp = ldnode(argv);
+    var opts = ldp.locals.ldp;
+    app.use(opts.mount, ldp);
 
     if (opts && (opts.webid || opts.key || opts.cert) ) {
         debug("SSL Private Key path: " + opts.key);

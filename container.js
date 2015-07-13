@@ -18,31 +18,49 @@ var addUriTriple = function(kb, s, o, p) {
 
 var turtleExtension = ".ttl";
 
-function createRootContainer(options) {
-    if (!metadata.hasContainerMetadata(options.base)) {
-        var rootContainer = $rdf.graph();
-        addUriTriple(rootContainer, options.pathStart,
-            rdfVocab.type, ldpVocab.Container);
-        addUriTriple(rootContainer, options.pathStart,
-            rdfVocab.type, ldpVocab.BasicContainer);
-        rootContainer.add(rootContainer.sym(options.pathStart),
-            rootContainer.sym('http://purl.org/dc/terms/title'),
-            '"Root Container"');
-        var serializedContainer = $rdf.serialize(undefined, rootContainer,
-            options.pathStart, 'text/turtle');
-        metadata.writeContainerMetadata(options.base,
-            serializedContainer, function(err) {
-                if (err) {
-                    //TODO handle error
-                    debug("Could not write root container");
-                } else {
-                    debug("Wrote root container to " + options.base);
-                }
-            });
+function createRootContainer(fileBase, baseUrl) {
+    if (metadata.hasContainerMetadata(fileBase)) {
+        return;
     }
+
+    var rootContainer = $rdf.graph();
+    addUriTriple(
+        rootContainer,
+        baseUrl,
+        rdfVocab.type,
+        ldpVocab.Container);
+    addUriTriple(
+        rootContainer,
+        baseUrl,
+        rdfVocab.type,
+        ldpVocab.BasicContainer);
+
+    rootContainer.add(
+        rootContainer.sym(baseUrl),
+        rootContainer.sym('http://purl.org/dc/terms/title'),
+        '"Root Container"');
+
+    var serializedContainer = $rdf.serialize(
+        undefined,
+        rootContainer,
+        baseUrl,
+        'text/turtle');
+
+    metadata.writeContainerMetadata(
+        fileBase,
+        serializedContainer,
+        function(err) {
+            if (err) {
+                //TODO handle error
+                debug("Could not write root container");
+            } else {
+                debug("Wrote root container to " + fileBase);
+            }
+        });
+
 }
 
-function createResourceUri(options, containerURI, slug, isBasicContainer) {
+function createResourceUri(usedURIs, containerURI, slug, isBasicContainer) {
     var newPath;
     if (slug) {
         if (S(slug).endsWith(turtleExtension)) {
@@ -61,65 +79,81 @@ function createResourceUri(options, containerURI, slug, isBasicContainer) {
             newPath = path.join(containerURI, uuid.v1() + turtleExtension);
         }
     }
-    if (!(fs.existsSync(newPath) || containerURI in options.usedURIs)) {
-        options.usedURIs[newPath] = true;
+    if (!(fs.existsSync(newPath) || containerURI in usedURIs)) {
+        usedURIs[newPath] = true;
     } else {
         return null;
     }
     return newPath;
 }
 
-function releaseResourceUri(options, uri) {
-    delete options.usedURIs[uri];
+function releaseResourceUri(usedURIs, uri) {
+    delete usedURIs[uri];
 }
 
-function createNewResource(options, resourcePath, resourceGraph, callback) {
-    var resourceURI = path.relative(options.base, resourcePath);
+function createNewResource(usedURIs, fileBase, uri, resourcePath, resourceGraph, callback) {
+    var resourceURI = path.relative(fileBase, resourcePath);
     //TODO write files with relative URIS.
-    var rawResource = $rdf.serialize(undefined,
-        resourceGraph, options.uri + resourceURI, 'text/turtle');
+    var rawResource = $rdf.serialize(
+        undefined,
+        resourceGraph,
+        uri + resourceURI,
+        'text/turtle');
+
     debug("Writing new resource to " + resourcePath);
     debug("Resource:\n" + rawResource);
-    fs.writeFile(resourcePath, rawResource, writeResourceCallback);
+
+    fs.writeFile(
+        resourcePath,
+        rawResource,
+        writeResourceCallback);
 
     function writeResourceCallback(err) {
         if (err) {
             debug("Error writing resource: " + err);
-            module.exports.releaseResourceUri(options, resourcePath);
-            callback(err);
-        } else {
+            releaseResourceUri(usedURIs, resourcePath);
             return callback(err);
         }
+
+        return callback(err);
     }
 }
 
-function createNewContainer(options, containerPath, containerGraph, callback) {
+function createNewContainer(usedURIs, uri, containerPath, containerGraph, callback) {
     fs.mkdir(containerPath, mkdirCallback);
 
     function mkdirCallback(err) {
         if (err) {
             debug("Error creating directory for new container: " + err);
-            module.exports.releaseResourceUri(options, containerPath);
+            releaseResourceUri(usedURIs, containerPath);
             return callback(err);
-        } else {
-            var rawContainer = $rdf.serialize(undefined, containerGraph,
-                options.uri, 'text/turtle');
-            debug("rawContainer " + rawContainer);
-            metadata.writeContainerMetadata(containerPath, rawContainer,
-                writeContainerCallback);
         }
+
+        var rawContainer = $rdf.serialize(
+            undefined,
+            containerGraph,
+            uri,
+            'text/turtle');
+
+        debug("rawContainer " + rawContainer);
+
+        metadata.writeContainerMetadata(
+            containerPath,
+            rawContainer,
+            writeContainerCallback);
     }
 
     function writeContainerCallback(err) {
         if (err) {
             debug("Error writing container: " + err);
-            module.exports.releaseResourceUri(options, containerPath);
-            return callback(err);
-        } else {
-            debug("Wrote container to " + containerPath);
-            module.exports.releaseResourceUri(options, containerPath);
+            releaseResourceUri(usedURIs, containerPath);
             return callback(err);
         }
+
+        debug("Wrote container to " + containerPath);
+        releaseResourceUri(usedURIs, containerPath);
+        return callback(err);
+
     }
 }
 

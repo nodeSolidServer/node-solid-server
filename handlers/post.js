@@ -68,31 +68,30 @@ function handler(req, res) {
         resourceMetadata.isBasicContainer);
 
     if (resourcePath === null) {
-        container.releaseResourceUri(options, resourcePath);
+        container.releaseResourceUri(options.usedURIs, resourcePath);
         debug("POST -- URI already exists or in use");
         return res.sendStatus(400);
     }
-    var resourceGraph = $rdf.graph();
 
+    var resourceGraph = $rdf.graph();
     // Get the request text
     // TODO make sure correct text is selected
     var requestText = req.convertedText || req.text;
+    var uri = file.uriAbs(req);
+    var resourceBaseUri = file.filenameToBaseUri(
+        resourcePath,
+        uri,
+        options.base);
 
-    var resourceBaseUri;
     try {
-        resourceBaseUri = file.filenameToBaseUri(
-            resourcePath,
-            options.uri,
-            options.base);
-
         $rdf.parse(
             requestText,
             resourceGraph,
             resourceBaseUri,
-            'text/turtle');
+            contentType);
     } catch (parseErr) {
         debug("POST -- Error parsing resource: " + parseErr);
-        container.releaseResourceUri(options, resourcePath);
+        container.releaseResourceUri(options.usedURIs, resourcePath);
         return res.sendStatus(400);
     }
 
@@ -102,13 +101,16 @@ function handler(req, res) {
         resourcePath += '/';
         resourceBaseUri += '/';
         container.createNewContainer(
-            options,
+            options.usedURIs,
+            uri,
             resourcePath,
             resourceGraph,
             containerCallback);
     } else {
         container.createNewResource(
-            options,
+            options.usedURIs,
+            options.base,
+            uri,
             resourcePath,
             resourceGraph,
             resourceCallback);

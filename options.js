@@ -20,8 +20,7 @@ function params(argv) {
   opts.secret = argv.secret;
   opts.cert = argv.cert;
   opts.key = argv.key;
-  // TODO no need of uri
-  opts.uri = opts.uri = argv.uri || argv.uriBase;
+  opts.mount = argv.mount || '/';
   opts.verbose = argv.verbose;
   opts.webid = argv.webid;
 
@@ -35,32 +34,19 @@ function params(argv) {
       opts.base += '/';
   }
 
-  opts.pathStart = '/' +
-    opts.uri
-    .split('//')[1]
-    .split('/')
-    .slice(1)
-    .join('/');
-
-  opts.prePathSlash = opts.uri
-    .split('/')
-    .slice(0, 3)
-    .join('/');
-
-  opts.pathFilter = regexp().start(opts.pathStart).toRegExp();
+  opts.pathFilter = regexp().start(opts.mount).toRegExp();
   opts.xssProxy = argv.xssProxy;
   opts.proxyFilter = regexp().start(opts.xssProxy).toRegExp();
 
   // TODO this should be an attribute of an object
   opts.usedURIs = {};
 
-  debug("uri: " + opts.uri);
-  debug("pathStart: " + opts.pathStart);
+  debug("mount: " + opts.mount);
   debug("URI path filter regexp: " + opts.pathFilter);
   debug("Verbose: " + !!opts.verbose);
   debug("WebID: " + !!opts.webid);
   debug("Live: " + !!opts.live);
 
-  return opts
+  return opts;
 }
 
