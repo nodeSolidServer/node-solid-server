@@ -24,6 +24,9 @@ function allow(mode, req, res) {
     var relativePath = file.uriToRelativeFilename(req.path, options.root);
     var depth = relativePath.split('/');
 
+    //Get user from request
+    var userId = getUserId(req);
+
     //Handle glob requests
     if (req.method === 'GET' && glob.hasMagic(filepath)) {
         return {
@@ -40,7 +43,7 @@ function allow(mode, req, res) {
         relativePath = path.relative(options.root, filepath);
 
         debug("Checking " + accessType + "<" + mode + "> to " +
-            pathUri + " for WebID: " + req.session.userId);
+            pathUri + " for WebID: " + userId);
         debug("Looking for policies in " + pathAcl);
 
         var aclData;
@@ -76,7 +79,7 @@ function allow(mode, req, res) {
                             if (rdfVocab.brack(origin) === originsControlElem.toString()) {
                                 debug("Found policy for origin: " +
                                     originsControlElem.toString());
-                                originControlValue = allowOrigin(mode, req, res, aclGraph, controlElem);
+                                originControlValue = allowOrigin(mode, userId, res, aclGraph, controlElem);
                                 if (originControlValue) {
                                     return originControlValue;
                                 }
@@ -86,16 +89,16 @@ function allow(mode, req, res) {
                     } else {
                         debug("No origin found, moving on.");
                     }
-                    originControlValue = allowOrigin(mode, req, res, aclGraph, controlElem);
+                    originControlValue = allowOrigin(mode, userId, res, aclGraph, controlElem);
                     if (originControlValue) {
                         return originControlValue;
                     }
 
                     var ownerStatements = aclGraph.each(accessElem,
-                        ns.acl("owner"), aclGraph.sym(req.session.userId));
+                        ns.acl("owner"), aclGraph.sym(userId));
                     for(var ownerIndex in ownerStatements) {
                         debug(mode + " access allowed (as owner)" +
-                            " for: " + req.session.userId);
+                            " for: " + userId);
                         return {
                             status: 200,
                             err: null
@@ -103,10 +106,10 @@ function allow(mode, req, res) {
                     }
 
                     var agentStatements = aclGraph.each(controlElem,
-                        ns.acl("agent"), aclGraph.sym(req.session.userId));
+                        ns.acl("agent"), aclGraph.sym(userId));
                     for(var agentIndex in agentStatements) {
                         debug(mode + " access allowed (as agent)" +
-                            " for: " + req.session.userId);
+                            " for: " + userId);
                         return {
                             status: 200,
                             err: null
@@ -137,9 +140,9 @@ function allow(mode, req, res) {
                             typeStatements.length > 0) {
                             var memberStatements = groupGraph.each(
                                 agentClassElem, ns.foaf("member"),
-                                groupGraph.sym(req.session.userId));
+                                groupGraph.sym(userId));
                             for(var memberIndex in memberStatements) {
-                                debug(req.session.userId +
+                                debug(userId +
                                     " listed as member of the group " + groupURI);
                                 return {
                                     status: 200,
@@ -168,7 +171,7 @@ function allow(mode, req, res) {
                             if (rdfVocab.brack(origin) === originsElem.toString()) {
                                 debug("Found policy for origin: " +
                                     originsElem.toString());
-                                originValue = allowOrigin(mode, req, res, aclGraph, modeElem);
+                                originValue = allowOrigin(mode, userId, res, aclGraph, modeElem);
                                 if (originValue) {
                                     return originValue;
                                 }
@@ -178,24 +181,24 @@ function allow(mode, req, res) {
                     } else {
                         debug("No origin found, moving on.");
                     }
-                    originValue = allowOrigin(mode, req, res, aclGraph, modeElem);
+                    originValue = allowOrigin(mode, userId, res, aclGraph, modeElem);
                     if (originValue) {
                         return originValue;
                     }
                 }
             }
 
-            if (req.session.userId.length === 0 || req.session.identified === false)  {
+            if (userId.length === 0 || req.session.identified === false)  {
                 debug("Authentication required");
                 return {
                     status: 401,
                     err: "Access to " + pathUri + " requires authorization"
                 };
             }
-            debug(mode + " access denied for: " + req.session.userId);
+            debug(mode + " access denied for: " + userId);
             return {
                 status: 403,
-                err: "Access denied for " + req.session.userId
+                err: "Access denied for " + userId
             };
         }
 
@@ -230,21 +233,21 @@ function allow(mode, req, res) {
     };
 }
 
-function allowOrigin(mode, req, res, aclGraph, subject) {
+function allowOrigin(mode, userId, res, aclGraph, subject) {
     debug("In allow origin");
     var ownerStatements = aclGraph.each(subject, ns.acl("owner"),
-        aclGraph.sym(req.session.userId));
+        aclGraph.sym(userId));
     for (var ownerIndex in ownerStatements) {
-        debug(mode + " access allowed (as owner) for: " + req.session.userId);
+        debug(mode + " access allowed (as owner) for: " + userId);
         return {
             status: 200,
             err: null
         };
     }
     var agentStatements = aclGraph.each(subject, ns.acl("agent"),
-        aclGraph.sym(req.session.userId));
+        aclGraph.sym(userId));
     for (var agentIndex in agentStatements) {
-        debug(mode + " access allowed (as agent) for: " + req.session.userId);
+        debug(mode + " access allowed (as agent) for: " + userId);
         return {
             status: 200,
             return: null
@@ -269,9 +272,9 @@ function allowOrigin(mode, req, res, aclGraph, subject) {
         var typeStatements = groupGraph.each(agentClassElem, ns.rdf("type"), ns.foaf("Group"));
         if (groupGraph.statements.length > 0 && typeStatements.length > 0) {
             var memberStatements = groupGraph.each(agentClassElem, ns.foaf("member"),
-                groupGraph.sym(req.session.userId));
+                groupGraph.sym(userId));
             for (var memberIndex in memberStatements) {
-                debug(req.session.userId + " listed as member of the group " + groupURI);
+                debug(userId + " listed as member of the group " + groupURI);
                 return {
                     status: 200,
                     err: null
@@ -279,6 +282,43 @@ function allowOrigin(mode, req, res, aclGraph, subject) {
             }
         }
     }
+}
+
+function getUserId(req) {
+    var userId;
+    if (req.get('On-Behalf-Of')) {
+        var delegator = rdfVocab.debrack(req.get('On-Behalf-Of'));
+        if (verifyDelegator(delegator, req.session.userId)) {
+            debug("Request User ID (delegation) :" + delegator);
+            userId = delegator;
+        } else {
+            debug("Delegation denied for " + req.session.userId + " by " + delegator);
+            userId = req.session.userId;
+        }
+    } else {
+        userId = req.session.userId;
+    }
+    return userId;
+}
+
+function verifyDelegator(delegator, delegatee) {
+    var delegatorGraph = $rdf.graph();
+    var delegatorFetcher = $rdf.fetcher(delegatorGraph, 3000, false);
+    debug("delegator: " + delegator);
+    delegatorFetcher.nowOrWhenFetched(delegator, undefined, function(ok, err) {
+        debug("ok: " + ok);
+        debug("error: " + err);
+    });
+    var delegatesStatements = delegatorGraph.each(delegatorGraph.sym(delegator),
+                                                  delegatorGraph.sym("http://www.w3.org/ns/auth/acl#delegates"),
+                                                  undefined);
+    for(var delegateeIndex in delegatesStatements) {
+        var delegateeValue = delegatesStatements[delegateeIndex];
+        if (rdfVocab.debrack(delegateeValue.toString()) === delegatee) {
+            return true;
+        }
+    }
+    return false;
 }
 
 function allowIfACLEnabled(mode, req, res, next) {
