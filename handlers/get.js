@@ -111,7 +111,6 @@ function get(req, res, includeBody) {
 
     function containerHandler(err, rawContainer) {
         if (err) {
-            debug("GET/HEAD -- Container does not have meta file");
             rawContainer = "";
         }
 
