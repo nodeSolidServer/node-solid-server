@@ -74,7 +74,7 @@ Options:
    -v, --verbose           Print the logs to console
    --version               Print current ldnode version
    -m, --mount             Where to mount Linked Data Platform (default: '/')
-   -b, --base              Base location to serve resources
+   -r, --root              Root location on the filesystem to serve resources
    -p, --port              Port to use
    -c, --cache             Set cache time (in seconds), 0 for no cache
    -K, --key               Path to the ssl key

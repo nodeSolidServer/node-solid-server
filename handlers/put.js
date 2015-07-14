@@ -18,7 +18,7 @@ function handler(req, res) {
     debug("PUT -- Text length: " + (req.text ? req.text.length : 'undefined'));
     res.header('MS-Author-Via' , 'SPARQL' );
 
-    var filePath = file.uriToFilename(req.path, options.base);
+    var filePath = file.uriToFilename(req.path, options.root);
 
     // PUT requests not supported on containers. Use POST instead
     if (filePath[filePath.length - 1] === '/') {

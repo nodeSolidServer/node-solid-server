@@ -48,7 +48,7 @@ function ldnode (argv) {
     }));
 
     // Creating root container
-    container.createRootContainer(opts.base, opts.mount);
+    container.createRootContainer(opts.root, opts.mount);
 
     // Setting up routes
     app.use('/', routes());

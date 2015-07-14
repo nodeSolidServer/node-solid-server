@@ -15,7 +15,7 @@ function params(argv) {
   // From input
   opts.cache = argv.cache;
   opts.live = argv.live;
-  opts.path = opts.base = argv.base || argv.fileBase || process.cwd();
+  opts.root = argv.root || process.cwd();
   opts.port = argv.port;
   opts.secret = argv.secret;
   opts.cert = argv.cert;
@@ -30,8 +30,8 @@ function params(argv) {
   opts.suffixChanges = argv.suffixChanges || '.changes';
   opts.suffixSSE = argv.suffixSSE || '.events';
 
-  if (!(S(opts.base).endsWith('/'))) {
-      opts.base += '/';
+  if (!(S(opts.root).endsWith('/'))) {
+      opts.root += '/';
   }
 
   opts.pathFilter = regexp().start(opts.mount).toRegExp();
@@ -42,6 +42,7 @@ function params(argv) {
   opts.usedURIs = {};
 
   debug("mount: " + opts.mount);
+  debug("root: " + opts.root);
   debug("URI path filter regexp: " + opts.pathFilter);
   debug("Verbose: " + !!opts.verbose);
   debug("WebID: " + !!opts.webid);

@@ -10,7 +10,7 @@ var metadata = require('../metadata.js');
 function handler(req, res) {
     var options = req.app.locals.ldp;
     debug('DELETE -- ' + req.path);
-    var filename = file.uriToFilename(req.path, options.base);
+    var filename = file.uriToFilename(req.path, options.root);
     fs.stat(filename, function(err, stats) {
         if (err) {
             debug("DELETE -- unlink() error: " + err);

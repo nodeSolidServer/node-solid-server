@@ -8,7 +8,7 @@ var S = require('string');
 describe('ldnode', function() {
   var address = 'http://localhost:3457';
   var ldp = ldnode.createServer({
-    base: __dirname
+    root: __dirname
   });
   ldp.listen(3457);
 
