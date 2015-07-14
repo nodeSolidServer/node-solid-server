@@ -111,11 +111,9 @@ function get(req, res, includeBody) {
 
     function containerHandler(err, rawContainer) {
         if (err) {
-            debug("GET/HEAD -- Not a valid container");
-            return res.status(404)
-                .send("Not a container");
+            rawContainer = "";
         }
-        
+
         // Parse the container
         parseContainer(rawContainer);
     }
