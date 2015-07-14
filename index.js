@@ -16,6 +16,7 @@ var request = require('request');
 var debug = require('./logging').settings;
 var debugSubscription = require('./logging').subscription;
 var debugServer = require('./logging').server;
+var uuid = require('node-uuid');
 
 // ldnode dependencies
 var acl = require('./acl.js');
@@ -40,9 +41,12 @@ function ldnode (argv) {
     // Setting options as local variable
     app.locals.ldp = opts;
 
-    // Session [TODO]
+    // Session
     app.use(session({
-        secret: opts.secret || 'node-ldp',
+        genid: function() {
+            return uuid.v1();
+        },
+        secret: opts.secret || uuid.v1(),
         saveUninitialized: false,
         resave: false
     }));
