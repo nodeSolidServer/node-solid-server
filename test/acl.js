@@ -829,7 +829,7 @@ describe('ACL', function() {
     });
 
     describe("ACL defaultForNew test", function() {
-      var body = "<#Owner>\n" +
+        var body = "<#Owner>\n" +
             " <http://www.w3.org/ns/auth/acl#accessTo> <" + address + testDir + "/" + ">, <" +
             address + testDirAclFile + ">;\n" +
             " <http://www.w3.org/ns/auth/acl#agent> <" + user1 + ">;\n" +
