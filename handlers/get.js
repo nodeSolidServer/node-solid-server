@@ -24,20 +24,23 @@ function get(req, res, includeBody) {
     var uri = file.uriAbs(req);
 
     // Add request to subscription service
-    if (('' + req.path).slice(-options.suffixChanges.length) ===
+    if (req.path.slice(-options.suffixChanges.length) ===
         options.suffixChanges) {
         debug("GET -- Subscribed to ", req.path);
         return subscription.subscribeToChanges(req, res);
     }
+
     // Set headers
     res.header('MS-Author-Via', 'SPARQL');
+
+    // Set live updates
     if (options.live) {
         // Note not yet in
         // http://www.iana.org/assignments/link-relations/link-relations.xhtml
         header.addLink(res, req.path + options.suffixChanges, 'changes');
         // res.header('Link' , '' + req.path + options.suffixSSE + ' ; rel=events' );
         // overwrites the pevious
-        res.header('Updates-Via', '' + req.path + options.suffixChanges);
+        res.header('Updates-Via', req.path + options.suffixChanges);
     }
 
     if (includeBody) {
@@ -47,107 +50,131 @@ function get(req, res, includeBody) {
     }
 
     var filename = file.uriToFilename(req.path, options.root);
+
+    // Check if file exists
     fs.stat(filename, function(err, stats) {
         if (err) {
+            // File does not exist
             if (glob.hasMagic(filename)) {
                 debug("GET/HEAD -- Glob request");
-                globHandler();
-            } else {
-                debug('GET/HEAD -- Read error: ' + err);
-                return res.status(404).send("Can't read file: " + err);
+                return globHandler();
             }
-        } else if (stats.isDirectory()) {
+            debug('GET/HEAD -- Read error: ' + err);
+            return res.status(404).send("Can't read file: " + err);
+        }
+
+        if (stats.isDirectory()) {
+            // Found a container
             if (includeBody) {
-                metadata.readContainerMetadata(filename, containerHandler);
-            } else {
-                res.status(200).send();
-                res.end();
+                return metadata.readContainerMetadata(filename, containerHandler);
             }
+            res.status(200).send();
+            res.end();
         } else {
-            if (includeBody)
-                fs.readFile(filename, {
-                    encoding: "utf8"
-                }, fileHandler);
-            else {
-                res.status(200).send();
-                res.end();
+            // Found a resource
+            if (includeBody) {
+                return fs.readFile(filename, { encoding: "utf8" }, fileHandler);
             }
+            res.status(200).send();
+            res.end();
         }
     });
 
     function fileHandler(err, data) {
         if (err) {
             debug('GET/HEAD -- Read error:' + err);
-            res.status(404).send("Can't read file: " + err);
-        } else {
-            debug('GET/HEAD -- Read Ok. Bytes read: ' + data.length);
-            var ct = mime.lookup(filename);
-            res.set('content-type', ct);
-            debug('GET/HEAD -- content-type: ' + ct);
-            if (path.extname(filename) === options.suffixAcl ||
-                path.basename(filename) === options.suffixAcl ||
-                path.basename(filename) === metaExtension) {
-                ct = 'text/turtle';
-            }
-            if (ct === 'text/turtle') {
-                parseLinkedData(data);
-            } else {
-                res.status(200).send(data);
-            }
+            return res.status(404)
+                .send("Can't read file: " + err);
         }
+
+        debug('GET/HEAD -- Read Ok. Bytes read: ' + data.length);
+        var contentType = mime.lookup(filename);
+        res.set('content-type', contentType);
+        debug('GET/HEAD -- content-type: ' + contentType);
+
+        // Consider acl and meta files text/turtle
+        if (path.extname(filename) === options.suffixAcl ||
+            path.basename(filename) === options.suffixAcl ||
+            path.basename(filename) === metaExtension) {
+            contentType = 'text/turtle';
+        }
+
+        // if data is text/turtle, parse it
+        if (contentType === 'text/turtle') {
+            return parseLinkedData(data);
+        }
+
+        // Otherwise, just send the data
+        res.status(200).send(data);
+
     }
 
     function containerHandler(err, rawContainer) {
         if (err) {
             debug("GET/HEAD -- Not a valid container");
-            res.status(404).send("Not a container");
-        } else {
-            parseContainer(rawContainer);
+            return res.status(404)
+                .send("Not a container");
         }
+        
+        // Parse the container
+        parseContainer(rawContainer);
     }
 
     function globHandler() {
         glob(filename, globOptions, function(err, matches) {
-            if(err || matches.length === 0) {
+            if (err || matches.length === 0) {
                 debug("GET/HEAD -- No files matching the pattern");
                 return res.sendStatus(404);
-            } else {
-                debug("matches " + matches);
-                var globGraph = $rdf.graph();
-                matches.forEach(function(match) {
-                    try {
-                        var fileData = fs.readFileSync(match,
-                            {encoding: "utf8"});
-                        var baseUri = file.filenameToBaseUri(match, uri, options.root);
-                        //TODO integrate ACL
-                        if (S(match).endsWith(".ttl") && aclAllow(match)) {
-                            $rdf.parse(fileData, globGraph, baseUri,
-                                'text/turtle');
-                        }
-                    } catch (readErr) {
-                        return;
-                    }
-                });
-                var turtleData = $rdf.serialize(undefined, globGraph,
-                    null, 'text/turtle');
-                parseLinkedData(turtleData);
             }
+
+            // Matches found
+            debug("matches " + matches);
+            var globGraph = $rdf.graph();
+            matches.forEach(function(match) {
+                try {
+                    var baseUri = file.filenameToBaseUri(match, uri, options.root);
+                    var fileData = fs.readFileSync(
+                        match,
+                        { encoding: "utf8" });
+
+                    //TODO integrate ACL
+                    if (S(match).endsWith(".ttl") && aclAllow(match)) {
+                        $rdf.parse(
+                            fileData,
+                            globGraph,
+                            baseUri,
+                            'text/turtle');
+                    }
+                } catch (readErr) {
+                    debug('GET -- Error in globHandler' + readErr);
+                    return;
+                }
+            });
+
+            var turtleData = $rdf.serialize(
+                undefined,
+                globGraph,
+                null,
+                'text/turtle');
+            parseLinkedData(turtleData);
         });
     }
 
     function aclAllow(match) {
         if (!options.webid) {
             return true;
+        }
+
+        var relativePath = '/' +
+            path.relative(options.root, match);
+
+        req.path = relativePath;
+        var allow = acl.allow("Read", req, res);
+
+        if (allow.status === 200) {
+            return true;
         } else {
-            var relativePath = '/' +
-                    path.relative(options.root, match);
-            req.path = relativePath;
-            var allow = acl.allow("Read", req, res);
-            if (allow.status === 200) {
-                return true;
-            } else {
-                return false;
-            }
+            return false;
         }
     }
 
@@ -159,8 +186,10 @@ function get(req, res, includeBody) {
         if (accept === undefined || accept === null) {
             accept = 'text/turtle';
         }
-        if (accept === 'text/turtle' || accept === 'text/n3' ||
-            accept == 'application/turtle' || accept === 'application/n3') {
+        if (accept === 'text/turtle' ||
+            accept === 'text/n3' ||
+            accept === 'application/turtle' ||
+            accept === 'application/n3') {
             return res.status(200)
                 .set('content-type', accept)
                 .send(turtleData);
@@ -176,8 +205,12 @@ function get(req, res, includeBody) {
         }
 
         //TODO rdflib callbacks
-        $rdf.serialize(undefined, resourceGraph, null,
-            accept, function(err, result) {
+        $rdf.serialize(
+            undefined,
+            resourceGraph,
+            null,
+            accept,
+            function(err, result) {
                 if (result === undefined || err) {
                     debug("GET/HEAD -- Serialization error: " + err);
                     return res.sendStatus(500);
@@ -198,6 +231,7 @@ function get(req, res, includeBody) {
             debug("GET/HEAD -- Error parsing data: " + err);
             return res.status(500).send(err);
         }
+
         debug("GET/HEAD -- Reading directory");
         fs.readdir(filename, readdirCallback);
 
@@ -221,8 +255,11 @@ function get(req, res, includeBody) {
                     }
                 }
                 try {
-                    var turtleData = $rdf.serialize(undefined, resourceGraph,
-                        null, 'text/turtle');
+                    var turtleData = $rdf.serialize(
+                        undefined,
+                        resourceGraph,
+                        null,
+                        'text/turtle');
                     parseLinkedData(turtleData);
                 } catch (parseErr) {
                     debug("GET/HEAD -- Error serializing container: " + parseErr);
@@ -233,7 +270,10 @@ function get(req, res, includeBody) {
     }
 }
 
-var globOptions = {noext: true, nobrace: true};
+var globOptions = {
+    noext: true,
+    nobrace: true
+};
 
 function getHandler(req, res) {
     get(req, res, true);
