@@ -24,27 +24,35 @@ function handler(req, res) {
     var targetKB = $rdf.graph();
     var patchKB = $rdf.graph(); // Keep the patch in a sep KB as its URI is the same !
     var patchObject;
+    var dataIn;
+
     var fail = function(status, message) {
         debug("FAIL "+status+ " " + message);
-        return res.status(status).send('<html><body>\n'+ message+ '\n</body></html>\n');
+        return res.status(status)
+            .send('<html><body>\n'+ message+ '\n</body></html>\n');
     };
-    var dataIn;
+
     switch(patchContentType) {
         case 'application/sparql':
             debug("PATCH -- parsing query ...");
             var query = $rdf.SPARQLToQuery(req.text, false, patchKB, patchURI); // last param not used ATM
+
             try {
                 dataIn = fs.readFileSync(filename, { encoding: 'utf8'});
             } catch (err) {
-                return res.status(404).send("Patch: Original file read error:" + err + '\n');
+                return res.status(404)
+                    .send("Patch: Original file read error:" + err + '\n');
             }
+
             debug("PATCH -- File read OK "+dataIn.length);
+
             try {
                 debug("PATCH -- parsing target file ...");
                 $rdf.parse(dataIn, targetKB, targetURI, targetContentType);
                 debug("PATCH -- Target parsed OK ");
             } catch(e) {
-                return res.status(500).send("Patch: Target " + targetContentType + " file syntax error:" + e);
+                return res.status(500)
+                    .send("Patch: Target " + targetContentType + " file syntax error:" + e);
             }
 
             var bindingsArray = [];
@@ -64,24 +72,34 @@ function handler(req, res) {
                 debug("PATCH -- bindings: " + JSON.stringify(b));
                 bindingsArray.push(b);
             };
+
             var onDone = function() {
                 debug("PATCH -- Query done, no. bindings: " + bindingsArray.length);
-                res.json( { 'head': { 'vars': query.vars.map(function(v){return v.toNT();}) }, 'results': { 'bindings': bindingsArray}});
-    //          res.set('content-type', 'application/json')
-    //          res.send(dataOut);
+                res.json({
+                    'head': {
+                        'vars': query.vars.map(function(v){
+                            return v.toNT();
+                        })
+                    },
+                    'results': {
+                        'bindings': bindingsArray
+                    }
+                });
             };
+
             var fetcher = new  $rdf.Fetcher(targetKB, 10000, true);
             targetKB.query(query, onBindings, fetcher, onDone);
-
 
         break;
 
     case 'application/sparql-update':
-        try { // Must parse relative to document's base address but patch doc should get diff URI
+        try {
+            // Must parse relative to document's base address but patch doc should get diff URI
             debug("PATCH -- parsing patch ...");
             patchObject = $rdf.sparqlUpdateParser(req.text, patchKB, patchURI);
         } catch(e) {
-            return res.status(400).send("Patch format syntax error:\n" + e + '\n');
+            return res.status(400)
+                .send("Patch format syntax error:\n" + e + '\n');
         }
         debug("PATCH -- reading target file ...");
 
@@ -89,9 +107,12 @@ function handler(req, res) {
             try {
                 dataIn = fs.readFileSync(filename, { encoding: 'utf8'});
             } catch (err) {
-                return res.status(404).send("Patch: Original file read error:" + err + '\n');
+                return res.status(404)
+                    .send("Patch: Original file read error:" + err + '\n');
             }
+
             debug("PATCH -- File read OK "+dataIn.length);
+
             try {
                 debug("PATCH -- parsing target file ...");
                 $rdf.parse(dataIn, targetKB, targetURI, targetContentType);
