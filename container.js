@@ -18,48 +18,6 @@ var addUriTriple = function(kb, s, o, p) {
 
 var turtleExtension = ".ttl";
 
-function createRootContainer(fileBase, baseUrl) {
-    if (metadata.hasContainerMetadata(fileBase)) {
-        return;
-    }
-
-    var rootContainer = $rdf.graph();
-    addUriTriple(
-        rootContainer,
-        baseUrl,
-        rdfVocab.type,
-        ldpVocab.Container);
-    addUriTriple(
-        rootContainer,
-        baseUrl,
-        rdfVocab.type,
-        ldpVocab.BasicContainer);
-
-    rootContainer.add(
-        rootContainer.sym(baseUrl),
-        rootContainer.sym('http://purl.org/dc/terms/title'),
-        '"Root Container"');
-
-    var serializedContainer = $rdf.serialize(
-        undefined,
-        rootContainer,
-        baseUrl,
-        'text/turtle');
-
-    metadata.writeContainerMetadata(
-        fileBase,
-        serializedContainer,
-        function(err) {
-            if (err) {
-                //TODO handle error
-                debug("Could not write root container");
-            } else {
-                debug("Wrote root container to " + fileBase);
-            }
-        });
-
-}
-
 function createResourceUri(usedURIs, containerURI, slug, isBasicContainer) {
     var newPath;
     if (slug) {
@@ -157,7 +115,6 @@ function createNewContainer(usedURIs, uri, containerPath, containerGraph, callba
     }
 }
 
-exports.createRootContainer = createRootContainer;
 exports.createResourceUri = createResourceUri;
 exports.releaseResourceUri = releaseResourceUri;
 exports.createNewResource = createNewResource;
