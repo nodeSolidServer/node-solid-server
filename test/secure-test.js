@@ -928,4 +928,71 @@ describe('ACL', function() {
             });
         });
     });
+    describe("WebID delegation tests", function() {
+        it("user1 should be able delegate to user2", function(done) {
+            var body = "<" + user1 + "> <http://www.w3.org/ns/auth/acl#delegates> <" + user2 +"> .";
+            var options = {
+                url: user1,
+                headers: {
+                    'content-type': 'text/turtle'
+                },
+                agentOptions: {
+                    key: userCredentials.user1.key,
+                    cert: userCredentials.user1.cert
+                }
+            };
+            request.post(options, function(error, response, body) {
+                assert.equal(error, null);
+                assert.equal(response.statusCode, 200);
+                done();
+            });
+        });
+        // it("user2 should be able to make requests on behalf of user1", function(done) {
+            // var options = createOptions(abcdFile, 'user2');
+            // options.headers = {
+                // 'content-type': 'text/turtle',
+                // 'On-Behalf-Of': '<' + user1 + '>'
+            // };
+            // options.body = "<d> <e> <f> .";
+            // request.post(options, function(error, response, body) {
+                // assert.equal(error, null);
+                // assert.equal(response.statusCode, 200);
+                // done();
+            // });
+        // });
+    });
+    describe("Clean-up test", function() {
+        it("user1 should remove abcd test file", function(done) {
+            var options = createOptions(abcdFile, 'user1');
+            request.del(options, function(error, response, body) {
+                assert.equal(error, null);
+                assert.equal(response.statusCode, 200);
+                done();
+            });
+        });
+        it("user1 should remove abc test file", function(done) {
+            var options = createOptions(abcFile, 'user1');
+            request.del(options, function(error, response, body) {
+                assert.equal(error, null);
+                assert.equal(response.statusCode, 200);
+                done();
+            });
+        });
+        it("user1 should remove test folder's ACL file", function(done) {
+            var options = createOptions(testDirAclFile, 'user1');
+            request.del(options, function(error, response, body) {
+                assert.equal(error, null);
+                assert.equal(response.statusCode, 200);
+                done();
+            });
+        });
+        it("user1 should remove test folder", function(done) {
+            var options = createOptions(testDir, 'user1');
+            request.del(options, function(error, response, body) {
+                assert.equal(error, null);
+                assert.equal(response.statusCode, 200);
+                done();
+            });
+        });
+    });
 });
