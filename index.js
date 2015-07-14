@@ -78,11 +78,39 @@ function createServer(argv) {
     if (opts && (opts.webid || opts.key || opts.cert) ) {
         debug("SSL Private Key path: " + opts.key);
         debug("SSL Certificate path: " + opts.cert);
+
+        if (!opts.cert && !opts.key) {
+            throw new Error("Missing SSL cert and SSL key to enable WebID");
+        }
+
+        if (!opts.key && opts.cert) {
+            throw new Error("Missing path for SSL key");
+        }
+
+        if (!opts.cert && opts.key) {
+            throw new Error("Missing path for SSL cert");
+        }
+
+        var key;
+        try {
+            key = fs.readFileSync(opts.key);
+        } catch(e) {
+            throw new Error("Can't find SSL key in " + opts.key);
+        }
+
+        var cert;
+        try {
+            cert = fs.readFileSync(opts.cert);
+        } catch(e) {
+            throw new Error("Can't find SSL cert in " + opts.cert);
+        }
+
         var credentials = {
-            key: fs.readFileSync(opts.key),
-            cert: fs.readFileSync(opts.cert),
-            requestCert: true
-        };
+                key: key,
+                cert: cert,
+                requestCert: true
+            };
+
         debug("Private Key: " + credentials.key);
         debug("Certificate: " + credentials.cert);
 
