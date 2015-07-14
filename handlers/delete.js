@@ -3,7 +3,6 @@
 
 var fs = require('fs');
 var debug = require('../logging').handlers;
-
 var file = require('../fileStore.js');
 var metadata = require('../metadata.js');
 
