@@ -102,7 +102,13 @@ if (process.platform !== 'win32') {
 
 // Finally starting ldnode
 var ldnode = require('../index');
-var app = ldnode.createServer(argv);
+var app;
+try {
+  app = ldnode.createServer(argv);
+} catch(e) {
+  console.log(e.message);
+  return 1;
+}
 app.listen(argv.port, function() {
     debug('LDP started on port ' + argv.port);
 });
