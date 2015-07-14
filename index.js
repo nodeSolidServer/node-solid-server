@@ -14,7 +14,7 @@ var http = require('http');
 var https = require('https');
 var request = require('request');
 var debug = require('./logging').settings;
-var debugWs = require('./logging').ws;
+var debugSubscription = require('./logging').subscription;
 var debugServer = require('./logging').server;
 
 // ldnode dependencies
@@ -158,9 +158,9 @@ function ws (app) {
     app.mountpath = ''; //  needs to be set for addSocketRoute aka .ws()
     // was options.pathFilter
     app.ws('/', function(socket, res) {
-        debugWs("incoming on " + socket.path);
+        debugSubscription("incoming on " + socket.path);
         socket.on('message', function(msg) {
-            debugWs("message = " + msg);
+            debugSubscription("message = " + msg);
             // subscribeToChanges(socket, res);
         });
     });
