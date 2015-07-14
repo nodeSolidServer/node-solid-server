@@ -29,10 +29,11 @@ describe('ACL', function() {
 
     var testDir = 'acl/testDir';
     var testDirAclFile = testDir + '/' + aclExtension;
+    var testDirMetaFile = testDir + '/' + metaExtension;
 
     var abcFile = testDir + '/abc.ttl';
     var abcAclFile = abcFile + aclExtension;
-    var abcdFile = testDir + '/abcd.ttl';
+    var abcdFile = testDir + '/dir1/dir2/abcd.ttl';
     var abcdAclFile = abcFile + aclExtension;
 
     var globFile = testDir + "/*";
@@ -87,7 +88,7 @@ describe('ACL', function() {
 
     describe("Empty ACL Test", function() {
         it("Should create test folder", function(done) {
-            var options = createOptions(testDir + '/' + metaExtension, 'user1');
+            var options = createOptions(testDirMetaFile, 'user1');
             options.body = "";
             request.put(options, function(error, response, body) {
                 assert.equal(error, null);
@@ -828,7 +829,7 @@ describe('ACL', function() {
     });
 
     describe("ACL defaultForNew test", function() {
-        var body = "<#Owner>\n" +
+      var body = "<#Owner>\n" +
             " <http://www.w3.org/ns/auth/acl#accessTo> <" + address + testDir + "/" + ">, <" +
             address + testDirAclFile + ">;\n" +
             " <http://www.w3.org/ns/auth/acl#agent> <" + user1 + ">;\n" +
@@ -928,6 +929,7 @@ describe('ACL', function() {
             });
         });
     });
+  
     describe("WebID delegation tests", function() {
         it("user1 should be able delegate to user2", function(done) {
             var body = "<" + user1 + "> <http://www.w3.org/ns/auth/acl#delegates> <" + user2 +"> .";
@@ -961,38 +963,23 @@ describe('ACL', function() {
             // });
         // });
     });
-    describe("Clean-up test", function() {
-        it("user1 should remove abcd test file", function(done) {
-            var options = createOptions(abcdFile, 'user1');
-            request.del(options, function(error, response, body) {
-                assert.equal(error, null);
-                assert.equal(response.statusCode, 200);
+    
+    describe("ACL cleaup", function() {
+        it("should remove all files and dirs created", function(done) {
+            try {
+                // must remove the ACLs in sync
+                fs.unlinkSync(__dirname + '/' + testDir + '/dir1/dir2/abcd.ttl');
+                fs.rmdirSync(__dirname + '/' + testDir + '/dir1/dir2/');
+                fs.rmdirSync(__dirname + '/' + testDir + '/dir1/');
+                fs.unlinkSync(__dirname + '/' + abcFile);
+                fs.unlinkSync(__dirname + '/' + testDirAclFile);
+                fs.unlinkSync(__dirname + '/' + testDirMetaFile);
+                fs.rmdirSync(__dirname + '/' + testDir);
+                fs.rmdirSync(__dirname + '/acl/');
                 done();
-            });
-        });
-        it("user1 should remove abc test file", function(done) {
-            var options = createOptions(abcFile, 'user1');
-            request.del(options, function(error, response, body) {
-                assert.equal(error, null);
-                assert.equal(response.statusCode, 200);
-                done();
-            });
-        });
-        it("user1 should remove test folder's ACL file", function(done) {
-            var options = createOptions(testDirAclFile, 'user1');
-            request.del(options, function(error, response, body) {
-                assert.equal(error, null);
-                assert.equal(response.statusCode, 200);
-                done();
-            });
-        });
-        it("user1 should remove test folder", function(done) {
-            var options = createOptions(testDir, 'user1');
-            request.del(options, function(error, response, body) {
-                assert.equal(error, null);
-                assert.equal(response.statusCode, 200);
-                done();
-            });
+            } catch (e) {
+                done(e);
+            }
         });
     });
 });
