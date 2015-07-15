@@ -8,7 +8,7 @@ var S = require('string');
 describe('ldnode', function() {
   var address = 'http://localhost:3457';
   var ldp = ldnode.createServer({
-    root: __dirname
+    root: __dirname + '/resources',
   });
   ldp.listen(3457);
 
@@ -87,7 +87,7 @@ describe('ldnode', function() {
               .expect(200, done);
       });
       it('Should have glob support', function(done) {
-          server.get('/testfiles/example*')
+          server.get('/sampleContainer/example*')
               .expect('content-type', /text\/turtle/)
               .expect(200, done);
       });
@@ -105,7 +105,7 @@ describe('ldnode', function() {
   });
 
   describe('PUT API', function() {
-      var putRequestBody = fs.readFileSync(__dirname + '/testfiles/put1.ttl', {
+      var putRequestBody = fs.readFileSync(__dirname + '/resources/sampleContainer/put1.ttl', {
           'encoding': 'utf8'
       });
       it('Should create new resource', function(done) {
@@ -119,9 +119,9 @@ describe('ldnode', function() {
               .send(putRequestBody)
               .set('content-type', 'text/turtle')
               .expect(function() {
-                  fs.unlinkSync(__dirname + '/foo/bar/baz.ttl');
-                  fs.rmdirSync(__dirname + '/foo/bar/');
-                  fs.rmdirSync(__dirname + '/foo/');
+                  fs.unlinkSync(__dirname + '/resources/foo/bar/baz.ttl');
+                  fs.rmdirSync(__dirname + '/resources/foo/bar/');
+                  fs.rmdirSync(__dirname + '/resources/foo/');
               })
               .expect(201, done);
       });
@@ -144,10 +144,10 @@ describe('ldnode', function() {
   });
 
   describe('POST API', function() {
-      var postRequest1Body = fs.readFileSync(__dirname + '/testfiles/put1.ttl', {
+      var postRequest1Body = fs.readFileSync(__dirname + '/resources/sampleContainer/put1.ttl', {
           'encoding': 'utf8'
       });
-      var postRequest2Body = fs.readFileSync(__dirname + '/testfiles/post2.ttl', {
+      var postRequest2Body = fs.readFileSync(__dirname + '/resources/sampleContainer/post2.ttl', {
           'encoding': 'utf8'
       });
       it('Should create new resource', function(done) {
@@ -197,8 +197,8 @@ describe('ldnode', function() {
           server.get('/loans')
               .expect('content-type', /text\/turtle/)
               .expect(function() {
-                  fs.unlinkSync(__dirname + '/loans/.meta');
-                  fs.rmdirSync(__dirname + '/loans/');
+                  fs.unlinkSync(__dirname + '/resources/loans/.meta');
+                  fs.rmdirSync(__dirname + '/resources/loans/');
               })
               .expect(200, done);
       });

@@ -5,22 +5,22 @@ var fs = require('fs');
 
 function cp (src, dest) {
   return fsExtra.copySync(
-    __dirname + '/' + src,
-    __dirname + '/' + dest);
+    __dirname + '/resources/' + src,
+    __dirname + '/resources/' + dest);
 }
 
 function read (file) {
-  return fs.readFileSync(__dirname + '/' + file, {
+  return fs.readFileSync(__dirname + '/resources/' + file, {
       'encoding': 'utf8'
     });
 }
 
 function rm (file) {
-  return fs.unlinkSync(__dirname + '/' + file);
+  return fs.unlinkSync(__dirname + '/resources/' + file);
 }
 
 function write (text, file) {
-  return fs.writeFileSync(__dirname + '/' + file, text);
+  return fs.writeFileSync(__dirname + '/resources/' + file, text);
 }
 
 describe('params', function () {
@@ -61,46 +61,46 @@ describe('params', function () {
       var server = supertest(ldp);
       
       it ('should fallback on current working directory', function () {
-        assert.equal(ldp.locals.ldp.root, process.cwd() + ldp.locals.ldp.mount);
+        assert.equal(ldp.locals.ldp.root, process.cwd() + '/');
       });
 
       it ('should find resource in correct path', function(done) {
         write(
           '<#current> <#temp> 123 .',
-          'testfiles/example.ttl');
+          'sampleContainer/example.ttl');
 
         // This assums npm test is run from the folder that contains package.js
-        server.get('/test/testfiles/example.ttl')
+        server.get('/test/resources/sampleContainer/example.ttl')
           .expect('Link', /http:\/\/www.w3.org\/ns\/ldp#Resource/)
           .expect(200)
           .end(function(err, res, body) {
-            assert.equal(read('testfiles/example.ttl'), '<#current> <#temp> 123 .');
-            rm('testfiles/example.ttl');
+            assert.equal(read('sampleContainer/example.ttl'), '<#current> <#temp> 123 .');
+            rm('sampleContainer/example.ttl');
             done(err);
           });
       });
     });
 
     describe('passed', function() {
-      var ldp = ldnode({root:'test'});
+      var ldp = ldnode({root:'./test/resources/'});
       var server = supertest(ldp);
 
       it ('should fallback on current working directory', function () {
-        assert.equal(ldp.locals.ldp.root, 'test' + ldp.locals.ldp.mount);
+        assert.equal(ldp.locals.ldp.root, './test/resources/');
       });
 
       it ('should find resource in correct path', function(done) {
         write(
           '<#current> <#temp> 123 .',
-          'testfiles/example.ttl');
+          'sampleContainer/example.ttl');
 
         // This assums npm test is run from the folder that contains package.js
-        server.get('/testfiles/example.ttl')
+        server.get('/sampleContainer/example.ttl')
           .expect('Link', /http:\/\/www.w3.org\/ns\/ldp#Resource/)
           .expect(200)
           .end(function(err, res, body) {
-            assert.equal(read('testfiles/example.ttl'), '<#current> <#temp> 123 .');
-            rm('testfiles/example.ttl');
+            assert.equal(read('sampleContainer/example.ttl'), '<#current> <#temp> 123 .');
+            rm('sampleContainer/example.ttl');
             done(err);
           });
       });
