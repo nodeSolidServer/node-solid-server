@@ -110,7 +110,7 @@ function get(req, res, includeBody) {
         res.status(200).send(data);
 
     }
-
+ 
     function containerHandler(err, rawContainer) {
         if (err) {
             rawContainer = "";
@@ -231,18 +231,19 @@ function get(req, res, includeBody) {
             return res.status(500).send(err);
         }
 
-        try {
-            var containerStats = fs.statSync(filename);
-            resourceGraph.add(resourceGraph.sym(baseUri),
-                              ns.stat('mtime'),
-                              containerStats.mtime.getTime());
-            resourceGraph.add(resourceGraph.sym(baseUri),
-                              ns.stat('size'),
-                              containerStats.size);
-        } catch (statErr) {}
+        fs.stat(filename, function(err,  containerStats) {
+            if (!err) {
+                resourceGraph.add(resourceGraph.sym(baseUri),
+                                  ns.stat('mtime'),
+                                  containerStats.mtime.getTime());
+                resourceGraph.add(resourceGraph.sym(baseUri),
+                                  ns.stat('size'),
+                                  containerStats.size);
+            }
 
-        debug("GET/HEAD -- Reading directory");
-        fs.readdir(filename, readdirCallback);
+            debug("GET/HEAD -- Reading directory");
+            fs.readdir(filename, readdirCallback);
+        });
 
         function readdirCallback(err, files) {
             if (err) {
@@ -277,7 +278,12 @@ function get(req, res, includeBody) {
                             var metadataGraph = $rdf.graph();
                             var rawMetadata;
 
-                            if (fs.existsSync(metaFile)) {
+                            var metaStats;
+                            try {
+                                metaStats = fs.statSync(metaFile);
+                            } catch(statErr) {}
+
+                            if (metaStats && metaStats.isFile()) {
                                 try {
                                     rawMetadata = fs.readFileSync(metaFile, {encoding: 'utf8'});
                                     $rdf.parse(rawMetadata, metadataGraph, fileBaseUri,
