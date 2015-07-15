@@ -8,12 +8,13 @@ Linked Data Platform server based on [rdflib.js](https://github.com/linkeddata/r
 
 ## Features
 
-- [x] GET, PUT and PATCH support
+- [x] GET, PUT, POST and PATCH support
 - [x] Proxy for cross-site data access
 - [x] Access control using RDF ACLs
-- [x] WebID Authentication
-- [x] Real-time live updates (using websokets)
+- [x] WebID+TLS Authentication
 - [x] Mount as express' router
+- [x] Command line tool
+- [ ] Real-time live updates (using websokets)
 
 
 ## Install
