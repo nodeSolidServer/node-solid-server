@@ -9,28 +9,28 @@ var path = require('path');
 // Helper functions for the FS
 function cp (src, dest) {
   return fsExtra.copySync(
-    __dirname + '/' + src,
-    __dirname + '/' + dest);
+    __dirname + '/resources/' + src,
+    __dirname + '/resources/' + dest);
 }
 
 function read (file) {
-  return fs.readFileSync(__dirname + '/' + file, {
+  return fs.readFileSync(__dirname + '/resources/' + file, {
       'encoding': 'utf8'
     });
 }
 
 function rm (file) {
-  return fs.unlinkSync(__dirname + '/' + file);
+  return fs.unlinkSync(__dirname + '/resources/' + file);
 }
 
 function write (text, file) {
-  return fs.writeFileSync(__dirname + '/' + file, text);
+  return fs.writeFileSync(__dirname + '/resources/' + file, text);
 }
 
 describe('PATCH', function () {
   // Starting LDP
   var ldp = ldnode.createServer({
-    root: __dirname + '/testfiles',
+    root: __dirname + '/resources/sampleContainer',
     mount: '/test'
   });
   ldp.listen(3453);
@@ -39,16 +39,16 @@ describe('PATCH', function () {
   it('should be an empty resource if last triple is deleted', function (done) {
     write(
       '<#current> <#temp> 123 .',
-      'testfiles/existingTriple.ttl');
+      'sampleContainer/existingTriple.ttl');
     server.post('/existingTriple.ttl')
       .set('content-type', 'application/sparql-update')
       .send('DELETE { :current  :temp 123 .}')
       .expect(200)
       .end(function(err, res, body){
         assert.equal(
-          read('testfiles/existingTriple.ttl'),
+          read('sampleContainer/existingTriple.ttl'),
           '\n');
-        rm('testfiles/existingTriple.ttl');
+        rm('sampleContainer/existingTriple.ttl');
         done(err);
       });
   });
@@ -60,7 +60,7 @@ describe('PATCH', function () {
       '# <http://example.com/timbl#> a schema:Person ;\n' +
       '<#> a schema:Person ;\n' +
       '  profile:first_name "Tim" .\n',
-      'testfiles/prefixSparql.ttl');
+      'sampleContainer/prefixSparql.ttl');
     server.post('/prefixSparql.ttl')
       .set('content-type', 'application/sparql-update')
       .send('@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n' +
@@ -72,12 +72,12 @@ describe('PATCH', function () {
       .expect(200)
       .end(function(err, res, body){
         assert.equal(
-          read('testfiles/prefixSparql.ttl'),
+          read('sampleContainer/prefixSparql.ttl'),
           '@prefix schema: <http://schema.org/>.\n' +
           '@prefix profile: <http://ogp.me/ns/profile#>.\n' +
           '\n' +
           '   <#> profile:first_name "Timothy"; a schema:Person .\n');
-        rm('testfiles/prefixSparql.ttl');
+        rm('sampleContainer/prefixSparql.ttl');
         done(err);
       });
   });
@@ -85,18 +85,18 @@ describe('PATCH', function () {
   it('should add a new triple', function (done) {
     write(
       '<#current> <#temp> 123 .',
-      'testfiles/addingTriple.ttl');
+      'sampleContainer/addingTriple.ttl');
     server.post('/addingTriple.ttl')
       .set('content-type', 'application/sparql-update')
       .send('INSERT DATA { :test  :hello 456 .}')
       .expect(200)
       .end(function(err, res, body){
         assert.equal(
-          read('testfiles/addingTriple.ttl'),
+          read('sampleContainer/addingTriple.ttl'),
           '\n' +
           '   <#current> <#temp> 123 .\n' +
           '   <#test> <#hello> 456 .\n');
-        rm('testfiles/addingTriple.ttl');
+        rm('sampleContainer/addingTriple.ttl');
         done(err);
       });
   });
@@ -104,17 +104,17 @@ describe('PATCH', function () {
   it('should add value to existing triple', function (done) {
     write(
       '<#current> <#temp> 123 .',
-      'testfiles/addingTripleValue.ttl');
+      'sampleContainer/addingTripleValue.ttl');
     server.post('/addingTripleValue.ttl')
       .set('content-type', 'application/sparql-update')
       .send('INSERT DATA { :current  :temp 456 .}')
       .expect(200)
       .end(function(err, res, body){
         assert.equal(
-          read('testfiles/addingTripleValue.ttl'),
+          read('sampleContainer/addingTripleValue.ttl'),
           '\n' +
           '   <#current> <#temp> 123, 456 .\n');
-        rm('testfiles/addingTripleValue.ttl');
+        rm('sampleContainer/addingTripleValue.ttl');
         done(err);
       });
   });
@@ -122,17 +122,17 @@ describe('PATCH', function () {
   it('should add value to same subject', function (done) {
     write(
       '<#current> <#temp> 123 .',
-      'testfiles/addingTripleSubj.ttl');
+      'sampleContainer/addingTripleSubj.ttl');
     server.post('/addingTripleSubj.ttl')
       .set('content-type', 'application/sparql-update')
       .send('INSERT DATA { :current  :temp2 456 .}')
       .expect(200)
       .end(function(err, res, body){
         assert.equal(
-          read('testfiles/addingTripleSubj.ttl'),
+          read('sampleContainer/addingTripleSubj.ttl'),
           '\n'+
           '   <#current> <#temp2> 456; <#temp> 123 .\n');
-        rm('testfiles/addingTripleSubj.ttl');
+        rm('sampleContainer/addingTripleSubj.ttl');
         done(err);
       });
   });
@@ -140,17 +140,17 @@ describe('PATCH', function () {
   it('nothing should change with empty patch', function (done) {
     write(
       '<#current> <#temp> 123 .',
-      'testfiles/emptyExample.ttl');
+      'sampleContainer/emptyExample.ttl');
     server.post('/emptyExample.ttl')
       .set('content-type', 'application/sparql-update')
       .send('')
       .expect(200)
       .end(function(err, res, body){
         assert.equal(
-          read('testfiles/emptyExample.ttl'),
+          read('sampleContainer/emptyExample.ttl'),
           '\n' +
           '   <#current> <#temp> 123 .\n');
-        rm('testfiles/emptyExample.ttl');
+        rm('sampleContainer/emptyExample.ttl');
         done(err);
       });
   });

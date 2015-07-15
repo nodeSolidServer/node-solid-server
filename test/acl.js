@@ -16,9 +16,9 @@ describe('ACL', function() {
 
     var ldp = ldnode.createServer({
         mount: '/test',
-        root: __dirname,
-        key: __dirname + '/key.pem',
-        cert: __dirname + '/cert.pem',
+        root: __dirname + '/resources',
+        key: __dirname + '/keys/key.pem',
+        cert: __dirname + '/keys/cert.pem',
         webid: true
     });
     ldp.listen(3456);
@@ -47,12 +47,12 @@ describe('ACL', function() {
     var user2 = "https://user2.databox.me/profile/card#me";
     var userCredentials = {
         user1: {
-            cert: fs.readFileSync(__dirname + '/testfiles/user1-cert.pem'),
-            key: fs.readFileSync(__dirname + '/testfiles/user1-key.pem')
+            cert: fs.readFileSync(__dirname + '/keys/user1-cert.pem'),
+            key: fs.readFileSync(__dirname + '/keys/user1-key.pem')
         },
         user2: {
-            cert: fs.readFileSync(__dirname + '/testfiles/user2-cert.pem'),
-            key: fs.readFileSync(__dirname + '/testfiles/user2-key.pem')
+            cert: fs.readFileSync(__dirname + '/keys/user2-cert.pem'),
+            key: fs.readFileSync(__dirname + '/keys/user2-key.pem')
         }
     };
 
@@ -968,14 +968,14 @@ describe('ACL', function() {
         it("should remove all files and dirs created", function(done) {
             try {
                 // must remove the ACLs in sync
-                fs.unlinkSync(__dirname + '/' + testDir + '/dir1/dir2/abcd.ttl');
-                fs.rmdirSync(__dirname + '/' + testDir + '/dir1/dir2/');
-                fs.rmdirSync(__dirname + '/' + testDir + '/dir1/');
-                fs.unlinkSync(__dirname + '/' + abcFile);
-                fs.unlinkSync(__dirname + '/' + testDirAclFile);
-                fs.unlinkSync(__dirname + '/' + testDirMetaFile);
-                fs.rmdirSync(__dirname + '/' + testDir);
-                fs.rmdirSync(__dirname + '/acl/');
+                fs.unlinkSync(__dirname + '/resources/' + testDir + '/dir1/dir2/abcd.ttl');
+                fs.rmdirSync(__dirname + '/resources/' + testDir + '/dir1/dir2/');
+                fs.rmdirSync(__dirname + '/resources/' + testDir + '/dir1/');
+                fs.unlinkSync(__dirname + '/resources/' + abcFile);
+                fs.unlinkSync(__dirname + '/resources/' + testDirAclFile);
+                fs.unlinkSync(__dirname + '/resources/' + testDirMetaFile);
+                fs.rmdirSync(__dirname + '/resources/' + testDir);
+                fs.rmdirSync(__dirname + '/resources/acl/');
                 done();
             } catch (e) {
                 done(e);
