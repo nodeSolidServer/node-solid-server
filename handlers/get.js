@@ -12,12 +12,14 @@ var debug = require('../logging').handlers;
 var acl = require('../acl.js');
 var header = require('../header.js');
 var metadata = require('../metadata.js');
+var ns = require('../vocab/ns.js').ns;
 var options = require('../options.js');
 var file = require('../fileStore.js');
 var subscription = require('../subscription.js');
 
 var ldpVocab = require('../vocab/ldp.js');
 var metaExtension = '.meta';
+var turtleExtension = '.ttl';
 
 function get(req, res, includeBody) {
     var options = req.app.locals.ldp;
@@ -108,7 +110,7 @@ function get(req, res, includeBody) {
         res.status(200).send(data);
 
     }
-
+ 
     function containerHandler(err, rawContainer) {
         if (err) {
             rawContainer = "";
@@ -126,7 +128,6 @@ function get(req, res, includeBody) {
             }
 
             // Matches found
-            debug("matches " + matches);
             var globGraph = $rdf.graph();
             matches.forEach(function(match) {
                 try {
@@ -230,24 +231,90 @@ function get(req, res, includeBody) {
             return res.status(500).send(err);
         }
 
-        debug("GET/HEAD -- Reading directory");
-        fs.readdir(filename, readdirCallback);
+        fs.stat(filename, function(err,  containerStats) {
+            if (!err) {
+                resourceGraph.add(resourceGraph.sym(baseUri),
+                                  ns.stat('mtime'),
+                                  containerStats.mtime.getTime());
+                resourceGraph.add(resourceGraph.sym(baseUri),
+                                  ns.stat('size'),
+                                  containerStats.size);
+            }
+
+            debug("GET/HEAD -- Reading directory");
+            fs.readdir(filename, readdirCallback);
+        });
 
         function readdirCallback(err, files) {
             if (err) {
                 debug("GET/HEAD -- Error reading files: " + err);
                 return res.sendStatus(404);
             } else {
+                debug("Files in directory: " + files);
                 for (var i = 0; i < files.length; i++) {
-                    if (!S(files[i]).startsWith('.')) {
+                    if (!S(files[i]).endsWith(metaExtension) &&
+                        !S(files[i]).endsWith(options.suffixAcl)) {
                         try {
                             var stats = fs.statSync(filename + files[i]);
-                            if (stats.isFile()) {
-                                resourceGraph.add(resourceGraph.sym(baseUri),
-                                    resourceGraph.sym(ldpVocab.contains),
-                                    resourceGraph.sym(files[i]));
+
+                            resourceGraph.add(resourceGraph.sym(baseUri),
+                                              ns.ldp('contains'),
+                                              resourceGraph.sym(files[i]));
+
+                            var metaFile;
+                            var fileBaseUri;
+                            var fileSubject = files[i];
+
+                            if(stats.isDirectory()) {
+                                metaFile = filename + files[i] + '/' + metaExtension;
+                                fileSubject += '/';
+                            } else if (stats.isFile() && S(files[i]).endsWith(turtleExtension)) {
+                                metaFile = filename + files[i];
+                            } else {
+                                metaFile = filename + files[i] + metaExtension;
                             }
-                        } catch (statErr) {
+                            fileBaseUri = file.filenameToBaseUri(files[i], uri, options.root);
+
+                            var metadataGraph = $rdf.graph();
+                            var rawMetadata;
+
+                            var metaStats;
+                            try {
+                                metaStats = fs.statSync(metaFile);
+                            } catch(statErr) {}
+
+                            if (metaStats && metaStats.isFile()) {
+                                try {
+                                    rawMetadata = fs.readFileSync(metaFile, {encoding: 'utf8'});
+                                    $rdf.parse(rawMetadata, metadataGraph, fileBaseUri,
+                                               'text/turtle');
+                                } catch (dirErr) {
+                                    metadataGraph = $rdf.graph();
+                                }
+                            }
+
+                            var typeStatements = metadataGraph
+                                    .statementsMatching(metadataGraph.sym(fileBaseUri),
+                                                        ns.rdf('type'), undefined);
+                            for (var typeIndex in typeStatements) {
+                                var typeStatement = typeStatements[typeIndex];
+                                resourceGraph.add(resourceGraph.sym(fileSubject),
+                                                  typeStatement.predicate,
+                                                  typeStatement.object);
+
+                            }
+
+                            try {
+                                var fileStats = fs.statSync(filename + files[i]);
+                                resourceGraph.add(metadataGraph.sym(fileSubject),
+                                                  ns.stat('mtime'),
+                                                  fileStats.mtime.getTime());
+                                resourceGraph.add(metadataGraph.sym(fileSubject),
+                                                  ns.stat('size'),
+                                                  fileStats.size);
+                            } catch (statErr) {}
+                        } catch (getErr) {
+                            debug("Error getting container: " + getErr);
                             continue;
                         }
                     }
