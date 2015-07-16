@@ -52,7 +52,6 @@ function ldnode (argv) {
 
     // Adding proxy
     if (opts.xssProxy) {
-      console.log(opts.proxyFilter);
         proxy(app, opts.proxyFilter);
     }
 
