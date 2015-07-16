@@ -18,7 +18,7 @@ function handler(req, res) {
     var filename = file.uriToFilename(req.path, options.root);
     var patchContentType = req.get('content-type').split(';')[0].trim(); // Ignore parameters
     var targetContentType = mime.lookup(filename);
-    var targetURI = req.protocol + '://' + req.get('host') + options.mount + req.path;
+    var targetURI = file.uriAbs(req) + req.path;
     var patchURI = targetURI ;  // @@@ beware the triples from the patch ending up in the same place
     debug("PATCH -- Content-type " + patchContentType + " patching target " + targetContentType + " <" + targetURI + '>');
     var targetKB = $rdf.graph();

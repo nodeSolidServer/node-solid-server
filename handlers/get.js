@@ -23,7 +23,7 @@ var turtleExtension = '.ttl';
 
 function get(req, res, includeBody) {
     var options = req.app.locals.ldp;
-    var uri = req.protocol + '://' + req.get('host') + options.mount; // URI to mount point only
+    var uri = file.uriAbs(req);
 
     // Add request to subscription service
     if (req.path.slice(-options.suffixChanges.length) ===
