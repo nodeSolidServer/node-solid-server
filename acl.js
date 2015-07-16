@@ -38,7 +38,7 @@ function allow(mode, req, res) {
     for (var i = 0; i < depth.length; i++) {
         var pathAcl = S(filepath).endsWith(options.suffixAcl) ?
                 filepath : filepath + options.suffixAcl;
-        var uri = file.uriAbs(req);
+        var uri = req.protocol + '://' + req.get('host') + options.mount ;
         var pathUri = file.filenameToBaseUri(filepath, uri, options.root);
         relativePath = path.relative(options.root, filepath);
 
