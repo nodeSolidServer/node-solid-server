@@ -12,13 +12,14 @@ var options = require('../options.js');
 
 function handler(req, res) {
     var options = req.app.locals.ldp;
-    debug('PATCH -- ' +req.path);
+    debug('PATCH -- ' + req.originalUrl);
     debug('PATCH -- text length: ' + (req.text ? req.text.length : 'undefined2'));
     res.header('MS-Author-Via' , 'SPARQL' );
     var filename = file.uriToFilename(req.path, options.root);
     var patchContentType = req.get('content-type').split(';')[0].trim(); // Ignore parameters
     var targetContentType = mime.lookup(filename);
     var targetURI = file.uriAbs(req) + req.originalUrl;
+    console.log(file.uriBase(req));
     var patchURI = targetURI ;  // @@@ beware the triples from the patch ending up in the same place
     debug("PATCH -- Content-type " + patchContentType + " patching target " + targetContentType + " <" + targetURI + '>');
     var targetKB = $rdf.graph();
