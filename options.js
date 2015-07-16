@@ -21,6 +21,12 @@ function params(argv) {
   opts.cert = argv.cert;
   opts.key = argv.key;
   opts.mount = argv.mount || '/';
+  // Removing ending '/'
+  if (opts.mount.length > 1 &&
+    opts.mount[opts.mount.length - 1] === '/') {
+    opts.mount = opts.mount.slice(0, -1);
+  }
+
   opts.verbose = argv.verbose;
   opts.webid = argv.webid;
 
