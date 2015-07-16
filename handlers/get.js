@@ -23,12 +23,12 @@ var turtleExtension = '.ttl';
 
 function get(req, res, includeBody) {
     var options = req.app.locals.ldp;
-    var uri = req.protocol + '://' + req.get('host') + options.mount; // URI to mount point only
+    var uri = file.uriBase(req);
 
     // Add request to subscription service
     if (req.path.slice(-options.suffixChanges.length) ===
         options.suffixChanges) {
-        debug("GET -- Subscribed to ", req.path);
+        debug("GET -- Subscribed to ", req.originalUrl);
         return subscription.subscribeToChanges(req, res);
     }
 
@@ -39,16 +39,16 @@ function get(req, res, includeBody) {
     if (options.live) {
         // Note not yet in
         // http://www.iana.org/assignments/link-relations/link-relations.xhtml
-        header.addLink(res, req.path + options.suffixChanges, 'changes');
+        header.addLink(res, req.originalUrl + options.suffixChanges, 'changes');
         // res.header('Link' , '' + req.path + options.suffixSSE + ' ; rel=events' );
         // overwrites the pevious
-        res.header('Updates-Via', req.path + options.suffixChanges);
+        res.header('Updates-Via', req.originalUrl + options.suffixChanges);
     }
 
     if (includeBody) {
-        debug('GET -- ' + req.path);
+        debug('GET -- ' + req.originalUrl);
     } else {
-        debug('HEAD -- ' + req.path);
+        debug('HEAD -- ' + req.originalUrl);
     }
 
     var filename = file.uriToFilename(req.path, options.root);

@@ -77,7 +77,7 @@ function handler(req, res) {
     var resourceGraph = $rdf.graph();
     // TODO make sure correct text is selected
     var requestText = req.convertedText || req.text;
-    var uri = req.protocol + '://' + req.get('host') + options.mount;
+    var uri = file.uriBase(req);
     var resourceBaseUri = file.filenameToBaseUri(
         resourcePath,
         uri,

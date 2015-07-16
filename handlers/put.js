@@ -14,7 +14,7 @@ var options = require('../options.js');
 
 function handler(req, res) {
     var options = req.app.locals.ldp;
-    debug("PUT -- Request path: " + req.path);
+    debug("PUT -- Request path: " + req.originalUrl);
     debug("PUT -- Text length: " + (req.text ? req.text.length : 'undefined'));
     res.header('MS-Author-Via' , 'SPARQL' );
 

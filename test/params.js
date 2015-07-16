@@ -25,34 +25,43 @@ function write (text, file) {
 
 describe('params', function () {
 
-  describe('uri', function () {
+  describe('mount', function () {
 
-  //   describe('not passed', function () {
+    describe('not passed', function () {
+      it('should fallback on /', function (done) {
+        var ldp = ldnode();
+        assert.equal(ldp.locals.ldp.mount, '/');
+        done();
+      });
 
-  //     var ldp = ldnode.createServer({
-  //       base: __dirname
-  //     });
-  //     ldp.listen(3456);
+    });
 
-  //     it('should be the proxy value if exist', function (done) {
-  //       done();
-  //     })
+    describe('passed', function() {
+      it ('should properly set the opts.mount', function (done) {
+        var ldp1 = ldnode({
+          mount: '/'
+        });
+        assert.equal(ldp1.locals.ldp.mount, '/');
 
-  //     it('should be localhost if no proxy', function (done) {
-  //       done();
-  //     })
-  //   })
+        var ldp2 = ldnode({
+          mount: '/test'
+        });
+        assert.equal(ldp2.locals.ldp.mount, '/test');
 
-  //   describe('passed', function() {
-  //     var ldp = ldnode.createServer({
-  //       uri: 'http://example.com',
-  //       base: __dirname
-  //     });
-  //     ldp.listen(3456);
-  //     it ('should not use proxy', function (done) {
-  //       done();
-  //     })
-  //   })
+        done();
+      });
+      it('should drop tha trailing /', function () {
+        var ldp1 = ldnode({
+          mount: '/test/'
+        });
+        assert.equal(ldp1.locals.ldp.mount, '/test');
+
+        var ldp2 = ldnode({
+          mount: '/test/test'
+        });
+        assert.equal(ldp1.locals.ldp.mount, '/test');
+      });
+    });
   });
 
   describe('root', function () {

@@ -8,7 +8,7 @@ var metadata = require('../metadata.js');
 
 // Delete a container or resource
 function handler(req, res) {
-    debug('DELETE -- ' + req.path);
+    debug('DELETE -- ' + req.originalUrl);
 
     var options = req.app.locals.ldp;
     var filename = file.uriToFilename(req.path, options.root);

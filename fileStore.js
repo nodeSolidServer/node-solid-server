@@ -30,7 +30,16 @@ function filenameToBaseUri(filename, uri, base) {
     return uri + '/' + uriPath;
 }
 
+function uriAbs(req) {
+    return req.protocol + '://' + req.get('host');
+}
+
+function uriBase(req) {
+    return uriAbs(req) + (req.baseUrl || '');
+}
 
 exports.uriToFilename = uriToFilename;
 exports.uriToRelativeFilename = uriToRelativeFilename;
 exports.filenameToBaseUri = filenameToBaseUri;
+exports.uriAbs = uriAbs;
+exports.uriBase = uriBase;
