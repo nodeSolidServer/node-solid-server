@@ -23,7 +23,7 @@ var turtleExtension = '.ttl';
 
 function get(req, res, includeBody) {
     var options = req.app.locals.ldp;
-    var uri = file.uriAbs(req);
+    var uri = file.uriBase(req);
 
     // Add request to subscription service
     if (req.path.slice(-options.suffixChanges.length) ===
