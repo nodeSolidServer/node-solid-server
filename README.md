@@ -23,6 +23,8 @@ Linked Data Platform server based on [rdflib.js](https://github.com/linkeddata/r
 npm install
 ```
 
+Due to the use of the sync-request library to implement the ACl feature, ldnode requires a version of node >= 0.12
+
 ## Usage
 
 The library provides two APIs:
