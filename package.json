@@ -67,6 +67,6 @@
     "ldp-ssl": "node ./bin/ldnode.js --cert ./test/keys/cert.pem --key ./test/keys/key.pem -v"
   },
   "bin": {
-    "ldnode": "node ./bin/ldnode.js"
+    "ldnode": "./bin/ldnode.js"
   }
 }
