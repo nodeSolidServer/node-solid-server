@@ -810,14 +810,14 @@ describe('ACL', function() {
                 done();
             });
         });
-        // it("user1 should be able to delete group file", function(done) {
-        //     var options = createOptions(groupFile, 'user1');
-        //     request.del(options, function(error, response, body) {
-        //         assert.equal(error, null);
-        //         assert.equal(response.statusCode, 200);
-        //         done();
-        //     });
-        // });
+        it("user1 should be able to delete group file", function(done) {
+            var options = createOptions(groupFile, 'user1');
+            request.del(options, function(error, response, body) {
+                assert.equal(error, null);
+                assert.equal(response.statusCode, 200);
+                done();
+            });
+        });
         it("user1 should be able to delete test file's ACL file", function(done) {
             var options = createOptions(abcAclFile, 'user1');
             request.del(options, function(error, response, body) {
@@ -929,7 +929,7 @@ describe('ACL', function() {
             });
         });
     });
-  
+
     describe("WebID delegation tests", function() {
         it("user1 should be able delegate to user2", function(done) {
             var body = "<" + user1 + "> <http://www.w3.org/ns/auth/acl#delegates> <" + user2 +"> .";
