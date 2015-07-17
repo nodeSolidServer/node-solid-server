@@ -17,6 +17,7 @@ var debug = require('./logging').settings;
 var debugSubscription = require('./logging').subscription;
 var debugServer = require('./logging').server;
 var uuid = require('node-uuid');
+var cors = require('cors');
 
 // ldnode dependencies
 var acl = require('./acl.js');
@@ -40,6 +41,9 @@ function ldnode (argv) {
 
     // Setting options as local variable
     app.locals.ldp = opts;
+
+    // Setting CORS
+    app.use(cors());
 
     // Session
     app.use(session({
