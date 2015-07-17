@@ -236,7 +236,7 @@ describe('ACL', function() {
             });
     });
 
-    describe("ACL owner only test", function() {
+    describe("ACL owner-only test", function() {
         var body = "<#Owner>\n" +
             " <http://www.w3.org/ns/auth/acl#accessTo> <" + address + testDir + "/" +
             ">, <" + address + testDirAclFile + ">;\n" +
