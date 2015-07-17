@@ -290,17 +290,18 @@ function fetchDocument(graph, uri, req) {
     var options = req.app.locals.ldp;
     var uriBase = file.uriBase(req);
 
-    var body;
+    var body = "";
     if (S(uri).startsWith(uriBase)) {
         try {
             var documentPath = file.uriToFilename(S(uri).chompLeft(uriBase).s,
                                                   options.root);
             var documentUri = url.parse(documentPath);
             documentPath = documentUri.pathname;
-            body = fs.readFileSync(documentPath, {encoding: 'utf8'});
-        } catch (err) {
-            body = "";
-        }
+            var readAllowed = allow('Read', req);
+            if (readAllowed && readAllowed.status === 200) {
+                body = fs.readFileSync(documentPath, {encoding: 'utf8'});
+            }
+        } catch (err) {}
     } else {
         var response = request('GET', uri, {
             headers: {
