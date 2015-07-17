@@ -43,9 +43,6 @@ function ldnode (argv) {
 
     // Session
     app.use(session({
-        genid: function() {
-            return uuid.v1();
-        },
         secret: opts.secret || uuid.v1(),
         saveUninitialized: false,
         resave: false
