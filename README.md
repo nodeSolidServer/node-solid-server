@@ -76,6 +76,14 @@ app.listen(3000, function() {
 ...
 ```
 
+#### Logs
+
+Run your app with the `DEBUG` variable set:
+
+```bash
+$ DEBUG="ldnode:*" node app.js
+```
+
 ## Command line tool
 
     npm install -g ldnode
@@ -103,19 +111,6 @@ Options:
 
 ```
 
-## Logging
-
-If you are running your own app
-
-```bash
-$ DEBUG="ldnode:*" node app.js
-```
-
-or simply
-
-```bash
-$ ldnode -v
-```
 
 ## Package scripts
 
