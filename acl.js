@@ -17,7 +17,7 @@ var rdfVocab = require('./vocab/rdf.js');
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-function allow(mode, req, res) {
+function allow(mode, req) {
     var options = req.app.locals.ldp;
     var origin = req.get('origin');
     origin = origin ? origin : '';
@@ -83,7 +83,7 @@ function allow(mode, req, res) {
                             if (rdfVocab.brack(origin) === originsControlElem.toString()) {
                                 debug("Found policy for origin: " +
                                     originsControlElem.toString());
-                                originControlValue = allowOrigin(mode, req, res, userId, aclGraph, controlElem);
+                                originControlValue = allowOrigin(mode, req, userId, aclGraph, controlElem);
                                 if (originControlValue) {
                                     return originControlValue;
                                 }
@@ -93,7 +93,7 @@ function allow(mode, req, res) {
                     } else {
                         debug("No origin found, moving on.");
                     }
-                    originControlValue = allowOrigin(mode, req, res, userId, aclGraph, controlElem);
+                    originControlValue = allowOrigin(mode, req, userId, aclGraph, controlElem);
                     if (originControlValue) {
                         return originControlValue;
                     }
@@ -174,7 +174,7 @@ function allow(mode, req, res) {
                             if (rdfVocab.brack(origin) === originsElem.toString()) {
                                 debug("Found policy for origin: " +
                                     originsElem.toString());
-                                originValue = allowOrigin(mode, req, res, userId, aclGraph, modeElem);
+                                originValue = allowOrigin(mode, req, userId, aclGraph, modeElem);
                                 if (originValue) {
                                     return originValue;
                                 }
@@ -184,7 +184,7 @@ function allow(mode, req, res) {
                     } else {
                         debug("No origin found, moving on.");
                     }
-                    originValue = allowOrigin(mode, req, res, userId, aclGraph, modeElem);
+                    originValue = allowOrigin(mode, req, userId, aclGraph, modeElem);
                     if (originValue) {
                         return originValue;
                     }
@@ -236,7 +236,7 @@ function allow(mode, req, res) {
     };
 }
 
-function allowOrigin(mode, req, res, userId, aclGraph, subject) {
+function allowOrigin(mode, req, userId, aclGraph, subject) {
     debug("In allow origin");
     var ownerStatements = aclGraph.each(subject, ns.acl("owner"),
         aclGraph.sym(userId));
@@ -293,11 +293,19 @@ function fetchDocument(graph, uri, req) {
     var body = "";
     if (S(uri).startsWith(uriBase)) {
         try {
-            var documentPath = file.uriToFilename(S(uri).chompLeft(uriBase).s,
-                                                  options.root);
+            var oldPath = req.url;
+            var newPath = S(uri).chompLeft(uriBase).s;
+            var documentPath = file.uriToFilename(newPath, options.root);
             var documentUri = url.parse(documentPath);
             documentPath = documentUri.pathname;
+
+            //Overwrite url attribute to call allow with the correct path.
+            //Otherwise enters infinite recuresion.
+            req.url = newPath;
             var readAllowed = allow('Read', req);
+            //Restore value of req.url
+            req.url = oldPath;
+
             if (readAllowed && readAllowed.status === 200) {
                 body = fs.readFileSync(documentPath, {encoding: 'utf8'});
             }
@@ -379,11 +387,11 @@ exports.allowAppendThenWriteHandler = function(req, res, next) {
     if (!options.webid) {
         return next();
     } else {
-        var allowAppendValue = allow("Append", req, res, next);
+        var allowAppendValue = allow("Append", req);
         if (allowAppendValue.status == 200) {
             return next();
         } else {
-            var allowWriteValue = allow("Write", req, res, next);
+            var allowWriteValue = allow("Write", req);
             if(allowWriteValue.status == 200) {
                 return next();
             } else {
