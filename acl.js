@@ -6,12 +6,15 @@ var fs = require('fs');
 var glob = require('glob');
 var path = require('path');
 var $rdf = require('rdflib');
+var request = require('sync-request');
 var S = require('string');
 
 var debug = require('./logging').ACL;
 var file = require('./fileStore.js');
 var ns = require('./vocab/ns.js').ns;
 var rdfVocab = require('./vocab/rdf.js');
+
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
 function allow(mode, req, res) {
     var options = req.app.locals.ldp;
@@ -267,9 +270,18 @@ function allowOrigin(mode, userId, res, aclGraph, subject) {
         }
         var groupURI = rdfVocab.debrack(agentClassElem.toString());
         var groupGraph = $rdf.graph();
-        var groupFetcher = $rdf.fetcher(groupGraph, 3000, false);
-        groupFetcher.nowOrWhenFetched(groupURI, null, function(ok, err) {});
+        // var groupFetcher = $rdf.fetcher(groupGraph, 5000, false);
+        // debug("Fetching Group statements at " + groupURI);
+        // groupFetcher.nowOrWhenFetched(groupURI, undefined, function(ok) {
+        //     debug("Group statements: " + groupGraph.statements);
+        //     var typeStatements = groupGraph.each(agentClassElem, ns.rdf("type"), ns.foaf("Group"));
+        //     debug(typeStatements);
+        // });
+        var response = request('GET', 'https://localhost:3457/test/resources/acl/testDir/group#');
+        debug(response.getBody('utf8'));
+        $rdf.parse(response.getBody('utf8'), groupGraph, groupURI, 'text/turtle');
         var typeStatements = groupGraph.each(agentClassElem, ns.rdf("type"), ns.foaf("Group"));
+        debug(typeStatements);
         if (groupGraph.statements.length > 0 && typeStatements.length > 0) {
             var memberStatements = groupGraph.each(agentClassElem, ns.foaf("member"),
                 groupGraph.sym(userId));
