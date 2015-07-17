@@ -118,6 +118,14 @@ or simply
 $ ldnode -v
 ```
 
+### Package scripts
+
+There are some scripts in the [package.json](https://github.com/linkeddata/ldnode/blob/master/package.json):
+
+- `npm start`: starts a very basic ldnode with default configs
+- `npm run ldp-webid`: run ldnode with SSL and WebID+TLS enabled (remember it runs in HTTPS)
+- `npm run ldp-ssl`: same as the above without WebID+TLS support
+
 ## Tests
 
 The tests assume that there is a running ldnode.
@@ -126,6 +134,12 @@ The tests assume that there is a running ldnode.
 $ npm test
 # running the tests with logs
 $ DEBUG="ldnode:*" npm test
+```
+
+In order to test a single component, you can run
+
+```javascript
+npm run test-(acl|formats|params|patch)
 ```
 
 ## License
