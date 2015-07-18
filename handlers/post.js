@@ -34,8 +34,10 @@ function handler(req, res) {
     // Error on invalid content-type
     if (contentType != 'text/turtle' &&
         contentType != 'text/n3' &&
-        contentType != 'application/rdf+xml') {
-        //TODO Handle json and nquad content types
+        contentType != 'application/rdf+xml' &&
+        contentType != 'application/json+ld' &&
+        contentType != 'application/nquads' &&
+        contentType != 'application/n-quads') {
         debug("POST -- Invalid Content Type: " + contentType);
         return res.status(415).send("Invalid Content Type");
     }
@@ -43,12 +45,6 @@ function handler(req, res) {
 
     var containerPath = file.uriToFilename(req.path, options.root);
     debug("POST -- Container path: " + containerPath);
-    
-    // Container not found/invalid
-    if (metadata.isMetadataFile(containerPath)) {
-        debug("POST -- Invalid container.");
-        return res.sendStatus(404);
-    }
 
     // Not a container
     if (containerPath[containerPath.length - 1] != '/') {
@@ -75,7 +71,6 @@ function handler(req, res) {
     }
 
     var resourceGraph = $rdf.graph();
-    // TODO make sure correct text is selected
     var requestText = req.convertedText || req.text;
     var uri = file.uriBase(req);
     var resourceBaseUri = file.filenameToBaseUri(
@@ -135,6 +130,5 @@ function handler(req, res) {
         return res.sendStatus(201);
     }
 }
-
 
 exports.handler = handler;
