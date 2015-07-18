@@ -96,7 +96,7 @@ function get(req, res, includeBody) {
 
         // Consider acl and meta files text/turtle
         if (path.extname(filename) === options.suffixAcl ||
-            path.basename(filename) === options.suffixAcl ||
+            path.basename(filename) === turtleExtension ||
             path.basename(filename) === metaExtension) {
             contentType = 'text/turtle';
         }
@@ -136,7 +136,6 @@ function get(req, res, includeBody) {
                         match,
                         { encoding: "utf8" });
 
-                    //TODO integrate ACL
                     if (S(match).endsWith(".ttl") && aclAllow(match)) {
                         $rdf.parse(
                             fileData,
@@ -203,7 +202,6 @@ function get(req, res, includeBody) {
             return res.status(500).send(err);
         }
 
-        //TODO rdflib callbacks
         $rdf.serialize(
             undefined,
             resourceGraph,
