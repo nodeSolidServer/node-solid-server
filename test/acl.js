@@ -16,9 +16,9 @@ describe('ACL', function() {
 
     var ldp = ldnode.createServer({
         mount: '/test',
-        base: __dirname,
-        key: __dirname + '/key.pem',
-        cert: __dirname + '/cert.pem',
+        root: __dirname + '/resources',
+        key: __dirname + '/keys/key.pem',
+        cert: __dirname + '/keys/cert.pem',
         webid: true
     });
     ldp.listen(3456);
@@ -29,10 +29,11 @@ describe('ACL', function() {
 
     var testDir = 'acl/testDir';
     var testDirAclFile = testDir + '/' + aclExtension;
+    var testDirMetaFile = testDir + '/' + metaExtension;
 
     var abcFile = testDir + '/abc.ttl';
     var abcAclFile = abcFile + aclExtension;
-    var abcdFile = testDir + '/abcd.ttl';
+    var abcdFile = testDir + '/dir1/dir2/abcd.ttl';
     var abcdAclFile = abcFile + aclExtension;
 
     var globFile = testDir + "/*";
@@ -46,12 +47,12 @@ describe('ACL', function() {
     var user2 = "https://user2.databox.me/profile/card#me";
     var userCredentials = {
         user1: {
-            cert: fs.readFileSync(__dirname + '/testfiles/user1-cert.pem'),
-            key: fs.readFileSync(__dirname + '/testfiles/user1-key.pem')
+            cert: fs.readFileSync(__dirname + '/keys/user1-cert.pem'),
+            key: fs.readFileSync(__dirname + '/keys/user1-key.pem')
         },
         user2: {
-            cert: fs.readFileSync(__dirname + '/testfiles/user2-cert.pem'),
-            key: fs.readFileSync(__dirname + '/testfiles/user2-key.pem')
+            cert: fs.readFileSync(__dirname + '/keys/user2-cert.pem'),
+            key: fs.readFileSync(__dirname + '/keys/user2-key.pem')
         }
     };
 
@@ -75,11 +76,19 @@ describe('ACL', function() {
                 done();
             });
         });
+        it("Should return User header", function(done) {
+            var options = createOptions('hello.html', 'user1');
+            request(options, function(error, response, body) {
+                assert.equal(response.statusCode, 200);
+                assert.equal(response.headers.user, user1);
+                done();
+            });
+        });
     });
 
     describe("Empty ACL Test", function() {
         it("Should create test folder", function(done) {
-            var options = createOptions(testDir + '/' + metaExtension, 'user1');
+            var options = createOptions(testDirMetaFile, 'user1');
             options.body = "";
             request.put(options, function(error, response, body) {
                 assert.equal(error, null);
@@ -227,7 +236,7 @@ describe('ACL', function() {
             });
     });
 
-    describe("ACL owner only test", function() {
+    describe("ACL owner-only test", function() {
         var body = "<#Owner>\n" +
             " <http://www.w3.org/ns/auth/acl#accessTo> <" + address + testDir + "/" +
             ">, <" + address + testDirAclFile + ">;\n" +
@@ -689,7 +698,7 @@ describe('ACL', function() {
 
     describe("ACL group test", function() {
         var groupTriples = "<#> a <http://xmlns.com/foaf/0.1/Group>;\n" +
-            " <http://xmlns.com/foaf/0.1/member> <a>, <b>, <" + user2 + ">.";
+            " <http://xmlns.com/foaf/0.1/member> <a>, <b>, <" + user2 + "> .\n";
         var body = "<#Owner>\n" +
             " <http://www.w3.org/ns/auth/acl#accessTo> <" + address + abcFile + ">, <" +
             address + abcAclFile + ">;\n" +
@@ -753,54 +762,54 @@ describe('ACL', function() {
                 done();
             });
         });
-        // it("user2 should not be able to access test file's ACL file", function(done) {
-        //     var options = createOptions(abcAclFile, 'user2');
-        //     request.head(options, function(error, response, body) {
-        //         assert.equal(error, null);
-        //         assert.equal(response.statusCode, 403);
-        //         done();
-        //     });
-        // });
-        // it("user2 should be able to access test file", function(done) {
-        //     var options = createOptions(abcFile, 'user2');
-        //     request.head(options, function(error, response, body) {
-        //         assert.equal(error, null);
-        //         assert.equal(response.statusCode, 200);
-        //         done();
-        //     });
-        // });
-        // it("user2 should not be able to modify test file", function(done) {
-        //     var options = createOptions(abcFile, 'user2');
-        //     options.headers = {
-        //         'content-type': 'text/turtle'
-        //     };
-        //     options.body = "<d> <e> <f> .\n";
-        //     request.put(options, function(error, response, body) {
-        //         assert.equal(error, null);
-        //         assert.equal(response.statusCode, 403);
-        //         done();
-        //     });
-        // });
-        // it("agent should not be able to access test file", function(done) {
-        //     var options = createOptions(abcFile);
-        //     request.head(options, function(error, response, body) {
-        //         assert.equal(error, null);
-        //         assert.equal(response.statusCode, 401);
-        //         done();
-        //     });
-        // });
-        // it("agent should not be able to modify test file", function(done) {
-        //     var options = createOptions(abcFile);
-        //     options.headers = {
-        //         'content-type': 'text/turtle'
-        //     };
-        //     options.body = "<d> <e> <f> .\n";
-        //     request.put(options, function(error, response, body) {
-        //         assert.equal(error, null);
-        //         assert.equal(response.statusCode, 401);
-        //         done();
-        //     });
-        // });
+        it("user2 should not be able to access test file's ACL file", function(done) {
+            var options = createOptions(abcAclFile, 'user2');
+            request.head(options, function(error, response, body) {
+                assert.equal(error, null);
+                assert.equal(response.statusCode, 403);
+                done();
+            });
+        });
+        it("user2 should be able to access test file", function(done) {
+            var options = createOptions(abcFile, 'user2');
+            request.head(options, function(error, response, body) {
+                assert.equal(error, null);
+                assert.equal(response.statusCode, 200);
+                done();
+            });
+        });
+        it("user2 should not be able to modify test file", function(done) {
+            var options = createOptions(abcFile, 'user2');
+            options.headers = {
+                'content-type': 'text/turtle'
+            };
+            options.body = "<d> <e> <f> .\n";
+            request.put(options, function(error, response, body) {
+                assert.equal(error, null);
+                assert.equal(response.statusCode, 403);
+                done();
+            });
+        });
+        it("agent should not be able to access test file", function(done) {
+            var options = createOptions(abcFile);
+            request.head(options, function(error, response, body) {
+                assert.equal(error, null);
+                assert.equal(response.statusCode, 401);
+                done();
+            });
+        });
+        it("agent should not be able to modify test file", function(done) {
+            var options = createOptions(abcFile);
+            options.headers = {
+                'content-type': 'text/turtle'
+            };
+            options.body = "<d> <e> <f> .\n";
+            request.put(options, function(error, response, body) {
+                assert.equal(error, null);
+                assert.equal(response.statusCode, 401);
+                done();
+            });
+        });
         it("user1 should be able to delete group file", function(done) {
             var options = createOptions(groupFile, 'user1');
             request.del(options, function(error, response, body) {
@@ -918,6 +927,59 @@ describe('ACL', function() {
                 assert.equal(response.statusCode, 401);
                 done();
             });
+        });
+    });
+
+    describe("WebID delegation tests", function() {
+        it("user1 should be able delegate to user2", function(done) {
+            var body = "<" + user1 + "> <http://www.w3.org/ns/auth/acl#delegates> <" + user2 +"> .";
+            var options = {
+                url: user1,
+                headers: {
+                    'content-type': 'text/turtle'
+                },
+                agentOptions: {
+                    key: userCredentials.user1.key,
+                    cert: userCredentials.user1.cert
+                }
+            };
+            request.post(options, function(error, response, body) {
+                assert.equal(error, null);
+                assert.equal(response.statusCode, 200);
+                done();
+            });
+        });
+        // it("user2 should be able to make requests on behalf of user1", function(done) {
+            // var options = createOptions(abcdFile, 'user2');
+            // options.headers = {
+                // 'content-type': 'text/turtle',
+                // 'On-Behalf-Of': '<' + user1 + '>'
+            // };
+            // options.body = "<d> <e> <f> .";
+            // request.post(options, function(error, response, body) {
+                // assert.equal(error, null);
+                // assert.equal(response.statusCode, 200);
+                // done();
+            // });
+        // });
+    });
+    
+    describe("ACL cleaup", function() {
+        it("should remove all files and dirs created", function(done) {
+            try {
+                // must remove the ACLs in sync
+                fs.unlinkSync(__dirname + '/resources/' + testDir + '/dir1/dir2/abcd.ttl');
+                fs.rmdirSync(__dirname + '/resources/' + testDir + '/dir1/dir2/');
+                fs.rmdirSync(__dirname + '/resources/' + testDir + '/dir1/');
+                fs.unlinkSync(__dirname + '/resources/' + abcFile);
+                fs.unlinkSync(__dirname + '/resources/' + testDirAclFile);
+                fs.unlinkSync(__dirname + '/resources/' + testDirMetaFile);
+                fs.rmdirSync(__dirname + '/resources/' + testDir);
+                fs.rmdirSync(__dirname + '/resources/acl/');
+                done();
+            } catch (e) {
+                done(e);
+            }
         });
     });
 });

@@ -17,7 +17,7 @@ exports.subscribeToChanges_SSE = function(req, res) {
 
     var messageCount;
     debug("Server Side Events subscription");
-    var targetPath = req.path.slice(0, - options.suffixChanges.length); // lop off ',events'
+    var targetPath = req.originalUrl.slice(0, - options.suffixChanges.length); // lop off ',events'
     if (SSEsubscriptions[targetPath] === undefined) {
         SSEsubscriptions[targetPath] = redis.createClient();
     }
@@ -61,7 +61,7 @@ exports.subscribeToChanges_SSE = function(req, res) {
 exports.publishDelta_SSE = function (req, res, patchKB, targetURI){
     // @@ TODO
     var options = req.app.locals.ldp;
-    var targetPath = req.path.slice(0, - options.suffixChanges.length); // lop off ',changes'
+    var targetPath = req.originalUrl.slice(0, - options.suffixChanges.length); // lop off ',changes'
     var publisherClient = SSEsubscriptions[targetPath];
     publisherClient.publish( 'updates', ('"' + targetPath + '" data changed visited') );
 };
@@ -74,7 +74,7 @@ var DelayedResponse = require('http-delayed-response');
 
 exports.subscribeToChangesLongPoll = function(req, res) {
     var options = req.app.locals.ldp;
-    var targetPath = req.path.slice(0, - options.suffixChanges.length); // lop off ',changes'
+    var targetPath = req.originalUrl.slice(0, - options.suffixChanges.length); // lop off ',changes'
     if (subscriptions[targetPath] === undefined) {
         subscriptions[targetPath] = [];
     }
@@ -144,7 +144,7 @@ exports.publishDelta = function (req, res, patchKB, targetURI){
     patchKB.add(operation, PATCH('logged'), new Date()); // @@ also add user
     var patchData = $rdf.serialize(undefined, patchKB, targetURI, 'text/n3');
 
-    debug("Distributing change to " + req.path + ", patch is: " );
+    debug("Distributing change to " + req.originalUrl + ", patch is: " );
     debug("[[[" + patchData + "]]]\n");
 
     this.publishDelta_LongPoll(req, res, patchData, targetURI);
@@ -153,10 +153,10 @@ exports.publishDelta = function (req, res, patchKB, targetURI){
 
 exports.publishDelta_LongPoll = function (req, res, patchData, targetURI){
     var options = req.app.locals.ldp;
-    debug("    Long poll change subscription count " + (subscriptions[req.path] || []).length);
-    if (! subscriptions[req.path]) return;
-    subscriptions[req.path].map(function(subscription){
-        debug("    Long poll change to " + req.path);
+    debug("    Long poll change subscription count " + (subscriptions[req.originalUrl] || []).length);
+    if (! subscriptions[req.originalUrl]) return;
+    subscriptions[req.originalUrl].map(function(subscription){
+        debug("    Long poll change to " + req.originalUrl);
         if (options.leavePatchConnectionOpen) {
             subscription.response.write(patchData);
         } else {
@@ -166,6 +166,6 @@ exports.publishDelta_LongPoll = function (req, res, patchData, targetURI){
         }
     });
 
-    subscriptions[req.path] = []; // one-off polll
+    subscriptions[req.originalUrl] = []; // one-off polll
     debug("LONG POLL : Now NO subscriptions for " +  targetURI);
 };

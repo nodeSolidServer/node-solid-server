@@ -1,4 +1,4 @@
-#!/bin/env node
+#!/usr/bin/env node
 
 var fs = require('fs');
 var path = require('path');
@@ -23,10 +23,9 @@ var argv = require('nomnom')
     abbr: 'm',
     help: 'Where to mount Linked Data Platform (default: \'/\')'
   })
-  .option('base', {
-    abbr: 'b',
-    full: 'base',
-    help: 'Base location to serve resources'
+  .option('root', {
+    abbr: 'r',
+    help: 'Root location on the filesystem to serve resources'
   })
   .option('port', {
     abbr: 'p',
@@ -103,7 +102,13 @@ if (process.platform !== 'win32') {
 
 // Finally starting ldnode
 var ldnode = require('../index');
-var app = ldnode.createServer(argv);
+var app;
+try {
+  app = ldnode.createServer(argv);
+} catch(e) {
+  console.log(e.message);
+  return 1;
+}
 app.listen(argv.port, function() {
     debug('LDP started on port ' + argv.port);
 });

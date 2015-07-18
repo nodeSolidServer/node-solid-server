@@ -41,7 +41,7 @@ function handler(req, res) {
     }
 
 
-    var containerPath = file.uriToFilename(req.path, options.base);
+    var containerPath = file.uriToFilename(req.path, options.root);
     debug("POST -- Container path: " + containerPath);
     
     // Container not found/invalid
@@ -59,12 +59,13 @@ function handler(req, res) {
 
     debug("POST -- Content Type: " + contentType);
 
-    var slug = req.get('Slug');
     var resourceMetadata = header.parseMetadataFromHeader(req.get('Link'));
+
+    // Create resource
     var resourcePath = container.createResourceUri(
         options,
         containerPath,
-        slug,
+        req.get('Slug'),
         resourceMetadata.isBasicContainer);
 
     if (resourcePath === null) {
@@ -74,14 +75,13 @@ function handler(req, res) {
     }
 
     var resourceGraph = $rdf.graph();
-    // Get the request text
     // TODO make sure correct text is selected
     var requestText = req.convertedText || req.text;
-    var uri = file.uriAbs(req);
+    var uri = file.uriBase(req);
     var resourceBaseUri = file.filenameToBaseUri(
         resourcePath,
         uri,
-        options.base);
+        options.root);
 
     try {
         $rdf.parse(
@@ -109,7 +109,7 @@ function handler(req, res) {
     } else {
         container.createNewResource(
             options.usedURIs,
-            options.base,
+            options.root,
             uri,
             resourcePath,
             resourceGraph,

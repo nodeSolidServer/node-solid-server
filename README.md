@@ -8,12 +8,13 @@ Linked Data Platform server based on [rdflib.js](https://github.com/linkeddata/r
 
 ## Features
 
-- [x] GET, PUT and PATCH support
+- [x] GET, PUT, POST and PATCH support
 - [x] Proxy for cross-site data access
 - [x] Access control using RDF ACLs
-- [x] WebID Authentication
-- [x] Real-time live updates (using websokets)
+- [x] WebID+TLS Authentication
 - [x] Mount as express' router
+- [x] Command line tool
+- [ ] Real-time live updates (using websokets)
 
 
 ## Install
@@ -22,43 +23,60 @@ Linked Data Platform server based on [rdflib.js](https://github.com/linkeddata/r
 npm install
 ```
 
+Due to the use of the sync-request library to implement the ACl feature, ldnode requires a version of node >= 0.12
+
 ## Usage
 
-### Library
+The library provides two APIs:
+
+- `ldnode.createServer(settings)`: starts a ready to use Express app.
+- `lnode(settings)`: creates an Express routes that you can mount in your existing express app
+
+In case the `settings` is not passed, then it will start with the following default settings.
+
+```javascript
+{
+  cache: 0, // Set cache time (in seconds), 0 for no cache
+  live: true, // Enable live support through WebSockets
+  root: './', // Root location on the filesystem to serve resources
+  secret: 'node-ldp', // Express Session secret key
+  cert: false, // Path to the ssl cert
+  key: false, // Path to the ssl key
+  mount: '/', // Where to mount Linked Data Platform
+  webid: false, // Enable WebID+TLS authentication
+  suffixAcl: '.acl', // Suffix for acl files
+  suffixChanges: '.changes', // Suffix for acl files
+  suffixSSE: '.events' // Suffix for SSE files
+}
+```
+
+### Examples
+
 #### Simple
+
+You can create an ldnode ready to use Express server using `ldnode.createServer(opts)`
 
 ```javascript
 var ldnode = require('ldnode')
 
 var ldp = ldnode.createServer()
-ldp.listen(1234, function() {
+ldp.listen(3000, function() {
   // Started Linked Data Platform
 })
 ```
 
 #### Advanced
 
-You can integrate it with your existing express app
+You can integrate it with your existing express app just by using `lnode(opts)`
 
 ```javascript
 var ldnode = require('ldnode')
 var app = require('express')()
-app.use('/test', ldnode())
+app.use('/test', ldnode({ root:'/path/to/root/container' }))
+app.listen(3000, function() {
+  // Started Express app with ldp on '/test'
+})
 ...
-```
-
-##### Logging
-
-If you are running your own app
-
-```bash
-$ DEBUG="ldnode:*" node app.js
-```
-
-or simply
-
-```bash
-$ ldnode -v
 ```
 
 ### Command line tool
@@ -74,7 +92,7 @@ Options:
    -v, --verbose           Print the logs to console
    --version               Print current ldnode version
    -m, --mount             Where to mount Linked Data Platform (default: '/')
-   -b, --base              Base location to serve resources
+   -r, --root              Root location on the filesystem to serve resources
    -p, --port              Port to use
    -c, --cache             Set cache time (in seconds), 0 for no cache
    -K, --key               Path to the ssl key
@@ -88,6 +106,28 @@ Options:
 
 ```
 
+### Logging
+
+If you are running your own app
+
+```bash
+$ DEBUG="ldnode:*" node app.js
+```
+
+or simply
+
+```bash
+$ ldnode -v
+```
+
+### Package scripts
+
+There are some scripts in the [package.json](https://github.com/linkeddata/ldnode/blob/master/package.json):
+
+- `npm start`: starts a very basic ldnode with default configs
+- `npm run ldp-webid`: run ldnode with SSL and WebID+TLS enabled (remember it runs in HTTPS)
+- `npm run ldp-ssl`: same as the above without WebID+TLS support
+
 ## Tests
 
 The tests assume that there is a running ldnode.
@@ -96,6 +136,12 @@ The tests assume that there is a running ldnode.
 $ npm test
 # running the tests with logs
 $ DEBUG="ldnode:*" npm test
+```
+
+In order to test a single component, you can run
+
+```javascript
+npm run test-(acl|formats|params|patch)
 ```
 
 ## License

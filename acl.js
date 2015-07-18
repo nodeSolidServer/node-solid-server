@@ -6,23 +6,30 @@ var fs = require('fs');
 var glob = require('glob');
 var path = require('path');
 var $rdf = require('rdflib');
+var request = require('sync-request');
 var S = require('string');
+var url = require('url');
 
 var debug = require('./logging').ACL;
 var file = require('./fileStore.js');
 var ns = require('./vocab/ns.js').ns;
 var rdfVocab = require('./vocab/rdf.js');
 
-function allow(mode, req, res) {
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
+function allow(mode, req) {
     var options = req.app.locals.ldp;
     var origin = req.get('origin');
     origin = origin ? origin : '';
 
     var accessType = "accessTo";
 
-    var filepath = file.uriToFilename(req.path, options.base);
-    var relativePath = file.uriToRelativeFilename(req.path, options.base);
+    var filepath = file.uriToFilename(req.path, options.root);
+    var relativePath = file.uriToRelativeFilename(req.path, options.root);
     var depth = relativePath.split('/');
+
+    //Get user from request
+    var userId = getUserId(req);
 
     //Handle glob requests
     if (req.method === 'GET' && glob.hasMagic(filepath)) {
@@ -35,12 +42,12 @@ function allow(mode, req, res) {
     for (var i = 0; i < depth.length; i++) {
         var pathAcl = S(filepath).endsWith(options.suffixAcl) ?
                 filepath : filepath + options.suffixAcl;
-        var uri = file.uriAbs(req);
-        var pathUri = file.filenameToBaseUri(filepath, uri, options.base);
-        relativePath = path.relative(options.base, filepath);
+        var uri = file.uriBase(req);
+        var pathUri = file.filenameToBaseUri(filepath, uri, options.root);
+        relativePath = path.relative(options.root, filepath);
 
         debug("Checking " + accessType + "<" + mode + "> to " +
-            pathUri + " for WebID: " + req.session.userId);
+            pathUri + " for WebID: " + userId);
         debug("Looking for policies in " + pathAcl);
 
         var aclData;
@@ -76,7 +83,7 @@ function allow(mode, req, res) {
                             if (rdfVocab.brack(origin) === originsControlElem.toString()) {
                                 debug("Found policy for origin: " +
                                     originsControlElem.toString());
-                                originControlValue = allowOrigin(mode, req, res, aclGraph, controlElem);
+                                originControlValue = allowOrigin(mode, req, userId, aclGraph, controlElem);
                                 if (originControlValue) {
                                     return originControlValue;
                                 }
@@ -86,16 +93,16 @@ function allow(mode, req, res) {
                     } else {
                         debug("No origin found, moving on.");
                     }
-                    originControlValue = allowOrigin(mode, req, res, aclGraph, controlElem);
+                    originControlValue = allowOrigin(mode, req, userId, aclGraph, controlElem);
                     if (originControlValue) {
                         return originControlValue;
                     }
 
                     var ownerStatements = aclGraph.each(accessElem,
-                        ns.acl("owner"), aclGraph.sym(req.session.userId));
+                        ns.acl("owner"), aclGraph.sym(userId));
                     for(var ownerIndex in ownerStatements) {
                         debug(mode + " access allowed (as owner)" +
-                            " for: " + req.session.userId);
+                            " for: " + userId);
                         return {
                             status: 200,
                             err: null
@@ -103,10 +110,10 @@ function allow(mode, req, res) {
                     }
 
                     var agentStatements = aclGraph.each(controlElem,
-                        ns.acl("agent"), aclGraph.sym(req.session.userId));
+                        ns.acl("agent"), aclGraph.sym(userId));
                     for(var agentIndex in agentStatements) {
                         debug(mode + " access allowed (as agent)" +
-                            " for: " + req.session.userId);
+                            " for: " + userId);
                         return {
                             status: 200,
                             err: null
@@ -129,17 +136,16 @@ function allow(mode, req, res) {
 
                         var groupURI = rdfVocab.debrack(agentClassElem.toString());
                         var groupGraph = $rdf.graph();
-                        var groupFetcher = $rdf.fetcher(groupGraph, 3000, false);
-                        groupFetcher.nowOrWhenFetched(groupURI, null, function(ok, err) {});
+                        fetchDocument(groupGraph, groupURI, req);
                         var typeStatements = groupGraph.each(agentClassElem,
                             ns.rdf("type"), ns.foaf("Group"));
                         if (groupGraph.statements.length > 0 &&
                             typeStatements.length > 0) {
                             var memberStatements = groupGraph.each(
                                 agentClassElem, ns.foaf("member"),
-                                groupGraph.sym(req.session.userId));
+                                groupGraph.sym(userId));
                             for(var memberIndex in memberStatements) {
-                                debug(req.session.userId +
+                                debug(userId +
                                     " listed as member of the group " + groupURI);
                                 return {
                                     status: 200,
@@ -168,7 +174,7 @@ function allow(mode, req, res) {
                             if (rdfVocab.brack(origin) === originsElem.toString()) {
                                 debug("Found policy for origin: " +
                                     originsElem.toString());
-                                originValue = allowOrigin(mode, req, res, aclGraph, modeElem);
+                                originValue = allowOrigin(mode, req, userId, aclGraph, modeElem);
                                 if (originValue) {
                                     return originValue;
                                 }
@@ -178,43 +184,43 @@ function allow(mode, req, res) {
                     } else {
                         debug("No origin found, moving on.");
                     }
-                    originValue = allowOrigin(mode, req, res, aclGraph, modeElem);
+                    originValue = allowOrigin(mode, req, userId, aclGraph, modeElem);
                     if (originValue) {
                         return originValue;
                     }
                 }
             }
 
-            if (req.session.userId.length === 0 || req.session.identified === false)  {
+            if (userId.length === 0 || req.session.identified === false)  {
                 debug("Authentication required");
                 return {
                     status: 401,
                     err: "Access to " + pathUri + " requires authorization"
                 };
             }
-            debug(mode + " access denied for: " + req.session.userId);
+            debug(mode + " access denied for: " + userId);
             return {
                 status: 403,
-                err: "Access denied for " + req.session.userId
+                err: "Access denied for " + userId
             };
         }
 
         accessType = "defaultForNew";
         if (i === 0) {
             if (path.dirname(path.dirname(relativePath)) == '.') {
-                filepath = options.base;
+                filepath = options.root;
             } else if (S(relativePath).endsWith("/")) {
-                filepath = options.base + path.dirname(path.dirname(relativePath));
+                filepath = options.root + path.dirname(path.dirname(relativePath));
             } else {
-                filepath = options.base + path.dirname(relativePath);
+                filepath = options.root + path.dirname(relativePath);
             }
         } else {
             if (relativePath.length === 0) {
                 break;
             } else if (path.dirname(path.dirname(relativePath)) === '.') {
-                filepath = options.base;
+                filepath = options.root;
             } else {
-                filepath = options.base + path.dirname(path.dirname(relativePath));
+                filepath = options.root + path.dirname(path.dirname(relativePath));
             }
         }
 
@@ -230,21 +236,21 @@ function allow(mode, req, res) {
     };
 }
 
-function allowOrigin(mode, req, res, aclGraph, subject) {
+function allowOrigin(mode, req, userId, aclGraph, subject) {
     debug("In allow origin");
     var ownerStatements = aclGraph.each(subject, ns.acl("owner"),
-        aclGraph.sym(req.session.userId));
+        aclGraph.sym(userId));
     for (var ownerIndex in ownerStatements) {
-        debug(mode + " access allowed (as owner) for: " + req.session.userId);
+        debug(mode + " access allowed (as owner) for: " + userId);
         return {
             status: 200,
             err: null
         };
     }
     var agentStatements = aclGraph.each(subject, ns.acl("agent"),
-        aclGraph.sym(req.session.userId));
+        aclGraph.sym(userId));
     for (var agentIndex in agentStatements) {
-        debug(mode + " access allowed (as agent) for: " + req.session.userId);
+        debug(mode + " access allowed (as agent) for: " + userId);
         return {
             status: 200,
             return: null
@@ -264,14 +270,13 @@ function allowOrigin(mode, req, res, aclGraph, subject) {
         }
         var groupURI = rdfVocab.debrack(agentClassElem.toString());
         var groupGraph = $rdf.graph();
-        var groupFetcher = $rdf.fetcher(groupGraph, 3000, false);
-        groupFetcher.nowOrWhenFetched(groupURI, null, function(ok, err) {});
+        fetchDocument(groupGraph, groupURI, req);
         var typeStatements = groupGraph.each(agentClassElem, ns.rdf("type"), ns.foaf("Group"));
         if (groupGraph.statements.length > 0 && typeStatements.length > 0) {
             var memberStatements = groupGraph.each(agentClassElem, ns.foaf("member"),
-                groupGraph.sym(req.session.userId));
+                groupGraph.sym(userId));
             for (var memberIndex in memberStatements) {
-                debug(req.session.userId + " listed as member of the group " + groupURI);
+                debug(userId + " listed as member of the group " + groupURI);
                 return {
                     status: 200,
                     err: null
@@ -279,6 +284,74 @@ function allowOrigin(mode, req, res, aclGraph, subject) {
             }
         }
     }
+}
+
+function fetchDocument(graph, uri, req) {
+    var options = req.app.locals.ldp;
+    var uriBase = file.uriBase(req);
+
+    var body = "";
+    if (S(uri).startsWith(uriBase)) {
+        try {
+            var oldPath = req.url;
+            var newPath = S(uri).chompLeft(uriBase).s;
+            var documentPath = file.uriToFilename(newPath, options.root);
+            var documentUri = url.parse(documentPath);
+            documentPath = documentUri.pathname;
+
+            //Overwrite url attribute to call allow with the correct path.
+            //Otherwise enters infinite recuresion.
+            req.url = newPath;
+            var readAllowed = allow('Read', req);
+            //Restore value of req.url
+            req.url = oldPath;
+
+            if (readAllowed && readAllowed.status === 200) {
+                body = fs.readFileSync(documentPath, {encoding: 'utf8'});
+            }
+        } catch (err) {}
+    } else {
+        var response = request('GET', uri, {
+            headers: {
+                'Accept': 'text/turtle'
+            }
+        });
+        body = response.getBody('utf8');
+    }
+    $rdf.parse(body, graph, uri, 'text/turtle');
+}
+
+function getUserId(req) {
+    var userId;
+    if (req.get('On-Behalf-Of')) {
+        var delegator = rdfVocab.debrack(req.get('On-Behalf-Of'));
+        if (verifyDelegator(delegator, req.session.userId, req)) {
+            debug("Request User ID (delegation) :" + delegator);
+            userId = delegator;
+        } else {
+            debug("Delegation denied for " + req.session.userId + " by " + delegator);
+            userId = req.session.userId;
+        }
+    } else {
+        userId = req.session.userId;
+    }
+    return userId;
+}
+
+function verifyDelegator(delegator, delegatee, req) {
+    var delegatorGraph = $rdf.graph();
+    fetchDocument(delegatorGraph, delegator, req);
+    var delegatesStatements = delegatorGraph
+            .each(delegatorGraph.sym(delegator),
+                  delegatorGraph.sym("http://www.w3.org/ns/auth/acl#delegates"),
+                  undefined);
+    for(var delegateeIndex in delegatesStatements) {
+        var delegateeValue = delegatesStatements[delegateeIndex];
+        if (rdfVocab.debrack(delegateeValue.toString()) === delegatee) {
+            return true;
+        }
+    }
+    return false;
 }
 
 function allowIfACLEnabled(mode, req, res, next) {
@@ -314,11 +387,11 @@ exports.allowAppendThenWriteHandler = function(req, res, next) {
     if (!options.webid) {
         return next();
     } else {
-        var allowAppendValue = allow("Append", req, res, next);
+        var allowAppendValue = allow("Append", req);
         if (allowAppendValue.status == 200) {
             return next();
         } else {
-            var allowWriteValue = allow("Write", req, res, next);
+            var allowWriteValue = allow("Write", req);
             if(allowWriteValue.status == 200) {
                 return next();
             } else {

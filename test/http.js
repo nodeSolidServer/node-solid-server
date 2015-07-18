@@ -5,25 +5,16 @@ var ldnode = require('../index');
 var fs = require('fs');
 var S = require('string');
 
-describe('ldnode', function() {
+describe('HTTP APIs', function() {
   var address = 'http://localhost:3457';
   var ldp = ldnode.createServer({
-    base: __dirname
+    root: __dirname + '/resources',
   });
   ldp.listen(3457);
 
   var server = supertest(address);
 
-  describe('Hello World', function() {
-      it('Should return "Hello, World!"', function(done) {
-          server.get('/hello.html')
-              .expect('Content-type', /text\/html/)
-              .expect(/Hello, world!/)
-              .expect(200, done);
-      });
-  });
-
-  describe('Root container', function() {
+  describe('GET Root container', function() {
       it('Should exists', function(done) {
           server.get('/')
               .expect(200, done);
@@ -31,42 +22,6 @@ describe('ldnode', function() {
       it('Should be a turtle file by default', function(done) {
           server.get('/')
               .expect('content-type', /text\/turtle/)
-              .expect(200, done);
-      });
-  });
-
-  describe('JSON-LD support', function() {
-      var isValidJSON = function(res) {
-          var json = JSON.parse(res.text);
-      };
-      it('Should return JSON-LD document', function(done) {
-          server.get('/patch-5-initial.ttl')
-              .set('accept', 'application/json+ld')
-              .expect('content-type', /application\/json\+ld/)
-              .expect(200, done);
-      });
-      it('Should return valid JSON', function(done) {
-          server.get('/patch-5-initial.ttl')
-              .set('accept', 'application/json+ld')
-              .expect(isValidJSON)
-              .expect(200, done);
-      });
-  });
-
-  describe('N-Quads support', function() {
-      it('Should return N-Quads document', function(done) {
-          server.get('/patch-5-initial.ttl')
-              .set('accept', 'application/n-quads')
-              .expect('content-type', /application\/n-quads/)
-              .expect(200, done);
-      });
-  });
-
-  describe('n3 support', function() {
-      it('Should return turtle document if content-type set to n3', function(done) {
-          server.get('/patch-5-initial.ttl')
-              .set('accept', 'text/n3')
-              .expect('content-type', /text\/n3/)
               .expect(200, done);
       });
   });
@@ -87,7 +42,7 @@ describe('ldnode', function() {
               .expect(200, done);
       });
       it('Should have glob support', function(done) {
-          server.get('/testfiles/example*')
+          server.get('/sampleContainer/example*')
               .expect('content-type', /text\/turtle/)
               .expect(200, done);
       });
@@ -105,7 +60,7 @@ describe('ldnode', function() {
   });
 
   describe('PUT API', function() {
-      var putRequestBody = fs.readFileSync(__dirname + '/testfiles/put1.ttl', {
+      var putRequestBody = fs.readFileSync(__dirname + '/resources/sampleContainer/put1.ttl', {
           'encoding': 'utf8'
       });
       it('Should create new resource', function(done) {
@@ -119,9 +74,9 @@ describe('ldnode', function() {
               .send(putRequestBody)
               .set('content-type', 'text/turtle')
               .expect(function() {
-                  fs.unlinkSync(__dirname + '/foo/bar/baz.ttl');
-                  fs.rmdirSync(__dirname + '/foo/bar/');
-                  fs.rmdirSync(__dirname + '/foo/');
+                  fs.unlinkSync(__dirname + '/resources/foo/bar/baz.ttl');
+                  fs.rmdirSync(__dirname + '/resources/foo/bar/');
+                  fs.rmdirSync(__dirname + '/resources/foo/');
               })
               .expect(201, done);
       });
@@ -144,10 +99,10 @@ describe('ldnode', function() {
   });
 
   describe('POST API', function() {
-      var postRequest1Body = fs.readFileSync(__dirname + '/testfiles/put1.ttl', {
+      var postRequest1Body = fs.readFileSync(__dirname + '/resources/sampleContainer/put1.ttl', {
           'encoding': 'utf8'
       });
-      var postRequest2Body = fs.readFileSync(__dirname + '/testfiles/post2.ttl', {
+      var postRequest2Body = fs.readFileSync(__dirname + '/resources/sampleContainer/post2.ttl', {
           'encoding': 'utf8'
       });
       it('Should create new resource', function(done) {
@@ -197,8 +152,8 @@ describe('ldnode', function() {
           server.get('/loans')
               .expect('content-type', /text\/turtle/)
               .expect(function() {
-                  fs.unlinkSync(__dirname + '/loans/.meta');
-                  fs.rmdirSync(__dirname + '/loans/');
+                  fs.unlinkSync(__dirname + '/resources/loans/.meta');
+                  fs.rmdirSync(__dirname + '/resources/loans/');
               })
               .expect(200, done);
       });

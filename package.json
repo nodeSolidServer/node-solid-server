@@ -1,7 +1,7 @@
 {
   "name": "ldnode",
   "description": "Linked Data Platform",
-  "version": "0.2.6",
+  "version": "0.2.7",
   "author": {
     "name": "Tim Berners-Lee",
     "email": "timbl@w3.org"
@@ -46,6 +46,7 @@
     "request": "^2.58.0",
     "response-time": "^2.3.1",
     "string": "^3.3.0",
+    "sync-request": "^2.0.1",
     "webid": "^0.2.2"
   },
   "devDependencies": {
@@ -55,12 +56,15 @@
   },
   "main": "index.js",
   "scripts": {
-    "start": "node bin/ldnode.js",
+    "start": "node ./bin/ldnode.js",
     "test": "./node_modules/mocha/bin/mocha ./test/*.js",
     "test-debug": "DEBUG='ldnode:*' ./node_modules/mocha/bin/mocha ./test/*.js",
-    "test-acl": "./node_modules/mocha/bin/mocha ./test/secure-test.js",
+    "test-acl": "./node_modules/mocha/bin/mocha ./test/acl.js",
     "test-params": "./node_modules/mocha/bin/mocha ./test/params.js",
-    "test-http": "./node_modules/mocha/bin/mocha ./test/test.js"
+    "test-http": "./node_modules/mocha/bin/mocha ./test/http.js",
+    "test-formats": "./node_modules/mocha/bin/mocha ./test/http.js",
+    "ldp-webid": "node ./bin/ldnode.js --webid --cert ./test/keys/cert.pem --key ./test/keys/key.pem -v",
+    "ldp-ssl": "node ./bin/ldnode.js --cert ./test/keys/cert.pem --key ./test/keys/key.pem -v"
   },
   "bin": {
     "ldnode": "./bin/ldnode.js"

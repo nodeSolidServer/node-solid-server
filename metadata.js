@@ -47,7 +47,7 @@ function deleteContainerMetadata(directory, callback) {
 
 function linksHandler(req, res, next) {
     var options = req.app.locals.ldp;
-    var filename = file.uriToFilename(req.url, options.base);
+    var filename = file.uriToFilename(req.url, options.root);
     filename = path.join(filename, req.path);
     if (module.exports.isMetadataFile(filename)) {
         debug("Trying to access metadata file as regular file.");

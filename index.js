@@ -14,8 +14,9 @@ var http = require('http');
 var https = require('https');
 var request = require('request');
 var debug = require('./logging').settings;
-var debugWs = require('./logging').ws;
+var debugSubscription = require('./logging').subscription;
 var debugServer = require('./logging').server;
+var uuid = require('node-uuid');
 
 // ldnode dependencies
 var acl = require('./acl.js');
@@ -40,22 +41,18 @@ function ldnode (argv) {
     // Setting options as local variable
     app.locals.ldp = opts;
 
-    // Session [TODO]
+    // Session
     app.use(session({
-        secret: opts.secret || 'node-ldp',
+        secret: opts.secret || uuid.v1(),
         saveUninitialized: false,
         resave: false
     }));
-
-    // Creating root container
-    container.createRootContainer(opts.base, opts.mount);
 
     // Setting up routes
     app.use('/', routes());
 
     // Adding proxy
     if (opts.xssProxy) {
-      console.log(opts.proxyFilter);
         proxy(app, opts.proxyFilter);
     }
 
@@ -78,11 +75,39 @@ function createServer(argv) {
     if (opts && (opts.webid || opts.key || opts.cert) ) {
         debug("SSL Private Key path: " + opts.key);
         debug("SSL Certificate path: " + opts.cert);
+
+        if (!opts.cert && !opts.key) {
+            throw new Error("Missing SSL cert and SSL key to enable WebID");
+        }
+
+        if (!opts.key && opts.cert) {
+            throw new Error("Missing path for SSL key");
+        }
+
+        if (!opts.cert && opts.key) {
+            throw new Error("Missing path for SSL cert");
+        }
+
+        var key;
+        try {
+            key = fs.readFileSync(opts.key);
+        } catch(e) {
+            throw new Error("Can't find SSL key in " + opts.key);
+        }
+
+        var cert;
+        try {
+            cert = fs.readFileSync(opts.cert);
+        } catch(e) {
+            throw new Error("Can't find SSL cert in " + opts.cert);
+        }
+
         var credentials = {
-            key: fs.readFileSync(opts.key),
-            cert: fs.readFileSync(opts.cert),
-            requestCert: true
-        };
+                key: key,
+                cert: cert,
+                requestCert: true
+            };
+
         debug("Private Key: " + credentials.key);
         debug("Certificate: " + credentials.cert);
 
@@ -158,9 +183,9 @@ function ws (app) {
     app.mountpath = ''; //  needs to be set for addSocketRoute aka .ws()
     // was options.pathFilter
     app.ws('/', function(socket, res) {
-        debugWs("incoming on " + socket.path);
+        debugSubscription("incoming on " + socket.path);
         socket.on('message', function(msg) {
-            debugWs("message = " + msg);
+            debugSubscription("message = " + msg);
             // subscribeToChanges(socket, res);
         });
     });
