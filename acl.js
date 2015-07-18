@@ -209,8 +209,6 @@ function allow(mode, req) {
         if (i === 0) {
             if (path.dirname(path.dirname(relativePath)) == '.') {
                 filepath = options.root;
-            } else if (S(relativePath).endsWith("/")) {
-                filepath = options.root + path.dirname(path.dirname(relativePath));
             } else {
                 filepath = options.root + path.dirname(relativePath);
             }
@@ -220,7 +218,7 @@ function allow(mode, req) {
             } else if (path.dirname(path.dirname(relativePath)) === '.') {
                 filepath = options.root;
             } else {
-                filepath = options.root + path.dirname(path.dirname(relativePath));
+                filepath = options.root + path.dirname(relativePath);
             }
         }
 
