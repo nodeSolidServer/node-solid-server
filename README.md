@@ -50,7 +50,6 @@ In case the `settings` is not passed, then it will start with the following defa
 }
 ```
 
-### Examples
 
 #### Simple
 
@@ -79,7 +78,15 @@ app.listen(3000, function() {
 ...
 ```
 
-### Command line tool
+#### Logs
+
+Run your app with the `DEBUG` variable set:
+
+```bash
+$ DEBUG="ldnode:*" node app.js
+```
+
+## Command line tool
 
     npm install -g ldnode
 
@@ -106,19 +113,14 @@ Options:
 
 ```
 
-### Logging
 
-If you are running your own app
+## Package scripts
 
-```bash
-$ DEBUG="ldnode:*" node app.js
-```
+There are some scripts in the [package.json](https://github.com/linkeddata/ldnode/blob/master/package.json):
 
-or simply
-
-```bash
-$ ldnode -v
-```
+- `npm start`: starts a very basic ldnode with default configs
+- `npm run ldp-webid`: run ldnode with SSL and WebID+TLS enabled (remember it runs in HTTPS)
+- `npm run ldp-ssl`: same as the above without WebID+TLS support
 
 ### Package scripts
 
@@ -143,6 +145,10 @@ In order to test a single component, you can run
 ```javascript
 npm run test-(acl|formats|params|patch)
 ```
+
+## Contributing
+
+Do you want to contribute? Sure, have a look at [CONTRIBUTING.md](https://github.com/linkeddata/ldnode/blob/master/CONTRIBUTING.md).
 
 ## License
 
