@@ -23,6 +23,8 @@ Linked Data Platform server based on [rdflib.js](https://github.com/linkeddata/r
 npm install
 ```
 
+Due to the use of the sync-request library to implement the ACl feature, ldnode requires a version of node >= 0.12
+
 ## Usage
 
 The library provides two APIs:
@@ -118,6 +120,14 @@ or simply
 $ ldnode -v
 ```
 
+### Package scripts
+
+There are some scripts in the [package.json](https://github.com/linkeddata/ldnode/blob/master/package.json):
+
+- `npm start`: starts a very basic ldnode with default configs
+- `npm run ldp-webid`: run ldnode with SSL and WebID+TLS enabled (remember it runs in HTTPS)
+- `npm run ldp-ssl`: same as the above without WebID+TLS support
+
 ## Tests
 
 The tests assume that there is a running ldnode.
@@ -126,6 +136,12 @@ The tests assume that there is a running ldnode.
 $ npm test
 # running the tests with logs
 $ DEBUG="ldnode:*" npm test
+```
+
+In order to test a single component, you can run
+
+```javascript
+npm run test-(acl|formats|params|patch)
 ```
 
 ## License

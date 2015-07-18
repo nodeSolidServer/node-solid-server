@@ -236,7 +236,7 @@ describe('ACL', function() {
             });
     });
 
-    describe("ACL owner only test", function() {
+    describe("ACL owner-only test", function() {
         var body = "<#Owner>\n" +
             " <http://www.w3.org/ns/auth/acl#accessTo> <" + address + testDir + "/" +
             ">, <" + address + testDirAclFile + ">;\n" +
@@ -698,7 +698,7 @@ describe('ACL', function() {
 
     describe("ACL group test", function() {
         var groupTriples = "<#> a <http://xmlns.com/foaf/0.1/Group>;\n" +
-            " <http://xmlns.com/foaf/0.1/member> <a>, <b>, <" + user2 + ">.";
+            " <http://xmlns.com/foaf/0.1/member> <a>, <b>, <" + user2 + "> .\n";
         var body = "<#Owner>\n" +
             " <http://www.w3.org/ns/auth/acl#accessTo> <" + address + abcFile + ">, <" +
             address + abcAclFile + ">;\n" +
@@ -762,54 +762,54 @@ describe('ACL', function() {
                 done();
             });
         });
-        // it("user2 should not be able to access test file's ACL file", function(done) {
-        //     var options = createOptions(abcAclFile, 'user2');
-        //     request.head(options, function(error, response, body) {
-        //         assert.equal(error, null);
-        //         assert.equal(response.statusCode, 403);
-        //         done();
-        //     });
-        // });
-        // it("user2 should be able to access test file", function(done) {
-        //     var options = createOptions(abcFile, 'user2');
-        //     request.head(options, function(error, response, body) {
-        //         assert.equal(error, null);
-        //         assert.equal(response.statusCode, 200);
-        //         done();
-        //     });
-        // });
-        // it("user2 should not be able to modify test file", function(done) {
-        //     var options = createOptions(abcFile, 'user2');
-        //     options.headers = {
-        //         'content-type': 'text/turtle'
-        //     };
-        //     options.body = "<d> <e> <f> .\n";
-        //     request.put(options, function(error, response, body) {
-        //         assert.equal(error, null);
-        //         assert.equal(response.statusCode, 403);
-        //         done();
-        //     });
-        // });
-        // it("agent should not be able to access test file", function(done) {
-        //     var options = createOptions(abcFile);
-        //     request.head(options, function(error, response, body) {
-        //         assert.equal(error, null);
-        //         assert.equal(response.statusCode, 401);
-        //         done();
-        //     });
-        // });
-        // it("agent should not be able to modify test file", function(done) {
-        //     var options = createOptions(abcFile);
-        //     options.headers = {
-        //         'content-type': 'text/turtle'
-        //     };
-        //     options.body = "<d> <e> <f> .\n";
-        //     request.put(options, function(error, response, body) {
-        //         assert.equal(error, null);
-        //         assert.equal(response.statusCode, 401);
-        //         done();
-        //     });
-        // });
+        it("user2 should not be able to access test file's ACL file", function(done) {
+            var options = createOptions(abcAclFile, 'user2');
+            request.head(options, function(error, response, body) {
+                assert.equal(error, null);
+                assert.equal(response.statusCode, 403);
+                done();
+            });
+        });
+        it("user2 should be able to access test file", function(done) {
+            var options = createOptions(abcFile, 'user2');
+            request.head(options, function(error, response, body) {
+                assert.equal(error, null);
+                assert.equal(response.statusCode, 200);
+                done();
+            });
+        });
+        it("user2 should not be able to modify test file", function(done) {
+            var options = createOptions(abcFile, 'user2');
+            options.headers = {
+                'content-type': 'text/turtle'
+            };
+            options.body = "<d> <e> <f> .\n";
+            request.put(options, function(error, response, body) {
+                assert.equal(error, null);
+                assert.equal(response.statusCode, 403);
+                done();
+            });
+        });
+        it("agent should not be able to access test file", function(done) {
+            var options = createOptions(abcFile);
+            request.head(options, function(error, response, body) {
+                assert.equal(error, null);
+                assert.equal(response.statusCode, 401);
+                done();
+            });
+        });
+        it("agent should not be able to modify test file", function(done) {
+            var options = createOptions(abcFile);
+            options.headers = {
+                'content-type': 'text/turtle'
+            };
+            options.body = "<d> <e> <f> .\n";
+            request.put(options, function(error, response, body) {
+                assert.equal(error, null);
+                assert.equal(response.statusCode, 401);
+                done();
+            });
+        });
         it("user1 should be able to delete group file", function(done) {
             var options = createOptions(groupFile, 'user1');
             request.del(options, function(error, response, body) {
@@ -929,7 +929,7 @@ describe('ACL', function() {
             });
         });
     });
-  
+
     describe("WebID delegation tests", function() {
         it("user1 should be able delegate to user2", function(done) {
             var body = "<" + user1 + "> <http://www.w3.org/ns/auth/acl#delegates> <" + user2 +"> .";
