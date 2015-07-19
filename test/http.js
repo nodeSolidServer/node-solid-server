@@ -18,21 +18,21 @@ describe('HTTP APIs', function() {
     it('should have Access-Control-Allow-Origin in header on root container', function(done) {
         server.get('/')
             .set('Origin', 'http://example.com')
-            .expect('Access-Control-Allow-Origin', '*')
+            .expect('Access-Control-Allow-Origin', 'http://example.com')
             .expect(200, done);
     });
 
     it('should have Access-Control-Allow-Origin in header on other containers', function(done) {
         server.get('/sampleContainer')
             .set('Origin', 'http://example.com')
-            .expect('Access-Control-Allow-Origin', '*')
+            .expect('Access-Control-Allow-Origin', 'http://example.com')
             .expect(200, done);
     });
 
     it('should have Access-Control-Allow-Origin in header on resources', function(done) {
         server.get('/sampleContainer/example1.ttl')
             .set('Origin', 'http://example.com')
-            .expect('Access-Control-Allow-Origin', '*')
+            .expect('Access-Control-Allow-Origin', 'http://example.com')
             .expect(200, done);
     });
   });
