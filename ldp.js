@@ -88,7 +88,7 @@ LDP.prototype.readContainerMeta = function (directory, callback) {
     if (err) {
       data = "";
     }
-    callback(null, data);
+    return callback(null, data);
   });
 };
 
@@ -118,7 +118,7 @@ LDP.prototype.listContainer = function (filename, uri, containerData, callback) 
             ns.stat('size'),
             containerStats.size);
         }
-        next(null, filename);
+        return next(null, filename);
       });
     },
     // reading directory
@@ -131,7 +131,7 @@ LDP.prototype.listContainer = function (filename, uri, containerData, callback) 
         }
 
         debug("Files in directory: " + files);
-        next(null, files);
+        return next(null, files);
       });
     },
     // Iterate through all the files
@@ -209,7 +209,7 @@ LDP.prototype.listContainer = function (filename, uri, containerData, callback) 
                   metadataGraph.sym(fileSubject),
                   ns.stat('size'),
                   fileStats.size);
-                cb(null);
+                return cb(null);
               });
             });
           });
