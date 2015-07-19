@@ -43,7 +43,16 @@ function ldnode (argv) {
     app.locals.ldp = opts;
 
     // Setting CORS
-    app.use(cors());
+    app.use(cors({
+        methods: [
+            'OPTIONS', 'HEAD', 'GET',
+            'PATCH', 'POST', 'PUT', 'MKCOL', 'DELETE',
+            'COPY', 'MOVE', 'LOCK', 'UNLOCK'
+        ],
+        exposedHeaders: 'User, Location, Link, Vary, Last-Modified, Content-Length',
+        credentials: true,
+        maxAge: 1728000
+    }));
 
     // Session
     app.use(session({
