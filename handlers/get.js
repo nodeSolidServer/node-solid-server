@@ -85,8 +85,9 @@ function get(req, res, includeBody) {
                             .status(err.status)
                             .send(err.message);
                     }
-
-                    return parseLinkedData(data);
+                    // TODO this should be added as a middleware in the routes
+                    res.locals.turtleData = data;
+                    return parseLinkedData(req, res);
                 });
             });
         }
@@ -116,7 +117,9 @@ function get(req, res, includeBody) {
 
                 // if data is text/turtle, parse it
                 if (contentType === 'text/turtle') {
-                    return parseLinkedData(data);
+                    // TODO this should be added as a middleware in the routes
+                    res.locals.turtleData = data;
+                    return parseLinkedData(req, res);
                 }
 
                 // Otherwise, just send the data
@@ -154,12 +157,14 @@ function get(req, res, includeBody) {
                 }
             });
 
-            var turtleData = $rdf.serialize(
+            var data = $rdf.serialize(
                 undefined,
                 globGraph,
                 null,
                 'text/turtle');
-            parseLinkedData(turtleData);
+            // TODO this should be added as a middleware in the routes
+            res.locals.turtleData = data;
+            return parseLinkedData(req, res);
         });
     }
 
@@ -180,48 +185,49 @@ function get(req, res, includeBody) {
             return false;
         }
     }
+}
 
-    function parseLinkedData(turtleData) {
-        var accept = header.parseAcceptHeader(req);
-        var baseUri = file.filenameToBaseUri(filename, uri, ldp.root);
+function parseLinkedData(req, res) {
+    var ldp = req.app.locals.ldp;
+    var filename = file.uriToFilename(req.path, ldp.root);
+    var uri = file.uriBase(req);
+    var turtleData = res.locals.turtleData;
 
-        // Handle Turtle Accept header
-        if (accept === undefined || accept === null) {
-            accept = 'text/turtle';
-        }
-        if (accept === 'text/turtle' ||
-            accept === 'text/n3' ||
-            accept === 'application/turtle' ||
-            accept === 'application/n3') {
-            return res.status(200)
-                .set('content-type', accept)
-                .send(turtleData);
-        }
+    var accept = header.parseAcceptHeader(req) || 'text/turtle';
+    var baseUri = file.filenameToBaseUri(filename, uri, ldp.root);
 
-        //Handle other file types
-        var resourceGraph = $rdf.graph();
-        try {
-            $rdf.parse(turtleData, resourceGraph, baseUri, 'text/turtle');
-        } catch (err) {
-            debug("GET/HEAD -- Error parsing data: " + err);
-            return res.status(500).send(err);
-        }
-
-        $rdf.serialize(
-            undefined,
-            resourceGraph,
-            null,
-            accept,
-            function(err, result) {
-                if (result === undefined || err) {
-                    debug("GET/HEAD -- Serialization error: " + err);
-                    return res.sendStatus(500);
-                } else {
-                    res.set('content-type', accept);
-                    return res.status(200).send(result);
-                }
-            });
+    // Handle Turtle Accept header
+    if (accept === 'text/turtle' ||
+        accept === 'text/n3' ||
+        accept === 'application/turtle' ||
+        accept === 'application/n3') {
+        return res.status(200)
+            .set('content-type', accept)
+            .send(turtleData);
     }
+
+    //Handle other file types
+    var resourceGraph = $rdf.graph();
+    try {
+        $rdf.parse(turtleData, resourceGraph, baseUri, 'text/turtle');
+    } catch (err) {
+        debug("GET/HEAD -- Error parsing data: " + err);
+        return res
+            .status(500)
+            .send(err);
+    }
+
+    $rdf.serialize(undefined, resourceGraph, null, accept, function(err, result) {
+        if (result === undefined || err) {
+            debug("GET/HEAD -- Serialization error: " + err);
+            return res.sendStatus(500);
+        }
+
+        return res
+            .status(200)
+            .set('content-type', accept)
+            .send(result);
+    });
 }
 
 var globOptions = {
