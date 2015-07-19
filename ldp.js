@@ -139,14 +139,14 @@ LDP.prototype.listContainer = function (filename, uri, containerData, callback) 
 
       async.each(files, function(file, cb) {
         if (S(file).endsWith(metaExtension) || S(file).endsWith(ldp.suffixAcl)) {
-          cb(null);
+          return cb(null);
         }
           
         fs.stat(filename + file, function (err, stats) {
 
           if (err) {
             debug("Error getting container: " + err);
-            cb(null);
+            return cb(null);
           }
 
           resourceGraph.add(
