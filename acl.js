@@ -6,14 +6,18 @@ var fs = require('fs');
 var glob = require('glob');
 var path = require('path');
 var $rdf = require('rdflib');
+var request = require('sync-request');
 var S = require('string');
+var url = require('url');
 
 var debug = require('./logging').ACL;
 var file = require('./fileStore.js');
 var ns = require('./vocab/ns.js').ns;
 var rdfVocab = require('./vocab/rdf.js');
 
-function allow(mode, req, res) {
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
+function allow(mode, req) {
     var options = req.app.locals.ldp;
     var origin = req.get('origin');
     origin = origin ? origin : '';
@@ -79,7 +83,7 @@ function allow(mode, req, res) {
                             if (rdfVocab.brack(origin) === originsControlElem.toString()) {
                                 debug("Found policy for origin: " +
                                     originsControlElem.toString());
-                                originControlValue = allowOrigin(mode, userId, res, aclGraph, controlElem);
+                                originControlValue = allowOrigin(mode, req, userId, aclGraph, controlElem);
                                 if (originControlValue) {
                                     return originControlValue;
                                 }
@@ -89,7 +93,7 @@ function allow(mode, req, res) {
                     } else {
                         debug("No origin found, moving on.");
                     }
-                    originControlValue = allowOrigin(mode, userId, res, aclGraph, controlElem);
+                    originControlValue = allowOrigin(mode, req, userId, aclGraph, controlElem);
                     if (originControlValue) {
                         return originControlValue;
                     }
@@ -132,8 +136,7 @@ function allow(mode, req, res) {
 
                         var groupURI = rdfVocab.debrack(agentClassElem.toString());
                         var groupGraph = $rdf.graph();
-                        var groupFetcher = $rdf.fetcher(groupGraph, 3000, false);
-                        groupFetcher.nowOrWhenFetched(groupURI, null, function(ok, err) {});
+                        fetchDocument(groupGraph, groupURI, req);
                         var typeStatements = groupGraph.each(agentClassElem,
                             ns.rdf("type"), ns.foaf("Group"));
                         if (groupGraph.statements.length > 0 &&
@@ -171,7 +174,7 @@ function allow(mode, req, res) {
                             if (rdfVocab.brack(origin) === originsElem.toString()) {
                                 debug("Found policy for origin: " +
                                     originsElem.toString());
-                                originValue = allowOrigin(mode, userId, res, aclGraph, modeElem);
+                                originValue = allowOrigin(mode, req, userId, aclGraph, modeElem);
                                 if (originValue) {
                                     return originValue;
                                 }
@@ -181,7 +184,7 @@ function allow(mode, req, res) {
                     } else {
                         debug("No origin found, moving on.");
                     }
-                    originValue = allowOrigin(mode, userId, res, aclGraph, modeElem);
+                    originValue = allowOrigin(mode, req, userId, aclGraph, modeElem);
                     if (originValue) {
                         return originValue;
                     }
@@ -206,8 +209,6 @@ function allow(mode, req, res) {
         if (i === 0) {
             if (path.dirname(path.dirname(relativePath)) == '.') {
                 filepath = options.root;
-            } else if (S(relativePath).endsWith("/")) {
-                filepath = options.root + path.dirname(path.dirname(relativePath));
             } else {
                 filepath = options.root + path.dirname(relativePath);
             }
@@ -217,7 +218,7 @@ function allow(mode, req, res) {
             } else if (path.dirname(path.dirname(relativePath)) === '.') {
                 filepath = options.root;
             } else {
-                filepath = options.root + path.dirname(path.dirname(relativePath));
+                filepath = options.root + path.dirname(relativePath);
             }
         }
 
@@ -233,7 +234,7 @@ function allow(mode, req, res) {
     };
 }
 
-function allowOrigin(mode, userId, res, aclGraph, subject) {
+function allowOrigin(mode, req, userId, aclGraph, subject) {
     debug("In allow origin");
     var ownerStatements = aclGraph.each(subject, ns.acl("owner"),
         aclGraph.sym(userId));
@@ -267,8 +268,7 @@ function allowOrigin(mode, userId, res, aclGraph, subject) {
         }
         var groupURI = rdfVocab.debrack(agentClassElem.toString());
         var groupGraph = $rdf.graph();
-        var groupFetcher = $rdf.fetcher(groupGraph, 3000, false);
-        groupFetcher.nowOrWhenFetched(groupURI, null, function(ok, err) {});
+        fetchDocument(groupGraph, groupURI, req);
         var typeStatements = groupGraph.each(agentClassElem, ns.rdf("type"), ns.foaf("Group"));
         if (groupGraph.statements.length > 0 && typeStatements.length > 0) {
             var memberStatements = groupGraph.each(agentClassElem, ns.foaf("member"),
@@ -284,11 +284,46 @@ function allowOrigin(mode, userId, res, aclGraph, subject) {
     }
 }
 
+function fetchDocument(graph, uri, req) {
+    var options = req.app.locals.ldp;
+    var uriBase = file.uriBase(req);
+
+    var body = "";
+    if (S(uri).startsWith(uriBase)) {
+        try {
+            var oldPath = req.url;
+            var newPath = S(uri).chompLeft(uriBase).s;
+            var documentPath = file.uriToFilename(newPath, options.root);
+            var documentUri = url.parse(documentPath);
+            documentPath = documentUri.pathname;
+
+            //Overwrite url attribute to call allow with the correct path.
+            //Otherwise enters infinite recuresion.
+            req.url = newPath;
+            var readAllowed = allow('Read', req);
+            //Restore value of req.url
+            req.url = oldPath;
+
+            if (readAllowed && readAllowed.status === 200) {
+                body = fs.readFileSync(documentPath, {encoding: 'utf8'});
+            }
+        } catch (err) {}
+    } else {
+        var response = request('GET', uri, {
+            headers: {
+                'Accept': 'text/turtle'
+            }
+        });
+        body = response.getBody('utf8');
+    }
+    $rdf.parse(body, graph, uri, 'text/turtle');
+}
+
 function getUserId(req) {
     var userId;
     if (req.get('On-Behalf-Of')) {
         var delegator = rdfVocab.debrack(req.get('On-Behalf-Of'));
-        if (verifyDelegator(delegator, req.session.userId)) {
+        if (verifyDelegator(delegator, req.session.userId, req)) {
             debug("Request User ID (delegation) :" + delegator);
             userId = delegator;
         } else {
@@ -301,17 +336,13 @@ function getUserId(req) {
     return userId;
 }
 
-function verifyDelegator(delegator, delegatee) {
+function verifyDelegator(delegator, delegatee, req) {
     var delegatorGraph = $rdf.graph();
-    var delegatorFetcher = $rdf.fetcher(delegatorGraph, 3000, false);
-    debug("delegator: " + delegator);
-    delegatorFetcher.nowOrWhenFetched(delegator, undefined, function(ok, err) {
-        debug("ok: " + ok);
-        debug("error: " + err);
-    });
-    var delegatesStatements = delegatorGraph.each(delegatorGraph.sym(delegator),
-                                                  delegatorGraph.sym("http://www.w3.org/ns/auth/acl#delegates"),
-                                                  undefined);
+    fetchDocument(delegatorGraph, delegator, req);
+    var delegatesStatements = delegatorGraph
+            .each(delegatorGraph.sym(delegator),
+                  delegatorGraph.sym("http://www.w3.org/ns/auth/acl#delegates"),
+                  undefined);
     for(var delegateeIndex in delegatesStatements) {
         var delegateeValue = delegatesStatements[delegateeIndex];
         if (rdfVocab.debrack(delegateeValue.toString()) === delegatee) {
@@ -354,11 +385,11 @@ exports.allowAppendThenWriteHandler = function(req, res, next) {
     if (!options.webid) {
         return next();
     } else {
-        var allowAppendValue = allow("Append", req, res, next);
+        var allowAppendValue = allow("Append", req);
         if (allowAppendValue.status == 200) {
             return next();
         } else {
-            var allowWriteValue = allow("Write", req, res, next);
+            var allowWriteValue = allow("Write", req);
             if(allowWriteValue.status == 200) {
                 return next();
             } else {

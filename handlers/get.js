@@ -52,6 +52,15 @@ function get(req, res, includeBody) {
     }
 
     var filename = file.uriToFilename(req.path, options.root);
+    var baseUri = file.uriBase(req);
+    var aclLink = file.getResourceLink(filename, baseUri,
+                                       options.root, options.suffixAcl,
+                                      metaExtension);
+    var metaLink = file.getResourceLink(filename, baseUri,
+                                        options.root, metaExtension,
+                                       options.suffixAcl);
+    header.addLink(res, aclLink, 'acl');
+    header.addLink(res, metaLink, 'describedBy');
 
     // Check if file exists
     fs.stat(filename, function(err, stats) {
@@ -96,7 +105,7 @@ function get(req, res, includeBody) {
 
         // Consider acl and meta files text/turtle
         if (path.extname(filename) === options.suffixAcl ||
-            path.basename(filename) === options.suffixAcl ||
+            path.basename(filename) === turtleExtension ||
             path.basename(filename) === metaExtension) {
             contentType = 'text/turtle';
         }
@@ -136,7 +145,6 @@ function get(req, res, includeBody) {
                         match,
                         { encoding: "utf8" });
 
-                    //TODO integrate ACL
                     if (S(match).endsWith(".ttl") && aclAllow(match)) {
                         $rdf.parse(
                             fileData,
@@ -203,7 +211,6 @@ function get(req, res, includeBody) {
             return res.status(500).send(err);
         }
 
-        //TODO rdflib callbacks
         $rdf.serialize(
             undefined,
             resourceGraph,
