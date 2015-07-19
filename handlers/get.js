@@ -52,6 +52,15 @@ function get(req, res, includeBody) {
     }
 
     var filename = file.uriToFilename(req.path, options.root);
+    var baseUri = file.uriBase(req);
+    var aclLink = file.getResourceLink(filename, baseUri,
+                                       options.root, options.suffixAcl,
+                                      metaExtension);
+    var metaLink = file.getResourceLink(filename, baseUri,
+                                        options.root, metaExtension,
+                                       options.suffixAcl);
+    header.addLink(res, aclLink, 'acl');
+    header.addLink(res, metaLink, 'describedBy');
 
     // Check if file exists
     fs.stat(filename, function(err, stats) {
