@@ -10,7 +10,6 @@ var $rdf = require('rdflib');
 var debug = require('../logging').handlers;
 var file = require('../fileStore.js');
 var header = require('../header.js');
-var options = require('../options.js');
 
 function handler(req, res) {
     var options = req.app.locals.ldp;

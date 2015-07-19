@@ -21,7 +21,7 @@ var uuid = require('node-uuid');
 // ldnode dependencies
 var acl = require('./acl.js');
 var metadata = require('./metadata.js');
-var options = require('./options.js');
+var LDP = require('./ldp.js');
 var login = require('./login.js');
 var container = require('./container.js');
 var parse = require('./parse.js');
@@ -35,15 +35,15 @@ var patchHandler = require('./handlers/patch.js');
 
 
 function ldnode (argv) {
-    var opts = options(argv);
+    var ldp = new LDP(argv);
     var app = express();
 
     // Setting options as local variable
-    app.locals.ldp = opts;
+    app.locals.ldp = ldp;
 
     // Session
     app.use(session({
-        secret: opts.secret || uuid.v1(),
+        secret: ldp.secret || uuid.v1(),
         saveUninitialized: false,
         resave: false
     }));
@@ -52,54 +52,54 @@ function ldnode (argv) {
     app.use('/', routes());
 
     // Adding proxy
-    if (opts.xssProxy) {
-        proxy(app, opts.proxyFilter);
+    if (ldp.xssProxy) {
+        proxy(app, ldp.proxyFilter);
     }
 
     // Setup Express app
-    if (opts.live) {
+    if (ldp.live) {
         ws(app);
     }
 
-    debugServer("Router attached to " + opts.mount);
+    debugServer("Router attached to " + ldp.mount);
 
     return app;
 }
 
 function createServer(argv) {
     var app = express();
-    var ldp = ldnode(argv);
-    var opts = ldp.locals.ldp;
-    app.use(opts.mount, ldp);
+    var ldpApp = ldnode(argv);
+    var ldp = ldpApp.locals.ldp;
+    app.use(ldp.mount, ldpApp);
 
-    if (opts && (opts.webid || opts.key || opts.cert) ) {
-        debug("SSL Private Key path: " + opts.key);
-        debug("SSL Certificate path: " + opts.cert);
+    if (ldp && (ldp.webid || ldp.key || ldp.cert) ) {
+        debug("SSL Private Key path: " + ldp.key);
+        debug("SSL Certificate path: " + ldp.cert);
 
-        if (!opts.cert && !opts.key) {
+        if (!ldp.cert && !ldp.key) {
             throw new Error("Missing SSL cert and SSL key to enable WebID");
         }
 
-        if (!opts.key && opts.cert) {
+        if (!ldp.key && ldp.cert) {
             throw new Error("Missing path for SSL key");
         }
 
-        if (!opts.cert && opts.key) {
+        if (!ldp.cert && ldp.key) {
             throw new Error("Missing path for SSL cert");
         }
 
         var key;
         try {
-            key = fs.readFileSync(opts.key);
+            key = fs.readFileSync(ldp.key);
         } catch(e) {
-            throw new Error("Can't find SSL key in " + opts.key);
+            throw new Error("Can't find SSL key in " + ldp.key);
         }
 
         var cert;
         try {
-            cert = fs.readFileSync(opts.cert);
+            cert = fs.readFileSync(ldp.cert);
         } catch(e) {
-            throw new Error("Can't find SSL cert in " + opts.cert);
+            throw new Error("Can't find SSL cert in " + ldp.cert);
         }
 
         var credentials = {
