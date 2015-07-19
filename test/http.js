@@ -5,6 +5,10 @@ var ldnode = require('../index');
 var fs = require('fs');
 var S = require('string');
 
+var emptyResponse = function(res) {
+    return 0 !== res.text.length;
+};
+
 describe('HTTP APIs', function() {
   var address = 'http://localhost:3457';
   var ldp = ldnode.createServer({
@@ -14,30 +18,15 @@ describe('HTTP APIs', function() {
 
   var server = supertest(address);
 
-  describe('CORS are enabled', function() {
-    it('should have Access-Control-Allow-Origin in header on root container', function(done) {
-        server.get('/')
-            .set('Origin', 'http://example.com')
-            .expect('Access-Control-Allow-Origin', 'http://example.com')
-            .expect(200, done);
-    });
-
-    it('should have Access-Control-Allow-Origin in header on other containers', function(done) {
-        server.get('/sampleContainer')
-            .set('Origin', 'http://example.com')
-            .expect('Access-Control-Allow-Origin', 'http://example.com')
-            .expect(200, done);
-    });
-
-    it('should have Access-Control-Allow-Origin in header on resources', function(done) {
-        server.get('/sampleContainer/example1.ttl')
-            .set('Origin', 'http://example.com')
-            .expect('Access-Control-Allow-Origin', 'http://example.com')
-            .expect(200, done);
-    });
-  });
 
   describe('GET Root container', function() {
+      it('should have Access-Control-Allow-Origin as the req.Origin', function(done) {
+          server.get('/')
+              .set('Origin', 'http://example.com')
+              .expect('Access-Control-Allow-Origin', 'http://example.com')
+              .expect(200, done);
+      });
+
       it('Should exists', function(done) {
           server.get('/')
               .expect(200, done);
@@ -49,7 +38,69 @@ describe('HTTP APIs', function() {
       });
   });
 
+  describe('OPTIONS API', function (){
+
+    it('should have an empty response', function(done) {
+      server.options('/sampleContainer/example1.ttl')
+          .expect(emptyResponse)
+          .end(done);
+    });
+
+    it('should return 204 on success', function(done) {
+      server.options('/sampleContainer/example1.ttl')
+          .expect(204)
+          .end(done);
+    });
+
+    it('should have Access-Control-Allow-Origin on OPTIONS', function(done) {
+        server.options('/sampleContainer/example1.ttl')
+            .set('Origin', 'http://example.com')
+            .expect('Access-Control-Allow-Origin', 'http://example.com')
+            .end(done);
+    });
+
+    it('should have set Link as resource in OPTIONS', function(done) {
+      server.options('/sampleContainer/example1.ttl')
+          .expect('Link', "<http://www.w3.org/ns/ldp#Resource>; rel='type'")
+          .end(done);
+    });
+
+    it('should have set Link as Container/BasicContainer in OPTIONS', function(done) {
+      server.options('/sampleContainer/')
+          .set('Origin', 'http://example.com')
+          .expect('Link', "<http://www.w3.org/ns/ldp#Container>; rel='type'," +
+            " <http://www.w3.org/ns/ldp#BasicContainer>; rel='type'")
+          .end(done);
+    });
+  });
+
   describe('GET API', function() {
+      it('should have Access-Control-Allow-Origin as Origin on containers', function(done) {
+          server.get('/sampleContainer')
+              .set('Origin', 'http://example.com')
+              .expect('Access-Control-Allow-Origin', 'http://example.com')
+              .expect(200, done);
+      });
+
+      it('should have Access-Control-Allow-Origin as Origin on resources', function(done) {
+          server.get('/sampleContainer/example1.ttl')
+              .set('Origin', 'http://example.com')
+              .expect('Access-Control-Allow-Origin', 'http://example.com')
+              .expect(200, done);
+      });
+
+      it('should have set Link as resource', function(done) {
+        server.get('/sampleContainer/example1.ttl')
+            .expect('Link', "<http://www.w3.org/ns/ldp#Resource>; rel='type'")
+            .expect(200, done);
+      });
+
+      it('should have set Link as Container/BasicContainer', function(done) {
+        server.head('/sampleContainer/')
+            .expect('Link', "<http://www.w3.org/ns/ldp#Container>; rel='type'," +
+              " <http://www.w3.org/ns/ldp#BasicContainer>; rel='type'")
+            .expect(200, done);
+      });
       it('Should return 404 for non-existent resource', function(done) {
           server.get('/invalidfile.foo')
               .expect(404, done);
@@ -72,13 +123,30 @@ describe('HTTP APIs', function() {
   });
 
   describe('HEAD API', function() {
-      var emptyResponse = function(res) {
-          return 0 !== res.text.length;
-      };
+      it('should have Access-Control-Allow-Origin == Origin', function(done) {
+          server.head('/sampleContainer/example1.ttl')
+              .set('Origin', 'http://example.com')
+              .expect('Access-Control-Allow-Origin', 'http://example.com')
+              .expect(200, done);
+      });
+
       it('Should return empty response body', function(done) {
           server.head('/patch-5-initial.ttl')
               .expect(emptyResponse)
               .expect(200, done);
+      });
+
+      it('should have set Link as Resource', function(done) {
+        server.head('/sampleContainer/example1.ttl')
+            .expect('Link', "<http://www.w3.org/ns/ldp#Resource>; rel='type'")
+            .expect(200, done);
+      });
+
+      it('should have set Link as Container/BasicContainer', function(done) {
+        server.get('/sampleContainer/')
+            .expect('Link', "<http://www.w3.org/ns/ldp#Container>; rel='type'," +
+              " <http://www.w3.org/ns/ldp#BasicContainer>; rel='type'")
+            .expect(200, done);
       });
   });
 

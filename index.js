@@ -42,18 +42,6 @@ function ldnode (argv) {
     // Setting options as local variable
     app.locals.ldp = opts;
 
-    // Setting CORS
-    app.use(cors({
-        methods: [
-            'OPTIONS', 'HEAD', 'GET',
-            'PATCH', 'POST', 'PUT', 'DELETE'
-        ],
-        exposedHeaders: 'User, Location, Link, Vary, Last-Modified, Content-Length',
-        credentials: true,
-        maxAge: 1728000,
-        origin: true
-    }));
-
     // Session
     app.use(session({
         secret: opts.secret || uuid.v1(),
@@ -176,10 +164,24 @@ function routes () {
 
     // Convert json-ld and nquads to turtle
     router.use('/*', parse.parseHandler);
+    
     // Add links headers
     router.use(metadata.linksHandler);
+
     // Add response time
     router.use(responseTime());
+
+    // Setting CORS
+    router.use(cors({
+        methods: [
+            'OPTIONS', 'HEAD', 'GET',
+            'PATCH', 'POST', 'PUT', 'DELETE'
+        ],
+        exposedHeaders: 'User, Location, Link, Vary, Last-Modified, Content-Length',
+        credentials: true,
+        maxAge: 1728000,
+        origin: true
+    }));
 
     // HTTP methods handlers
     router.get('/*', getHandler.handler);
