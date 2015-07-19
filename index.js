@@ -46,8 +46,7 @@ function ldnode (argv) {
     app.use(cors({
         methods: [
             'OPTIONS', 'HEAD', 'GET',
-            'PATCH', 'POST', 'PUT', 'MKCOL', 'DELETE',
-            'COPY', 'MOVE', 'LOCK', 'UNLOCK'
+            'PATCH', 'POST', 'PUT', 'DELETE'
         ],
         exposedHeaders: 'User, Location, Link, Vary, Last-Modified, Content-Length',
         credentials: true,
