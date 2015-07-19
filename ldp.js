@@ -7,6 +7,9 @@ var S = require('string');
 var fs = require('fs');
 var $rdf = require('rdflib');
 var async = require('async');
+var fs = require('fs');
+var mkdirp = require('fs-extra').mkdirp;
+
 var debug = require('./logging').settings;
 var utils = require('./fileStore.js');
 var ns = require('./vocab/ns.js').ns;
@@ -232,5 +235,15 @@ LDP.prototype.listContainer = function (filename, uri, containerData, callback) 
       debug("GET/HEAD -- Error serializing container: " + parseErr);
       return callback({status:500, message: parseErr});
     }
+  });
+};
+
+LDP.prototype.writeFile = function (filePath, contents, cb) {
+    mkdirp(path.dirname(filePath), function (err) {
+        if (err) {
+            debug("PUT -- Error creating directory: " + err);
+            return cb(err);
+        }
+        fs.writeFile(filePath, contents, cb);
   });
 };
