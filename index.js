@@ -17,6 +17,7 @@ var debug = require('./logging').settings;
 var debugSubscription = require('./logging').subscription;
 var debugServer = require('./logging').server;
 var uuid = require('node-uuid');
+var cors = require('cors');
 
 // ldnode dependencies
 var acl = require('./acl.js');
@@ -163,10 +164,24 @@ function routes () {
 
     // Convert json-ld and nquads to turtle
     router.use('/*', parse.parseHandler);
+    
     // Add links headers
     router.use(metadata.linksHandler);
+
     // Add response time
     router.use(responseTime());
+
+    // Setting CORS
+    router.use(cors({
+        methods: [
+            'OPTIONS', 'HEAD', 'GET',
+            'PATCH', 'POST', 'PUT', 'DELETE'
+        ],
+        exposedHeaders: 'User, Location, Link, Vary, Last-Modified, Content-Length',
+        credentials: true,
+        maxAge: 1728000,
+        origin: true
+    }));
 
     // HTTP methods handlers
     router.get('/*', getHandler.handler);
