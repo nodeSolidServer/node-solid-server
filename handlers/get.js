@@ -7,6 +7,7 @@ var glob = require('glob');
 var path = require('path');
 var $rdf = require('rdflib');
 var S = require('string');
+var async = require('async');
 
 var debug = require('../logging').handlers;
 var acl = require('../acl.js');
@@ -67,8 +68,9 @@ function get(req, res, includeBody) {
     header.addLink(res, metaLink, 'describedBy');
 
     ldp.stat(filename, function(err, stats) {
+        // File does not exist
         if (err) {
-            // File does not exist
+            // Check in case it is a pattern, e.g. /*.js
             if (glob.hasMagic(filename)) {
                 debug("GET/HEAD -- Glob request");
                 return globHandler();
@@ -95,6 +97,7 @@ function get(req, res, includeBody) {
                 }
                 ldp.listContainer(filename, uri, data, function (err, data) {
                     if (err) {
+                        debug('GET/HEAD -- Read error:' + err);
                         return res
                             .status(err.status)
                             .send(err.message);
@@ -137,7 +140,9 @@ function get(req, res, includeBody) {
                 }
 
                 // Otherwise, just send the data
-                res.status(200).send(data);
+                return res
+                    .status(200)
+                    .send(data);
             });
         }
     });
@@ -151,34 +156,37 @@ function get(req, res, includeBody) {
 
             // Matches found
             var globGraph = $rdf.graph();
-            matches.forEach(function(match) {
-                try {
-                    var baseUri = file.filenameToBaseUri(match, uri, ldp.root);
-                    var fileData = fs.readFileSync(
-                        match,
-                        { encoding: "utf8" });
 
-                    if (S(match).endsWith(".ttl") && aclAllow(match)) {
-                        $rdf.parse(
-                            fileData,
-                            globGraph,
-                            baseUri,
-                            'text/turtle');
+            async.each(matches, function(match, done) {
+                var baseUri = file.filenameToBaseUri(match, uri, ldp.root);
+                fs.readFile(match, {encoding: "utf8"}, function(err, fileData) {
+                    if (err) {
+                        debug('GET -- Error in globHandler' + err);
+                        return done(null);
                     }
-                } catch (readErr) {
-                    debug('GET -- Error in globHandler' + readErr);
-                    return;
-                }
+                    if (S(match).endsWith(".ttl") && aclAllow(match)) {
+                        try {
+                            $rdf.parse(
+                                fileData,
+                                globGraph,
+                                baseUri,
+                                'text/turtle');
+                        } catch(parseErr) {
+                            debug('GET -- Error in globHandler' + parseErr);
+                        }
+                    }
+                    return done(null);
+                });
+            }, function () {
+                var data = $rdf.serialize(
+                    undefined,
+                    globGraph,
+                    null,
+                    'text/turtle');
+                // TODO this should be added as a middleware in the routes
+                res.locals.turtleData = data;
+                return parseLinkedData(req, res);
             });
-
-            var data = $rdf.serialize(
-                undefined,
-                globGraph,
-                null,
-                'text/turtle');
-            // TODO this should be added as a middleware in the routes
-            res.locals.turtleData = data;
-            return parseLinkedData(req, res);
         });
     }
 
@@ -190,7 +198,7 @@ function get(req, res, includeBody) {
         var relativePath = '/' +
             path.relative(ldp.root, match);
 
-        req.path = relativePath;
+        res.locals.path = relativePath;
         var allow = acl.allow("Read", req, res);
 
         if (allow.status === 200) {

@@ -17,15 +17,16 @@ var rdfVocab = require('./vocab/rdf.js');
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-function allow(mode, req) {
+function allow(mode, req, res) {
     var options = req.app.locals.ldp;
     var origin = req.get('origin');
     origin = origin ? origin : '';
 
     var accessType = "accessTo";
 
-    var filepath = file.uriToFilename(req.path, options.root);
-    var relativePath = file.uriToRelativeFilename(req.path, options.root);
+    var reqPath = res && res.locals && res.locals.path ? res.locals.path : req.path;
+    var filepath = file.uriToFilename(reqPath, options.root);
+    var relativePath = file.uriToRelativeFilename(reqPath, options.root);
     var depth = relativePath.split('/');
 
     //Get user from request
