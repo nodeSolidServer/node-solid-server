@@ -251,6 +251,62 @@ LDP.prototype.writeFile = function (filePath, contents, cb) {
   });
 };
 
+LDP.prototype.get = function(filename, uri, includeBody, callback) {
+    var ldp = this;
+    fs.stat(filename, function(err, stats) {
+        // File does not exist
+        if (err) {
+            return callback({
+                status: 404,
+                message:"Can't read file: " + err
+            });
+        }
+
+        // Just return, since resource exists
+        if (!includeBody) {
+            return callback(null);
+        }
+
+        // Found a container
+        if (stats.isDirectory()) {
+            return ldp.readContainerMeta(filename, function(err, data) {
+                if (err) {
+                    debug.handlers('GET/HEAD -- Read error:' + err);
+                    return callback({
+                        status: err.status,
+                        message: err.message
+                    });
+                }
+                ldp.listContainer(filename, uri, data, function (err, data) {
+                    if (err) {
+                        debug.handlers('GET/HEAD -- Read error:' + err);
+                        return callback({
+                            status: err.status,
+                            message: err.message
+                        });
+                    }
+                    // The ending `true`, specifies it is a container
+                    return callback(null, data, true);
+                });
+            });
+        }
+        else {
+            return ldp.readFile(filename, function (err, data) {
+                // Error when reading
+                if (err) {
+                    debug.handlers('GET/HEAD -- Read error:' + err);
+                    return callback({
+                        status: err.status,
+                        message: err.message
+                    });
+                }
+                debug.handlers('GET/HEAD -- Read Ok. Bytes read: ' + data.length);
+                return callback(null, data);
+            });
+        }
+    });
+};
+
 LDP.prototype.delete = function(filename, callback) {
     var ldp = this;
     ldp.stat(filename, function(err, stats) {

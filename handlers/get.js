@@ -67,84 +67,52 @@ function get(req, res, includeBody) {
     header.addLink(res, aclLink, 'acl');
     header.addLink(res, metaLink, 'describedBy');
 
-    ldp.stat(filename, function(err, stats) {
-        // File does not exist
-        if (err) {
-            // Check in case it is a pattern, e.g. /*.js
-            if (glob.hasMagic(filename)) {
-                debug("GET/HEAD -- Glob request");
-                return globHandler(req, res);
-            }
-            debug('GET/HEAD -- Read error: ' + err);
-            return res
-                .status(404)
-                .send("Can't read file: " + err);
+    ldp.get(filename, uri, includeBody, function(err, data, container) {
+
+        // This should be implemented in LDP.prototype.get
+        if (err && err.status === 404 && glob.hasMagic(filename)) {
+            debug("GET/HEAD -- Glob request");
+            return globHandler(req, res);
         }
 
-        // Just return resource exists
-        if (!includeBody) {
+        if (err) {
+            debug('GET/HEAD -- Read error: ' + err);
+            return res
+                .status(err.status)
+                .send(err.message);
+        }
+
+        // Just return that file exists
+        // data is of `typeof 'string'` if file is empty, but exists!
+        if (data === undefined) {
             return res.sendStatus(200);
         }
 
-        // Found a container
-        if (stats.isDirectory()) {
-            return ldp.readContainerMeta(filename, function(err, data) {
-                if (err) {
-                    debug('GET/HEAD -- Read error:' + err);
-                    return res
-                        .status(err.status)
-                        .send(err.message);
-                }
-                ldp.listContainer(filename, uri, data, function (err, data) {
-                    if (err) {
-                        debug('GET/HEAD -- Read error:' + err);
-                        return res
-                            .status(err.status)
-                            .send(err.message);
-                    }
-                    // TODO this should be added as a middleware in the routes
-                    res.locals.turtleData = data;
-                    return parseLinkedData(req, res);
-                });
-            });
-        }
-        else {
-            return ldp.readFile(filename, function (err, data) {
-                // Error when reading
-                if (err) {
-                    debug('GET/HEAD -- Read error:' + err);
-                    return res
-                        .status(err.status)
-                        .send(err.message);
-                }
+        // Container/resource retrieved
+        if (!container) {
+            var contentType = mime.lookup(filename);
+            res.set('content-type', contentType);
+            debug('GET/HEAD -- content-type: ' + contentType);
 
-                // File retrieved
-                debug('GET/HEAD -- Read Ok. Bytes read: ' + data.length);
+            // Consider acl and meta files text/turtle
+            if (path.extname(filename) === ldp.suffixAcl ||
+                path.basename(filename) === turtleExtension ||
+                path.basename(filename) === metaExtension) {
+                contentType = 'text/turtle';
+            }
 
-                var contentType = mime.lookup(filename);
-                res.set('content-type', contentType);
-                debug('GET/HEAD -- content-type: ' + contentType);
-
-                // Consider acl and meta files text/turtle
-                if (path.extname(filename) === ldp.suffixAcl ||
-                    path.basename(filename) === turtleExtension ||
-                    path.basename(filename) === metaExtension) {
-                    contentType = 'text/turtle';
-                }
-
-                // if data is text/turtle, parse it
-                if (contentType === 'text/turtle') {
-                    // TODO this should be added as a middleware in the routes
-                    res.locals.turtleData = data;
-                    return parseLinkedData(req, res);
-                }
-
-                // Otherwise, just send the data
+            // if data is not text/turtle, just send it
+            if (contentType !== 'text/turtle') {
                 return res
                     .status(200)
                     .send(data);
-            });
+            }
         }
+
+        // TODO this should be added as a middleware in the routes
+        res.locals.turtleData = data;
+        return parseLinkedData(req, res);
+
     });
 
 }
