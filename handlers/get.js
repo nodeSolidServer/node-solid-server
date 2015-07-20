@@ -73,7 +73,7 @@ function get(req, res, includeBody) {
             // Check in case it is a pattern, e.g. /*.js
             if (glob.hasMagic(filename)) {
                 debug("GET/HEAD -- Glob request");
-                return globHandler();
+                return globHandler(req, res);
             }
             debug('GET/HEAD -- Read error: ' + err);
             return res
@@ -147,65 +147,78 @@ function get(req, res, includeBody) {
         }
     });
 
-    function globHandler() {
-        glob(filename, globOptions, function(err, matches) {
-            if (err || matches.length === 0) {
-                debug("GET/HEAD -- No files matching the pattern");
-                return res.sendStatus(404);
-            }
+}
 
-            // Matches found
-            var globGraph = $rdf.graph();
+function globHandler(req, res) {
+    var ldp = req.app.locals.ldp;
+    var filename = file.uriToFilename(req.path, ldp.root);
+    var uri = file.uriBase(req);
 
-            async.each(matches, function(match, done) {
-                var baseUri = file.filenameToBaseUri(match, uri, ldp.root);
-                fs.readFile(match, {encoding: "utf8"}, function(err, fileData) {
-                    if (err) {
-                        debug('GET -- Error in globHandler' + err);
-                        return done(null);
-                    }
-                    if (S(match).endsWith(".ttl") && aclAllow(match)) {
-                        try {
-                            $rdf.parse(
-                                fileData,
-                                globGraph,
-                                baseUri,
-                                'text/turtle');
-                        } catch(parseErr) {
-                            debug('GET -- Error in globHandler' + parseErr);
-                        }
-                    }
+    var globOptions = {
+        noext: true,
+        nobrace: true
+    };
+
+    glob(filename, globOptions, function(err, matches) {
+        if (err || matches.length === 0) {
+            debug("GET/HEAD -- No files matching the pattern");
+            return res.sendStatus(404);
+        }
+
+        // Matches found
+        var globGraph = $rdf.graph();
+
+        async.each(matches, function(match, done) {
+            var baseUri = file.filenameToBaseUri(match, uri, ldp.root);
+            fs.readFile(match, {encoding: "utf8"}, function(err, fileData) {
+                if (err) {
+                    debug('GET -- Error in globHandler' + err);
                     return done(null);
-                });
-            }, function () {
-                var data = $rdf.serialize(
-                    undefined,
-                    globGraph,
-                    null,
-                    'text/turtle');
-                // TODO this should be added as a middleware in the routes
-                res.locals.turtleData = data;
-                return parseLinkedData(req, res);
+                }
+                if (!S(match).endsWith(".ttl") || !aclAllow(match, req, res)) {
+                    return done(null);
+                }
+                try {
+                    $rdf.parse(
+                        fileData,
+                        globGraph,
+                        baseUri,
+                        'text/turtle');
+                } catch(parseErr) {
+                    debug('GET -- Error in globHandler' + parseErr);
+                }
+                return done(null);
             });
+        }, function () {
+            var data = $rdf.serialize(
+                undefined,
+                globGraph,
+                null,
+                'text/turtle');
+            // TODO this should be added as a middleware in the routes
+            res.locals.turtleData = data;
+            return parseLinkedData(req, res);
         });
+    });
+}
+
+function aclAllow(match, req, res) {
+    var ldp = req.app.locals.ldp;
+
+    if (!ldp.webid) {
+        return true;
     }
 
-    function aclAllow(match) {
-        if (!ldp.webid) {
-            return true;
-        }
+    var relativePath = '/' +
+        path.relative(ldp.root, match);
 
-        var relativePath = '/' +
-            path.relative(ldp.root, match);
+    res.locals.path = relativePath;
+    var allow = acl.allow("Read", req, res);
 
-        res.locals.path = relativePath;
-        var allow = acl.allow("Read", req, res);
-
-        if (allow.status === 200) {
-            return true;
-        } else {
-            return false;
-        }
+    if (allow.status === 200) {
+        return true;
+    } else {
+        return false;
     }
 }
 
@@ -252,10 +265,6 @@ function parseLinkedData(req, res) {
     });
 }
 
-var globOptions = {
-    noext: true,
-    nobrace: true
-};
 
 function getHandler(req, res) {
     get(req, res, true);
