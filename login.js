@@ -5,8 +5,8 @@ var webid = require('webid');
 var debug = require('./logging').login;
 
 function loginHandler(req, res, next) {
-    var options = req.app.locals.ldp;
-    if (!options.webid) {
+    var ldp = req.app.locals.ldp;
+    if (!ldp.webid) {
         setEmptySession(req);
         return next();
     }

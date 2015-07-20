@@ -324,9 +324,9 @@ LDP.prototype.releaseResourceUri = function (uri) {
     delete this.usedURIs[uri];
 };
 
-LDP.prototype.createNewResource = function(fileBase, uri, resourcePath, resourceGraph, callback) {
+LDP.prototype.createNewResource = function(uri, resourcePath, resourceGraph, callback) {
     var ldp = this;
-    var resourceURI = path.relative(fileBase, resourcePath);
+    var resourceURI = path.relative(ldp.root, resourcePath);
     //TODO write files with relative URIS.
     var rawResource = $rdf.serialize(
         undefined,
@@ -395,7 +395,6 @@ LDP.prototype.createNewContainer = function (uri, containerPath, containerGraph,
 LDP.prototype.writeContainerMetadata = function (directory, container, callback) {
     fs.writeFile(directory + metaExtension, container, callback);
 };
-
 
 LDP.prototype.isMetadataFile = function (filename) {
     if (path.extname(filename) === metaExtension)

@@ -38,7 +38,9 @@ function handler(req, res) {
         contentType != 'application/nquads' &&
         contentType != 'application/n-quads') {
         debug("POST -- Invalid Content Type: " + contentType);
-        return res.status(415).send("Invalid Content Type");
+        return res
+            .status(415)
+            .send("Invalid Content Type");
     }
 
 
@@ -48,7 +50,8 @@ function handler(req, res) {
     // Not a container
     if (containerPath[containerPath.length - 1] != '/') {
         debug("POST -- Requested resource is not a container");
-        return res.set('Allow', 'GET,HEAD,PUT,DELETE')
+        return res
+            .set('Allow', 'GET,HEAD,PUT,DELETE')
             .sendStatus(405);
     }
 
@@ -56,18 +59,20 @@ function handler(req, res) {
 
     var resourceMetadata = header.parseMetadataFromHeader(req.get('Link'));
 
-    // Create resource
+    // Create resource URI
     var resourcePath = ldp.createResourceUri(
         containerPath,
         req.get('Slug'),
         resourceMetadata.isBasicContainer);
 
+    // Check if URI is already in use
     if (resourcePath === null) {
         ldp.releaseResourceUri(resourcePath);
         debug("POST -- URI already exists or in use");
         return res.sendStatus(400);
     }
 
+    // Creating a graph and add the req text
     var resourceGraph = $rdf.graph();
     var requestText = req.convertedText || req.text;
     var uri = file.uriBase(req);
@@ -88,8 +93,10 @@ function handler(req, res) {
         return res.sendStatus(400);
     }
 
+    // Add header link to the resource
     header.addLinks(res, resourceMetadata);
 
+    // Finally, either create the new resource or container
     if (resourceMetadata.isBasicContainer) {
         resourcePath += '/';
         resourceBaseUri += '/';
@@ -100,7 +107,6 @@ function handler(req, res) {
             containerCallback);
     } else {
         ldp.createNewResource(
-            ldp.root,
             uri,
             resourcePath,
             resourceGraph,
