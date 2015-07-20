@@ -5,6 +5,8 @@ var fs = require('fs');
 var path = require('path');
 var S = require('string');
 
+var turtleExtension = ".ttl";
+
 function uriToFilename(uri, base) {
     var filename = path.join(base, uri);
     // Make sure filename ends with '/'  if filename exists and is a directory.
@@ -38,8 +40,20 @@ function uriBase(req) {
     return uriAbs(req) + (req.baseUrl || '');
 }
 
+function getResourceLink(filename, uri, base, suffix, otherSuffix) {
+    var link = filenameToBaseUri(filename, uri, base);
+    if (S(link).endsWith(suffix)) {
+        return link;
+    } else if (S(link).endsWith(otherSuffix)) {
+        return S(link).chompRight(otherSuffix).s + suffix;
+    } else {
+        return link+suffix;
+    }
+}
+
 exports.uriToFilename = uriToFilename;
 exports.uriToRelativeFilename = uriToRelativeFilename;
 exports.filenameToBaseUri = filenameToBaseUri;
 exports.uriAbs = uriAbs;
 exports.uriBase = uriBase;
+exports.getResourceLink = getResourceLink;

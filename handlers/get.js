@@ -51,6 +51,20 @@ function get(req, res, includeBody) {
     }
 
     var filename = file.uriToFilename(req.path, ldp.root);
+    var baseUri = file.uriBase(req);
+
+    var aclLink = file.getResourceLink(
+        filename, baseUri,
+        ldp.root, ldp.suffixAcl,
+        metaExtension);
+
+    var metaLink = file.getResourceLink(
+        filename, baseUri,
+        ldp.root, metaExtension,
+        ldp.suffixAcl);
+
+    header.addLink(res, aclLink, 'acl');
+    header.addLink(res, metaLink, 'describedBy');
 
     ldp.stat(filename, function(err, stats) {
         if (err) {

@@ -4,6 +4,7 @@ var path = require('path');
 var ldnode = require('../index');
 var fs = require('fs');
 var S = require('string');
+var li = require('li');
 
 describe('HTTP APIs', function() {
   var address = 'http://localhost:3457';
@@ -50,13 +51,52 @@ describe('HTTP APIs', function() {
 
   describe('HEAD API', function() {
       var emptyResponse = function(res) {
-          return 0 !== res.text.length;
+          if (res.text.length !== 0) {
+              error("Not empty response");
+          }
+      };
+      var getLink= function(res, rel) {
+          var links = res.headers.link.split(',');
+          for (var linkIndex in links) {
+              var link = links[linkIndex];
+              var parsedLink = li.parse(link);
+              for (var linkRel in parsedLink) {
+                  if (linkRel == rel) {
+                      return parsedLink[rel];
+                  }
+              }
+          }
+          return undefined;
+      };
+      var hasHeader = function(rel, value) {
+          var handler = function(res) {
+              var link = getLink(res, rel);
+              if (link) {
+                  if (link !== value) {
+                      error("Not same value");
+                  }
+              } else {
+                  error("Header does not exist");
+              }
+          };
+          return handler;
       };
       it('Should return empty response body', function(done) {
           server.head('/patch-5-initial.ttl')
               .expect(emptyResponse)
               .expect(200, done);
       });
+      it('Should return meta header', function(done) {
+          server.head('/')
+              .expect(hasHeader('\'describedBy\'', address + '/' + '.meta'))
+              .expect(200, done);
+      });
+      it('Should return acl header', function(done) {
+          server.head('/')
+              .expect(hasHeader('\'acl\'', address + '/' + '.acl'))
+              .expect(200, done);
+      });
+
   });
 
   describe('PUT API', function() {
