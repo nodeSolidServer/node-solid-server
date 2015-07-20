@@ -9,8 +9,10 @@ var $rdf = require('rdflib');
 var async = require('async');
 var fs = require('fs');
 var mkdirp = require('fs-extra').mkdirp;
+var uuid = require('node-uuid');
 
-var debug = require('./logging').settings;
+var debug = require('./logging');
+
 var utils = require('./fileStore.js');
 var ns = require('./vocab/ns.js').ns;
 var metaExtension = '.meta';
@@ -57,12 +59,12 @@ function LDP(argv) {
   // TODO this should be an attribute of an object
   ldp.usedURIs = {};
 
-  debug("mount: " + ldp.mount);
-  debug("root: " + ldp.root);
-  debug("URI path filter regexp: " + ldp.pathFilter);
-  debug("Verbose: " + !!ldp.verbose);
-  debug("WebID: " + !!ldp.webid);
-  debug("Live: " + !!ldp.live);
+  debug.settings("mount: " + ldp.mount);
+  debug.settings("root: " + ldp.root);
+  debug.settings("URI path filter regexp: " + ldp.pathFilter);
+  debug.settings("Verbose: " + !!ldp.verbose);
+  debug.settings("WebID: " + !!ldp.webid);
+  debug.settings("Live: " + !!ldp.live);
 
   return ldp;
 }
@@ -99,10 +101,11 @@ LDP.prototype.listContainer = function (filename, uri, containerData, callback) 
   var ldp = this;
   var baseUri = utils.filenameToBaseUri(filename, uri, ldp.root);
   var resourceGraph = $rdf.graph();
+
   try {
     $rdf.parse(containerData, resourceGraph, baseUri, 'text/turtle');
   } catch (err) {
-    debug("GET/HEAD -- Error parsing data: " + err);
+    debug.handlers("GET/HEAD -- Error parsing data: " + err);
     return callback({status:500, message: err});
   }
 
@@ -126,14 +129,14 @@ LDP.prototype.listContainer = function (filename, uri, containerData, callback) 
     },
     // reading directory
     function (filename, next) {
-      debug("GET/HEAD -- Reading directory");
+      debug.handlers("GET/HEAD -- Reading directory");
       fs.readdir(filename, function (err, files) {
         if (err) {
-          debug("GET/HEAD -- Error reading files: " + err);
+          debug.handlers("GET/HEAD -- Error reading files: " + err);
           return next({status:404, message:err});
         }
 
-        debug("Files in directory: " + files);
+        debug.handlers("Files in directory: " + files);
         return next(null, files);
       });
     },
@@ -148,7 +151,7 @@ LDP.prototype.listContainer = function (filename, uri, containerData, callback) 
         fs.stat(filename + file, function (err, stats) {
 
           if (err) {
-            debug("Error getting container: " + err);
+            debug.handlers("Error getting container: " + err);
             return cb(null);
           }
 
@@ -232,8 +235,8 @@ LDP.prototype.listContainer = function (filename, uri, containerData, callback) 
       // TODO dont forget to parseLinkedData
       return callback(null, turtleData);
     } catch (parseErr) {
-      debug("GET/HEAD -- Error serializing container: " + parseErr);
-      return callback({status:500, message: parseErr});
+      debug.handlers("GET/HEAD -- Error serializing container: " + parseErr);
+      return callback({status: 500, message: parseErr});
     }
   });
 };
@@ -241,9 +244,165 @@ LDP.prototype.listContainer = function (filename, uri, containerData, callback) 
 LDP.prototype.writeFile = function (filePath, contents, cb) {
     mkdirp(path.dirname(filePath), function (err) {
         if (err) {
-            debug("PUT -- Error creating directory: " + err);
+            debug.handlers("PUT -- Error creating directory: " + err);
             return cb(err);
         }
-        fs.writeFile(filePath, contents, cb);
+        return fs.writeFile(filePath, contents, cb);
   });
+};
+
+LDP.prototype.delete = function(filename, callback) {
+    var ldp = this;
+    ldp.stat(filename, function(err, stats) {
+        if (err) {
+            return callback({status:404, message: "Can't find file: " + err});
+        }
+
+        if (stats.isDirectory()) {
+            return ldp.deleteContainerMetadata(filename, callback);
+        } else {
+            return ldp.deleteResource(filename, callback);
+        }
+    });
+};
+
+LDP.prototype.deleteContainerMetadata = function(directory, callback) {
+    return fs.unlink(directory + metaExtension, function(err, data) {
+        if (err) {
+            debug.container("DELETE -- unlink() error: " + err);
+            return callback({status:404, message: "Can't delete container: " + err });
+        }
+        return callback(null, data);
+    });
+};
+
+LDP.prototype.deleteResource = function(filename, callback) {
+    return fs.unlink(filename, function(err, data) {
+        if (err) {
+            debug.container("DELETE -- unlink() error: " + err);
+            return callback({status:404, message: "Can't delete container: " + err });
+        }
+        return callback(null, data);
+    });
+};
+
+
+var addUriTriple = function(kb, s, o, p) {
+    kb.add(kb.sym(s), kb.sym(o), kb.sym(p));
+};
+
+LDP.prototype.createResourceUri = function(containerURI, slug, isBasicContainer) {
+    var ldp = this;
+
+    var newPath;
+    if (slug) {
+        if (S(slug).endsWith(turtleExtension)) {
+            newPath = path.join(containerURI, slug);
+        } else {
+            if (isBasicContainer) {
+                newPath = path.join(containerURI, slug);
+            } else {
+                newPath = path.join(containerURI, slug + turtleExtension);
+            }
+        }
+    } else {
+        if (isBasicContainer) {
+            newPath = path.join(containerURI, uuid.v1());
+        } else {
+            newPath = path.join(containerURI, uuid.v1() + turtleExtension);
+        }
+    }
+    if (!(fs.existsSync(newPath) || containerURI in ldp.usedURIs)) {
+        ldp.usedURIs[newPath] = true;
+    } else {
+        return null;
+    }
+    return newPath;
+};
+
+LDP.prototype.releaseResourceUri = function (uri) {
+    delete this.usedURIs[uri];
+};
+
+LDP.prototype.createNewResource = function(fileBase, uri, resourcePath, resourceGraph, callback) {
+    var ldp = this;
+    var resourceURI = path.relative(fileBase, resourcePath);
+    //TODO write files with relative URIS.
+    var rawResource = $rdf.serialize(
+        undefined,
+        resourceGraph,
+        uri + resourceURI,
+        'text/turtle');
+
+    debug.container("Writing new resource to " + resourcePath);
+    debug.container("Resource:\n" + rawResource);
+
+    fs.writeFile(
+        resourcePath,
+        rawResource,
+        writeResourceCallback);
+
+    function writeResourceCallback(err) {
+        if (err) {
+            debug.container("Error writing resource: " + err);
+            ldp.releaseResourceUri(resourcePath);
+            return callback(err);
+        }
+
+        return callback(err);
+    }
+};
+
+LDP.prototype.createNewContainer = function (uri, containerPath, containerGraph, callback) {
+    var ldp = this;
+    fs.mkdir(containerPath, mkdirCallback);
+
+    function mkdirCallback(err) {
+        if (err) {
+            debug.container("Error creating directory for new container: " + err);
+            ldp.releaseResourceUri(containerPath);
+            return callback(err);
+        }
+
+        var rawContainer = $rdf.serialize(
+            undefined,
+            containerGraph,
+            uri,
+            'text/turtle');
+
+        debug.container("rawContainer " + rawContainer);
+
+        ldp.writeContainerMetadata(
+            containerPath,
+            rawContainer,
+            writeContainerCallback);
+    }
+
+    function writeContainerCallback(err) {
+        if (err) {
+            debug.container("Error writing container: " + err);
+            ldp.releaseResourceUri(containerPath);
+            return callback(err);
+        }
+
+        debug.container("Wrote container to " + containerPath);
+        ldp.releaseResourceUri(containerPath);
+        return callback(err);
+
+    }
+};
+
+LDP.prototype.writeContainerMetadata = function (directory, container, callback) {
+    fs.writeFile(directory + metaExtension, container, callback);
+};
+
+
+LDP.prototype.isMetadataFile = function (filename) {
+    if (path.extname(filename) === metaExtension)
+        return true;
+    return false;
+};
+
+LDP.prototype.hasContainerMetadata = function(directory) {
+    return fs.existsSync(directory + metaExtension);
 };

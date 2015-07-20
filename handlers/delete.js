@@ -10,42 +10,22 @@ var metadata = require('../metadata.js');
 function handler(req, res) {
     debug('DELETE -- ' + req.originalUrl);
 
-    var options = req.app.locals.ldp;
-    var filename = file.uriToFilename(req.path, options.root);
+    var ldp = req.app.locals.ldp;
+    var filename = file.uriToFilename(req.path, ldp.root);
 
-    // Check if resource exist
-    fs.stat(filename, function(err, stats) {
+    ldp.delete(filename, function(err) {
         if (err) {
-            debug("DELETE -- stat() error: " + err);
-            return res.status(404).send("Can't delete file: " + err);
+            debug("DELETE -- error: " + err);
+            return res
+                .status(err.status)
+                .send(err.message);
         }
 
-        if (stats.isDirectory()) {
-            // Delete container
-            metadata.deleteContainerMetadata(filename, containerCallback);
-        } else {
-            // Delete resource
-            fs.unlink(filename, fileCallback);
-        }
+        debug("DELETE -- Ok.");
+        return res.sendStatus(200);
+
     });
 
-    function fileCallback(err) {
-        if (err) {
-            debug("DELETE -- unlink() error: " + err);
-            return res.status(404).send("Can't delete file: " + err);
-        }
-        debug("DELETE -- Ok. Bytes deleted: " + req.text.length);
-        res.sendStatus(200);
-    }
-
-    function containerCallback(err) {
-        if (err) {
-            debug("DELETE -- unlink() error: " + err);
-            return res.status(404).send("Can't delete container: " + err);
-        }
-        debug("DELETE -- Ok.");
-        res.sendStatus(200);
-    }
 }
 
 exports.handler = handler;

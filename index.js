@@ -21,9 +21,9 @@ var uuid = require('node-uuid');
 // ldnode dependencies
 var acl = require('./acl.js');
 var metadata = require('./metadata.js');
+var header = require('./header.js');
 var LDP = require('./ldp.js');
 var login = require('./login.js');
-var container = require('./container.js');
 var parse = require('./parse.js');
 
 // Request handlers
@@ -164,7 +164,7 @@ function routes () {
     // Convert json-ld and nquads to turtle
     router.use('/*', parse.parseHandler);
     // Add links headers
-    router.use(metadata.linksHandler);
+    router.use(header.linksHandler);
     // Add response time
     router.use(responseTime());
 

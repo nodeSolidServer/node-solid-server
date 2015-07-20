@@ -6,7 +6,6 @@ var $rdf = require('rdflib');
 var S = require('string');
 
 var debug = require('../logging').handlers;
-var container = require('../container.js');
 var file = require('../fileStore.js');
 var header = require('../header.js');
 var metadata = require('../metadata.js');
@@ -16,7 +15,7 @@ var ldpVocab = require('../vocab/ldp.js');
 var rdfVocab = require('../vocab/rdf.js');
 
 function handler(req, res) {
-    var options = req.app.locals.ldp;
+    var ldp = req.app.locals.ldp;
     var contentType = req.get('content-type');
 
     // Handle SPARQL query
@@ -43,7 +42,7 @@ function handler(req, res) {
     }
 
 
-    var containerPath = file.uriToFilename(req.path, options.root);
+    var containerPath = file.uriToFilename(req.path, ldp.root);
     debug("POST -- Container path: " + containerPath);
 
     // Not a container
@@ -58,14 +57,13 @@ function handler(req, res) {
     var resourceMetadata = header.parseMetadataFromHeader(req.get('Link'));
 
     // Create resource
-    var resourcePath = container.createResourceUri(
-        options,
+    var resourcePath = ldp.createResourceUri(
         containerPath,
         req.get('Slug'),
         resourceMetadata.isBasicContainer);
 
     if (resourcePath === null) {
-        container.releaseResourceUri(options.usedURIs, resourcePath);
+        ldp.releaseResourceUri(resourcePath);
         debug("POST -- URI already exists or in use");
         return res.sendStatus(400);
     }
@@ -76,7 +74,7 @@ function handler(req, res) {
     var resourceBaseUri = file.filenameToBaseUri(
         resourcePath,
         uri,
-        options.root);
+        ldp.root);
 
     try {
         $rdf.parse(
@@ -86,7 +84,7 @@ function handler(req, res) {
             contentType);
     } catch (parseErr) {
         debug("POST -- Error parsing resource: " + parseErr);
-        container.releaseResourceUri(options.usedURIs, resourcePath);
+        ldp.releaseResourceUri(resourcePath);
         return res.sendStatus(400);
     }
 
@@ -95,16 +93,14 @@ function handler(req, res) {
     if (resourceMetadata.isBasicContainer) {
         resourcePath += '/';
         resourceBaseUri += '/';
-        container.createNewContainer(
-            options.usedURIs,
+        ldp.createNewContainer(
             uri,
             resourcePath,
             resourceGraph,
             containerCallback);
     } else {
-        container.createNewResource(
-            options.usedURIs,
-            options.root,
+        ldp.createNewResource(
+            ldp.root,
             uri,
             resourcePath,
             resourceGraph,

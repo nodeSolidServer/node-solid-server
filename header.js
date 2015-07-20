@@ -1,6 +1,9 @@
 var li = require('li');
 
+var path = require('path');
+var S = require('string');
 var metadata = require('./metadata.js');
+var file = require('./fileStore.js');
 var ldpVocab = require('./vocab/ldp.js');
 
 function addLink(res, value, rel) {
@@ -23,6 +26,26 @@ function addLinks(res, fileMetadata) {
         addLink(res, ldpVocab.BasicContainer, 'type');
     if (fileMetadata.isDirectContainer)
         addLink(res, ldpVocab.DirectContainer, 'type');
+}
+
+function linksHandler(req, res, next) {
+    var ldp = req.app.locals.ldp;
+    var filename = file.uriToFilename(req.url, ldp.root);
+
+    filename = path.join(filename, req.path);
+    if (ldp.isMetadataFile(filename)) {
+        debug.metadata("Trying to access metadata file as regular file.");
+        return res.send(404);
+    }
+    var fileMetadata = new metadata.Metadata();
+    if (S(filename).endsWith('/')) {
+        fileMetadata.isContainer = true;
+        fileMetadata.isBasicContainer = true;
+    } else {
+        fileMetadata.isResource = true;
+    }
+    addLinks(res, fileMetadata);
+    next();
 }
 
 function parseMetadataFromHeader(linkHeader) {
@@ -79,3 +102,4 @@ module.exports.addLink = addLink;
 module.exports.addLinks = addLinks;
 module.exports.parseMetadataFromHeader = parseMetadataFromHeader;
 module.exports.parseAcceptHeader = parseAcceptHeader;
+module.exports.linksHandler = linksHandler;
