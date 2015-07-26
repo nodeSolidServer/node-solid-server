@@ -42,6 +42,7 @@ ACL.prototype.readACL = function(pathAcl, pathUri, callback) {
 
     ldp.readFile(pathAcl, function(err, aclData) {
         if (err) {
+            debug("Error parsing ACL policy: " + err.message);
             return callback(err);
         }
         try {
@@ -91,7 +92,7 @@ ACL.prototype.findACLinPath = function (mode, pathAcl, userId, aclGraph, accessT
                     message: "Access to " + pathUri + " requires authorization"
                 });
             }
-            // No ACL found, access is denied
+            // No ACL statement found, access is denied
             debug(mode + " access denied for: " + userId);
             return callback({
                 status: 403,
@@ -122,15 +123,15 @@ ACL.prototype.findACL = function(mode, address, userId, callback) {
     async.whilst(
         // Check if we have gone through all the `/` in relativePath
         function() {
-            return i < depth.length;
+            console.log(i);
+            return i++ < depth.length;
         },
         function (done) {
-
             var pathAcl = S(filepath).endsWith(ldp.suffixAcl) ?
                 filepath : filepath + ldp.suffixAcl;
             var pathUri = file.filenameToBaseUri(filepath, acl.uri, ldp.root);
             var relativePath = path.relative(ldp.root, filepath);
-            debug('relativePath = ' + relativePath);
+            // debug('relativePath = ' + relativePath);
 
             debug("Checking " + accessType + "<" + mode + "> to " + pathUri + " for WebID: " + userId);
             debug("Looking for policies in " + pathAcl);
@@ -144,19 +145,21 @@ ACL.prototype.findACL = function(mode, address, userId, callback) {
                 acl.findACLinPath(mode, pathAcl, userId, aclGraph, accessType, pathUri, function(err, found) {
                     // Error occurred (e.g. file not found)
                     if (err) {
-                        debug('FindACLInPath failed in ' + pathAcl + ' with error ' + err);
+                        // debug('FindACLInPath failed in ' + pathAcl + ' with error ' + err.message);
                         return done(err);
                     }
 
                     // ACL rule that allow the userId to read is found
                     if (found) {
+                        // debug('FindACLinPath not found');
                         return done(true);
                     }
 
                     // Set the new path for the next loop iteration
                     accessType = "defaultForNew";
                     if (relativePath.length === 0 && i !== 0) {
-                        return done(false);
+                        // TODO handle this error
+                        return done(true);
                     } else if (path.dirname(path.dirname(relativePath)) === '.') {
                         filepath = ldp.root;
                     } else {
@@ -267,7 +270,7 @@ ACL.prototype.allow = function(mode, address, callback) {
             return callback(err);
         }
         acl.findACL(mode, address, userId, function(err, res) {
-            callback(err, res);
+            return callback(err, res);
         });
     });
 };
@@ -514,8 +517,6 @@ exports.allowAppendThenWriteHandler = function(req, res, next) {
             return next();
         }
         // Append failed, maybe user can write
-
-        var allowWriteValue = allow("Write", req);
         allow("Write", req, function(err, allowed) {
             if (!err && allowed === true) {
                 return next();
