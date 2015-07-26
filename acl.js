@@ -209,8 +209,13 @@ ACL.prototype.allowMode = function (mode, userId, aclGraph, accessType, pathUri,
         debug("Found " + accessType + " policy for <" + mode + ">");
 
         var accessTypeStatements = aclGraph.each(modeElem, ns.acl(accessType), aclGraph.sym(pathUri));
+
+        console.log("-- accessTypeStatements", accessTypeStatements.length)
         async.some(accessTypeStatements, function(accessTypeElem, next) {
             var origins = aclGraph.each(modeElem, ns.acl("origin"), undefined);
+
+            console.log("-- ACL origins, ", acl.origin, origins)
+            console.log("-- ACL origins lengths ", acl.origin.length, origins.length)
             if (acl.origin.length > 0 && origins.length > 0) {
                 debug("Origin set to: " + rdfVocab.brack(acl.origin));
                 async.some(origins, function(originsElem, done) {
@@ -221,7 +226,7 @@ ACL.prototype.allowMode = function (mode, userId, aclGraph, accessType, pathUri,
                 }, next);
             } else {
                 debug("No origin found, moving on.");
-                next();
+                acl.allowOrigin(mode, userId, aclGraph, modeElem, next);
             }
         }, found);
     }, function (allowed) {
