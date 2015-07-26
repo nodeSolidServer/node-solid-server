@@ -123,7 +123,6 @@ ACL.prototype.findACL = function(mode, address, userId, callback) {
     async.whilst(
         // Check if we have gone through all the `/` in relativePath
         function() {
-            console.log(i);
             return i++ < depth.length;
         },
         function (done) {
@@ -177,16 +176,16 @@ ACL.prototype.findACL = function(mode, address, userId, callback) {
             // result is false when no policy is found
             if (!result) {
                 debug("No ACL policies present - access allowed");
-                return callback(null, true);
+                return callback(null);
             }
 
             // result is true if ACL statement is found
             if (result === true) {
                 debug("ACL allowed");
-                return callback(null, true);
+                return callback(null);
             }
 
-            // result is an object (since obj !== true)
+            // result is an object (since result !== true)
             // the object is of the type {status: 40[0-9], message: String}
             return callback(result);
         }
@@ -198,7 +197,6 @@ ACL.prototype.findACL = function(mode, address, userId, callback) {
  * @param {Object} err Error occurred when reading the acl file
  * @param {Number} err.status Status code of the error (HTTP way)
  * @param {String} err.message Reason of the error
- * @param {Boolean} result Found valid ACL statement
  */
 
 ACL.prototype.allowMode = function (mode, userId, aclGraph, accessType, pathUri, callback) {
@@ -209,20 +207,16 @@ ACL.prototype.allowMode = function (mode, userId, aclGraph, accessType, pathUri,
         debug("Found " + accessType + " policy for <" + mode + ">");
 
         var accessTypeStatements = aclGraph.each(modeElem, ns.acl(accessType), aclGraph.sym(pathUri));
-
-        console.log("-- accessTypeStatements", accessTypeStatements.length)
         async.some(accessTypeStatements, function(accessTypeElem, next) {
             var origins = aclGraph.each(modeElem, ns.acl("origin"), undefined);
-
-            console.log("-- ACL origins, ", acl.origin, origins)
-            console.log("-- ACL origins lengths ", acl.origin.length, origins.length)
             if (acl.origin.length > 0 && origins.length > 0) {
                 debug("Origin set to: " + rdfVocab.brack(acl.origin));
                 async.some(origins, function(originsElem, done) {
                     if (rdfVocab.brack(acl.origin) === originsElem.toString()) {
                         debug("Found policy for origin: " + originsElem.toString());
-                        acl.allowOrigin(mode, userId, aclGraph, modeElem, done);
+                        return acl.allowOrigin(mode, userId, aclGraph, modeElem, done);
                     }
+                    return done(false);
                 }, next);
             } else {
                 debug("No origin found, moving on.");
@@ -274,8 +268,8 @@ ACL.prototype.allow = function(mode, address, callback) {
         if (err) {
             return callback(err);
         }
-        acl.findACL(mode, address, userId, function(err, res) {
-            return callback(err, res);
+        acl.findACL(mode, address, userId, function(err) {
+            return callback(err);
         });
     });
 };
@@ -285,7 +279,6 @@ ACL.prototype.allow = function(mode, address, callback) {
  * @param {Object} err Error occurred when reading the acl file
  * @param {Number} err.status Status code of the error (HTTP way)
  * @param {String} err.message Reason of the error
- * @param {Boolean} result Found valid ACL statement
  */
 
 ACL.prototype.allowOrigin = function (mode, userId, aclGraph, subject, callback) {
@@ -383,11 +376,13 @@ ACL.prototype.fetchDocument = function(uri, callback) {
             var documentPath = file.uriToFilename(newPath, ldp.root);
             var documentUri = url.parse(documentPath);
             documentPath = documentUri.pathname;
-            acl.allow('Read', newPath, function (err, readAllowed) {
-                if (readAllowed) {
-                   return fs.readFile(documentPath, {encoding: 'utf8'}, cb);
+            acl.allow('Read', newPath, function (err) {
+                if (err) {
+                    // return an empty body to be parsed
+                    return cb(null, '');
                 }
-                // TODO here should be an error
+                
+                return fs.readFile(documentPath, {encoding: 'utf8'}, cb);
             });
         },
         function (body, cb) {
@@ -480,21 +475,24 @@ function allowIfACLEnabled(mode, req, res, next) {
     if (!ldp.webid) {
         return next();
     }
-    return allow(mode, req, next);
+    return allow(mode, req, res, next);
 }
 
-function allow(mode, req, callback) {
+function allow(mode, req, res, next) {
     var ldp = req.app.locals.ldp;
 
     // Handle glob requests
     var filepath = file.uriToFilename(req.path, ldp.root);
     if (req.method === 'GET' && glob.hasMagic(filepath)) {
-        return callback(null, true);
+        return next();
     }
 
     // Check ACL
+    var reqPath = res && res.locals && res.locals.path ? res.locals.path : req.path;
     var acl = reqToACL(req);
-    acl.allow(mode, req.path, callback);
+    acl.allow(mode, reqPath, function(err) {
+        next(err);
+    });
 }
 
 exports.allow = allow;
@@ -517,18 +515,13 @@ exports.allowAppendThenWriteHandler = function(req, res, next) {
         return next();
     }
 
-    allow("Append", req, function(err, allowed) {
-        if (!err && allowed === true) {
+    allow("Append", req, res, function(err) {
+        if (!err) {
             return next();
         }
         // Append failed, maybe user can write
-        allow("Write", req, function(err, allowed) {
-            if (!err && allowed === true) {
-                return next();
-            }
-            return res
-                .status(err.status)
-                .send(err.message || '');
+        allow("Write", req, res, function(err) {
+            next(err);
         });
     });
 

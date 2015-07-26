@@ -143,19 +143,21 @@ function globHandler(req, res) {
                     debug('GET -- Error in globHandler' + err);
                     return done(null);
                 }
-                if (!S(match).endsWith(".ttl") || !aclAllow(match, req, res)) {
+                aclAllow(match, req, res, function (allowed) {
+                    if (!S(match).endsWith(".ttl") || !allowed) {
+                        return done(null);
+                    }
+                    try {
+                        $rdf.parse(
+                            fileData,
+                            globGraph,
+                            baseUri,
+                            'text/turtle');
+                    } catch(parseErr) {
+                        debug('GET -- Error in globHandler' + parseErr);
+                    }
                     return done(null);
-                }
-                try {
-                    $rdf.parse(
-                        fileData,
-                        globGraph,
-                        baseUri,
-                        'text/turtle');
-                } catch(parseErr) {
-                    debug('GET -- Error in globHandler' + parseErr);
-                }
-                return done(null);
+                });
             });
         }, function () {
             var data = $rdf.serialize(
@@ -170,24 +172,20 @@ function globHandler(req, res) {
     });
 }
 
-function aclAllow(match, req, res) {
+function aclAllow(match, req, res, callback) {
     var ldp = req.app.locals.ldp;
 
     if (!ldp.webid) {
-        return true;
+        return callback(true);
     }
 
-    var relativePath = '/' +
-        path.relative(ldp.root, match);
+    var relativePath = '/' + path.relative(ldp.root, match);
 
+    // TODO find a better hack, maybe pass as a param?
     res.locals.path = relativePath;
-    var allow = acl.allow("Read", req, res);
-
-    if (allow.status === 200) {
-        return true;
-    } else {
-        return false;
-    }
+    acl.allow("Read", req, res, function(err) {
+        callback(!err);
+    });
 }
 
 function parseLinkedData(req, res) {
