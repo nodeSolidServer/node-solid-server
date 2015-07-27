@@ -49,7 +49,7 @@ ACL.prototype.readACL = function(pathAcl, pathUri, callback) {
             $rdf.parse(aclData, aclGraph, pathUri, 'text/turtle');
         } catch (parseErr) {
             debug("Error parsing ACL policy: " + parseErr);
-            return callback(parseErr);
+            return callback({ status: 500, message: parseErr });
         }
 
         return callback(null, aclGraph);

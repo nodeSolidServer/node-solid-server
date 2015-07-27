@@ -8,6 +8,14 @@ var supertest = require('supertest');
 var ldnode = require('../index');
 var ACL = require('../acl').ACL;
 
+function rm (file) {
+  return fs.unlinkSync(__dirname + '/resources/' + file);
+}
+
+function write (text, file) {
+  return fs.writeFileSync(__dirname + '/resources/' + file, text);
+}
+
 describe('ACL HTTP', function() {
     this.timeout(10000);
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
@@ -1000,12 +1008,105 @@ describe('ACL Class', function () {
     var user1 = "https://user1.databox.me/profile/card#me";
     var user2 = "https://user2.databox.me/profile/card#me";
     var nicola = "https://nicola.databox.me/profile/card#me";
+    var address = 'https://server.tld/test';
 
     describe('readACL', function () {
+        it('should report a 404 error if no acl is found', function (done) {
+            var acl = new ACL({
+                ldp: ldp,
+                origin: 'https://example.com',
+                session: {
+                    userId: user1,
+                    identified: true
+                },
+                uri: 'https://server.tld/test'
+            });
+
+            acl.readACL(__dirname + '/resources/.acl', 'https://server.tld/test', function (err, res) {
+                assert.equal(err.status, 404);
+                assert.notOk(res);
+                done();
+            });
+        });
+
+        it('should report a 404 error if .acl cannot be parsed', function (done) {
+            var acl = new ACL({
+                ldp: ldp,
+                origin: 'https://example.com',
+                session: {
+                    userId: user1,
+                    identified: true
+                },
+                uri: address
+            });
+            write(
+                "<#Owner>\n" +
+                " <http://www.w3.org/ns/auth/acl#accessTo> <" +
+                    address + "/" + ">, <" + address + ">;\n" +
+                " XXXXXXXhttp://www.w3.org/ns/auth/acl#owner> <" + user1 + ">;\n" +
+                " <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Control> .\n",
+                '.acl');
+
+            acl.readACL(__dirname + '/resources/.acl', address, function (err, res) {
+                assert.equal(err.status, 500);
+                assert.notOk(res);
+                rm('.acl');
+                done();
+            });
+        });
+
+        it('should return a parsed graph of the acl on success', function (done) {
+            var acl = new ACL({
+                ldp: ldp,
+                origin: 'https://example.com',
+                session: {
+                    userId: user1,
+                    identified: true
+                },
+                uri: address
+            });
+            write(
+                "<#Owner>\n" +
+                " <http://www.w3.org/ns/auth/acl#accessTo> <" +
+                    address + "/" + ">, <" + address + ">;\n" +
+                " <http://www.w3.org/ns/auth/acl#owner> <" + user1 + ">;\n" +
+                " <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Control> .\n",
+                '.acl');
+
+            acl.readACL(__dirname + '/resources/.acl', address, function (err, res) {
+                assert.notOk(err);
+                assert.ok(res);
+                rm('.acl');
+                done();
+            });
+        });
+
+        it('should return a graph on empty ACL', function (done) {
+            var acl = new ACL({
+                ldp: ldp,
+                origin: 'https://example.com',
+                session: {
+                    userId: user1,
+                    identified: true
+                },
+                uri: address
+            });
+            write(
+                "\n",
+                '.acl');
+
+            acl.readACL(__dirname + '/resources/.acl', address, function (err, res) {
+                assert.notOk(err);
+                assert.ok(res);
+                rm('.acl');
+                done();
+            });
+        });
+
 
     });
 
-    describe('findACLinPath', function () {
+    describe('findACLInPath', function () {
 
     });
 
