@@ -1402,7 +1402,7 @@ describe('ACL Class', function () {
                 done(err);
             });
         });
-
+        // TODO
         // it('should return On-Behalf-Of if is the delegatee', function(done) {
         //     var acl = new ACL({
         //         ldp: ldp,
@@ -1422,10 +1422,7 @@ describe('ACL Class', function () {
     });
 
     describe('verifyDelegator', function () {
-
+        // TODO
     });
 
-    describe('readACL', function () {
-
-    });
 });
