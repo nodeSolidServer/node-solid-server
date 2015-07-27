@@ -25,6 +25,7 @@ function ACL (opts) {
     this.ldp = opts.ldp;
     this.origin = opts.origin || '';
 }
+exports.ACL = ACL;
 
 /**
 * Gets an ACL file and parses it
@@ -32,7 +33,7 @@ function ACL (opts) {
 * @method readACL
 * @param {String} pathACL Path to acl file
 * @param {String} pathUri URI of the acl file
-* @param {ACL~readACLcb} Callback called when ACL is read
+* @param {ACL~readACLcb} callback Callback called when ACL is read
 */
 ACL.prototype.readACL = function(pathAcl, pathUri, callback) {
     var ldp = this.ldp;
@@ -407,6 +408,12 @@ ACL.prototype.fetchDocument = function(uri, callback) {
  * @param {Object} RDFlib graph of the fetched file
  */
 
+/**
+* Retrieves userId from session or header (On-Behalf-Of)
+*
+* @method getUserId
+* @param {ACL~getUserId_cb} callback Callback called when UserId is retrieved
+*/
 ACL.prototype.getUserId = function (callback) {
     if (!this.onBehalfOf) {
         return callback(null, this.session.userId);
@@ -433,6 +440,14 @@ ACL.prototype.getUserId = function (callback) {
  * @param {String} userId User WebID
  */
 
+/**
+* Gets an ACL file and parses it
+*
+* @method verifyDelegator
+* @param {String} delegator
+* @param {String} delegatee
+* @param {ACL~verifyDelegator_cb} callback
+*/
 ACL.prototype.verifyDelegator = function (delegator, delegatee, callback) {
     this.fetchDocument(delegator, function(err, delegatorGraph) {
 
@@ -442,7 +457,7 @@ ACL.prototype.verifyDelegator = function (delegator, delegatee, callback) {
             .each(delegatorGraph.sym(delegator),
                   delegatorGraph.sym("http://www.w3.org/ns/auth/acl#delegates"),
                   undefined);
-        for(var delegateeIndex in delegatesStatements) {
+        for (var delegateeIndex in delegatesStatements) {
             var delegateeValue = delegatesStatements[delegateeIndex];
             if (rdfVocab.debrack(delegateeValue.toString()) === delegatee) {
                 callback(null, true);
@@ -452,10 +467,9 @@ ACL.prototype.verifyDelegator = function (delegator, delegatee, callback) {
         return callback(null, false);
     });
 };
-
 /**
- * Callback used by findACLinPath.
- * @callback ACL~findACLinPath_cb
+ * Callback used by verifyDelegator.
+ * @callback ACL~verifyDelegator_cb
  * @param {Object} err Error occurred when reading the acl file
  * @param {Number} err.status Status code of the error (HTTP way)
  * @param {String} err.message Reason of the error

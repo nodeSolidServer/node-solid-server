@@ -6,8 +6,9 @@ var request = require('request');
 var S = require('string');
 var supertest = require('supertest');
 var ldnode = require('../index');
+var ACL = require('../acl').ACL;
 
-describe('ACL', function() {
+describe('ACL HTTP', function() {
     this.timeout(10000);
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
@@ -67,7 +68,7 @@ describe('ACL', function() {
     }
 
 
-    describe('Basic HTTPS Test', function() {
+    describe('Basic', function() {
         it('Should return "Hello, World!"', function(done) {
             var options = createOptions('hello.html', 'user1');
             request(options, function(error, response, body) {
@@ -86,7 +87,7 @@ describe('ACL', function() {
         });
     });
 
-    describe("Empty ACL Test", function() {
+    describe("Empty .acl", function() {
         it("Should create test folder", function(done) {
             var options = createOptions(testDirMetaFile, 'user1');
             options.body = "";
@@ -146,7 +147,7 @@ describe('ACL', function() {
         });
     });
 
-    describe("ACL Origin Test", function() {
+    describe("Origin", function() {
         it("Should PUT new ACL file", function(done) {
             var options = createOptions(testDirAclFile, 'user1');
             options.headers = {
@@ -236,7 +237,7 @@ describe('ACL', function() {
             });
     });
 
-    describe("ACL owner-only test", function() {
+    describe("Owner-only", function() {
         var body = "<#Owner>\n" +
             " <http://www.w3.org/ns/auth/acl#accessTo> <" + address + testDir + "/" +
             ">, <" + address + testDirAclFile + ">;\n" +
@@ -340,7 +341,7 @@ describe('ACL', function() {
         });
     });
 
-    describe("ACL read-only test", function() {
+    describe("Read-only", function() {
         var body = "<#Owner>\n" +
             " a <http://www.w3.org/ns/auth/acl#Authorization> ;\n" +
             " <http://www.w3.org/ns/auth/acl#accessTo> <" + address + testDir + "/" +
@@ -444,7 +445,7 @@ describe('ACL', function() {
         });
     });
 
-    describe("ACL glob test", function() {
+    describe("Glob", function() {
         it("user2 should be able to send glob request", function(done) {
             var options = createOptions(globFile, 'user2');
             request.get(options, function(error, response, body) {
@@ -479,7 +480,7 @@ describe('ACL', function() {
         });
     });
 
-    describe("ACL append-only test", function() {
+    describe("Append-only", function() {
         var body = "<#Owner>\n" +
             " <http://www.w3.org/ns/auth/acl#accessTo> <" + address + abcFile +
             ">, <" + address + abcAclFile + ">;\n" +
@@ -588,7 +589,7 @@ describe('ACL', function() {
         });
     });
 
-    describe("ACL restricted test", function() {
+    describe("Restricted", function() {
         var body = "<#Owner>\n" +
             " <http://www.w3.org/ns/auth/acl#accessTo> <" + address + abcFile + ">, <" +
             address + abcAclFile + ">;\n" +
@@ -696,7 +697,7 @@ describe('ACL', function() {
         });
     });
 
-    describe("ACL group test", function() {
+    describe("Group", function() {
         var groupTriples = "<#> a <http://xmlns.com/foaf/0.1/Group>;\n" +
             " <http://xmlns.com/foaf/0.1/member> <a>, <b>, <" + user2 + "> .\n";
         var body = "<#Owner>\n" +
@@ -828,7 +829,7 @@ describe('ACL', function() {
         });
     });
 
-    describe("ACL defaultForNew test", function() {
+    describe("defaultForNew", function() {
         var body = "<#Owner>\n" +
             " <http://www.w3.org/ns/auth/acl#accessTo> <" + address + testDir + "/" + ">, <" +
             address + testDirAclFile + ">;\n" +
@@ -964,7 +965,7 @@ describe('ACL', function() {
         // });
     });
     
-    describe("ACL cleaup", function() {
+    describe("Cleaup", function() {
         it("should remove all files and dirs created", function(done) {
             try {
                 // must remove the ACLs in sync
@@ -980,6 +981,51 @@ describe('ACL', function() {
             } catch (e) {
                 done(e);
             }
+        });
+    });
+});
+
+describe('ACL Class', function () {
+    var ldpConfig = {
+        mount: '/test',
+        root: __dirname + '/resources',
+        key: __dirname + '/keys/key.pem',
+        cert: __dirname + '/keys/cert.pem',
+        webid: true
+    };
+    var ldpServer = ldnode(ldpConfig);
+    var ldp = ldpServer.locals.ldp;
+
+    describe('getUserId', function () {
+        it('should return userId in session if On-Behalf-Of is not specified', function() {
+            var acl = new ACL({
+                ldp: ldp,
+                origin: 'https://example.com',
+                session: {
+                    userId: 'https://user1.databox.me/profile/card#me',
+                    identified: true
+                }
+            });
+
+            acl.getUserId(function(err, userId) {
+                assert.equal(userId, 'https://user1.databox.me/profile/card#me');
+            });
+        });
+
+        it('should return userId in session if On-Behalf-Of is not valid', function() {
+            var acl = new ACL({
+                ldp: ldp,
+                origin: 'https://example.com',
+                session: {
+                    userId: 'https://user1.databox.me/profile/card#me',
+                    identified: true
+                },
+                onBehalfOf: ''
+            });
+
+            acl.getUserId(function(err, userId) {
+                assert.equal(userId, 'https://user1.databox.me/profile/card#me');
+            });
         });
     });
 });
