@@ -52,21 +52,21 @@ function get(req, res, includeBody) {
     }
 
     var filename = file.uriToFilename(req.path, ldp.root);
-    var baseUri = file.uriBase(req);
 
     var aclLink = file.getResourceLink(
-        filename, baseUri,
+        filename, uri,
         ldp.root, ldp.suffixAcl,
         metaExtension);
 
     var metaLink = file.getResourceLink(
-        filename, baseUri,
+        filename, uri,
         ldp.root, metaExtension,
         ldp.suffixAcl);
 
     header.addLink(res, aclLink, 'acl');
     header.addLink(res, metaLink, 'describedBy');
 
+    // Get resource or container
     ldp.get(filename, uri, includeBody, function(err, data, container) {
 
         // This should be implemented in LDP.prototype.get
@@ -74,6 +74,7 @@ function get(req, res, includeBody) {
             debug("GET/HEAD -- Glob request");
             return globHandler(req, res);
         }
+
 
         if (err) {
             debug('GET/HEAD -- Read error: ' + err);
@@ -112,9 +113,7 @@ function get(req, res, includeBody) {
         // TODO this should be added as a middleware in the routes
         res.locals.turtleData = data;
         return parseLinkedData(req, res);
-
     });
-
 }
 
 function globHandler(req, res) {
@@ -180,8 +179,6 @@ function aclAllow(match, req, res, callback) {
     }
 
     var relativePath = '/' + path.relative(ldp.root, match);
-
-    // TODO find a better hack, maybe pass as a param?
     res.locals.path = relativePath;
     acl.allow("Read", req, res, function(err) {
         callback(!err);
@@ -218,6 +215,7 @@ function parseLinkedData(req, res) {
             .send(err);
     }
 
+    // Graph to `accept` type
     $rdf.serialize(undefined, resourceGraph, null, accept, function(err, result) {
         if (result === undefined || err) {
             debug("GET/HEAD -- Serialization error: " + err);

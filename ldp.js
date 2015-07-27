@@ -56,7 +56,7 @@ function LDP(argv) {
   ldp.xssProxy = argv.xssProxy;
   ldp.proxyFilter = regexp().start(ldp.xssProxy).toRegExp();
 
-  // TODO this should be an attribute of an object
+  // Cache of usedURIs
   ldp.usedURIs = {};
 
   debug.settings("mount: " + ldp.mount);
@@ -225,19 +225,18 @@ LDP.prototype.listContainer = function (filename, uri, containerData, callback) 
     }
   ],
   function (err, data) {
+    var turtleData;
     try {
-      var turtleData = $rdf.serialize(
+      turtleData = $rdf.serialize(
         undefined,
         resourceGraph,
         null,
         'text/turtle');
-
-      // TODO dont forget to parseLinkedData
-      return callback(null, turtleData);
     } catch (parseErr) {
       debug.handlers("GET/HEAD -- Error serializing container: " + parseErr);
       return callback({status: 500, message: parseErr});
     }
+    return callback(null, turtleData);
   });
 };
 
@@ -383,7 +382,6 @@ LDP.prototype.releaseResourceUri = function (uri) {
 LDP.prototype.createNewResource = function(uri, resourcePath, resourceGraph, callback) {
     var ldp = this;
     var resourceURI = path.relative(ldp.root, resourcePath);
-    //TODO write files with relative URIS.
     var rawResource = $rdf.serialize(
         undefined,
         resourceGraph,

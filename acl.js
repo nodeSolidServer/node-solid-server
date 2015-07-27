@@ -1,8 +1,6 @@
 /*jslint node: true*/
 /*jshint loopfunc:true */
 "use strict";
-
-var fs = require('fs');
 var glob = require('glob');
 var path = require('path');
 var $rdf = require('rdflib');
@@ -154,12 +152,15 @@ ACL.prototype.findACL = function(mode, address, userId, callback) {
                         return done(true);
                     }
 
+                    // if we have iterated through all the relativePaths
+                    // and it is not the first iteration
+                    if (relativePath.length === 0 && i !== 0) {
+                        return done(true);
+                    }
+
                     // Set the new path for the next loop iteration
                     accessType = "defaultForNew";
-                    if (relativePath.length === 0 && i !== 0) {
-                        // TODO handle this error
-                        return done(true);
-                    } else if (path.dirname(path.dirname(relativePath)) === '.') {
+                    if (path.dirname(path.dirname(relativePath)) === '.') {
                         filepath = ldp.root;
                     } else {
                         filepath = ldp.root + path.dirname(relativePath);
@@ -382,13 +383,12 @@ ACL.prototype.fetchDocument = function(uri, callback) {
                     return cb(null, '');
                 }
                 
-                return fs.readFile(documentPath, {encoding: 'utf8'}, cb);
+                return ldp.readFile(documentPath, cb);
             });
         },
         function (body, cb) {
             try {
                 $rdf.parse(body, graph, uri, 'text/turtle');
-                // TODO, check what to return
                 return cb(null, graph);
             } catch(err) {
                 return cb(err, graph);
