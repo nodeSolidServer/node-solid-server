@@ -15,7 +15,6 @@ var debug = require('./logging');
 
 var utils = require('./fileStore.js');
 var ns = require('./vocab/ns.js').ns;
-var metaExtension = '.meta';
 var turtleExtension = '.ttl';
 
 module.exports = LDP;
@@ -45,6 +44,7 @@ function LDP(argv) {
   // Processed
   ldp.leavePatchConnectionOpen = false;
   ldp.suffixAcl = argv.suffixAcl || ".acl";
+  ldp.suffixMeta = argv.suffixMeta || ".meta";
   ldp.suffixChanges = argv.suffixChanges || '.changes';
   ldp.suffixSSE = argv.suffixSSE || '.events';
 
@@ -87,7 +87,7 @@ LDP.prototype.readFile = function (filename, callback) {
 };
 
 LDP.prototype.readContainerMeta = function (directory, callback) {
-  fs.readFile(directory + metaExtension, {
+  fs.readFile(directory + this.suffixMeta, {
     'encoding': 'utf8'
   }, function(err, data) {
     if (err) {
@@ -144,7 +144,7 @@ LDP.prototype.listContainer = function (filename, uri, containerData, callback) 
     function (files, next) {
 
       async.each(files, function(file, cb) {
-        if (S(file).endsWith(metaExtension) || S(file).endsWith(ldp.suffixAcl)) {
+        if (S(file).endsWith(ldp.suffixMeta) || S(file).endsWith(ldp.suffixAcl)) {
           return cb(null);
         }
           
@@ -165,12 +165,12 @@ LDP.prototype.listContainer = function (filename, uri, containerData, callback) 
           var fileSubject = file;
 
           if (stats.isDirectory()) {
-              metaFile = filename + file + '/' + metaExtension;
+              metaFile = filename + file + '/' + ldp.suffixMeta;
               fileSubject += '/';
           } else if (stats.isFile() && S(file).endsWith(turtleExtension)) {
               metaFile = filename + file;
           } else {
-              metaFile = filename + file + metaExtension;
+              metaFile = filename + file + ldp.suffixMeta;
           }
           fileBaseUri = utils.filenameToBaseUri(file, uri, ldp.root);
 
@@ -322,7 +322,7 @@ LDP.prototype.delete = function(filename, callback) {
 };
 
 LDP.prototype.deleteContainerMetadata = function(directory, callback) {
-    return fs.unlink(directory + metaExtension, function(err, data) {
+    return fs.unlink(directory + this.suffixMeta, function(err, data) {
         if (err) {
             debug.container("DELETE -- unlink() error: " + err);
             return callback({status:404, message: "Can't delete container: " + err });
@@ -447,15 +447,15 @@ LDP.prototype.createNewContainer = function (uri, containerPath, containerGraph,
 };
 
 LDP.prototype.writeContainerMetadata = function (directory, container, callback) {
-    fs.writeFile(directory + metaExtension, container, callback);
+    fs.writeFile(directory + this.suffixMeta, container, callback);
 };
 
 LDP.prototype.isMetadataFile = function (filename) {
-    if (path.extname(filename) === metaExtension)
+    if (path.extname(filename) === this.suffixMeta)
         return true;
     return false;
 };
 
 LDP.prototype.hasContainerMetadata = function(directory) {
-    return fs.existsSync(directory + metaExtension);
+    return fs.existsSync(directory + this.suffixMeta);
 };

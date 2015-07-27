@@ -64,6 +64,11 @@ var argv = require('nomnom')
     help: 'Suffix for acl files (default: \'.acl\')',
     abbr: 'sA'
   })
+  .option('suffixMeta', {
+    full: 'suffix-meta',
+    help: 'Suffix for metadata files (default: \'.meta\')',
+    abbr: 'sM'
+  })
   .option('suffixChanges', {
     full: 'suffix-changes',
     help: 'Suffix for acl files (default: \'.changes\')',

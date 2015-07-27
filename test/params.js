@@ -25,6 +25,24 @@ function write (text, file) {
 
 describe('params', function () {
 
+  describe('suffixMeta', function () {
+    describe('not passed', function() {
+      it('should fallback on .meta', function() {
+        var ldp = ldnode();
+        assert.equal(ldp.locals.ldp.suffixMeta, '.meta');
+      });
+    });
+  });
+
+  describe('suffixAcl', function () {
+    describe('not passed', function() {
+      it('should fallback on .acl', function() {
+        var ldp = ldnode();
+        assert.equal(ldp.locals.ldp.suffixAcl, '.acl');
+      });
+    });
+  });
+
   describe('mount', function () {
 
     describe('not passed', function () {

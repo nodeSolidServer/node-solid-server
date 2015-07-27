@@ -18,17 +18,17 @@ var file = require('../fileStore.js');
 var subscription = require('../subscription.js');
 
 var ldpVocab = require('../vocab/ldp.js');
-var metaExtension = '.meta';
 var turtleExtension = '.ttl';
 
 function get(req, res, includeBody) {
     var ldp = req.app.locals.ldp;
     var uri = file.uriBase(req);
+    var filename = file.uriToFilename(req.path, ldp.root);
 
     // Add request to subscription service
     if (req.path.slice(-ldp.suffixChanges.length) ===
         ldp.suffixChanges) {
-        debug("GET -- Subscribed to ", req.originalUrl);
+        debug("GET -- Subscribed to " + req.originalUrl);
         return subscription.subscribeToChanges(req, res);
     }
 
@@ -51,16 +51,15 @@ function get(req, res, includeBody) {
         debug('HEAD -- ' + req.originalUrl);
     }
 
-    var filename = file.uriToFilename(req.path, ldp.root);
-
+    // Add ACL and Meta Link in header
     var aclLink = file.getResourceLink(
         filename, uri,
         ldp.root, ldp.suffixAcl,
-        metaExtension);
+        ldp.suffixMeta);
 
     var metaLink = file.getResourceLink(
         filename, uri,
-        ldp.root, metaExtension,
+        ldp.root, ldp.suffixMeta,
         ldp.suffixAcl);
 
     header.addLink(res, aclLink, 'acl');
@@ -98,7 +97,7 @@ function get(req, res, includeBody) {
             // Consider acl and meta files text/turtle
             if (path.extname(filename) === ldp.suffixAcl ||
                 path.basename(filename) === turtleExtension ||
-                path.basename(filename) === metaExtension) {
+                path.basename(filename) === ldp.suffixMeta) {
                 contentType = 'text/turtle';
             }
 
