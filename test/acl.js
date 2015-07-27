@@ -1249,6 +1249,24 @@ describe('ACL Class', function () {
                 });
             });
         });
+
+        it('should report that ACL has not been found if aclGraph is empty', function(done) {
+            var acl = new ACL({
+                ldp: ldp,
+                origin: 'https://example.com',
+                session: {
+                    userId: user1,
+                    identified: true
+                },
+                uri: address
+            });
+
+            acl.findACLinPath('Read', __dirname + '/resources/.acl', address, $rdf.graph(), 'accessTo', user1, function (err, result) {
+                assert.notOk(err);
+                assert.equal(result, false);
+                done();
+            });
+        });
     });
 
     describe('findACL', function () {
