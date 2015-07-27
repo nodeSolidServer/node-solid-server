@@ -43,14 +43,15 @@ ACL.prototype.readACL = function(pathAcl, pathUri, callback) {
             debug("Error parsing ACL policy: " + err.message);
             return callback(err);
         }
+        var aclGraph = $rdf.graph();
         try {
-            var aclGraph = $rdf.graph();
             $rdf.parse(aclData, aclGraph, pathUri, 'text/turtle');
-            return callback(null, aclGraph);
         } catch (parseErr) {
             debug("Error parsing ACL policy: " + parseErr);
             return callback(parseErr);
         }
+
+        return callback(null, aclGraph);
     });
 };
 /**
@@ -389,10 +390,11 @@ ACL.prototype.fetchDocument = function(uri, callback) {
         function (body, cb) {
             try {
                 $rdf.parse(body, graph, uri, 'text/turtle');
-                return cb(null, graph);
             } catch(err) {
                 return cb(err, graph);
             }
+
+            return cb(null, graph);
         }
     ], callback);
 };
