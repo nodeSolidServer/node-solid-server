@@ -1,7 +1,7 @@
 var assert = require('chai').assert;
-var ldnode = require('../index');
 var supertest = require('supertest');
 var fs = require('fs');
+var ldnode = require('../index');
 
 function cp (src, dest) {
   return fsExtra.copySync(

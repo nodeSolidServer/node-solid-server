@@ -13,27 +13,24 @@ var session = require('express-session');
 var http = require('http');
 var https = require('https');
 var request = require('request');
-var debug = require('./logging').settings;
-var debugSubscription = require('./logging').subscription;
-var debugServer = require('./logging').server;
 var uuid = require('node-uuid');
 var cors = require('cors');
 
 // ldnode dependencies
-var acl = require('./acl.js');
-var metadata = require('./metadata.js');
-var header = require('./header.js');
-var LDP = require('./ldp.js');
-var login = require('./login.js');
-var parse = require('./parse.js');
+var acl = require('./lib/acl');
+var metadata = require('./lib/metadata');
+var header = require('./lib/header');
+var LDP = require('./lib/ldp');
+var login = require('./lib/login');
+var parse = require('./lib/parse');
+var debug = require('./lib/logging');
 
 // Request handlers
-var getHandler = require('./handlers/get.js');
-var postHandler = require('./handlers/post.js');
-var putHandler = require('./handlers/put.js');
-var deleteHandler = require('./handlers/delete.js');
-var patchHandler = require('./handlers/patch.js');
-
+var getHandler = require('./lib/handlers/get.js');
+var postHandler = require('./lib/handlers/post.js');
+var putHandler = require('./lib/handlers/put.js');
+var deleteHandler = require('./lib/handlers/delete.js');
+var patchHandler = require('./lib/handlers/patch.js');
 
 function ldnode (argv) {
     var ldp = new LDP(argv);
@@ -62,7 +59,7 @@ function ldnode (argv) {
         ws(app);
     }
 
-    debugServer("Router attached to " + ldp.mount);
+    debug.server("Router attached to " + ldp.mount);
 
     return app;
 }
@@ -74,8 +71,8 @@ function createServer(argv) {
     app.use(ldp.mount, ldpApp);
 
     if (ldp && (ldp.webid || ldp.key || ldp.cert) ) {
-        debug("SSL Private Key path: " + ldp.key);
-        debug("SSL Certificate path: " + ldp.cert);
+        debug.settings("SSL Private Key path: " + ldp.key);
+        debug.settings("SSL Certificate path: " + ldp.cert);
 
         if (!ldp.cert && !ldp.key) {
             throw new Error("Missing SSL cert and SSL key to enable WebID");
@@ -109,8 +106,8 @@ function createServer(argv) {
                 requestCert: true
             };
 
-        debug("Private Key: " + credentials.key);
-        debug("Certificate: " + credentials.cert);
+        debug.settings("Private Key: " + credentials.key);
+        debug.settings("Certificate: " + credentials.cert);
 
         return https.createServer(credentials, app);
     }
@@ -119,9 +116,9 @@ function createServer(argv) {
 }
 
 function proxy (app, path) {
-    debug('XSS Proxy listening to ' + path);
+    debug.settings('XSS Proxy listening to ' + path);
     app.get(path, function (req, res) {
-        debug('originalUrl: ' + req.originalUrl);
+        debug.settings('originalUrl: ' + req.originalUrl);
         var uri = req.query.uri;
         if (!uri) {
             return res
@@ -129,7 +126,7 @@ function proxy (app, path) {
                 .send("Proxy has no uri param ");
         }
 
-        debug('Proxy destination URI: ' + uri);
+        debug.settings('Proxy destination URI: ' + uri);
         request.get(uri).pipe(res);
     });
 }
@@ -198,9 +195,9 @@ function ws (app) {
     app.mountpath = ''; //  needs to be set for addSocketRoute aka .ws()
     // was options.pathFilter
     app.ws('/', function(socket, res) {
-        debugSubscription("incoming on " + socket.path);
+        debug.subscription("incoming on " + socket.path);
         socket.on('message', function(msg) {
-            debugSubscription("message = " + msg);
+            debug.subscription("message = " + msg);
             // subscribeToChanges(socket, res);
         });
     });

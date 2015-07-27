@@ -5,9 +5,11 @@ var $rdf = require('rdflib');
 var request = require('request');
 var S = require('string');
 var supertest = require('supertest');
-var ldnode = require('../index');
-var ACL = require('../acl').ACL;
 var async = require('async');
+
+var ldnode = require('../index');
+var ACL = require('../lib/acl').ACL;
+var ns = require('../lib/vocab/ns.js').ns;
 
 function rm (file) {
   return fs.unlinkSync(__dirname + '/resources/' + file);
@@ -21,7 +23,6 @@ describe('ACL HTTP', function() {
     this.timeout(10000);
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-    var ns = require('../vocab/ns.js').ns;
     var address = 'https://localhost:3456/test/';
 
     var ldp = ldnode.createServer({
