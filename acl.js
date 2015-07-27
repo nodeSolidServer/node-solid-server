@@ -405,7 +405,7 @@ ACL.prototype.fetchDocument = function(uri, callback) {
  * @param {Object} err Error occurred when reading the acl file
  * @param {Number} err.status Status code of the error (HTTP way)
  * @param {String} err.message Reason of the error
- * @param {Object} RDFlib graph of the fetched file
+ * @param {Object} graph RDFlib graph of the fetched file
  */
 
 /**
@@ -415,20 +415,22 @@ ACL.prototype.fetchDocument = function(uri, callback) {
 * @param {ACL~getUserId_cb} callback Callback called when UserId is retrieved
 */
 ACL.prototype.getUserId = function (callback) {
-    if (!this.onBehalfOf) {
+    var acl = this;
+
+    if (!acl.onBehalfOf) {
         return callback(null, this.session.userId);
     }
 
-    var delegator = rdfVocab.debrack(this.onBehalfOf);
-    this.verifyDelegator(delegator, this.session.userId, function(err, res) {
+    var delegator = rdfVocab.debrack(acl.onBehalfOf);
+    acl.verifyDelegator(delegator, acl.session.userId, function(err, res) {
 
-        // TODO handle error
+        // TODO dle error
 
         if (res) {
             debug("Request User ID (delegation) :" + delegator);
             return callback(null, delegator);
         }
-        return callback(null, this.session.userId);
+        return callback(null, acl.session.userId);
     });
 };
 /**
@@ -457,6 +459,7 @@ ACL.prototype.verifyDelegator = function (delegator, delegatee, callback) {
             .each(delegatorGraph.sym(delegator),
                   delegatorGraph.sym("http://www.w3.org/ns/auth/acl#delegates"),
                   undefined);
+
         for (var delegateeIndex in delegatesStatements) {
             var delegateeValue = delegatesStatements[delegateeIndex];
             if (rdfVocab.debrack(delegateeValue.toString()) === delegatee) {

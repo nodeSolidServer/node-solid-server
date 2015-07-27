@@ -986,6 +986,7 @@ describe('ACL HTTP', function() {
 });
 
 describe('ACL Class', function () {
+    this.timeout(10000);
     var ldpConfig = {
         mount: '/test',
         root: __dirname + '/resources',
@@ -996,8 +997,44 @@ describe('ACL Class', function () {
     var ldpServer = ldnode(ldpConfig);
     var ldp = ldpServer.locals.ldp;
 
+    var user1 = "https://user1.databox.me/profile/card#me";
+    var user2 = "https://user2.databox.me/profile/card#me";
+    var nicola = "https://nicola.databox.me/profile/card#me";
+
+    describe('readACL', function () {
+
+    });
+
+    describe('findACLinPath', function () {
+
+    });
+
+    describe('findACL', function () {
+
+    });
+
+    describe('allowMode', function () {
+
+    });
+
+    describe('allowControl', function () {
+
+    });
+
+    describe('allow', function () {
+
+    });
+
+    describe('allowOrigin', function () {
+
+    });
+
+    describe('fetchDocument', function () {
+
+    });
+
     describe('getUserId', function () {
-        it('should return userId in session if On-Behalf-Of is not specified', function() {
+        it('should return userId in session if On-Behalf-Of is not specified', function(done) {
             var acl = new ACL({
                 ldp: ldp,
                 origin: 'https://example.com',
@@ -1009,23 +1046,50 @@ describe('ACL Class', function () {
 
             acl.getUserId(function(err, userId) {
                 assert.equal(userId, 'https://user1.databox.me/profile/card#me');
+                done(err);
             });
         });
 
-        it('should return userId in session if On-Behalf-Of is not valid', function() {
+        it('should return userId in session if On-Behalf-Of is not valid', function(done) {
             var acl = new ACL({
                 ldp: ldp,
                 origin: 'https://example.com',
                 session: {
-                    userId: 'https://user1.databox.me/profile/card#me',
+                    userId: user1,
                     identified: true
                 },
                 onBehalfOf: ''
             });
 
             acl.getUserId(function(err, userId) {
-                assert.equal(userId, 'https://user1.databox.me/profile/card#me');
+                assert.equal(userId, user1);
+                done(err);
             });
         });
+
+        // it('should return On-Behalf-Of if is the delegatee', function(done) {
+        //     var acl = new ACL({
+        //         ldp: ldp,
+        //         origin: 'https://example.com',
+        //         session: {
+        //             userId: user2,
+        //             identified: true
+        //         },
+        //         onBehalfOf: '<' + user1 + '>'
+        //     });
+
+        //     acl.getUserId(function(err, userId) {
+        //         assert.equal(userId, user1);
+        //         done(err);
+        //     });
+        // });
+    });
+
+    describe('verifyDelegator', function () {
+
+    });
+
+    describe('readACL', function () {
+
     });
 });
