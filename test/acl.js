@@ -7,6 +7,7 @@ var S = require('string');
 var supertest = require('supertest');
 var ldnode = require('../index');
 var ACL = require('../acl').ACL;
+var async = require('async');
 
 function rm (file) {
   return fs.unlinkSync(__dirname + '/resources/' + file);
@@ -1073,9 +1074,9 @@ describe('ACL Class', function () {
                 " <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Control> .\n",
                 '.acl');
 
-            acl.readACL(__dirname + '/resources/.acl', address, function (err, res) {
+            acl.readACL(__dirname + '/resources/.acl', address, function (err, graph) {
                 assert.notOk(err);
-                assert.ok(res);
+                assert.ok(graph);
                 rm('.acl');
                 done();
             });
@@ -1095,9 +1096,9 @@ describe('ACL Class', function () {
                 "\n",
                 '.acl');
 
-            acl.readACL(__dirname + '/resources/.acl', address, function (err, res) {
+            acl.readACL(__dirname + '/resources/.acl', address, function (err, graph) {
                 assert.notOk(err);
-                assert.ok(res);
+                assert.ok(graph);
                 rm('.acl');
                 done();
             });
@@ -1107,7 +1108,147 @@ describe('ACL Class', function () {
     });
 
     describe('findACLInPath', function () {
+        it('should allow user when permission is found in pathAcl/pathUri', function(done) {
+            var acl = new ACL({
+                ldp: ldp,
+                origin: 'https://example.com',
+                session: {
+                    userId: user1,
+                    identified: true
+                },
+                uri: address
+            });
 
+            write(
+                "<#Owner>\n" +
+                " <http://www.w3.org/ns/auth/acl#accessTo> <" +
+                    address + "/" + ">, <" + address + ">;\n" +
+                " <http://www.w3.org/ns/auth/acl#owner> <" + user1 + ">;\n" +
+                " <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Control> .\n",
+                '.acl');
+
+            acl.readACL(__dirname + '/resources/.acl', address, function (err, aclGraph) {
+                async.parallel([
+                    function(next) {
+                        acl.findACLinPath('Read', __dirname + '/resources/.acl', address, aclGraph, 'accessTo', user1, function (err, result) {
+                            assert.equal(result, true);
+                            assert.notOk(err);
+                            next();
+                        });
+                    },
+                    function(next) {
+                        acl.findACLinPath('Write', __dirname + '/resources/.acl', address, aclGraph, 'accessTo', user1, function (err, result) {
+                            assert.equal(result, true);
+                            assert.notOk(err);
+                            next();
+                        });
+                    },
+                    function(next) {
+                        acl.findACLinPath('Append', __dirname + '/resources/.acl', address, aclGraph, 'accessTo', user1, function (err, result) {
+                            assert.equal(result, true);
+                            assert.notOk(err);
+                            next();
+                        });
+                    }
+                ], function(err) {
+                    rm('.acl');
+                    done(err);
+                });
+            });
+        });
+
+        it('should return 403 if user is not authorized', function(done) {
+            var acl = new ACL({
+                ldp: ldp,
+                origin: 'https://example.com',
+                session: {
+                    userId: user1,
+                    identified: true
+                },
+                uri: address
+            });
+
+            write(
+                "<#Owner>\n" +
+                " <http://www.w3.org/ns/auth/acl#accessTo> <" +
+                    address + "/" + ">, <" + address + ">;\n" +
+                " <http://www.w3.org/ns/auth/acl#owner> <" + user2 + ">;\n" +
+                " <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Control> .\n",
+                '.acl');
+
+            acl.readACL(__dirname + '/resources/.acl', address, function (err, aclGraph) {
+                async.parallel([
+                    function(next) {
+                        acl.findACLinPath('Read', __dirname + '/resources/.acl', address, aclGraph, 'accessTo', user1, function (err, result) {
+                            assert.equal(err.status, 403);
+                            assert.notOk(result);
+                            next();
+                        });
+                    },
+                    function(next) {
+                        acl.findACLinPath('Write', __dirname + '/resources/.acl', address, aclGraph, 'accessTo', user1, function (err, result) {
+                            assert.equal(err.status, 403);
+                            assert.notOk(result);
+                            next();
+                        });
+                    },
+                    function(next) {
+                        acl.findACLinPath('Append', __dirname + '/resources/.acl', address, aclGraph, 'accessTo', user1, function (err, result) {
+                            assert.equal(err.status, 403);
+                            assert.notOk(result);
+                            next();
+                        });
+                    }
+                ], function(err) {
+                    rm('.acl');
+                    done(err);
+                });
+            });
+        });
+        it('should return 401 if user is not authenticated', function(done) {
+            var acl = new ACL({
+                ldp: ldp,
+                origin: 'https://example.com',
+                uri: address
+            });
+
+            write(
+                "<#Owner>\n" +
+                " <http://www.w3.org/ns/auth/acl#accessTo> <" +
+                    address + "/" + ">, <" + address + ">;\n" +
+                " <http://www.w3.org/ns/auth/acl#owner> <" + user2 + ">;\n" +
+                " <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Control> .\n",
+                '.acl');
+
+            acl.readACL(__dirname + '/resources/.acl', address, function (err, aclGraph) {
+                async.parallel([
+                    function(next) {
+                        acl.findACLinPath('Read', __dirname + '/resources/.acl', address, aclGraph, 'accessTo', user1, function (err, result) {
+                            assert.equal(err.status, 401);
+                            assert.notOk(result);
+                            next();
+                        });
+                    },
+                    function(next) {
+                        acl.findACLinPath('Write', __dirname + '/resources/.acl', address, aclGraph, 'accessTo', user1, function (err, result) {
+                            assert.equal(err.status, 401);
+                            assert.notOk(result);
+                            next();
+                        });
+                    },
+                    function(next) {
+                        acl.findACLinPath('Append', __dirname + '/resources/.acl', address, aclGraph, 'accessTo', user1, function (err, result) {
+                            assert.equal(err.status, 401);
+                            assert.notOk(result);
+                            next();
+                        });
+                    }
+                ], function(err) {
+                    rm('.acl');
+                    done(err);
+                });
+            });
+        });
     });
 
     describe('findACL', function () {

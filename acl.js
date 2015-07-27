@@ -64,7 +64,7 @@ ACL.prototype.readACL = function(pathAcl, pathUri, callback) {
  * @param {Object} aclGraph Acl graph after reading the file
  */
 
-ACL.prototype.findACLinPath = function (mode, pathAcl, userId, aclGraph, accessType, pathUri, callback) {
+ACL.prototype.findACLinPath = function (mode, pathAcl, pathUri, aclGraph, accessType, userId, callback) {
     var acl = this;
 
     // TODO check if this is necessary
@@ -85,7 +85,7 @@ ACL.prototype.findACLinPath = function (mode, pathAcl, userId, aclGraph, accessT
             }
 
             // User is authenticated
-            if (userId.length === 0 || acl.session.identified === false)  {
+            if (userId.length === 0 || !acl.session || acl.session.identified === false)  {
                 debug("Authentication required");
                 return callback({
                     status: 401,
@@ -141,7 +141,7 @@ ACL.prototype.findACL = function(mode, address, userId, callback) {
                     aclGraph = $rdf.graph();
                 }
 
-                acl.findACLinPath(mode, pathAcl, userId, aclGraph, accessType, pathUri, function(err, found) {
+                acl.findACLinPath(mode, pathAcl, pathUri, aclGraph, accessType, userId, function(err, found) {
                     // Error occurred (e.g. file not found)
                     if (err) {
                         // debug('FindACLInPath failed in ' + pathAcl + ' with error ' + err.message);
