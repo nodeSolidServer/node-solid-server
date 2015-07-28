@@ -7,25 +7,10 @@ var assert = require('chai').assert;
 var path = require('path');
 
 // Helper functions for the FS
-function cp (src, dest) {
-  return fsExtra.copySync(
-    __dirname + '/resources/' + src,
-    __dirname + '/resources/' + dest);
-}
-
-function read (file) {
-  return fs.readFileSync(__dirname + '/resources/' + file, {
-      'encoding': 'utf8'
-    });
-}
-
-function rm (file) {
-  return fs.unlinkSync(__dirname + '/resources/' + file);
-}
-
-function write (text, file) {
-  return fs.writeFileSync(__dirname + '/resources/' + file, text);
-}
+var rm = require('./test-utils').rm;
+var write = require('./test-utils').write;
+var cp = require('./test-utils').cp;
+var read = require('./test-utils').read;
 
 describe('PATCH', function () {
   // Starting LDP

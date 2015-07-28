@@ -7,17 +7,15 @@ var S = require('string');
 var supertest = require('supertest');
 var async = require('async');
 
+// Helper functions for the FS
+var rm = require('./test-utils').rm;
+var write = require('./test-utils').write;
+var cp = require('./test-utils').cp;
+var read = require('./test-utils').read;
+
 var ldnode = require('../index');
 var ACL = require('../lib/acl').ACL;
 var ns = require('../lib/vocab/ns.js').ns;
-
-function rm (file) {
-  return fs.unlinkSync(__dirname + '/resources/' + file);
-}
-
-function write (text, file) {
-  return fs.writeFileSync(__dirname + '/resources/' + file, text);
-}
 
 describe('ACL HTTP', function() {
     this.timeout(10000);
