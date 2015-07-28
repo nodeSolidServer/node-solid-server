@@ -122,14 +122,6 @@ There are some scripts in the [package.json](https://github.com/linkeddata/ldnod
 - `npm run ldp-webid`: run ldnode with SSL and WebID+TLS enabled (remember it runs in HTTPS)
 - `npm run ldp-ssl`: same as the above without WebID+TLS support
 
-### Package scripts
-
-There are some scripts in the [package.json](https://github.com/linkeddata/ldnode/blob/master/package.json):
-
-- `npm start`: starts a very basic ldnode with default configs
-- `npm run ldp-webid`: run ldnode with SSL and WebID+TLS enabled (remember it runs in HTTPS)
-- `npm run ldp-ssl`: same as the above without WebID+TLS support
-
 ## Tests
 
 The tests assume that there is a running ldnode.
