@@ -42,22 +42,22 @@ describe('LDP', function () {
 
     it ('should return content if metaFile exists', function (done) {
       // file can be empty as well
-      write('', '.meta');
+      write('This function just reads this, does not parse it', '.meta');
       ldp.readContainerMeta(__dirname + '/resources/', function(err, metaFile) {
         rm('.meta');
         assert.notOk(err);
-        assert.equal(metaFile, '');
+        assert.equal(metaFile, 'This function just reads this, does not parse it');
         done();
       });
     });
 
     it ('should work also if trailing `/` is not passed', function (done) {
       // file can be empty as well
-      write('', '.meta');
+      write('This function just reads this, does not parse it', '.meta');
       ldp.readContainerMeta(__dirname + '/resources', function(err, metaFile) {
         rm('.meta');
         assert.notOk(err);
-        assert.equal(metaFile, '');
+        assert.equal(metaFile, 'This function just reads this, does not parse it');
         done();
       });
     });
@@ -100,9 +100,7 @@ describe('LDP', function () {
 
         assert.notEqual(graph.statements.length, 0);
         assert.equal(statements.length, 8);
-
         assert.notOk(err);
-        console.log(data);
         done();
       });
     });
