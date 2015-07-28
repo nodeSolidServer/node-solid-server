@@ -8,7 +8,7 @@ var read = require('./test-utils').read;
 
 var ldnode = require('../index');
 
-describe('params', function () {
+describe('LDNODE params', function () {
 
   describe('suffixMeta', function () {
     describe('not passed', function() {
