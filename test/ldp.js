@@ -1,5 +1,8 @@
-var LDP = require('../lib/ldp');
 var assert = require('chai').assert;
+var $rdf = require('rdflib');
+var ns = require('../lib/vocab/ns.js').ns;
+var LDP = require('../lib/ldp');
+
 // Helper functions for the FS
 var rm = require('./test-utils').rm;
 var write = require('./test-utils').write;
@@ -74,6 +77,32 @@ describe('LDP', function () {
     it('should fail if a trailing `/` is passed', function(done) {
       ldp.put(__dirname + '/resources/', 'hello world', function (err) {
         assert.equal(err.status, 409);
+        done();
+      });
+    });
+  });
+
+  describe('listContainer', function () {
+    it('should ldp:contains the same amount of files in dir', function(done) {
+      ldp.listContainer(__dirname + '/resources/sampleContainer/', 'https://server.tld', '', function (err, data) {
+
+        var graph = $rdf.graph();
+        $rdf.parse(
+          data,
+          graph,
+          'https://server.tld/sampleContainer',
+          'text/turtle');
+
+        var statements = graph.each(
+          undefined,
+          ns.ldp('contains'),
+          undefined);
+
+        assert.notEqual(graph.statements.length, 0);
+        assert.equal(statements.length, 8);
+
+        assert.notOk(err);
+        console.log(data);
         done();
       });
     });
