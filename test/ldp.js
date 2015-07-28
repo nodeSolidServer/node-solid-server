@@ -29,7 +29,7 @@ describe('LDP', function () {
     });
   });
 
-  describe('readContainer', function () {
+  describe('readContainerMeta', function () {
     it ('should return 404 if .meta is not found', function (done) {
       ldp.readContainerMeta('resources/', function(err) {
         assert.equal(err.status, 404);
@@ -55,6 +55,25 @@ describe('LDP', function () {
         rm('.meta');
         assert.notOk(err);
         assert.equal(metaFile, '');
+        done();
+      });
+    });
+  });
+
+  describe('put', function() {
+    it('should write a file in an existing dir', function(done) {
+      ldp.put(__dirname + '/resources/testPut.txt', 'hello world', function (err) {
+        assert.notOk(err);
+        var found = read('testPut.txt');
+        rm('testPut.txt');
+        assert.equal(found, 'hello world');
+        done();
+      });
+    });
+
+    it('should fail if a trailing `/` is passed', function(done) {
+      ldp.put(__dirname + '/resources/', 'hello world', function (err) {
+        assert.equal(err.status, 409);
         done();
       });
     });
