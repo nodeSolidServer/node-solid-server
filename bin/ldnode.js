@@ -64,6 +64,11 @@ var argv = require('nomnom')
     help: 'Suffix for acl files (default: \'.acl\')',
     abbr: 'sA'
   })
+  .option('suffixMeta', {
+    full: 'suffix-meta',
+    help: 'Suffix for metadata files (default: \'.meta\')',
+    abbr: 'sM'
+  })
   .option('suffixChanges', {
     full: 'suffix-changes',
     help: 'Suffix for acl files (default: \'.changes\')',
@@ -86,7 +91,7 @@ argv.live = !argv.noLive;
 
 // Set up debug environment
 process.env.DEBUG = argv.verbose ? 'ldnode:*' : false;
-var debug = require('../logging').server;
+var debug = require('../lib/logging').server;
 
 // Set up port
 argv.port = argv.port || 3456;

@@ -1,9 +1,9 @@
 /*jslint node: true*/
 var supertest = require('supertest');
 var path = require('path');
-var ldnode = require('../index');
 var fs = require('fs');
 var S = require('string');
+var ldnode = require('../index');
 
 describe('formats', function () {
     var address = 'http://localhost:3457';

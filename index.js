@@ -13,38 +13,35 @@ var session = require('express-session');
 var http = require('http');
 var https = require('https');
 var request = require('request');
-var debug = require('./logging').settings;
-var debugSubscription = require('./logging').subscription;
-var debugServer = require('./logging').server;
 var uuid = require('node-uuid');
 var cors = require('cors');
 
 // ldnode dependencies
-var acl = require('./acl.js');
-var metadata = require('./metadata.js');
-var options = require('./options.js');
-var login = require('./login.js');
-var container = require('./container.js');
-var parse = require('./parse.js');
+var acl = require('./lib/acl');
+var metadata = require('./lib/metadata');
+var header = require('./lib/header');
+var LDP = require('./lib/ldp');
+var login = require('./lib/login');
+var parse = require('./lib/parse');
+var debug = require('./lib/logging');
 
 // Request handlers
-var getHandler = require('./handlers/get.js');
-var postHandler = require('./handlers/post.js');
-var putHandler = require('./handlers/put.js');
-var deleteHandler = require('./handlers/delete.js');
-var patchHandler = require('./handlers/patch.js');
-
+var getHandler = require('./lib/handlers/get.js');
+var postHandler = require('./lib/handlers/post.js');
+var putHandler = require('./lib/handlers/put.js');
+var deleteHandler = require('./lib/handlers/delete.js');
+var patchHandler = require('./lib/handlers/patch.js');
 
 function ldnode (argv) {
-    var opts = options(argv);
+    var ldp = new LDP(argv);
     var app = express();
 
     // Setting options as local variable
-    app.locals.ldp = opts;
+    app.locals.ldp = ldp;
 
     // Session
     app.use(session({
-        secret: opts.secret || uuid.v1(),
+        secret: ldp.secret || uuid.v1(),
         saveUninitialized: false,
         resave: false
     }));
@@ -53,54 +50,54 @@ function ldnode (argv) {
     app.use('/', routes());
 
     // Adding proxy
-    if (opts.xssProxy) {
-        proxy(app, opts.proxyFilter);
+    if (ldp.xssProxy) {
+        proxy(app, ldp.proxyFilter);
     }
 
     // Setup Express app
-    if (opts.live) {
+    if (ldp.live) {
         ws(app);
     }
 
-    debugServer("Router attached to " + opts.mount);
+    debug.server("Router attached to " + ldp.mount);
 
     return app;
 }
 
 function createServer(argv) {
     var app = express();
-    var ldp = ldnode(argv);
-    var opts = ldp.locals.ldp;
-    app.use(opts.mount, ldp);
+    var ldpApp = ldnode(argv);
+    var ldp = ldpApp.locals.ldp;
+    app.use(ldp.mount, ldpApp);
 
-    if (opts && (opts.webid || opts.key || opts.cert) ) {
-        debug("SSL Private Key path: " + opts.key);
-        debug("SSL Certificate path: " + opts.cert);
+    if (ldp && (ldp.webid || ldp.key || ldp.cert) ) {
+        debug.settings("SSL Private Key path: " + ldp.key);
+        debug.settings("SSL Certificate path: " + ldp.cert);
 
-        if (!opts.cert && !opts.key) {
+        if (!ldp.cert && !ldp.key) {
             throw new Error("Missing SSL cert and SSL key to enable WebID");
         }
 
-        if (!opts.key && opts.cert) {
+        if (!ldp.key && ldp.cert) {
             throw new Error("Missing path for SSL key");
         }
 
-        if (!opts.cert && opts.key) {
+        if (!ldp.cert && ldp.key) {
             throw new Error("Missing path for SSL cert");
         }
 
         var key;
         try {
-            key = fs.readFileSync(opts.key);
+            key = fs.readFileSync(ldp.key);
         } catch(e) {
-            throw new Error("Can't find SSL key in " + opts.key);
+            throw new Error("Can't find SSL key in " + ldp.key);
         }
 
         var cert;
         try {
-            cert = fs.readFileSync(opts.cert);
+            cert = fs.readFileSync(ldp.cert);
         } catch(e) {
-            throw new Error("Can't find SSL cert in " + opts.cert);
+            throw new Error("Can't find SSL cert in " + ldp.cert);
         }
 
         var credentials = {
@@ -109,8 +106,8 @@ function createServer(argv) {
                 requestCert: true
             };
 
-        debug("Private Key: " + credentials.key);
-        debug("Certificate: " + credentials.cert);
+        debug.settings("Private Key: " + credentials.key);
+        debug.settings("Certificate: " + credentials.cert);
 
         return https.createServer(credentials, app);
     }
@@ -119,9 +116,9 @@ function createServer(argv) {
 }
 
 function proxy (app, path) {
-    debug('XSS Proxy listening to ' + path);
+    debug.settings('XSS Proxy listening to ' + path);
     app.get(path, function (req, res) {
-        debug('originalUrl: ' + req.originalUrl);
+        debug.settings('originalUrl: ' + req.originalUrl);
         var uri = req.query.uri;
         if (!uri) {
             return res
@@ -129,7 +126,7 @@ function proxy (app, path) {
                 .send("Proxy has no uri param ");
         }
 
-        debug('Proxy destination URI: ' + uri);
+        debug.settings('Proxy destination URI: ' + uri);
         request.get(uri).pipe(res);
     });
 }
@@ -166,7 +163,7 @@ function routes () {
     router.use('/*', parse.parseHandler);
     
     // Add links headers
-    router.use(metadata.linksHandler);
+    router.use(header.linksHandler);
 
     // Add response time
     router.use(responseTime());
@@ -198,9 +195,9 @@ function ws (app) {
     app.mountpath = ''; //  needs to be set for addSocketRoute aka .ws()
     // was options.pathFilter
     app.ws('/', function(socket, res) {
-        debugSubscription("incoming on " + socket.path);
+        debug.subscription("incoming on " + socket.path);
         socket.on('message', function(msg) {
-            debugSubscription("message = " + msg);
+            debug.subscription("message = " + msg);
             // subscribeToChanges(socket, res);
         });
     });

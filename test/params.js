@@ -1,29 +1,32 @@
 var assert = require('chai').assert;
-var ldnode = require('../index');
 var supertest = require('supertest');
-var fs = require('fs');
+// Helper functions for the FS
+var rm = require('./test-utils').rm;
+var write = require('./test-utils').write;
+var cp = require('./test-utils').cp;
+var read = require('./test-utils').read;
 
-function cp (src, dest) {
-  return fsExtra.copySync(
-    __dirname + '/resources/' + src,
-    __dirname + '/resources/' + dest);
-}
+var ldnode = require('../index');
 
-function read (file) {
-  return fs.readFileSync(__dirname + '/resources/' + file, {
-      'encoding': 'utf8'
+describe('LDNODE params', function () {
+
+  describe('suffixMeta', function () {
+    describe('not passed', function() {
+      it('should fallback on .meta', function() {
+        var ldp = ldnode();
+        assert.equal(ldp.locals.ldp.suffixMeta, '.meta');
+      });
     });
-}
+  });
 
-function rm (file) {
-  return fs.unlinkSync(__dirname + '/resources/' + file);
-}
-
-function write (text, file) {
-  return fs.writeFileSync(__dirname + '/resources/' + file, text);
-}
-
-describe('params', function () {
+  describe('suffixAcl', function () {
+    describe('not passed', function() {
+      it('should fallback on .acl', function() {
+        var ldp = ldnode();
+        assert.equal(ldp.locals.ldp.suffixAcl, '.acl');
+      });
+    });
+  });
 
   describe('mount', function () {
 

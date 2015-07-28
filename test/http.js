@@ -1,10 +1,10 @@
 /*jslint node: true*/
 var supertest = require('supertest');
 var path = require('path');
-var ldnode = require('../index');
 var fs = require('fs');
 var S = require('string');
 var li = require('li');
+var ldnode = require('../index');
 
 describe('HTTP APIs', function() {
 

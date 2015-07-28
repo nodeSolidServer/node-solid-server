@@ -5,13 +5,22 @@ var $rdf = require('rdflib');
 var request = require('request');
 var S = require('string');
 var supertest = require('supertest');
-var ldnode = require('../index');
+var async = require('async');
 
-describe('ACL', function() {
+// Helper functions for the FS
+var rm = require('./test-utils').rm;
+var write = require('./test-utils').write;
+var cp = require('./test-utils').cp;
+var read = require('./test-utils').read;
+
+var ldnode = require('../index');
+var ACL = require('../lib/acl').ACL;
+var ns = require('../lib/vocab/ns.js').ns;
+
+describe('ACL HTTP', function() {
     this.timeout(10000);
     process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
-    var ns = require('../vocab/ns.js').ns;
     var address = 'https://localhost:3456/test/';
 
     var ldp = ldnode.createServer({
@@ -67,7 +76,7 @@ describe('ACL', function() {
     }
 
 
-    describe('Basic HTTPS Test', function() {
+    describe('Basic', function() {
         it('Should return "Hello, World!"', function(done) {
             var options = createOptions('hello.html', 'user1');
             request(options, function(error, response, body) {
@@ -86,7 +95,7 @@ describe('ACL', function() {
         });
     });
 
-    describe("Empty ACL Test", function() {
+    describe("Empty .acl", function() {
         it("Should create test folder", function(done) {
             var options = createOptions(testDirMetaFile, 'user1');
             options.body = "";
@@ -146,7 +155,7 @@ describe('ACL', function() {
         });
     });
 
-    describe("ACL Origin Test", function() {
+    describe("Origin", function() {
         it("Should PUT new ACL file", function(done) {
             var options = createOptions(testDirAclFile, 'user1');
             options.headers = {
@@ -236,7 +245,7 @@ describe('ACL', function() {
             });
     });
 
-    describe("ACL owner-only test", function() {
+    describe("Owner-only", function() {
         var body = "<#Owner>\n" +
             " <http://www.w3.org/ns/auth/acl#accessTo> <" + address + testDir + "/" +
             ">, <" + address + testDirAclFile + ">;\n" +
@@ -340,7 +349,7 @@ describe('ACL', function() {
         });
     });
 
-    describe("ACL read-only test", function() {
+    describe("Read-only", function() {
         var body = "<#Owner>\n" +
             " a <http://www.w3.org/ns/auth/acl#Authorization> ;\n" +
             " <http://www.w3.org/ns/auth/acl#accessTo> <" + address + testDir + "/" +
@@ -444,7 +453,7 @@ describe('ACL', function() {
         });
     });
 
-    describe("ACL glob test", function() {
+    describe("Glob", function() {
         it("user2 should be able to send glob request", function(done) {
             var options = createOptions(globFile, 'user2');
             request.get(options, function(error, response, body) {
@@ -479,7 +488,7 @@ describe('ACL', function() {
         });
     });
 
-    describe("ACL append-only test", function() {
+    describe("Append-only", function() {
         var body = "<#Owner>\n" +
             " <http://www.w3.org/ns/auth/acl#accessTo> <" + address + abcFile +
             ">, <" + address + abcAclFile + ">;\n" +
@@ -588,7 +597,7 @@ describe('ACL', function() {
         });
     });
 
-    describe("ACL restricted test", function() {
+    describe("Restricted", function() {
         var body = "<#Owner>\n" +
             " <http://www.w3.org/ns/auth/acl#accessTo> <" + address + abcFile + ">, <" +
             address + abcAclFile + ">;\n" +
@@ -696,7 +705,7 @@ describe('ACL', function() {
         });
     });
 
-    describe("ACL group test", function() {
+    describe("Group", function() {
         var groupTriples = "<#> a <http://xmlns.com/foaf/0.1/Group>;\n" +
             " <http://xmlns.com/foaf/0.1/member> <a>, <b>, <" + user2 + "> .\n";
         var body = "<#Owner>\n" +
@@ -828,7 +837,7 @@ describe('ACL', function() {
         });
     });
 
-    describe("ACL defaultForNew test", function() {
+    describe("defaultForNew", function() {
         var body = "<#Owner>\n" +
             " <http://www.w3.org/ns/auth/acl#accessTo> <" + address + testDir + "/" + ">, <" +
             address + testDirAclFile + ">;\n" +
@@ -964,7 +973,7 @@ describe('ACL', function() {
         // });
     });
     
-    describe("ACL cleaup", function() {
+    describe("Cleaup", function() {
         it("should remove all files and dirs created", function(done) {
             try {
                 // must remove the ACLs in sync
@@ -982,4 +991,436 @@ describe('ACL', function() {
             }
         });
     });
+});
+
+describe('ACL Class', function () {
+    this.timeout(10000);
+    var ldpConfig = {
+        mount: '/test',
+        root: __dirname + '/resources',
+        key: __dirname + '/keys/key.pem',
+        cert: __dirname + '/keys/cert.pem',
+        webid: true
+    };
+    var ldpServer = ldnode(ldpConfig);
+    var ldp = ldpServer.locals.ldp;
+
+    var user1 = "https://user1.databox.me/profile/card#me";
+    var user2 = "https://user2.databox.me/profile/card#me";
+    var address = 'https://server.tld/test';
+
+    describe('readACL', function () {
+        it('should report a 404 error if no acl is found', function (done) {
+            var acl = new ACL({
+                ldp: ldp,
+                origin: 'https://example.com',
+                session: {
+                    userId: user1,
+                    identified: true
+                },
+                uri: 'https://server.tld/test'
+            });
+
+            acl.readACL(__dirname + '/resources/.acl', 'https://server.tld/test', function (err, res) {
+                assert.equal(err.status, 404);
+                assert.notOk(res);
+                done();
+            });
+        });
+
+        it('should report a 404 error if .acl cannot be parsed', function (done) {
+            var acl = new ACL({
+                ldp: ldp,
+                origin: 'https://example.com',
+                session: {
+                    userId: user1,
+                    identified: true
+                },
+                uri: address
+            });
+            write(
+                "<#Owner>\n" +
+                " <http://www.w3.org/ns/auth/acl#accessTo> <" +
+                    address + "/" + ">, <" + address + ">;\n" +
+                " XXXXXXXhttp://www.w3.org/ns/auth/acl#owner> <" + user1 + ">;\n" +
+                " <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Control> .\n",
+                '.acl');
+
+            acl.readACL(__dirname + '/resources/.acl', address, function (err, res) {
+                rm('.acl');
+                assert.equal(err.status, 500);
+                assert.notOk(res);
+                done();
+            });
+        });
+
+        it('should return a parsed graph of the acl on success', function (done) {
+            var acl = new ACL({
+                ldp: ldp,
+                origin: 'https://example.com',
+                session: {
+                    userId: user1,
+                    identified: true
+                },
+                uri: address
+            });
+            write(
+                "<#Owner>\n" +
+                " <http://www.w3.org/ns/auth/acl#accessTo> <" +
+                    address + "/" + ">, <" + address + ">;\n" +
+                " <http://www.w3.org/ns/auth/acl#owner> <" + user1 + ">;\n" +
+                " <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Control> .\n",
+                '.acl');
+
+            acl.readACL(__dirname + '/resources/.acl', address, function (err, graph) {
+                rm('.acl');
+                assert.notOk(err);
+                assert.ok(graph);
+                done();
+            });
+        });
+
+        it('should return a graph on empty ACL', function (done) {
+            var acl = new ACL({
+                ldp: ldp,
+                origin: 'https://example.com',
+                session: {
+                    userId: user1,
+                    identified: true
+                },
+                uri: address
+            });
+            write(
+                "\n",
+                '.acl');
+
+            acl.readACL(__dirname + '/resources/.acl', address, function (err, graph) {
+                rm('.acl');
+                assert.notOk(err);
+                assert.ok(graph);
+                done();
+            });
+        });
+
+
+    });
+
+    describe('findACLInPath', function () {
+        it('should allow user when permission is found in pathAcl/pathUri', function(done) {
+            var acl = new ACL({
+                ldp: ldp,
+                origin: 'https://example.com',
+                session: {
+                    userId: user1,
+                    identified: true
+                },
+                uri: address
+            });
+
+            write(
+                "<#Owner>\n" +
+                " <http://www.w3.org/ns/auth/acl#accessTo> <" +
+                    address + "/" + ">, <" + address + ">;\n" +
+                " <http://www.w3.org/ns/auth/acl#owner> <" + user1 + ">;\n" +
+                " <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Control> .\n",
+                '.acl');
+
+            acl.readACL(__dirname + '/resources/.acl', address, function (err, aclGraph) {
+                async.parallel([
+                    function(next) {
+                        acl.findACLinPath('Read', __dirname + '/resources/.acl', address, aclGraph, 'accessTo', user1, function (err, result) {
+                            assert.equal(result, true);
+                            assert.notOk(err);
+                            next();
+                        });
+                    },
+                    function(next) {
+                        acl.findACLinPath('Write', __dirname + '/resources/.acl', address, aclGraph, 'accessTo', user1, function (err, result) {
+                            assert.equal(result, true);
+                            assert.notOk(err);
+                            next();
+                        });
+                    },
+                    function(next) {
+                        acl.findACLinPath('Append', __dirname + '/resources/.acl', address, aclGraph, 'accessTo', user1, function (err, result) {
+                            assert.equal(result, true);
+                            assert.notOk(err);
+                            next();
+                        });
+                    }
+                ], function(err) {
+                    rm('.acl');
+                    done(err);
+                });
+            });
+        });
+
+        it('should return 403 if user is not authorized', function(done) {
+            var acl = new ACL({
+                ldp: ldp,
+                origin: 'https://example.com',
+                session: {
+                    userId: user1,
+                    identified: true
+                },
+                uri: address
+            });
+
+            write(
+                "<#Owner>\n" +
+                " <http://www.w3.org/ns/auth/acl#accessTo> <" +
+                    address + "/" + ">, <" + address + ">;\n" +
+                " <http://www.w3.org/ns/auth/acl#owner> <" + user2 + ">;\n" +
+                " <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Control> .\n",
+                '.acl');
+
+            acl.readACL(__dirname + '/resources/.acl', address, function (err, aclGraph) {
+                async.parallel([
+                    function(next) {
+                        acl.findACLinPath('Read', __dirname + '/resources/.acl', address, aclGraph, 'accessTo', user1, function (err, result) {
+                            assert.equal(err.status, 403);
+                            assert.notOk(result);
+                            next();
+                        });
+                    },
+                    function(next) {
+                        acl.findACLinPath('Write', __dirname + '/resources/.acl', address, aclGraph, 'accessTo', user1, function (err, result) {
+                            assert.equal(err.status, 403);
+                            assert.notOk(result);
+                            next();
+                        });
+                    },
+                    function(next) {
+                        acl.findACLinPath('Append', __dirname + '/resources/.acl', address, aclGraph, 'accessTo', user1, function (err, result) {
+                            assert.equal(err.status, 403);
+                            assert.notOk(result);
+                            next();
+                        });
+                    }
+                ], function(err) {
+                    rm('.acl');
+                    done(err);
+                });
+            });
+        });
+        it('should return 401 if user is not authenticated', function(done) {
+            var acl = new ACL({
+                ldp: ldp,
+                origin: 'https://example.com',
+                uri: address
+            });
+
+            write(
+                "<#Owner>\n" +
+                " <http://www.w3.org/ns/auth/acl#accessTo> <" +
+                    address + "/" + ">, <" + address + ">;\n" +
+                " <http://www.w3.org/ns/auth/acl#owner> <" + user2 + ">;\n" +
+                " <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Control> .\n",
+                '.acl');
+
+            acl.readACL(__dirname + '/resources/.acl', address, function (err, aclGraph) {
+                async.parallel([
+                    function(next) {
+                        acl.findACLinPath('Read', __dirname + '/resources/.acl', address, aclGraph, 'accessTo', user1, function (err, result) {
+                            assert.equal(err.status, 401);
+                            assert.notOk(result);
+                            next();
+                        });
+                    },
+                    function(next) {
+                        acl.findACLinPath('Write', __dirname + '/resources/.acl', address, aclGraph, 'accessTo', user1, function (err, result) {
+                            assert.equal(err.status, 401);
+                            assert.notOk(result);
+                            next();
+                        });
+                    },
+                    function(next) {
+                        acl.findACLinPath('Append', __dirname + '/resources/.acl', address, aclGraph, 'accessTo', user1, function (err, result) {
+                            assert.equal(err.status, 401);
+                            assert.notOk(result);
+                            next();
+                        });
+                    }
+                ], function(err) {
+                    rm('.acl');
+                    done(err);
+                });
+            });
+        });
+
+        it('should report that ACL has not been found if aclGraph is empty', function(done) {
+            var acl = new ACL({
+                ldp: ldp
+            });
+
+            acl.findACLinPath('Read', __dirname + '/resources/.acl', address, $rdf.graph(), 'accessTo', user1, function (err, result) {
+                assert.notOk(err);
+                assert.equal(result, false);
+                done();
+            });
+        });
+    });
+
+    describe('findACL', function () {
+        it('should return no error if permission is found', function (done) {
+            var acl = new ACL({
+                ldp: ldp,
+                origin: 'https://example.com',
+                session: {
+                    userId: user1,
+                    identified: true
+                },
+                uri: address
+            });
+
+            write(
+                "<#Owner>\n" +
+                " <http://www.w3.org/ns/auth/acl#accessTo> <" +
+                    address + "/" + ">, <" + address + ">;\n" +
+                " <http://www.w3.org/ns/auth/acl#owner> <" + user1 + ">;\n" +
+                " <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read> .\n",
+                '.acl');
+
+            acl.findACL('Read', '/', user1, function (err) {
+                rm('.acl');
+                assert.notOk(err);
+                done();
+            });
+        });
+
+        it('should return error error if user is allowed to `Read` but not to `Write`', function (done) {
+            var acl = new ACL({
+                ldp: ldp,
+                origin: 'https://example.com',
+                session: {
+                    userId: user1,
+                    identified: true
+                },
+                uri: address
+            });
+
+            write(
+                "<#Owner>\n" +
+                " <http://www.w3.org/ns/auth/acl#accessTo> <" +
+                    address + "/" + ">, <" + address + ">;\n" +
+                " <http://www.w3.org/ns/auth/acl#owner> <" + user1 + ">;\n" +
+                " <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read> .\n",
+                '.acl');
+
+            acl.findACL('Write', '/', user1, function (err) {
+                rm('.acl');
+                assert.equal(err.status, 403);
+                done();
+            });
+        });
+
+        it('should return error 403 if user is not allowed', function (done) {
+            var acl = new ACL({
+                ldp: ldp,
+                origin: 'https://example.com',
+                session: {
+                    userId: user1,
+                    identified: true
+                },
+                uri: address
+            });
+
+            write(
+                "<#Owner>\n" +
+                " <http://www.w3.org/ns/auth/acl#accessTo> <" +
+                    address + "/" + ">, <" + address + ">;\n" +
+                " <http://www.w3.org/ns/auth/acl#owner> <" + user2 + ">;\n" +
+                " <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Control> .\n",
+                '.acl');
+
+            acl.findACL('Control', '/', user1, function (err) {
+                rm('.acl');
+                assert.equal(err.status, 403);
+                done();
+            });
+        });
+
+        it('should return no error if no permission rule is found', function (done) {
+            var acl = new ACL({
+                ldp: ldp,
+                origin: 'https://example.com',
+                session: {
+                    userId: user1,
+                    identified: true
+                },
+                uri: address
+            });
+
+            write(
+                '',
+                '.acl');
+
+            acl.findACL('Control', '/', user1, function (err) {
+                rm('.acl');
+                assert.notOk(err);
+                done();
+            });
+        });
+    });
+
+    describe('fetchDocument', function () {
+        // TODO missing tests
+    });
+
+    describe('getUserId', function () {
+        it('should return userId in session if On-Behalf-Of is not specified', function(done) {
+            var acl = new ACL({
+                ldp: ldp,
+                origin: 'https://example.com',
+                session: {
+                    userId: 'https://user1.databox.me/profile/card#me',
+                    identified: true
+                }
+            });
+
+            acl.getUserId(function(err, userId) {
+                assert.equal(userId, 'https://user1.databox.me/profile/card#me');
+                done(err);
+            });
+        });
+
+        it('should return userId in session if On-Behalf-Of is not valid', function(done) {
+            var acl = new ACL({
+                ldp: ldp,
+                origin: 'https://example.com',
+                session: {
+                    userId: user1,
+                    identified: true
+                },
+                onBehalfOf: ''
+            });
+
+            acl.getUserId(function(err, userId) {
+                assert.equal(userId, user1);
+                done(err);
+            });
+        });
+        // TODO
+        // it('should return On-Behalf-Of if is the delegatee', function(done) {
+        //     var acl = new ACL({
+        //         ldp: ldp,
+        //         origin: 'https://example.com',
+        //         session: {
+        //             userId: user2,
+        //             identified: true
+        //         },
+        //         onBehalfOf: '<' + user1 + '>'
+        //     });
+
+        //     acl.getUserId(function(err, userId) {
+        //         assert.equal(userId, user1);
+        //         done(err);
+        //     });
+        // });
+    });
+
+    describe('verifyDelegator', function () {
+        // TODO
+    });
+
 });
