@@ -1009,7 +1009,6 @@ describe('ACL Class', function () {
 
     var user1 = "https://user1.databox.me/profile/card#me";
     var user2 = "https://user2.databox.me/profile/card#me";
-    var nicola = "https://nicola.databox.me/profile/card#me";
     var address = 'https://server.tld/test';
 
     describe('readACL', function () {
