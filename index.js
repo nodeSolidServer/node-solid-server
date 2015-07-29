@@ -133,6 +133,22 @@ function proxy (app, path) {
 
 function routes () {
     var router = express.Router('/');
+
+    // Add Link headers
+    router.use(header.linksHandler);
+
+    // Setting CORS
+    router.use(cors({
+        methods: [
+            'OPTIONS', 'HEAD', 'GET',
+            'PATCH', 'POST', 'PUT', 'DELETE'
+        ],
+        exposedHeaders: 'User, Location, Link, Vary, Last-Modified, Content-Length',
+        credentials: true,
+        maxAge: 1728000,
+        origin: true
+    }));
+
     router.use('/*', function(req, res, next) {
         getRawBody(req,
                    {
@@ -161,24 +177,9 @@ function routes () {
 
     // Convert json-ld and nquads to turtle
     router.use('/*', parse.parseHandler);
-    
-    // Add links headers
-    router.use(header.linksHandler);
 
     // Add response time
     router.use(responseTime());
-
-    // Setting CORS
-    router.use(cors({
-        methods: [
-            'OPTIONS', 'HEAD', 'GET',
-            'PATCH', 'POST', 'PUT', 'DELETE'
-        ],
-        exposedHeaders: 'User, Location, Link, Vary, Last-Modified, Content-Length',
-        credentials: true,
-        maxAge: 1728000,
-        origin: true
-    }));
 
     // HTTP methods handlers
     router.get('/*', getHandler.handler);
