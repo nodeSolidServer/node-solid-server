@@ -117,4 +117,3 @@ try {
 app.listen(argv.port, function() {
     debug('LDP started on port ' + argv.port);
 });
-
