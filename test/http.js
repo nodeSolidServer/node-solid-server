@@ -10,7 +10,7 @@ describe('HTTP APIs', function() {
 
   var emptyResponse = function(res) {
       if (res.text.length !== 0) {
-          error("Not empty response");
+          console.log("Not empty response");
       }
   };
   var getLink = function(res, rel) {
@@ -31,10 +31,10 @@ describe('HTTP APIs', function() {
           var link = getLink(res, rel);
           if (link) {
               if (link !== value) {
-                  error("Not same value");
+                  console.log("Not same value");
               }
           } else {
-              error("Header does not exist");
+              console.log("Header does not exist");
           }
       };
       return handler;
@@ -91,15 +91,15 @@ describe('HTTP APIs', function() {
 
     it('should have set Link as resource in OPTIONS', function(done) {
       server.options('/sampleContainer/example1.ttl')
-          .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Resource>; rel='type'/)
+          .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Resource>; rel="type"/)
           .end(done);
     });
 
     it('should have set Link as Container/BasicContainer in OPTIONS', function(done) {
       server.options('/sampleContainer/')
           .set('Origin', 'http://example.com')
-          .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#BasicContainer>; rel='type'/)
-          .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Container>; rel='type'/)
+          .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#BasicContainer>; rel="type"/)
+          .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Container>; rel="type"/)
           .end(done);
     });
   });
@@ -121,14 +121,14 @@ describe('HTTP APIs', function() {
 
       it('should have set Link as resource', function(done) {
         server.get('/sampleContainer/example1.ttl')
-            .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Resource>; rel='type'/)
+            .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Resource>; rel="type"/)
             .expect(200, done);
       });
 
       it('should have set Link as Container/BasicContainer', function(done) {
         server.head('/sampleContainer/')
-            .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#BasicContainer>; rel='type'/)
-            .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Container>; rel='type'/)
+            .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#BasicContainer>; rel="type"/)
+            .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Container>; rel="type"/)
             .expect(200, done);
       });
       it('Should return 404 for non-existent resource', function(done) {
@@ -142,7 +142,7 @@ describe('HTTP APIs', function() {
       });
       it('Should return resource link for files', function(done) {
           server.get('/hello.html')
-              .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Resource>; rel='type'/)
+              .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Resource>; rel="type"/)
               .expect(200, done);
       });
       it('Should have glob support', function(done) {
@@ -169,14 +169,14 @@ describe('HTTP APIs', function() {
 
       it('should have set Link as Resource', function(done) {
         server.head('/sampleContainer/example1.ttl')
-            .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Resource>; rel='type'/)
+            .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Resource>; rel="type"/)
             .expect(200, done);
       });
 
       it('should have set Link as Container/BasicContainer', function(done) {
         server.get('/sampleContainer/')
-            .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#BasicContainer>; rel='type'/)
-           .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Container>; rel='type'/)
+            .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#BasicContainer>; rel="type"/)
+           .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Container>; rel="type"/)
             .expect(200, done);
       });
 
