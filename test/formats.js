@@ -5,6 +5,8 @@ var fs = require('fs');
 var S = require('string');
 var ldnode = require('../index');
 
+var accepts = 'application/xml,application/xhtml+xml,text/html;q=0.9,text/plain;q=0.8,image/png,*/*;q=0.5';
+
 describe('formats', function () {
     var address = 'http://localhost:3457';
     var ldp = ldnode.createServer({
@@ -28,13 +30,13 @@ describe('formats', function () {
         };
         it('Should return JSON-LD document', function(done) {
             server.get('/patch-5-initial.ttl')
-                .set('accept', 'application/json+ld')
-                .expect('content-type', /application\/json\+ld/)
+                .set('accept', 'application/ld+json')
+                .expect('content-type', /application\/ld\+json/)
                 .expect(200, done);
         });
         it('Should return valid JSON', function(done) {
             server.get('/patch-5-initial.ttl')
-                .set('accept', 'application/json+ld')
+                .set('accept', 'application/ld+json')
                 .expect(isValidJSON)
                 .expect(200, done);
         });
