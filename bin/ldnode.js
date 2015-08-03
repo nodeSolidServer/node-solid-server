@@ -54,6 +54,11 @@ var argv = require('nomnom')
     help: 'HTTP Session secret key (e.g. "your secret phrase")',
     abbr: 's'
   })
+  .option('xssProxy', {
+    full: 'xss-proxy',
+    help: 'Use a proxy on example.tld/xssProxyPath',
+    abbr: 'P'
+  })
   .option('noLive', {
     full: 'no-live',
     help: 'Disable live support through WebSockets',

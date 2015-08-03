@@ -43,11 +43,18 @@ describe('HTTP APIs', function() {
   var address = 'http://localhost:3457';
   var ldp = ldnode.createServer({
     root: __dirname + '/resources',
+    xssProxy: '/proxy'
   });
   ldp.listen(3457);
 
   var server = supertest(address);
 
+  describe('Proxy', function() {
+    it('should return the website in ?uri', function(done) {
+      server.get('/proxy?uri=http://google.com')
+        .expect(200, done);
+    });
+  });
 
   describe('GET Root container', function() {
       it('should have Access-Control-Allow-Origin as the req.Origin', function(done) {

@@ -46,13 +46,13 @@ function ldnode (argv) {
         resave: false
     }));
 
-    // Setting up routes
-    app.use('/', routes());
-
     // Adding proxy
     if (ldp.xssProxy) {
         proxy(app, ldp.proxyFilter);
     }
+
+    // Setting up routes
+    app.use('/', routes());
 
     // Setup Express app
     if (ldp.live) {
