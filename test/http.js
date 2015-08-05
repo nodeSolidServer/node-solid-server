@@ -15,13 +15,11 @@ describe('HTTP APIs', function() {
   };
   var getLink = function(res, rel) {
       var links = res.headers.link.split(',');
-      for (var linkIndex in links) {
-          var link = links[linkIndex];
+      for (var i in links) {
+          var link = links[i];
           var parsedLink = li.parse(link);
-          for (var linkRel in parsedLink) {
-              if (linkRel == rel) {
-                  return parsedLink[rel];
-              }
+          if (parsedLink[rel]) {
+            return parsedLink[rel];
           }
       }
       return undefined;
@@ -31,23 +29,25 @@ describe('HTTP APIs', function() {
           var link = getLink(res, rel);
           if (link) {
               if (link !== value) {
-                  console.log("Not same value");
+                  console.log("Not same value:", value, '!=', link);
               }
           } else {
-              console.log("Header does not exist");
+              console.log(rel, "header does not exist:", link);
           }
       };
       return handler;
   };
 
   var address = 'http://localhost:3457';
-  var ldp = ldnode.createServer({
+  var ldpServer = ldnode.createServer({
     root: __dirname + '/resources',
   });
-  ldp.listen(3457);
+  ldpServer.listen(3457);
+
+  var suffixAcl = ".acl";
+  var suffixMeta = ".meta";
 
   var server = supertest(address);
-
 
   describe('GET Root container', function() {
       it('should have Access-Control-Allow-Origin as the req.Origin', function(done) {
@@ -89,6 +89,13 @@ describe('HTTP APIs', function() {
             .end(done);
     });
 
+    it('should have set acl and describedBy Links for resource', function(done) {
+      server.options('/sampleContainer/example1.ttl')
+          .expect(hasHeader('acl', 'example1.ttl' + suffixAcl))
+          .expect(hasHeader('describedBy', 'example1.ttl' + suffixMeta))
+          .end(done);
+    });
+
     it('should have set Link as resource', function(done) {
       server.options('/sampleContainer/example1.ttl')
           .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Resource>; rel="type"/)
@@ -103,15 +110,10 @@ describe('HTTP APIs', function() {
           .end(done);
     });
 
-    it('should have set meta Link in', function(done) {
+    it('should have set acl and describedBy Links for container', function(done) {
       server.options('/sampleContainer/')
-          .expect(hasHeader('\'describedBy\'', address + '/sampleContainer/' + '.meta'))
-          .end(done);
-    });
-
-    it('should have set acl Link in', function(done) {
-      server.options('/sampleContainer/')
-          .expect(hasHeader('\'acl\'', address + '/sampleContainer/' + '.acl'))
+          .expect(hasHeader('acl', suffixAcl))
+          .expect(hasHeader('describedBy', suffixMeta))
           .end(done);
     });
   });
@@ -135,6 +137,12 @@ describe('HTTP APIs', function() {
         server.get('/sampleContainer/example1.ttl')
             .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Resource>; rel="type"/)
             .expect(200, done);
+      });
+      it('should have set acl and describedBy Links for resource', function(done) {
+        server.get('/sampleContainer/example1.ttl')
+            .expect(hasHeader('acl', 'example1.ttl' + suffixAcl))
+            .expect(hasHeader('describedBy', 'example1.ttl' + suffixMeta))
+            .end(done);
       });
 
       it('should have set Link as Container/BasicContainer', function(done) {
@@ -162,15 +170,11 @@ describe('HTTP APIs', function() {
               .expect('content-type', /text\/turtle/)
               .expect(200, done);
       });
-      it('should have set meta Link', function(done) {
-          server.get('/sampleContainer/')
-              .expect(hasHeader('\'describedBy\'', address + '/sampleContainer/' + '.meta'))
-              .end(done);
-      });
 
-      it('should have set acl Link', function(done) {
+      it('should have set acl and describedBy Links for container', function(done) {
           server.get('/sampleContainer/')
-              .expect(hasHeader('\'acl\'', address + '/sampleContainer/' + '.acl'))
+              .expect(hasHeader('acl', suffixAcl))
+              .expect(hasHeader('describedBy', suffixMeta))
               .end(done);
       });
   });
@@ -194,26 +198,26 @@ describe('HTTP APIs', function() {
             .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Resource>; rel="type"/)
             .expect(200, done);
       });
+      it('should have set acl and describedBy Links for resource', function(done) {
+          server.get('/sampleContainer/example1.ttl')
+              .expect(hasHeader('acl', 'example1.ttl' + suffixAcl))
+              .expect(hasHeader('describedBy', 'example1.ttl' + suffixMeta))
+              .end(done);
+      });
 
       it('should have set Link as Container/BasicContainer', function(done) {
         server.get('/sampleContainer/')
             .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#BasicContainer>; rel="type"/)
-           .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Container>; rel="type"/)
+            .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Container>; rel="type"/)
             .expect(200, done);
       });
 
-      it('Should return meta header', function(done) {
-          server.head('/')
-              .expect(hasHeader('\'describedBy\'', address + '/' + '.meta'))
-              .expect(200, done);
+      it('should have set acl and describedBy Links for container', function(done) {
+          server.get('/sampleContainer/')
+              .expect(hasHeader('acl', suffixAcl))
+              .expect(hasHeader('describedBy', suffixMeta))
+              .end(done);
       });
-
-      it('Should return acl header', function(done) {
-          server.head('/')
-              .expect(hasHeader('\'acl\'', address + '/' + '.acl'))
-              .expect(200, done);
-      });
-
   });
 
   describe('PUT API', function() {
@@ -230,8 +234,8 @@ describe('HTTP APIs', function() {
           server.put('/foo/bar/baz.ttl')
               .send(putRequestBody)
               .set('content-type', 'text/turtle')
-              .expect(hasHeader('\'describedBy\'', address + '/sampleContainer/' + '.meta'))
-              .expect(hasHeader('\'acl\'', address + '/sampleContainer/' + '.acl'))
+              .expect(hasHeader('describedBy', 'baz.ttl' + suffixMeta))
+              .expect(hasHeader('acl', 'baz.ttl' + suffixAcl))
               .expect(function() {
                   fs.unlinkSync(__dirname + '/resources/foo/bar/baz.ttl');
                   fs.rmdirSync(__dirname + '/resources/foo/bar/');
@@ -270,8 +274,8 @@ describe('HTTP APIs', function() {
               .set('content-type', 'text/turtle')
               .set('slug', 'post-resource-1')
               .expect('location', address + '/post-resource-1.ttl')
-              .expect(hasHeader('\'describedBy\'', address + '/post-resource-1.ttl' + '.meta'))
-              .expect(hasHeader('\'acl\'', address + '/post-resource-1.ttl' + '.acl'))
+              .expect(hasHeader('describedBy', suffixMeta))
+              .expect(hasHeader('acl', suffixAcl))
               .expect(201, done);
       });
       it('Should reject requests to existing resources', function(done) {
