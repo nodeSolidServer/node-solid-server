@@ -81,6 +81,7 @@ var argv = require('nomnom')
   })
   .option('noErrorPages', {
     full: 'no-error-pages',
+    flag: true,
     help: 'Disable custom error pages (use Node.js default pages instead)'
   })
   .option('errorPages', {
