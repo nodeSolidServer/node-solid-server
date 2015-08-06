@@ -32,6 +32,9 @@ var putHandler = require('./lib/handlers/put.js');
 var deleteHandler = require('./lib/handlers/delete.js');
 var patchHandler = require('./lib/handlers/patch.js');
 
+// Error page handler
+var errorHandler = require('./lib/error.js');
+
 function ldnode (argv) {
     var ldp = new LDP(argv);
     var app = express();
@@ -69,6 +72,11 @@ function createServer(argv) {
     var ldpApp = ldnode(argv);
     var ldp = ldpApp.locals.ldp;
     app.use(ldp.mount, ldpApp);
+
+    //Error handling
+    app.use(errorHandler.handler);
+
+    app.locals.ldp = ldp;
 
     if (ldp && (ldp.webid || ldp.key || ldp.cert) ) {
         debug.settings("SSL Private Key path: " + ldp.key);

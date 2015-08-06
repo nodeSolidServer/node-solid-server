@@ -79,6 +79,14 @@ var argv = require('nomnom')
     help: 'Suffix for SSE files (default: \'.events\')',
     abbr: 'sE'
   })
+  .option('noErrorPages', {
+    full: 'no-error-pages',
+    help: 'Disable custom error pages (use Node.js default pages instead)'
+  })
+  .option('errorPages', {
+    full: 'error-pages',
+    help: 'Folder from which to look for custom error pages files (files must be named <error-code>.html -- eg. 500.html)'
+  })
   .parse();
 
 // Print version and leave
