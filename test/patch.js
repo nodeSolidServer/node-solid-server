@@ -14,12 +14,11 @@ var read = require('./test-utils').read;
 
 describe('PATCH', function () {
   // Starting LDP
-  var ldp = ldnode.createServer({
+  var ldp = ldnode({
     root: __dirname + '/resources/sampleContainer',
     mount: '/test'
   });
-  ldp.listen(3453);
-  var server = supertest('http://localhost:3453/test');
+  var server = supertest(ldp);
 
   describe('DELETE', function () {
     it('should be an empty resource if last triple is deleted', function (done) {

@@ -38,16 +38,14 @@ describe('HTTP APIs', function() {
       return handler;
   };
 
-  var address = 'http://localhost:3457';
-  var ldpServer = ldnode.createServer({
+  var ldpServer = ldnode({
     root: __dirname + '/resources'
   });
-  ldpServer.listen(3457);
 
   var suffixAcl = ".acl";
   var suffixMeta = ".meta";
 
-  var server = supertest(address);
+  var server = supertest(ldpServer);
 
   describe('GET Root container', function() {
       it('should have Access-Control-Allow-Origin as the req.Origin', function(done) {
@@ -273,7 +271,7 @@ describe('HTTP APIs', function() {
               .send(postRequest1Body)
               .set('content-type', 'text/turtle')
               .set('slug', 'post-resource-1')
-              .expect('location', address + '/post-resource-1.ttl')
+              .expect('location',  /\/post-resource-1.ttl/)
               .expect(hasHeader('describedBy', suffixMeta))
               .expect(hasHeader('acl', suffixAcl))
               .expect(201, done);
@@ -302,7 +300,7 @@ describe('HTTP APIs', function() {
               .end(done);
       });
       it('Should be able to delete newly created resource', function(done) {
-          server.delete('/' + S(postResourceName).chompLeft(address).s)
+          server.delete('/' + postResourceName.replace(/https?\:\/\/127.0.0.1:[0-9]*\//, ''))
               .expect(200, done);
       });
       it('Should create container', function(done) {
