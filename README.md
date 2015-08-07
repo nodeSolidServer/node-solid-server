@@ -6,6 +6,8 @@
 
 Linked Data Platform server based on [rdflib.js](https://github.com/linkeddata/rdflib.js) and [node.js](https://nodejs.org/). This is all you need to run distributed linked data apps on top of the file system.
 
+You can run ldnode as a command-line tool or as a library
+
 ## Features
 
 - [x] GET, PUT, POST and PATCH support
@@ -16,74 +18,6 @@ Linked Data Platform server based on [rdflib.js](https://github.com/linkeddata/r
 - [x] Command line tool
 - [x] Real-time live updates (using websokets)
 
-
-## Install
-
-```
-npm install
-```
-
-## Usage
-
-The library provides two APIs:
-
-- `ldnode.createServer(settings)`: starts a ready to use Express app.
-- `lnode(settings)`: creates an Express routes that you can mount in your existing express app
-
-In case the `settings` is not passed, then it will start with the following default settings.
-
-```javascript
-{
-  cache: 0, // Set cache time (in seconds), 0 for no cache
-  live: true, // Enable live support through WebSockets
-  root: './', // Root location on the filesystem to serve resources
-  secret: 'node-ldp', // Express Session secret key
-  cert: false, // Path to the ssl cert
-  key: false, // Path to the ssl key
-  mount: '/', // Where to mount Linked Data Platform
-  webid: false, // Enable WebID+TLS authentication
-  suffixAcl: '.acl', // Suffix for acl files
-  suffixChanges: '.changes', // Suffix for acl files
-  suffixSSE: '.events', // Suffix for SSE files
-  proxy: false // Where to mount the proxy
-}
-```
-
-
-#### Simple
-
-You can create an ldnode ready to use Express server using `ldnode.createServer(opts)`
-
-```javascript
-var ldnode = require('ldnode')
-
-var ldp = ldnode.createServer()
-ldp.listen(3000, function() {
-  // Started Linked Data Platform
-})
-```
-
-#### Advanced
-
-You can integrate it with your existing express app just by using `lnode(opts)`
-
-```javascript
-var ldnode = require('ldnode')
-var app = require('express')()
-app.use('/test', ldnode({ root:'/path/to/root/container' }))
-app.listen(3000, function() {
-  // Started Express app with ldp on '/test'
-})
-...
-```
-
-#### Logs
-
-Run your app with the `DEBUG` variable set:
-
-```bash
-$ DEBUG="ldnode:*" node app.js
-```
 
 ## Command line tool
 
@@ -112,6 +46,76 @@ Options:
    -sC, --suffix-changes   Suffix for acl files (default: '.changes')
    -sE, --suffix-sse       Suffix for SSE files (default: '.events')
 
+```
+
+## Library
+
+### Install
+
+```
+npm install
+```
+
+### Usage
+
+The library provides two APIs:
+
+- `ldnode.createServer(settings)`: starts a ready to use Express app.
+- `lnode(settings)`: creates an Express routes that you can mount in your existing express app
+
+In case the `settings` is not passed, then it will start with the following default settings.
+
+```javascript
+{
+  cache: 0, // Set cache time (in seconds), 0 for no cache
+  live: true, // Enable live support through WebSockets
+  root: './', // Root location on the filesystem to serve resources
+  secret: 'node-ldp', // Express Session secret key
+  cert: false, // Path to the ssl cert
+  key: false, // Path to the ssl key
+  mount: '/', // Where to mount Linked Data Platform
+  webid: false, // Enable WebID+TLS authentication
+  suffixAcl: '.acl', // Suffix for acl files
+  suffixChanges: '.changes', // Suffix for acl files
+  suffixSSE: '.events', // Suffix for SSE files
+  proxy: false // Where to mount the proxy
+}
+```
+
+
+##### Simple
+
+You can create an ldnode ready to use Express server using `ldnode.createServer(opts)`
+
+```javascript
+var ldnode = require('ldnode')
+
+var ldp = ldnode.createServer()
+ldp.listen(3000, function() {
+  // Started Linked Data Platform
+})
+```
+
+##### Advanced
+
+You can integrate it with your existing express app just by using `lnode(opts)`
+
+```javascript
+var ldnode = require('ldnode')
+var app = require('express')()
+app.use('/test', ldnode({ root:'/path/to/root/container' }))
+app.listen(3000, function() {
+  // Started Express app with ldp on '/test'
+})
+...
+```
+
+##### Logs
+
+Run your app with the `DEBUG` variable set:
+
+```bash
+$ DEBUG="ldnode:*" node app.js
 ```
 
 
