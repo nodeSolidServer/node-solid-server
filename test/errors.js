@@ -22,6 +22,7 @@ describe('Error page tests', function() {
 
     var errorLdp = ldnode.createServer({
         root: __dirname + '/resources',
+        errorPages: __dirname + '/resources/errorPages'
     });
     errorLdp.listen(3457);
 
