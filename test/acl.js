@@ -23,6 +23,7 @@ describe('ACL HTTP', function() {
 
     var address = 'https://localhost:3456/test/';
 
+    var ldpHttpsServer;
     var ldp = ldnode.createServer({
         mount: '/test',
         root: __dirname + '/resources',
@@ -30,7 +31,14 @@ describe('ACL HTTP', function() {
         cert: __dirname + '/keys/cert.pem',
         webid: true
     });
-    ldp.listen(3456);
+
+    before(function (done) {
+        var ldpHttpsServer = ldp.listen(3456, done);
+    });
+
+    after(function () {
+        if (ldpHttpsServer) ldpHttpsServer.close();
+    });
 
     var aclExtension = '.acl';
     var metaExtension = '.meta';
