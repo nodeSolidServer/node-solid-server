@@ -105,8 +105,10 @@ Options:
    -C, --cert              Path to the ssl cert
    --webid                 Enable WebID+TLS authentication
    -s, --secret            HTTP Session secret key (e.g. "your secret phrase")
+   -P, --proxy             Use a proxy on example.tld/proxyPath
    --no-live               Disable live support through WebSockets
    -sA, --suffix-acl       Suffix for acl files (default: '.acl')
+   -sM, --suffix-meta      Suffix for metadata files (default: '.meta')
    -sC, --suffix-changes   Suffix for acl files (default: '.changes')
    -sE, --suffix-sse       Suffix for SSE files (default: '.events')
 
