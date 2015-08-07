@@ -6,7 +6,7 @@
 
 Linked Data Platform server based on [rdflib.js](https://github.com/linkeddata/rdflib.js) and [node.js](https://nodejs.org/). This is all you need to run distributed linked data apps on top of the file system.
 
-You can run ldnode as a command-line tool or as a library
+You can run ldnode as a [command-line tool](https://github.com/linkeddata/ldnode/blob/master/README.md#command-line-tool) or as a [library](https://github.com/linkeddata/ldnode/blob/master/README.md#library) for your Nodejs/express app.
 
 ## Features
 
