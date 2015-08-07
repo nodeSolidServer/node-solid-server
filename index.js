@@ -60,7 +60,7 @@ function ldnode (argv) {
 
     // Adding proxy
     if (ldp.proxy) {
-        proxy(app, ldp.proxyFilter);
+        proxy(app, ldp.proxy);
     }
 
     // Setting up routes
