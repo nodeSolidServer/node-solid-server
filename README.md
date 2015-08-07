@@ -171,7 +171,15 @@ npm run test-(acl|formats|params|patch)
 </table>
 
 
-Do you want to contribute? Have a look at [CONTRIBUTING.md](https://github.com/linkeddata/ldnode/blob/master/CONTRIBUTING.md).
+
+
+#### Do you want to contribute?
+
+- [Join us in Gitter](https://gitter.im/linkeddata/chat) to help with development or to hang out with us :)
+- [Create a new issue](https://github.com/linkeddata/ldnode/issues/new) to report bugs
+- [Fix an issue](https://github.com/linkeddata/ldnode/issues)
+
+Have a look at [CONTRIBUTING.md](https://github.com/linkeddata/ldnode/blob/master/CONTRIBUTING.md).
 
 ## License
 
