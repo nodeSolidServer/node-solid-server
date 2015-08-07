@@ -139,7 +139,39 @@ npm run test-(acl|formats|params|patch)
 
 ## Contributing
 
-Do you want to contribute? Sure, have a look at [CONTRIBUTING.md](https://github.com/linkeddata/ldnode/blob/master/CONTRIBUTING.md).
+`ldnode` is only possible due to the excellent work of the following contributors:
+
+<table>
+  <tbody>
+    <tr>
+      <th align="left">Tim Berners-Lee</th>
+      <td><a href="https://github.com/timbl">GitHub/timbl</a></td>
+      <td><a href="http://twitter.com/timberners_lee">Twitter/@timberners_lee</a></td>
+      <td><a href="https://www.w3.org/People/Berners-Lee/card#i">webid</a></td>
+    </tr>
+    <tr>
+      <th align="left">Nicola Greco</th>
+      <td><a href="https://github.com/nicola">GitHub/nicola</a></td>
+      <td><a href="http://twitter.com/nicola">Twitter/@nicola</a></td>
+      <td><a href="https://nicola.databox.me/profile/card#me">webid</a></td>
+    </tr>
+    <tr>
+      <th align="left">Martin Martinez Rivera</th>
+      <td><a href="https://github.com/martinmr">GitHub/martinmr</a></td>
+      <td></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th align="left">Andrei Sambra</th>
+      <td><a href="https://github.com/deiu">GitHub/deiu</a></td>
+      <td><a href="http://twitter.com/deiu">Twitter/@deiu</a></td>
+      <td><a href="https://deiu.me/profile#me">webid</a></td>
+    </tr>
+  </tbody>
+</table>
+
+
+Do you want to contribute? Have a look at [CONTRIBUTING.md](https://github.com/linkeddata/ldnode/blob/master/CONTRIBUTING.md).
 
 ## License
 
