@@ -10,6 +10,31 @@ var ldnode = require('../index');
 
 describe('LDNODE params', function () {
 
+  describe('proxy', function() {
+    this.timeout(10000);
+
+    var ldp = ldnode({
+      root: __dirname + '/resources',
+      proxy: '/proxy'
+    });
+    var server = supertest(ldp);
+
+    it('should return the website in /proxy?uri', function(done) {
+      server.get('/proxy?uri=https://google.com')
+        .set('Origin', 'http://example.com')
+        .expect('Access-Control-Allow-Origin', 'http://example.com')
+        .expect(200, done);
+    });
+
+    it('should also work on /proxy/ ?uri', function(done) {
+      server.get('/proxy/?uri=https://google.com')
+        .set('Origin', 'http://example.com')
+        .expect('Access-Control-Allow-Origin', 'http://example.com')
+        .expect(200, done);
+    });
+  });
+
+
   describe('suffixMeta', function () {
     describe('not passed', function() {
       it('should fallback on .meta', function() {

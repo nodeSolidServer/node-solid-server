@@ -14,7 +14,7 @@ Linked Data Platform server based on [rdflib.js](https://github.com/linkeddata/r
 - [x] WebID+TLS Authentication
 - [x] Mount as express' router
 - [x] Command line tool
-- [ ] Real-time live updates (using websokets)
+- [x] Real-time live updates (using websokets)
 
 
 ## Install
@@ -44,7 +44,8 @@ In case the `settings` is not passed, then it will start with the following defa
   webid: false, // Enable WebID+TLS authentication
   suffixAcl: '.acl', // Suffix for acl files
   suffixChanges: '.changes', // Suffix for acl files
-  suffixSSE: '.events' // Suffix for SSE files
+  suffixSSE: '.events', // Suffix for SSE files
+  proxy: false // Where to mount the proxy
 }
 ```
 
