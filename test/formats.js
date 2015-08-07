@@ -6,13 +6,11 @@ var S = require('string');
 var ldnode = require('../index');
 
 describe('formats', function () {
-    var address = 'http://localhost:3457';
     var ldp = ldnode.createServer({
         root: __dirname + '/resources',
     });
-    ldp.listen(3457);
 
-    var server = supertest(address);
+    var server = supertest(ldp);
     describe('HTML', function() {
         it('Should return HTML containing "Hello, World!" if Accept is set to text/html', function(done) {
             server.get('/hello.html')
