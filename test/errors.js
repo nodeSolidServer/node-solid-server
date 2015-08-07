@@ -40,24 +40,26 @@ describe('Error page tests', function() {
 
 
     describe('Error page test', function() {
+        var file404 = 'errorPages/404.html';
+        function defaultErrorPage(filepath, expected) {
+            var handler = function (res) {
+                var errorFile = read(filepath);
+                if (res.text === errorFile && !expected){
+                    console.log("Not default text");
+                }
+            };
+            return handler;
+        }
         it('Should return 404 custom page if flag set to true',
            function(done) {
-               errorServer.get('/non-existent-file.html')
-                   .expect(/404 Error Page/)
+               errorServer.get('non-existent-file.html')
+                   .expect(defaultErrorPage(file404, true))
                    .expect(404, done);
            });
         it('Should return 404 default page if flag set to false',
            function(done) {
-               function isDefaultErrorPage(customText) {
-                   var handler = function (res) {
-                       if (res.text.match(customText)){
-                           console.log("Not default text");
-                       }
-                   };
-                   return handler;
-               }
-               noErrorServer.get('/non-existent-file.html')
-                   .expect(isDefaultErrorPage('404 Error Page'))
+               noErrorServer.get('non-existent-file.html')
+                   .expect(defaultErrorPage(file404, false))
                    .expect(404, done);
            });
     });
