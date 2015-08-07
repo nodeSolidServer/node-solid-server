@@ -32,6 +32,18 @@ var putHandler = require('./lib/handlers/put.js');
 var deleteHandler = require('./lib/handlers/delete.js');
 var patchHandler = require('./lib/handlers/patch.js');
 
+// Setting up cors
+var corsSettings = cors({
+    methods: [
+        'OPTIONS', 'HEAD', 'GET',
+        'PATCH', 'POST', 'PUT', 'DELETE'
+    ],
+    exposedHeaders: 'User, Location, Link, Vary, Last-Modified, Content-Length',
+    credentials: true,
+    maxAge: 1728000,
+    origin: true
+});
+
 function ldnode (argv) {
     var ldp = new LDP(argv);
     var app = express();
@@ -46,13 +58,13 @@ function ldnode (argv) {
         resave: false
     }));
 
+    // Adding proxy
+    if (ldp.proxy) {
+        proxy(app, ldp.proxy);
+    }
+
     // Setting up routes
     app.use('/', routes());
-
-    // Adding proxy
-    if (ldp.xssProxy) {
-        proxy(app, ldp.proxyFilter);
-    }
 
     // Setup Express app
     if (ldp.live) {
@@ -117,7 +129,7 @@ function createServer(argv) {
 
 function proxy (app, path) {
     debug.settings('XSS Proxy listening to ' + path);
-    app.get(path, function (req, res) {
+    app.get(path, corsSettings, function (req, res) {
         debug.settings('originalUrl: ' + req.originalUrl);
         var uri = req.query.uri;
         if (!uri) {
@@ -138,16 +150,7 @@ function routes () {
     router.use(header.linksHandler);
 
     // Setting CORS
-    router.use(cors({
-        methods: [
-            'OPTIONS', 'HEAD', 'GET',
-            'PATCH', 'POST', 'PUT', 'DELETE'
-        ],
-        exposedHeaders: 'User, Location, Link, Vary, Last-Modified, Content-Length',
-        credentials: true,
-        maxAge: 1728000,
-        origin: true
-    }));
+    router.use(corsSettings);
 
     router.use('/*', function(req, res, next) {
         getRawBody(req,

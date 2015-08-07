@@ -40,7 +40,7 @@ describe('HTTP APIs', function() {
 
   var address = 'http://localhost:3457';
   var ldpServer = ldnode.createServer({
-    root: __dirname + '/resources',
+    root: __dirname + '/resources'
   });
   ldpServer.listen(3457);
 
