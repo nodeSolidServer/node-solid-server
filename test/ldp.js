@@ -8,6 +8,7 @@ var rm = require('./test-utils').rm;
 var write = require('./test-utils').write;
 var cp = require('./test-utils').cp;
 var read = require('./test-utils').read;
+var fs = require('fs');
 
 describe('LDP', function () {
   var ldp = new LDP();
@@ -83,9 +84,14 @@ describe('LDP', function () {
   });
 
   describe('listContainer', function () {
-    it('should ldp:contains the same amount of files in dir', function(done) {
+    it('should inherit type if file is .ttl', function(done) {
+      write('@prefix dcterms: <http://purl.org/dc/terms/>.' +
+            '@prefix o: <http://example.org/ontology>.' +
+            '<> a <http://www.w3.org/ns/ldp#MagicType> ;' +
+            '   dcterms:title "This is a magic type" ;' +
+            '   o:limit 500000.00 .', 'sampleContainer/magicType.ttl');
+      
       ldp.listContainer(__dirname + '/resources/sampleContainer/', 'https://server.tld', '', function (err, data) {
-
         var graph = $rdf.graph();
         $rdf.parse(
           data,
@@ -93,15 +99,93 @@ describe('LDP', function () {
           'https://server.tld/sampleContainer',
           'text/turtle');
 
-        var statements = graph.each(
-          undefined,
-          ns.ldp('contains'),
+        var statements = graph
+          .each(
+            $rdf.sym('https://server.tld/magicType.ttl'),
+            ns.rdf('type'),
+            undefined)
+          .map(function(d) {
+            return d.uri;
+          });
+
+        assert.equal(statements.length, 2);
+        assert.isAbove(statements.indexOf('http://www.w3.org/ns/ldp#MagicType'), -1);
+        assert.isAbove(statements.indexOf('http://www.w3.org/ns/posix/stat#File'), -1);
+
+        rm('sampleContainer/magicType.ttl');
+        done();
+      });
+    });
+
+    it('should not inherit type of BasicContainer/Container if type is File', function(done) {
+      write('@prefix dcterms: <http://purl.org/dc/terms/>.' +
+            '@prefix o: <http://example.org/ontology>.' +
+            '<> a <http://www.w3.org/ns/ldp#Container> ;' +
+            '   dcterms:title "This is a container" ;' +
+            '   o:limit 500000.00 .', 'sampleContainer/containerFile.ttl');
+
+      write('@prefix dcterms: <http://purl.org/dc/terms/>.' +
+            '@prefix o: <http://example.org/ontology>.' +
+            '<> a <http://www.w3.org/ns/ldp#BasicContainer> ;' +
+            '   dcterms:title "This is a container" ;' +
+            '   o:limit 500000.00 .', 'sampleContainer/basicContainerFile.ttl');
+
+      ldp.listContainer(__dirname + '/resources/sampleContainer/', 'https://server.tld', '', function (err, data) {
+        var graph = $rdf.graph();
+        $rdf.parse(
+          data,
+          graph,
+          'https://server.tld/sampleContainer',
+          'text/turtle');
+
+        var basicContainerStatements = graph.each(
+          $rdf.sym('https://server.tld/basicContainerFile.ttl'),
+          ns.rdf('type'),
           undefined);
 
-        assert.notEqual(graph.statements.length, 0);
-        assert.equal(statements.length, 8);
-        assert.notOk(err);
+        assert.equal(basicContainerStatements.length, 1);
+
+        var containerStatements = graph.each(
+          $rdf.sym('https://server.tld/containerFile.ttl'),
+          ns.rdf('type'),
+          undefined);
+
+        assert.equal(containerStatements.length, 1);
+
+        basicContainerStatements.forEach(function(statement) {
+          assert.equal(statement.uri, ns.stat('File').uri);
+        });
+
+        containerStatements.forEach(function(statement) {
+          assert.equal(statement.uri, ns.stat('File').uri);
+        });
+
+        rm('sampleContainer/containerFile.ttl');
+        rm('sampleContainer/basicContainerFile.ttl');
         done();
+      });
+    });
+
+    it('should ldp:contains the same amount of files in dir', function(done) {
+      ldp.listContainer(__dirname + '/resources/sampleContainer/', 'https://server.tld', '', function (err, data) {
+        fs.readdir(__dirname + '/resources/sampleContainer/', function(err, files) {
+          var graph = $rdf.graph();
+          $rdf.parse(
+            data,
+            graph,
+            'https://server.tld/sampleContainer',
+            'text/turtle');
+
+          var statements = graph.each(
+            undefined,
+            ns.ldp('contains'),
+            undefined);
+
+          assert.notEqual(graph.statements.length, 0);
+          assert.equal(statements.length, files.length);
+          assert.notOk(err);
+          done();
+        });
       });
     });
   });
