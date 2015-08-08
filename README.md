@@ -149,7 +149,7 @@ npm run test-(acl|formats|params|patch)
     <tr>
       <th align="left">Nicola Greco</th>
       <td><a href="https://github.com/nicola">GitHub/nicola</a></td>
-      <td><a href="http://twitter.com/nicola">Twitter/@nicola</a></td>
+      <td><a href="http://twitter.com/nicolagreco">Twitter/@nicolagreco</a></td>
       <td><a href="https://nicola.databox.me/profile/card#me">webid</a></td>
     </tr>
     <tr>
