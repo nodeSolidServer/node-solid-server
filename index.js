@@ -32,6 +32,9 @@ var putHandler = require('./lib/handlers/put.js');
 var deleteHandler = require('./lib/handlers/delete.js');
 var patchHandler = require('./lib/handlers/patch.js');
 
+// Error page handler
+var errorHandler = require('./lib/handlers/error.js');
+
 // Setting up cors
 var corsSettings = cors({
     methods: [
@@ -191,6 +194,9 @@ function routes () {
     router.delete('/*', deleteHandler.handler);
     router.post('/*', postHandler.handler);
     router.patch('/*', patchHandler.handler);
+
+    //Error handling
+    router.use(errorHandler.handler);
     return router;
 }
 
