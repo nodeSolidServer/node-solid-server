@@ -17,51 +17,47 @@ var ldnode = require('../index');
 var ACL = require('../lib/acl').ACL;
 var ns = require('../lib/vocab/ns.js').ns;
 
-describe('Error page tests', function() {
-    var errorAddress = 'http://localhost:3457/test/';
+describe('Error pages', function() {
 
-    var errorLdp = ldnode.createServer({
+    // LDP with error pages
+    var errorLdp = ldnode({
         root: __dirname + '/resources',
         errorPages: __dirname + '/resources/errorPages'
     });
-    errorLdp.listen(3457);
+    var errorServer = supertest(errorLdp);
 
-    var errorServer = supertest(errorAddress);
-
-    // Instance of server with error pages flag set to false
-    var noErrorAddress = 'http://localhost:3458/test/';
-
-    var noErrorLdp = ldnode.createServer({
+    // LDP with no error pages
+    var noErrorLdp = ldnode({
         root: __dirname + '/resources',
         noErrorPages: true
     });
-    noErrorLdp.listen(3458);
+    var noErrorServer = supertest(noErrorLdp);
 
-    var noErrorServer = supertest(errorAddress);
+    function defaultErrorPage(filepath, expected) {
+        var handler = function (res) {
+            var errorFile = read(filepath);
+            if (res.text === errorFile && !expected){
+                console.log("Not default text");
+            }
+        };
+        return handler;
+    }
 
-
-    describe('Error page test', function() {
+    describe('noErrorPages', function () {
         var file404 = 'errorPages/404.html';
-        function defaultErrorPage(filepath, expected) {
-            var handler = function (res) {
-                var errorFile = read(filepath);
-                if (res.text === errorFile && !expected){
-                    console.log("Not default text");
-                }
-            };
-            return handler;
-        }
-        it('Should return 404 custom page if flag set to true',
-           function(done) {
-               errorServer.get('non-existent-file.html')
-                   .expect(defaultErrorPage(file404, true))
-                   .expect(404, done);
-           });
-        it('Should return 404 default page if flag set to false',
-           function(done) {
-               noErrorServer.get('non-existent-file.html')
-                   .expect(defaultErrorPage(file404, false))
-                   .expect(404, done);
-           });
+        it('Should return 404 express default page', function(done) {
+            noErrorServer.get('/non-existent-file.html')
+                .expect(defaultErrorPage(file404, false))
+                .expect(404, done);
+        });
+    });
+
+    describe('errorPages set', function() {
+        var file404 = 'errorPages/404.html';
+        it('Should return 404 custom page if exists', function(done) {
+            errorServer.get('/non-existent-file.html')
+                .expect(defaultErrorPage(file404, true))
+                .expect(404, done);
+        });
     });
 });
