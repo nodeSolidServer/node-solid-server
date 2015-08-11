@@ -159,7 +159,6 @@ function routes () {
         getRawBody(req,
                    {
                        length: req.headers['content-length'],
-                       limit: '1mb',
                        encoding: 'utf-8' // typer.parse(req.headers['content-type']).parameters.charset
                    },
                    function(err, string) {
