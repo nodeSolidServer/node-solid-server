@@ -48,6 +48,13 @@ Options:
 
 ```
 
+
+For example, to start your own server using the current folder:
+
+```bash
+$ ldnode --webid --port 443 --cert /path/to/cert --key /path/to/key
+```
+
 ## Library
 
 ### Install
