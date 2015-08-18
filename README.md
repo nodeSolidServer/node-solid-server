@@ -91,6 +91,8 @@ In case the `settings` is not passed, then it will start with the following defa
 }
 ```
 
+Have a look at the following examples or in the [`examples/`](https://github.com/linkeddata/ldnode/tree/master/examples) folder for more complex ones
+
 ##### Simple
 
 You can create an ldnode server ready to use using `ldnode.createServer(opts)`
@@ -109,7 +111,7 @@ ldp.listen(3000, function() {
 
 ##### Advanced
 
-You can integrate ldnode in your existing express app, by mounting the ldnode app on a specific path using `lnode(opts)`. Have a look at see [further examples](https://github.com/linkeddata/ldnode/tree/master/examples)
+You can integrate ldnode in your existing express app, by mounting the ldnode app on a specific path using `lnode(opts)`.
 
 ```javascript
 var ldnode = require('ldnode')
