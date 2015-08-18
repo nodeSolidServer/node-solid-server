@@ -78,7 +78,9 @@ In case the `settings` is not passed, then it will start with the following defa
   suffixAcl: '.acl', // Suffix for acl files
   suffixChanges: '.changes', // Suffix for acl files
   suffixSSE: '.events', // Suffix for SSE files
-  proxy: false // Where to mount the proxy
+  proxy: false, // Where to mount the proxy
+  errorHandler: false, // function(err, req, res, next) to have a custom error handler
+  errorPages: false // specify a path where the error pages are
 }
 ```
 
@@ -100,7 +102,7 @@ ldp.listen(3000, function() {
 
 ##### Advanced
 
-You can integrate ldnode in your existing express app, by mounting the ldnode app on a specific path using `lnode(opts)`.
+You can integrate ldnode in your existing express app, by mounting the ldnode app on a specific path using `lnode(opts)`. Have a look at see [further examples](https://github.com/linkeddata/ldnode/tree/master/examples)
 
 ```javascript
 var ldnode = require('ldnode')
