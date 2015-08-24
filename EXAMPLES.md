@@ -6,25 +6,21 @@ ldnode binary
 
 ldnode can be started on its own by using the ldnode binary. Below are some examples with common configurations.
 
-* Starting ldnode as an HTTP server.  
-  * ```
-    $ ldnode --root /var/www
-    ```
+* Starting ldnode as an HTTP server.
+
+ `$ ldnode --root /var/www`
 
 * Starting ldnode as an HTTPS server with WebID+TLS authentication. This parameter requires that the user specifies the location of the key and the certificate used to start the HTTPS server with the help of the appropriate parameters.
-  * ```
-    $ ldnode --root /var/www --webid --cert ./cert.pem --key ./key.pem
-    ```
+ 
+ `$ ldnode --root /var/www --webid --cert ./cert.pem --key ./key.pem`
 
 * Start HTTPS with custom error pages. ldnode will look for a file in the specified directory of the form <error-code>.html. If it's not found it will default to node's error page.
-  * ```
-    $ ldnode --root /var/www/ --webid --cert ./cert.pem --key ./key.pem --error-pages ./errors/
-    ```
 
-* ldnode makes use of special files used for things such as access control, metadata management, subscription to changes, etc. These files are recognized by ldnode because of their suffix, which can be customized with the command line options that start with 'suffix'
-  * ```
-    $ ldnode --root /var/www/ --suffixMeta .altMeta --suffixAcl .altAcl
-    ```
+ `$ ldnode --root /var/www/ --webid --cert ./cert.pem --key ./key.pem --error-pages ./errors/`
+
+* ldnode makes use of special files used for things such as access control, metadata management, subscription to changes, etc. These files are recognized by ldnode because of their suffix, which can be customized with the command line options that start with 'suffix'.
+
+ `$ ldnode --root /var/www/ --suffixMeta .altMeta --suffixAcl .altAcl`
 
 Starting ldnode from a Node script
 -------------------------------------
