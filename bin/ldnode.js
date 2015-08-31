@@ -93,6 +93,9 @@ var argv = require('nomnom')
     full: 'error-pages',
     help: 'Folder from which to look for custom error pages files (files must be named <error-code>.html -- eg. 500.html)'
   })
+  .option('skin', {
+    help: 'URI to a skin to load (default: https://linkeddata.github.io/warp/#/list/)'
+  })
   .parse();
 
 // Print version and leave
