@@ -125,6 +125,18 @@ describe('ACL HTTP', function() {
                 done();
             });
         });
+        it("Should return text/turtle for the acl file", function(done) {
+            var options = createOptions(testDirAclFile, 'user1');
+            options.headers = {
+                accept: 'text/turtle'
+            };
+            request.get(options, function(error, response, body) {
+                assert.equal(error, null);
+                assert.equal(response.statusCode, 200);
+                assert.match(response.headers['content-type'], /text\/turtle/);
+                done();
+            });
+        });
         it("Should create test file", function(done) {
             var options = createOptions(abcFile, 'user1');
             options.headers = {
@@ -980,7 +992,7 @@ describe('ACL HTTP', function() {
             // });
         // });
     });
-    
+
     describe("Cleaup", function() {
         it("should remove all files and dirs created", function(done) {
             try {
