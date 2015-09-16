@@ -132,18 +132,27 @@ function createServer(argv) {
 
 function proxy (app, path) {
     debug.settings('XSS Proxy listening to ' + path);
-    app.get(path, corsSettings, function (req, res) {
-        debug.settings('originalUrl: ' + req.originalUrl);
-        var uri = req.query.uri;
-        if (!uri) {
-            return res
-                .status(400)
-                .send("Proxy has no uri param ");
-        }
+    app.get(
+        path,
+        cors({
+            methods: ['GET'],
+            exposedHeaders: 'User, Location, Link, Vary, Last-Modified, Content-Length',
+            credentials: true,
+            maxAge: 1728000,
+            origin: true
+        }),
+        function (req, res) {
+            debug.settings('originalUrl: ' + req.originalUrl);
+            var uri = req.query.uri;
+            if (!uri) {
+                return res
+                    .status(400)
+                    .send("Proxy has no uri param ");
+            }
 
-        debug.settings('Proxy destination URI: ' + uri);
-        request.get(uri).pipe(res);
-    });
+            debug.settings('Proxy destination URI: ' + uri);
+            request.get(uri).pipe(res);
+        });
 }
 
 function routes () {
