@@ -121,7 +121,6 @@ function createServer(argv) {
                 requestCert: true
             };
 
-        debug.settings("Private Key: " + credentials.key);
         debug.settings("Certificate: " + credentials.cert);
 
         return https.createServer(credentials, app);
