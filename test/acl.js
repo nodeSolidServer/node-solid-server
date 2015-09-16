@@ -103,7 +103,7 @@ describe('ACL HTTP', function() {
         });
     });
 
-    describe("Empty .acl", function() {
+    describe.skip("Empty .acl", function() {
         it("Should create test folder", function(done) {
             var options = createOptions(testDirMetaFile, 'user1');
             options.body = "";
@@ -188,7 +188,7 @@ describe('ACL HTTP', function() {
             });
         });
         it("user1 should be able to access test directory", function(done) {
-            var options = createOptions(testDir, 'user1');
+            var options = createOptions(testDir + '/', 'user1');
             request.head(options, function(error, response, body) {
                 assert.equal(error, null);
                 assert.equal(response.statusCode, 200);

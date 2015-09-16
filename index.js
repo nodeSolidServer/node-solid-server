@@ -173,12 +173,12 @@ function routes () {
     router.use('/*', login.loginHandler);
 
     //ACL handlers
-    router.get("/*", acl.allowReadHandler);
-    router.head("/*", acl.allowReadHandler);
-    router.post("/*", acl.allowAppendThenWriteHandler);
-    router.patch("/*", acl.allowAppendThenWriteHandler);
-    router.put("/*", acl.allowAppendThenWriteHandler);
-    router.delete("/*", acl.allowWriteHandler);
+    router.get("/*", acl.allow('Read'));
+    router.head("/*", acl.allow('Read'));
+    router.post("/*", acl.allow('Append'));
+    router.patch("/*", acl.allow('Append'));
+    router.put("/*", acl.allow('Append'));
+    router.delete("/*", acl.allow('Write'));
 
     // Convert json-ld and nquads to turtle
     router.use('/*', parse.parseHandler);
