@@ -29,6 +29,9 @@ describe('LDNODE params', function () {
     it('should also work on /proxy/ ?uri', function(done) {
       nock('https://amazingwebsite.tld').get('/').reply(200);
       server.get('/proxy/?uri=https://amazingwebsite.tld/')
+        .expect(function (a) {
+          assert.equal(a.header['link'], null)
+        })
         .expect(200, done);
     });
 
