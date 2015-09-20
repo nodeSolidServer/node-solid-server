@@ -108,7 +108,7 @@ argv.live = !argv.noLive;
 
 // Set up debug environment
 process.env.DEBUG = argv.verbose ? 'ldnode:*' : false;
-var debug = require('../lib/logging').server;
+var debug = require('../lib/debug').server;
 
 // Set up port
 argv.port = argv.port || 3456;

@@ -89,44 +89,44 @@ describe('LDNODE params', function () {
     });
   });
 
-  describe('mount', function () {
+  // describe('mount', function () {
 
-    describe('not passed', function () {
-      it('should fallback on /', function (done) {
-        var ldp = ldnode();
-        assert.equal(ldp.locals.ldp.mount, '/');
-        done();
-      });
+  //   describe('not passed', function () {
+  //     it('should fallback on /', function (done) {
+  //       var ldp = ldnode();
+  //       assert.equal(ldp.locals.ldp.mount, '/');
+  //       done();
+  //     });
 
-    });
+  //   });
 
-    describe('passed', function() {
-      it ('should properly set the opts.mount', function (done) {
-        var ldp1 = ldnode({
-          mount: '/'
-        });
-        assert.equal(ldp1.locals.ldp.mount, '/');
+  //   describe('passed', function() {
+  //     it ('should properly set the opts.mount', function (done) {
+  //       var ldp1 = ldnode({
+  //         mount: '/'
+  //       });
+  //       assert.equal(ldp1.locals.ldp.mount, '/');
 
-        var ldp2 = ldnode({
-          mount: '/test'
-        });
-        assert.equal(ldp2.locals.ldp.mount, '/test');
+  //       var ldp2 = ldnode({
+  //         mount: '/test'
+  //       });
+  //       assert.equal(ldp2.locals.ldp.mount, '/test');
 
-        done();
-      });
-      it('should drop tha trailing /', function () {
-        var ldp1 = ldnode({
-          mount: '/test/'
-        });
-        assert.equal(ldp1.locals.ldp.mount, '/test');
+  //       done();
+  //     });
+  //     it('should drop tha trailing /', function () {
+  //       var ldp1 = ldnode({
+  //         mount: '/test/'
+  //       });
+  //       assert.equal(ldp1.locals.ldp.mount, '/test');
 
-        var ldp2 = ldnode({
-          mount: '/test/test'
-        });
-        assert.equal(ldp1.locals.ldp.mount, '/test');
-      });
-    });
-  });
+  //       var ldp2 = ldnode({
+  //         mount: '/test/test'
+  //       });
+  //       assert.equal(ldp1.locals.ldp.mount, '/test');
+  //     });
+  //   });
+  // });
 
   describe('root', function () {
     describe('not passed', function () {
