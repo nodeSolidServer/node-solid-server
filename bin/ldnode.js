@@ -129,6 +129,7 @@ try {
   app = ldnode.createServer(argv);
 } catch(e) {
   console.log(e.message);
+  console.log(e.stack)
   return 1;
 }
 app.listen(argv.port, function() {
