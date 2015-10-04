@@ -74,11 +74,6 @@ var argv = require('nomnom')
     help: 'Suffix for metadata files (default: \'.meta\')',
     abbr: 'sM'
   })
-  .option('suffixChanges', {
-    full: 'suffix-changes',
-    help: 'Suffix for acl files (default: \'.changes\')',
-    abbr: 'sC'
-  })
   .option('suffixSSE', {
     full: 'suffix-sse',
     help: 'Suffix for SSE files (default: \'.events\')',
