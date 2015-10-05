@@ -42,7 +42,7 @@
     "node-uuid": "^1.4.3",
     "nomnom": "^1.8.1",
     "raw-body": "^2.1.2",
-    "rdflib": "^0.2.8",
+    "rdflib": "^0.2.9",
     "redis": "^0.12.1",
     "request": "^2.58.0",
     "response-time": "^2.3.1",
