@@ -43,7 +43,6 @@ Options:
    --no-live               Disable live support through WebSockets
    -sA, --suffix-acl       Suffix for acl files (default: '.acl')
    -sM, --suffix-meta      Suffix for metadata files (default: '.meta')
-   -sC, --suffix-changes   Suffix for acl files (default: '.changes')
    -sE, --suffix-sse       Suffix for SSE files (default: '.events')
 
 ```
@@ -83,7 +82,6 @@ In case the `settings` is not passed, then it will start with the following defa
   mount: '/', // Where to mount Linked Data Platform
   webid: false, // Enable WebID+TLS authentication
   suffixAcl: '.acl', // Suffix for acl files
-  suffixChanges: '.changes', // Suffix for acl files
   suffixSSE: '.events', // Suffix for SSE files
   proxy: false, // Where to mount the proxy
   errorHandler: false, // function(err, req, res, next) to have a custom error handler

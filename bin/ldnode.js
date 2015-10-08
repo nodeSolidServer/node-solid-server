@@ -74,11 +74,6 @@ var argv = require('nomnom')
     help: 'Suffix for metadata files (default: \'.meta\')',
     abbr: 'sM'
   })
-  .option('suffixChanges', {
-    full: 'suffix-changes',
-    help: 'Suffix for acl files (default: \'.changes\')',
-    abbr: 'sC'
-  })
   .option('suffixSSE', {
     full: 'suffix-sse',
     help: 'Suffix for SSE files (default: \'.events\')',
@@ -108,7 +103,7 @@ argv.live = !argv.noLive;
 
 // Set up debug environment
 process.env.DEBUG = argv.verbose ? 'ldnode:*' : false;
-var debug = require('../lib/logging').server;
+var debug = require('../lib/debug').server;
 
 // Set up port
 argv.port = argv.port || 3456;
@@ -129,6 +124,7 @@ try {
   app = ldnode.createServer(argv);
 } catch(e) {
   console.log(e.message);
+  console.log(e.stack)
   return 1;
 }
 app.listen(argv.port, function() {
