@@ -90,7 +90,7 @@ describe('LDP', function () {
             '<> a <http://www.w3.org/ns/ldp#MagicType> ;' +
             '   dcterms:title "This is a magic type" ;' +
             '   o:limit 500000.00 .', 'sampleContainer/magicType.ttl');
-      
+
       ldp.listContainer(__dirname + '/resources/sampleContainer/', 'https://server.tld', '', function (err, data) {
         var graph = $rdf.graph();
         $rdf.parse(
@@ -110,7 +110,7 @@ describe('LDP', function () {
 
         assert.equal(statements.length, 2);
         assert.isAbove(statements.indexOf('http://www.w3.org/ns/ldp#MagicType'), -1);
-        assert.isAbove(statements.indexOf('http://www.w3.org/ns/posix/stat#File'), -1);
+        assert.isAbove(statements.indexOf('http://www.w3.org/ns/ldp#Resource'), -1);
 
         rm('sampleContainer/magicType.ttl');
         done();
@@ -153,11 +153,11 @@ describe('LDP', function () {
         assert.equal(containerStatements.length, 1);
 
         basicContainerStatements.forEach(function(statement) {
-          assert.equal(statement.uri, ns.stat('File').uri);
+          assert.equal(statement.uri, ns.ldp('Resource').uri);
         });
 
         containerStatements.forEach(function(statement) {
-          assert.equal(statement.uri, ns.stat('File').uri);
+          assert.equal(statement.uri, ns.ldp('Resource').uri);
         });
 
         rm('sampleContainer/containerFile.ttl');
