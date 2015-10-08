@@ -84,95 +84,126 @@ describe('ACL HTTP', function() {
     }
 
 
-    describe('Basic', function() {
-        it('Should return "Hello, World!"', function(done) {
-            var options = createOptions('hello.html', 'user1');
+    describe('No ACL', function () {
+        it('should return 403 for any resource', function(done) {
+            var options = createOptions('/acl/no-acl', 'user1');
             request(options, function(error, response, body) {
-                assert.equal(response.statusCode, 200);
-                assert.match(response.headers['content-type'], /text\/html/);
+                assert.equal(response.statusCode, 403);
                 done();
             });
         });
-        it("Should return User header", function(done) {
-            var options = createOptions('hello.html', 'user1');
+        it("should have User in the Header", function (done) {
+            var options = createOptions('/acl/no-acl', 'user1');
             request(options, function(error, response, body) {
-                assert.equal(response.statusCode, 200);
-                assert.equal(response.headers.user, user1);
+                assert.equal(response.statusCode, 403);
                 done();
             });
         });
     });
 
-    describe("Empty .acl", function() {
-        it("Should create test folder", function(done) {
-            var options = createOptions(testDirMetaFile, 'user1');
-            options.body = "";
-            request.put(options, function(error, response, body) {
-                assert.equal(error, null);
-                assert.equal(response.statusCode, 201);
-                done();
+    describe("empty .acl", function() {
+        describe("with no defaultForNew in parent path", function () {
+            it("should give no access", function(done) {
+                var options = createOptions('/acl/empty-acl/test-folder', 'user1');
+                options.body = "";
+                request.put(options, function(error, response, body) {
+                    assert.equal(response.statusCode, 403);
+                    done();
+                });
             });
-        });
-        it("Should create empty acl file", function(done) {
-            var options = createOptions(testDirAclFile, 'user1');
-            options.headers = {
-                'content-type': 'text/turtle'
-            };
-            options.body = '';
-            request.put(options, function(error, response, body) {
-                assert.equal(error, null);
-                assert.equal(response.statusCode, 201);
-                done();
+            it("should not let edit the .acl", function(done) {
+                var options = createOptions('/acl/empty-acl/.acl', 'user1');
+                options.headers = {
+                    'content-type': 'text/turtle'
+                };
+                options.body = '';
+                request.put(options, function(error, response, body) {
+                    assert.equal(response.statusCode, 403);
+                    done();
+                });
             });
-        });
-        it("Should return text/turtle for the acl file", function(done) {
-            var options = createOptions(testDirAclFile, 'user1');
-            options.headers = {
-                accept: 'text/turtle'
-            };
-            request.get(options, function(error, response, body) {
-                assert.equal(error, null);
-                assert.equal(response.statusCode, 200);
-                assert.match(response.headers['content-type'], /text\/turtle/);
-                done();
+            it("should not let read the .acl", function(done) {
+                var options = createOptions('/acl/empty-acl/.acl', 'user1');
+                options.headers = {
+                    accept: 'text/turtle'
+                };
+                request.get(options, function(error, response, body) {
+                    assert.equal(error, null);
+                    assert.equal(response.statusCode, 403);
+                    done();
+                });
             });
-        });
-        it("Should create test file", function(done) {
-            var options = createOptions(abcFile, 'user1');
-            options.headers = {
-                'content-type': 'text/turtle'
-            };
-            options.body = '<a> <b> <c> .';
-            request.put(options, function(error, response, body) {
-                assert.equal(error, null);
-                assert.equal(response.statusCode, 201);
-                done();
+        })
+        describe("with defaultForNew in parent path", function () {
+            it("should allow creation of new containers", function(done) {
+                var options = createOptions('/acl/write-acl/empty-acl/test-folder', 'user1');
+                options.body = "";
+                request.put(options, function(error, response, body) {
+                    assert.equal(response.statusCode, 200);
+                    done();
+                });
             });
-        });
-        it("Should create test file's acl file", function(done) {
-            var options = createOptions(abcAclFile, 'user1');
-            options.headers = {
-                'content-type': 'text/turtle'
-            };
-            options.body = '';
-            request.put(options, function(error, response, body) {
-                assert.equal(error, null);
-                assert.equal(response.statusCode, 201);
-                done();
+            it("Should create empty acl file", function(done) {
+                var options = createOptions(testDirAclFile, 'user1');
+                options.headers = {
+                    'content-type': 'text/turtle'
+                };
+                options.body = '';
+                request.put(options, function(error, response, body) {
+                    assert.equal(error, null);
+                    assert.equal(response.statusCode, 201);
+                    done();
+                });
             });
-        });
-        it("Should access test file's acl file", function(done) {
-            var options = createOptions(abcAclFile, 'user1');
-            options.headers = {
-                accept: 'text/turtle'
-            };
-            request.get(options, function(error, response, body) {
-                assert.equal(error, null);
-                assert.equal(response.statusCode, 200);
-                assert.match(response.headers['content-type'], /text\/turtle/);
-                done();
+            it("Should return text/turtle for the acl file", function(done) {
+                var options = createOptions(testDirAclFile, 'user1');
+                options.headers = {
+                    accept: 'text/turtle'
+                };
+                request.get(options, function(error, response, body) {
+                    assert.equal(error, null);
+                    assert.equal(response.statusCode, 200);
+                    assert.match(response.headers['content-type'], /text\/turtle/);
+                    done();
+                });
             });
-        });
+            it("Should create test file", function(done) {
+                var options = createOptions(abcFile, 'user1');
+                options.headers = {
+                    'content-type': 'text/turtle'
+                };
+                options.body = '<a> <b> <c> .';
+                request.put(options, function(error, response, body) {
+                    assert.equal(error, null);
+                    assert.equal(response.statusCode, 201);
+                    done();
+                });
+            });
+            it("Should create test file's acl file", function(done) {
+                var options = createOptions(abcAclFile, 'user1');
+                options.headers = {
+                    'content-type': 'text/turtle'
+                };
+                options.body = '';
+                request.put(options, function(error, response, body) {
+                    assert.equal(error, null);
+                    assert.equal(response.statusCode, 201);
+                    done();
+                });
+            });
+            it("Should access test file's acl file", function(done) {
+                var options = createOptions(abcAclFile, 'user1');
+                options.headers = {
+                    accept: 'text/turtle'
+                };
+                request.get(options, function(error, response, body) {
+                    assert.equal(error, null);
+                    assert.equal(response.statusCode, 200);
+                    assert.match(response.headers['content-type'], /text\/turtle/);
+                    done();
+                });
+            });
+        })
     });
 
     describe("Origin", function() {
