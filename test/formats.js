@@ -57,6 +57,15 @@ describe('formats', function () {
         });
     });
 
+    describe('turtle', function() {
+        it('Should return turtle document if Accept is set to turtle', function(done) {
+            server.get('/patch-5-initial.ttl')
+                .set('accept', 'text/turtle;q=0.9,application/rdf+xml;q=0.8,text/plain;q=0.7,*/*;q=0.5')
+                .expect('content-type', /text\/turtle/)
+                .expect(200, done);
+        });
+    });
+
     describe('none', function() {
         it('Should return turtle document if no Accept header is set', function(done) {
             server.get('/patch-5-initial.ttl')
