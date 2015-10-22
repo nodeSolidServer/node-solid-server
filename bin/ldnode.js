@@ -3,9 +3,6 @@
 var fs = require('fs');
 var path = require('path');
 var argv = require('nomnom')
-var ldnode = require('../index');
-
-argv
   .script('ldnode')
   .option('verbose', {
     abbr: 'v',
@@ -120,6 +117,7 @@ if (process.platform !== 'win32') {
 }
 
 // Finally starting ldnode
+var ldnode = require('../');
 var app;
 try {
   app = ldnode.createServer(argv);
