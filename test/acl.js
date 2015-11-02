@@ -84,20 +84,11 @@ describe('ACL HTTP', function() {
     }
 
 
-    describe('Basic', function() {
-        it('Should return "Hello, World!"', function(done) {
+    describe('No ACL', function() {
+        it('Should return a 403', function(done) {
             var options = createOptions('hello.html', 'user1');
             request(options, function(error, response, body) {
-                assert.equal(response.statusCode, 200);
-                assert.match(response.headers['content-type'], /text\/html/);
-                done();
-            });
-        });
-        it("Should return User header", function(done) {
-            var options = createOptions('hello.html', 'user1');
-            request(options, function(error, response, body) {
-                assert.equal(response.statusCode, 200);
-                assert.equal(response.headers.user, user1);
+                assert.equal(response.statusCode, 403);
                 done();
             });
         });
