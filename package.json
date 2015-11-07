@@ -48,7 +48,7 @@
     "response-time": "^2.3.1",
     "solid-ws": "^0.2.0",
     "string": "^3.3.0",
-    "webid": "^0.3.0"
+    "webid": "^0.3.1"
   },
   "devDependencies": {
     "chai": "^3.0.0",
