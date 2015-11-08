@@ -16,7 +16,7 @@ You can run ldnode as a [command-line tool](https://github.com/linkeddata/ldnode
 - [x] WebID+TLS Authentication
 - [x] Mount as express' router
 - [x] Command line tool
-- [x] Real-time live updates (using websokets)
+- [x] Real-time live updates (using WebSockets)
 
 
 ## Command line tool
