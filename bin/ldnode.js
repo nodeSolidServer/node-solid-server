@@ -2,7 +2,6 @@
 
 var fs = require('fs');
 var path = require('path');
-
 var argv = require('nomnom')
   .script('ldnode')
   .option('verbose', {
@@ -118,7 +117,7 @@ if (process.platform !== 'win32') {
 }
 
 // Finally starting ldnode
-var ldnode = require('../index');
+var ldnode = require('../');
 var app;
 try {
   app = ldnode.createServer(argv);

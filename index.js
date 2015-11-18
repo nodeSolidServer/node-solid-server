@@ -1,6 +1,2 @@
-"use strict";
-
-var ldnode = require('./lib/create-app');
-ldnode.createServer = require('./lib/create-server');
-
-module.exports = ldnode;
+module.exports = require('./lib/create-app');
+module.exports.createServer = require('./lib/create-server');
