@@ -135,11 +135,11 @@ describe('ACL HTTP', function() {
             });
         })
         describe("with defaultForNew in parent path", function () {
-            it("should allow creation of new containers", function(done) {
+            it("should allow creation of new files", function(done) {
                 var options = createOptions('/acl/write-acl/empty-acl/test-folder', 'user1');
                 options.body = "";
                 request.put(options, function(error, response, body) {
-                    assert.equal(response.statusCode, 200);
+                    assert.equal(response.statusCode, 201);
                     done();
                 });
             });
