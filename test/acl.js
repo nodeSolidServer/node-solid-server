@@ -850,18 +850,17 @@ describe('ACL HTTP', function() {
 
     describe("defaultForNew", function() {
         var body = "<#Owner>\n" +
-            " <http://www.w3.org/ns/auth/acl#accessTo> <" + address + testDir + "/" + ">, <" +
-            address + testDirAclFile + ">;\n" +
+            " <http://www.w3.org/ns/auth/acl#accessTo> <./>;\n" +
             " <http://www.w3.org/ns/auth/acl#agent> <" + user1 + ">;\n" +
-            " <http://www.w3.org/ns/auth/acl#defaultForNew> <" + address + testDir + "/" + ">;\n" +
-            " <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write> .\n" +
+            " <http://www.w3.org/ns/auth/acl#defaultForNew> <./>;\n" +
+            " <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Control> .\n" +
             "<#Default>\n" +
-            " <http://www.w3.org/ns/auth/acl#accessTo> <" + address + testDir + "/" + ">;\n" +
-            " <http://www.w3.org/ns/auth/acl#defaultForNew> <" + address + testDir + "/" + ">;\n" +
+            " <http://www.w3.org/ns/auth/acl#accessTo> <./>;\n" +
+            " <http://www.w3.org/ns/auth/acl#defaultForNew> <./>;\n" +
             " <http://www.w3.org/ns/auth/acl#agentClass> <http://xmlns.com/foaf/0.1/Agent>;\n" +
             " <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read> .\n";
         it("user1 should be able to modify test direcotory's ACL file", function(done) {
-            var options = createOptions(testDirAclFile, 'user1');
+            var options = createOptions('/acl/write-acl/default-for-new/.acl', 'user1');
             options.headers = {
                 'content-type': 'text/turtle'
             };
@@ -873,7 +872,7 @@ describe('ACL HTTP', function() {
             });
         });
         it("user1 should be able to access test direcotory's ACL file", function(done) {
-            var options = createOptions(testDirAclFile, 'user1');
+            var options = createOptions('/acl/write-acl/default-for-new/.acl', 'user1');
             request.head(options, function(error, response, body) {
                 assert.equal(error, null);
                 assert.equal(response.statusCode, 200);
@@ -881,7 +880,7 @@ describe('ACL HTTP', function() {
             });
         });
         it("user1 should be able to create new test file", function(done) {
-            var options = createOptions(abcdFile, 'user1');
+            var options = createOptions('/acl/write-acl/default-for-new/test-file.ttl', 'user1');
             options.headers = {
                 'content-type': 'text/turtle'
             };
@@ -893,7 +892,7 @@ describe('ACL HTTP', function() {
             });
         });
         it("user1 should be able to access new test file", function(done) {
-            var options = createOptions(abcdFile, 'user1');
+            var options = createOptions('/acl/write-acl/default-for-new/test-file.ttl', 'user1');
             request.head(options, function(error, response, body) {
                 assert.equal(error, null);
                 assert.equal(response.statusCode, 200);
@@ -901,7 +900,7 @@ describe('ACL HTTP', function() {
             });
         });
         it("user2 should not be able to access test direcotory's ACL file", function(done) {
-            var options = createOptions(testDirAclFile, 'user2');
+            var options = createOptions('/acl/write-acl/default-for-new/.acl', 'user2');
             request.head(options, function(error, response, body) {
                 assert.equal(error, null);
                 assert.equal(response.statusCode, 403);
@@ -909,7 +908,7 @@ describe('ACL HTTP', function() {
             });
         });
         it("user2 should be able to access new test file", function(done) {
-            var options = createOptions(abcdFile, 'user2');
+            var options = createOptions('/acl/write-acl/default-for-new/test-file.ttl', 'user2');
             request.head(options, function(error, response, body) {
                 assert.equal(error, null);
                 assert.equal(response.statusCode, 200);
@@ -917,7 +916,7 @@ describe('ACL HTTP', function() {
             });
         });
         it("user2 should not be able to modify new test file", function(done) {
-            var options = createOptions(abcdFile, 'user2');
+            var options = createOptions('/acl/write-acl/default-for-new/test-file.ttl', 'user2');
             options.headers = {
                 'content-type': 'text/turtle'
             };
@@ -929,7 +928,7 @@ describe('ACL HTTP', function() {
             });
         });
         it("agent should be able to access new test file", function(done) {
-            var options = createOptions(abcdFile);
+            var options = createOptions('/acl/write-acl/default-for-new/test-file.ttl');
             request.head(options, function(error, response, body) {
                 assert.equal(error, null);
                 assert.equal(response.statusCode, 200);
@@ -937,7 +936,7 @@ describe('ACL HTTP', function() {
             });
         });
         it("agent should not be able to modify new test file", function(done) {
-            var options = createOptions(abcdFile);
+            var options = createOptions('/acl/write-acl/default-for-new/test-file.ttl');
             options.headers = {
                 'content-type': 'text/turtle'
             };
