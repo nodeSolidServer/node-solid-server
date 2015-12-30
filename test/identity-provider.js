@@ -18,7 +18,7 @@ describe('Identity Provider', function () {
   this.timeout(10000)
 
   var address = 'https://localhost:3457'
-
+  var host = 'localhost:3457'
   var ldpHttpsServer
   var ldp = ldnode.createServer({
     root: __dirname + '/resources',
@@ -58,7 +58,7 @@ describe('Identity Provider', function () {
       .expect(302, done)
   })
 
-  describe('Creating an account with POST', function () {
+  describe('creating an account with POST', function () {
     it('should return 406 if username is not given', function (done) {
       server.post('/accounts')
         .expect(406, done)
@@ -72,7 +72,7 @@ describe('Identity Provider', function () {
           done(err)
         })
     })
-    it('should not create an account if the account already exists', function (done) {
+    it('should not create a WebID if it already exists', function (done) {
       server.post('/accounts')
         .send('username=nicola')
         .expect(201)
@@ -84,7 +84,7 @@ describe('Identity Provider', function () {
             .send('username=nicola')
             .expect(406)
             .end(function (err) {
-              rm('accounts/nicola.localhost:3457')
+              rm('accounts/nicola.' + host)
               done(err)
             })
         })
