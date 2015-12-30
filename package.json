@@ -49,6 +49,7 @@
     "solid-acl": "^1.0.1",
     "solid-ws": "^0.2.0",
     "string": "^3.3.0",
+    "uuid": "^2.0.1",
     "webid": "^0.3.1"
   },
   "devDependencies": {
