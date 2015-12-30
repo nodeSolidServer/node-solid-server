@@ -25,7 +25,7 @@ describe('Identity Provider', function () {
     key: __dirname + '/keys/key.pem',
     cert: __dirname + '/keys/cert.pem',
     webid: true,
-    idp: true,
+    idp: __dirname + '/resources/accounts/',
     host: 'localhost:3457'
   })
 
@@ -66,7 +66,28 @@ describe('Identity Provider', function () {
     it('should return create WebID if only username is given', function (done) {
       server.post('/accounts')
         .send('username=nicola')
-        .expect(201, done)
+        .expect(201)
+        .end(function (err) {
+          rm('accounts/nicola.localhost:3457')
+          done(err)
+        })
+    })
+    it('should not create an account if the account already exists', function (done) {
+      server.post('/accounts')
+        .send('username=nicola')
+        .expect(201)
+        .end(function (err) {
+          if (err) {
+            return done(err)
+          }
+          server.post('/accounts')
+            .send('username=nicola')
+            .expect(406)
+            .end(function (err) {
+              rm('accounts/nicola.localhost:3457')
+              done(err)
+            })
+        })
     })
   })
 })

@@ -1,8 +1,9 @@
 var fs = require('fs');
 var fsExtra = require('fs-extra');
+var rimraf = require('rimraf')
 
 exports.rm = function (file) {
-  return fs.unlinkSync(__dirname + '/resources/' + file);
+  return rimraf.sync('/resources/' + file);
 };
 
 exports.write = function (text, file) {

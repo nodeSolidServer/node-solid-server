@@ -47,6 +47,7 @@
     "redis": "^0.12.1",
     "request": "^2.58.0",
     "response-time": "^2.3.1",
+    "rimraf": "^2.5.0",
     "solid-acl": "^1.0.1",
     "solid-ws": "^0.2.0",
     "string": "^3.3.0",
