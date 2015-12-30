@@ -58,6 +58,14 @@ describe('Identity Provider', function () {
       .expect(302, done)
   })
 
+  describe('accessing accounts', function() {
+    it('should be able to access public file of an account', function(done) {
+      var subdomain = supertest('https://tim.' + host)
+      subdomain.get('/hello.html')
+        .expect(200, done)
+    })
+  })
+
   describe('creating an account with POST', function () {
     it('should return 406 if username is not given', function (done) {
       server.post('/accounts')
