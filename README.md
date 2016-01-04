@@ -10,7 +10,7 @@ You can run ldnode as a [command-line tool](https://github.com/linkeddata/ldnode
 
 ## Features
 
-- [x] GET, PUT, POST and PATCH support
+- [x] HEAD, OPTIONS, GET, PUT, POST, PATCH, DELETE support
 - [x] Proxy for cross-site data access
 - [x] Access control using RDF ACLs
 - [x] WebID+TLS Authentication
