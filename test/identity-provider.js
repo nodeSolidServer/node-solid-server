@@ -80,6 +80,18 @@ describe('Identity Provider', function () {
           done(err)
         })
     })
+    it.skip('should return text/html with a frame and a certificate if spkac is passed', function (done) {
+      // var spkac = null // TODO this should be a spkac
+      server.post('/accounts')
+        .send('username=nicola')
+        .expect(201)
+        .expect('Content-Type', 'text/html')
+        .end(function (err) {
+          done(new Error('Test not implemented yet'))
+          rm('accounts/nicola.localhost:3457')
+          done(err)
+        })
+    })
     it('should not create a WebID if it already exists', function (done) {
       server.post('/accounts')
         .send('username=nicola')
