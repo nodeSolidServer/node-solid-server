@@ -53,6 +53,7 @@
     "solid-ws": "^0.2.0",
     "string": "^3.3.0",
     "uuid": "^2.0.1",
+    "vhost": "^3.0.2",
     "webid": "^0.3.1"
   },
   "devDependencies": {
