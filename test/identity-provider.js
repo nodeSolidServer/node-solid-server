@@ -25,8 +25,7 @@ describe('Identity Provider', function () {
     key: __dirname + '/keys/key.pem',
     cert: __dirname + '/keys/cert.pem',
     webid: true,
-    idp: true,
-    host: 'localhost:3457'
+    idp: true
   })
 
   var ldpHttpsServer
