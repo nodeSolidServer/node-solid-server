@@ -3,7 +3,7 @@ var fsExtra = require('fs-extra');
 var rimraf = require('rimraf')
 
 exports.rm = function (file) {
-  return rimraf.sync('/resources/' + file);
+  return rimraf.sync(__dirname + '/resources/' + file);
 };
 
 exports.write = function (text, file) {

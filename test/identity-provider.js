@@ -21,11 +21,11 @@ describe('Identity Provider', function () {
   var host = 'localhost:3457'
   var ldpHttpsServer
   var ldp = ldnode.createServer({
-    root: __dirname + '/resources',
+    root: __dirname + '/resources/accounts/',
     key: __dirname + '/keys/key.pem',
     cert: __dirname + '/keys/cert.pem',
     webid: true,
-    idp: __dirname + '/resources/accounts/',
+    idp: true,
     host: 'localhost:3457'
   })
 
@@ -72,27 +72,30 @@ describe('Identity Provider', function () {
         .expect(406, done)
     })
     it('should return create WebID if only username is given', function (done) {
+      rm('accounts/nicola.localhost')
       server.post('/accounts')
         .send('username=nicola')
         .expect(201)
         .end(function (err) {
-          rm('accounts/nicola.localhost:3457')
+          rm('accounts/nicola.localhost')
           done(err)
         })
     })
-    it.skip('should return text/html with a frame and a certificate if spkac is passed', function (done) {
+    it('should return text/html with a frame and a certificate if spkac is passed', function (done) {
       // var spkac = null // TODO this should be a spkac
+      rm('accounts/nicola.localhost')
       server.post('/accounts')
         .send('username=nicola')
         .expect(201)
         .expect('Content-Type', 'text/html')
         .end(function (err) {
           done(new Error('Test not implemented yet'))
-          rm('accounts/nicola.localhost:3457')
+          rm('accounts/nicola.localhost')
           done(err)
         })
     })
     it('should not create a WebID if it already exists', function (done) {
+      rm('accounts/nicola.localhost')
       server.post('/accounts')
         .send('username=nicola')
         .expect(201)

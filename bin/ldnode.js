@@ -50,9 +50,10 @@ var argv = require('nomnom')
     flag: true
   })
   .option('idp', {
-    help: 'Allow registration of WebIDs (e.g.  \'accounts/\')',
+    help: 'Allow registration of WebIDs',
     abbr: 'idp',
-    full: 'identity-provider'
+    full: 'identity-provider',
+    flag: true
   })
   .option('secret', {
     help: 'HTTP Session secret key (e.g. "your secret phrase")',

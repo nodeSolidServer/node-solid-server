@@ -68,7 +68,7 @@ describe('LDP', function () {
 
   describe('put', function() {
     it('should write a file in an existing dir', function(done) {
-      ldp.put('/resources/testPut.txt', 'hello world', function (err) {
+      ldp.put('localhost', '/resources/testPut.txt', 'hello world', function (err) {
         assert.notOk(err);
         var found = read('testPut.txt');
         rm('testPut.txt');
@@ -78,7 +78,7 @@ describe('LDP', function () {
     });
 
     it('should fail if a trailing `/` is passed', function(done) {
-      ldp.put('/resources/', 'hello world', function (err) {
+      ldp.put('localhost', '/resources/', 'hello world', function (err) {
         assert.equal(err.status, 409);
         done();
       });
@@ -87,13 +87,13 @@ describe('LDP', function () {
 
   describe('delete', function() {
     it('should delete a file in an existing dir', function(done) {
-      ldp.put('/resources/testPut.txt', 'hello world', function (err) {
+      ldp.put('localhost', '/resources/testPut.txt', 'hello world', function (err) {
         assert.notOk(err);
         fs.stat(ldp.root + '/resources/testPut.txt', function (err) {
           if (err) {
             return done(err)
           }
-          ldp.delete('/resources/testPut.txt', function (err) {
+          ldp.delete('localhost', '/resources/testPut.txt', function (err) {
             fs.stat(ldp.root + '/resources/testPut.txt', function (err) {
               return done(err ? null : new Error("file still exists"))
             })
