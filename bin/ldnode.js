@@ -58,6 +58,11 @@ var argv = require('nomnom')
     help: 'HTTP Session secret key (e.g. "your secret phrase")',
     abbr: 's'
   })
+  .option('forceUser', {
+    help: 'Force a WebID to always be logged in (usefull when offline)',
+    abbr: 'fU',
+    full: 'force-user'
+  })
   .option('proxy', {
     full: 'proxy',
     help: 'Use a proxy on example.tld/proxyPath',
