@@ -179,4 +179,34 @@ describe('LDNODE params', function () {
       });
     });
   });
+
+  describe('forcedUser', function () {
+
+    var ldpHttpsServer
+    var ldp = ldnode.createServer({
+      forceUser: 'https://fakeaccount.com/profile#me',
+      root: __dirname + '/resources/acl/fake-account',
+      key: __dirname + '/keys/key.pem',
+      cert: __dirname + '/keys/cert.pem',
+      webid: true,
+      host: 'localhost:3457'
+    })
+
+    var ldpHttpsServer
+    before(function (done) {
+        ldpHttpsServer = ldp.listen(3459, done)
+    })
+
+    after(function () {
+        if (ldpHttpsServer) ldpHttpsServer.close()
+    })
+
+    var server = supertest('https://localhost:3459')
+
+    it ('should find resource in correct path', function (done) {
+      server.get('/hello.html')
+        .expect('User', 'https://fakeaccount.com/profile#me')
+        .end(done);
+    });
+  });
 });
