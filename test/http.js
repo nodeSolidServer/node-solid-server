@@ -131,20 +131,23 @@ describe('HTTP APIs', function() {
               .expect(200, done);
       });
 
-      it('should have set Link as resource', function(done) {
+      it('should have set Link as resource', function (done) {
         server.get('/sampleContainer/example1.ttl')
+            .expect('content-type', /text\/turtle/)
             .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Resource>; rel="type"/)
             .expect(200, done);
       });
       it('should have set acl and describedBy Links for resource', function(done) {
         server.get('/sampleContainer/example1.ttl')
+            .expect('content-type', /text\/turtle/)
             .expect(hasHeader('acl', 'example1.ttl' + suffixAcl))
             .expect(hasHeader('describedBy', 'example1.ttl' + suffixMeta))
             .end(done);
       });
 
       it('should have set Link as Container/BasicContainer', function(done) {
-        server.head('/sampleContainer/')
+        server.get('/sampleContainer/')
+            .expect('content-type', /text\/turtle/)
             .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#BasicContainer>; rel="type"/)
             .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Container>; rel="type"/)
             .expect(200, done);
@@ -156,11 +159,13 @@ describe('HTTP APIs', function() {
       it('should return basic container link for directories', function(done) {
           server.get('/')
               .expect('Link', /http:\/\/www.w3.org\/ns\/ldp#BasicContainer/)
+              .expect('content-type', /text\/turtle/)
               .expect(200, done);
       });
       it('should return resource link for files', function(done) {
           server.get('/hello.html')
               .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Resource>; rel="type"/)
+              .expect('Content-Type', 'text/html')
               .expect(200, done);
       });
       it('should have glob support', function(done) {
