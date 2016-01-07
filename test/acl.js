@@ -135,6 +135,14 @@ describe('ACL HTTP', function() {
             });
         })
         describe("with defaultForNew in parent path", function () {
+            before(function() {
+                rm('/acl/write-acl/empty-acl/another-empty-folder/test-file.acl');
+                rm('/acl/write-acl/empty-acl/test-folder/test-file');
+                rm('/acl/write-acl/empty-acl/test-file');
+                rm('/acl/write-acl/test-file');
+                rm('/acl/write-acl/test-file.acl');
+            });
+
             it("should fail to create a container", function(done) {
                 var options = createOptions('/acl/write-acl/empty-acl/test-folder/', 'user1');
                 options.body = "";
@@ -219,10 +227,22 @@ describe('ACL HTTP', function() {
                     done();
                 });
             });
+
+            after(function() {
+                rm('/acl/write-acl/empty-acl/another-empty-folder/test-file.acl');
+                rm('/acl/write-acl/empty-acl/test-folder/test-file');
+                rm('/acl/write-acl/empty-acl/test-file');
+                rm('/acl/write-acl/test-file');
+                rm('/acl/write-acl/test-file.acl');
+            });
         })
     });
 
     describe("Origin", function() {
+        before(function () {
+            rm('acl/origin/test-folder/.acl');
+        });
+
         it("Should PUT new ACL file", function(done) {
             var options = createOptions('/acl/origin/test-folder/.acl', 'user1');
             options.headers = {
@@ -316,6 +336,10 @@ describe('ACL HTTP', function() {
                     done();
                 });
             });
+
+        after(function () {
+            rm('acl/origin/test-folder/.acl');
+        });
     });
 
     describe.skip("Owner-only", function() {
@@ -849,6 +873,11 @@ describe('ACL HTTP', function() {
     });
 
     describe("defaultForNew", function() {
+        before(function() {
+            rm('/acl/write-acl/default-for-new/.acl');
+            rm('/acl/write-acl/default-for-new/test-file.ttl');
+        });
+
         var body = "<#Owner>\n" +
             " <http://www.w3.org/ns/auth/acl#accessTo> <./>;\n" +
             " <http://www.w3.org/ns/auth/acl#agent> <" + user1 + ">;\n" +
@@ -946,6 +975,11 @@ describe('ACL HTTP', function() {
                 assert.equal(response.statusCode, 401);
                 done();
             });
+        });
+
+        after(function() {
+            rm('/acl/write-acl/default-for-new/.acl');
+            rm('/acl/write-acl/default-for-new/test-file.ttl');
         });
     });
 
