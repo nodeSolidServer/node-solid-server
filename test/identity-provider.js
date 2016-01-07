@@ -75,7 +75,7 @@ describe('Identity Provider', function () {
       rm('accounts/nicola.localhost')
       server.post('/accounts')
         .send('username=nicola')
-        .expect(201)
+        .expect(200)
         .end(function (err) {
           rm('accounts/nicola.localhost')
           done(err)
@@ -86,7 +86,7 @@ describe('Identity Provider', function () {
       rm('accounts/nicola.localhost')
       server.post('/accounts')
         .send('username=nicola')
-        .expect(201)
+        .expect(200)
         .expect('Content-Type', 'text/html')
         .end(function (err) {
           done(new Error('Test not implemented yet'))
@@ -98,7 +98,7 @@ describe('Identity Provider', function () {
       rm('accounts/nicola.localhost')
       server.post('/accounts')
         .send('username=nicola')
-        .expect(201)
+        .expect(200)
         .end(function (err) {
           if (err) {
             return done(err)
