@@ -58,8 +58,8 @@ describe('Identity Provider', function () {
       .expect(302, done)
   })
 
-  describe.skip('accessing accounts', function() {
-    it('should be able to access public file of an account', function(done) {
+  describe('accessing accounts', function () {
+    it('should be able to access public file of an account', function (done) {
       var subdomain = supertest('https://tim.' + host)
       subdomain.get('/hello.html')
         .expect(200, done)
@@ -68,12 +68,14 @@ describe('Identity Provider', function () {
 
   describe('creating an account with POST', function () {
     it('should return 406 if username is not given', function (done) {
-      server.post('/accounts')
+      var subdomain = supertest('https://nicola.' + host)
+      subdomain.post('/accounts/new')
         .expect(406, done)
     })
     it('should return create WebID if only username is given', function (done) {
       rm('accounts/nicola.localhost')
-      server.post('/accounts')
+      var subdomain = supertest('https://nicola.' + host)
+      subdomain.post('/accounts/new')
         .send('username=nicola')
         .expect(200)
         .end(function (err) {
@@ -81,29 +83,18 @@ describe('Identity Provider', function () {
           done(err)
         })
     })
-    it.skip('should return text/html with a frame and a certificate if spkac is passed', function (done) {
-      // var spkac = null // TODO this should be a spkac
-      rm('accounts/nicola.localhost')
-      server.post('/accounts')
-        .send('username=nicola')
-        .expect(200)
-        .expect('Content-Type', 'text/html')
-        .end(function (err) {
-          done(new Error('Test not implemented yet'))
-          rm('accounts/nicola.localhost')
-          done(err)
-        })
-    })
+
     it('should not create a WebID if it already exists', function (done) {
       rm('accounts/nicola.localhost')
-      server.post('/accounts')
+      var subdomain = supertest('https://nicola.' + host)
+      subdomain.post('/accounts/new')
         .send('username=nicola')
         .expect(200)
         .end(function (err) {
           if (err) {
             return done(err)
           }
-          server.post('/accounts')
+          subdomain.post('/accounts/new')
             .send('username=nicola')
             .expect(406)
             .end(function (err) {
