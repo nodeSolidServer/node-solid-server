@@ -2,7 +2,12 @@ var fs = require('fs');
 var fsExtra = require('fs-extra');
 
 exports.rm = function (file) {
-  return fs.unlinkSync(__dirname + '/resources/' + file);
+  try {
+    return fs.unlinkSync(__dirname + '/resources/' + file);
+  } catch (e) {
+    // do nothing, suppress "Error: ENOENT, no such file or directory" errors
+  }
+
 };
 
 exports.write = function (text, file) {
