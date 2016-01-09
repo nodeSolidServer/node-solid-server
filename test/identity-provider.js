@@ -66,26 +66,55 @@ describe('Identity Provider', function () {
     })
   })
 
+  describe('generating a certificate', function () {
+    beforeEach(function () {
+      rm('accounts/nicola.localhost')
+    })
+    after(function () {
+      rm('accounts/nicola.localhost')
+    })
+
+    it('should not generate a certificate if spkac is not valid', function (done) {
+      var subdomain = supertest('https://nicola.' + host)
+      subdomain.post('/accounts/new')
+        .send('username=nicola')
+        .expect(200)
+        .end(function (err) {
+          if (err) return done(err)
+
+          var spkac = ''
+          subdomain.post('/accounts/cert')
+            .send('webid=https://nicola.' + host + '/profile/card#me&spkac=' + spkac)
+            .expect(500, done)
+        })
+    })
+  })
+
   describe('creating an account with POST', function () {
+    beforeEach(function () {
+      rm('accounts/nicola.localhost')
+    })
+
+    after(function () {
+      rm('accounts/nicola.localhost')
+    })
+
     it('should return 406 if username is not given', function (done) {
       var subdomain = supertest('https://nicola.' + host)
       subdomain.post('/accounts/new')
         .expect(406, done)
     })
     it('should return create WebID if only username is given', function (done) {
-      rm('accounts/nicola.localhost')
       var subdomain = supertest('https://nicola.' + host)
       subdomain.post('/accounts/new')
         .send('username=nicola')
         .expect(200)
         .end(function (err) {
-          rm('accounts/nicola.localhost')
           done(err)
         })
     })
 
     it('should not create a WebID if it already exists', function (done) {
-      rm('accounts/nicola.localhost')
       var subdomain = supertest('https://nicola.' + host)
       subdomain.post('/accounts/new')
         .send('username=nicola')
@@ -98,7 +127,6 @@ describe('Identity Provider', function () {
             .send('username=nicola')
             .expect(406)
             .end(function (err) {
-              rm('accounts/nicola.' + host)
               done(err)
             })
         })
