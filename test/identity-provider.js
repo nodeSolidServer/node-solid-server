@@ -87,10 +87,7 @@ describe('Identity Provider', function () {
             .send('spkac=' + spkac + '&webid=https%3A%2F%2Fnicola.localhost%3A3457%2Fprofile%2Fcard%23me')
             .expect('Content-Type', /application\/x-x509-user-cert/)
             .expect(200)
-            .end(function (err, res) {
-              console.log(res)
-              done(err)
-            })
+            .end(done)
         })
     })
 
