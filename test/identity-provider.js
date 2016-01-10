@@ -74,6 +74,26 @@ describe('Identity Provider', function () {
       rm('accounts/nicola.localhost')
     })
 
+    it('should generate a certificate if spkac is valid', function (done) {
+      var spkac = read('example_spkac.cnf')
+      var subdomain = supertest.agent('https://nicola.' + host)
+      subdomain.post('/accounts/new')
+        .send('username=nicola')
+        .expect(200)
+        .end(function (err, req) {
+          if (err) return done(err)
+
+          subdomain.post('/accounts/cert')
+            .send('spkac=' + spkac + '&webid=https%3A%2F%2Fnicola.localhost%3A3457%2Fprofile%2Fcard%23me')
+            .expect('Content-Type', /application\/x-x509-user-cert/)
+            .expect(200)
+            .end(function (err, res) {
+              console.log(res)
+              done(err)
+            })
+        })
+    })
+
     it('should not generate a certificate if spkac is not valid', function (done) {
       var subdomain = supertest('https://nicola.' + host)
       subdomain.post('/accounts/new')

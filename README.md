@@ -4,19 +4,18 @@
 [![NPM Version](https://img.shields.io/npm/v/ldnode.svg?style=flat)](https://npm.im/ldnode)
 [![Gitter chat](https://img.shields.io/badge/gitter-join%20chat%20%E2%86%92-brightgreen.svg?style=flat)](http://gitter.im/linkeddata/ldnode)
 
-Linked Data Platform server based on [rdflib.js](https://github.com/linkeddata/rdflib.js) and [node.js](https://nodejs.org/). This is all you need to run distributed linked data apps on top of the file system.
+Ldnode implements the [Linked Data Platform](http://www.w3.org/TR/ldp/) and [Solid](https://github.com/solid) in [NodeJS](https://nodejs.org/). This is all you need to run distributed Linked Data apps on top of the file system.
 
-You can run ldnode as a [command-line tool](https://github.com/linkeddata/ldnode/blob/master/README.md#command-line-tool) or as a [library](https://github.com/linkeddata/ldnode/blob/master/README.md#library) for your Nodejs/Express app.
+You can run ldnode as a [command-line tool](https://github.com/linkeddata/ldnode/blob/master/README.md#command-line-tool) or as a [library](https://github.com/linkeddata/ldnode/blob/master/README.md#library) for your [Express](https://expressjs.com) app.
 
 ## Features
 
-- [x] HEAD, OPTIONS, GET, PUT, POST, PATCH, DELETE support
+- [x] Linked Data Platform compliant HEAD, OPTIONS, GET, PUT, POST, PATCH, DELETE
 - [x] Proxy for cross-site data access
-- [x] Access control using RDF ACLs
+- [x] Access control using [Web Access Control](http://www.w3.org/wiki/WebAccessControl)
 - [x] WebID+TLS Authentication
-- [x] Mount as express' router
-- [x] Command line tool
 - [x] Real-time live updates (using WebSockets)
+- [ ] Identity provider for WebID+TLS
 
 
 ## Command line tool
@@ -29,30 +28,40 @@ The command line tool has the following options
 Usage: ldnode [options]
 
 Options:
-   -v, --verbose           Print the logs to console
-   --version               Print current ldnode version
-   -m, --mount             Where to mount Linked Data Platform (default: '/')
-   -r, --root              Root location on the filesystem to serve resources
-   -p, --port              Port to use
-   -c, --cache             Set cache time (in seconds), 0 for no cache
-   -K, --key               Path to the ssl key
-   -C, --cert              Path to the ssl cert
-   --webid                 Enable WebID+TLS authentication
-   -s, --secret            HTTP Session secret key (e.g. "your secret phrase")
-   -P, --proxy             Use a proxy on example.tld/proxyPath
-   --no-live               Disable live support through WebSockets
-   -sA, --suffix-acl       Suffix for acl files (default: '.acl')
-   -sM, --suffix-meta      Suffix for metadata files (default: '.meta')
-   -sE, --suffix-sse       Suffix for SSE files (default: '.events')
+   -v, --verbose               Print the logs to console
+   --version                   Print current ldnode version
+   -m, --mount                 Where to mount Linked Data Platform (default: '/')
+   -r, --root                  Root location on the filesystem to serve resources
+   -p, --port                  Port to use
+   -K, --key                   Path to the ssl key
+   -C, --cert                  Path to the ssl cert
+   --webid                     Enable WebID+TLS authentication
+   -s, --secret                HTTP Session secret key (e.g. "your secret phrase")
+   -fU, --force-user           Force a WebID to always be logged in (usefull when offline)
+   -P, --proxy                 Use a proxy on example.tld/proxyPath
+   --no-live                   Disable live support through WebSockets
+   -sA, --suffix-acl           Suffix for acl files (default: '.acl')
+   -sM, --suffix-meta          Suffix for metadata files (default: '.meta')
+   -sE, --suffix-sse           Suffix for SSE files (default: '.events')
+   --no-error-pages            Disable custom error pages (use Node.js default pages instead)
+   --error-pages               Folder from which to look for custom error pages files (files must be named <error-code>.html -- eg. 500.html)
+   --skin                      URI to a skin to load (default: https://linkeddata.github.io/warp/#/list/)
 
 ```
 
+### Run your server
+To start your Linked Data Platform server:
 
-For example, to start your own server using the current folder:
+```bash
+$ ldnode --port 80
+```
+
+To start your Solid server:
 
 ```bash
 $ ldnode --webid --port 443 --cert /path/to/cert --key /path/to/key
 ```
+**Note**: In order to support WebID+TLS authentication you will need `--webid` but also the flags `--cert` and `--key` to specify the keypair of your SSL certificate, since WebID+TLS will only work over `HTTPS`.
 
 ## Library
 
@@ -109,7 +118,7 @@ ldp.listen(3000, function() {
 
 ##### Advanced
 
-You can integrate ldnode in your existing express app, by mounting the ldnode app on a specific path using `lnode(opts)`.
+You can integrate ldnode in your existing [Express](https://expressjs.org) app, by mounting the ldnode app on a specific path using `lnode(opts)`.
 
 ```javascript
 var ldnode = require('ldnode')
@@ -175,9 +184,6 @@ npm run test-(acl|formats|params|patch)
     </tr>
   </tbody>
 </table>
-
-
-
 
 #### Do you want to contribute?
 
