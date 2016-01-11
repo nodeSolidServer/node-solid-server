@@ -52,6 +52,28 @@ Options:
 
 ### Running the server
 
+#### Solid server mode (HTTPS / WebID enabled)
+
+To start `ldnode` in Solid server mode, you will need to enable the `--webid`
+flag, and also pass in a valid SSL key and certificate files:
+
+```bash
+ldnode --webid --port 8443 --cert /path/to/cert --key /path/to/key
+```
+
+#### LDP-only server mode (HTTP, no WebID)
+
+You can also use `ldnode` as a Linked Data Platform server in HTTP mode (note
+that this will not support WebID authentication, and so will not be able to use
+any Solid apps such as the default [Warp](https://github.com/linkeddata/warp)
+app).
+
+```bash
+ldnode --port 8080
+```
+
+### Testing `ldnode` Locally
+
 #### Pre-Requisites
 
 In order to really get a feel for the Solid platform, and to test out `ldnode`,
@@ -67,16 +89,7 @@ While these steps are technically optional (since you could launch it in
 HTTP/LDP-only mode), you will not be able to use any actual Solid features
 without them.
 
-#### Solid server mode (HTTPS / WebID enabled)
-
-To start `ldnode` in Solid server mode, you will need to enable the `--webid`
-flag, and also pass in a valid SSL key and certificate files:
-
-```bash
-ldnode --webid --port 8443 --cert /path/to/cert --key /path/to/key
-```
-
-#### Creating a self-signed certificate
+#### Creating a certificate for local testing
 
 When deploying `ldnode` in production, we recommend that you go the
 usual Certificate Authority route to generate your SSL certificate (as you
@@ -111,15 +124,18 @@ Accessing most Solid apps (such as Warp) will prompt you to select your browser
 side certificate which contains a WebID from a Solid storage provider (see
 the [pre-requisites](#pre-requisites) discussion above).
 
-#### LDP-only server mode (HTTP, no WebID)
-
-You can also use `ldnode` as a Linked Data Platform server in HTTP mode (note
-that this will not support WebID authentication, and so will not be able to use
-any Solid apps such as the default [Warp](https://github.com/linkeddata/warp)
-app).
+#### Running the Unit Tests
 
 ```bash
-ldnode --port 8080
+$ npm test
+# running the tests with logs
+$ DEBUG="ldnode:*" npm test
+```
+
+In order to test a single component, you can run
+
+```javascript
+npm run test-(acl|formats|params|patch)
 ```
 
 ## Library
@@ -201,20 +217,6 @@ Run your app with the `DEBUG` variable set:
 
 ```bash
 $ DEBUG="ldnode:*" node app.js
-```
-
-## Testing
-
-```bash
-$ npm test
-# running the tests with logs
-$ DEBUG="ldnode:*" npm test
-```
-
-In order to test a single component, you can run
-
-```javascript
-npm run test-(acl|formats|params|patch)
 ```
 
 ## Contributing
