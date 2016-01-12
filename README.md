@@ -17,7 +17,7 @@ You can run `ldnode` as a [command-line tool](https://github.com/linkeddata/ldno
 - [x] Access control using [Web Access Control](http://www.w3.org/wiki/WebAccessControl)
 - [x] WebID+TLS Authentication
 - [x] Real-time live updates (using WebSockets)
-- [ ] Identity provider for WebID+TLS
+- [x] Identity provider for WebID+TLS
 
 ## Command Line Usage
 
@@ -37,6 +37,7 @@ Options:
    -K, --key                   Path to the ssl key
    -C, --cert                  Path to the ssl cert
    --webid                     Enable WebID+TLS authentication
+   -idp, --identity-provider   Allow registration of WebIDs
    -s, --secret                HTTP Session secret key (e.g. "your secret phrase")
    -fU, --force-user           Force a WebID to always be logged in (usefull when offline)
    -P, --proxy                 Use a proxy on example.tld/proxyPath
@@ -60,6 +61,18 @@ flag, and also pass in a valid SSL key and certificate files:
 ```bash
 ldnode --webid --port 8443 --cert /path/to/cert --key /path/to/key
 ```
+
+#### Solid server mode with WebID Identity Provider
+
+To allow users to create a WebID on your server:
+
+```bash
+$ ldnode --webid --port 8443 --cert /path/to/cert --key /path/to/key -idp --root ./accounts
+```
+
+Your users will have a dedicated folder under `./accounts`. Also, your root domain's website will be in `./accounts/yourdomain.tld`.
+
+New users can create accounts on `/accounts/new` and create new certificates on `/accounts/cert`. An easy-to-use sign-up tool is found on `/accounts`.
 
 #### LDP-only server mode (HTTP, no WebID)
 
