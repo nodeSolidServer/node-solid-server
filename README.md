@@ -4,9 +4,11 @@
 [![NPM Version](https://img.shields.io/npm/v/ldnode.svg?style=flat)](https://npm.im/ldnode)
 [![Gitter chat](https://img.shields.io/badge/gitter-join%20chat%20%E2%86%92-brightgreen.svg?style=flat)](http://gitter.im/linkeddata/ldnode)
 
-Ldnode implements the [Linked Data Platform](http://www.w3.org/TR/ldp/) and [Solid](https://github.com/solid) in [NodeJS](https://nodejs.org/). This is all you need to run distributed Linked Data apps on top of the file system.
+Ldnode implements the [Linked Data Platform](http://www.w3.org/TR/ldp/) and
+[Solid](https://github.com/solid) in [NodeJS](https://nodejs.org/). This is all
+you need to run distributed Linked Data apps on top of the file system.
 
-You can run ldnode as a [command-line tool](https://github.com/linkeddata/ldnode/blob/master/README.md#command-line-tool) or as a [library](https://github.com/linkeddata/ldnode/blob/master/README.md#library) for your [Express](https://expressjs.com) app.
+You can run `ldnode` as a [command-line tool](https://github.com/linkeddata/ldnode/blob/master/README.md#command-line-tool) or as a [library](https://github.com/linkeddata/ldnode/blob/master/README.md#library) for your [Express](https://expressjs.com) app.
 
 ## Features
 
@@ -17,8 +19,7 @@ You can run ldnode as a [command-line tool](https://github.com/linkeddata/ldnode
 - [x] Real-time live updates (using WebSockets)
 - [x] Identity provider for WebID+TLS
 
-
-## Command line tool
+## Command Line Usage
 
     npm install -g ldnode
 
@@ -50,52 +51,125 @@ Options:
 
 ```
 
-### Run your server
+### Running the server
 
-#### Run the Linked Data Platform
-To start your Linked Data Platform server:
+#### Solid server mode (HTTPS / WebID enabled)
 
-```bash
-$ ldnode --port 80
-```
-
-#### Run Solid
-To start your Solid server:
+To start `ldnode` in Solid server mode, you will need to enable the `--webid`
+flag, and also pass in a valid SSL key and certificate files:
 
 ```bash
-$ ldnode --webid --port 443 --cert /path/to/cert --key /path/to/key
+ldnode --webid --port 8443 --cert /path/to/cert --key /path/to/key
 ```
-**Note**: In order to support WebID+TLS authentication you will need `--webid` but also the flags `--cert` and `--key` to specify the keypair of your SSL certificate, since WebID+TLS will only work over `HTTPS`.
 
-#### Run Solid (multi-user!)
+#### Solid server mode with WebID Identity Provider
 
 To allow users to create a WebID on your server:
 
 ```bash
-$ ldnode --webid --port 443 --cert /path/to/cert --key /path/to/key -idp --root ./accounts
+$ ldnode --webid --port 8443 --cert /path/to/cert --key /path/to/key -idp --root ./accounts
 ```
 
 Your users will have a dedicated folder under `./accounts`. Also, your root domain's website will be in `./accounts/yourdomain.tld`.
 
 New users can create accounts on `/accounts/new` and create new certificates on `/accounts/cert`. An easy-to-use sign-up tool is found on `/accounts`.
 
+#### LDP-only server mode (HTTP, no WebID)
+
+You can also use `ldnode` as a Linked Data Platform server in HTTP mode (note
+that this will not support WebID authentication, and so will not be able to use
+any Solid apps such as the default [Warp](https://github.com/linkeddata/warp)
+app).
+
+```bash
+ldnode --port 8080
+```
+
+### Testing `ldnode` Locally
+
+#### Pre-Requisites
+
+In order to really get a feel for the Solid platform, and to test out `ldnode`,
+you will need the following:
+
+1. A WebID profile and browser certificate from one of the Solid-compliant
+    identity providers, such as [databox.me](https://databox.me).
+
+2. A server-side SSL certificate for `ldnode` to use (see the section below
+    on creating a self-signed certificate for testing).
+
+While these steps are technically optional (since you could launch it in
+HTTP/LDP-only mode), you will not be able to use any actual Solid features
+without them.
+
+#### Creating a certificate for local testing
+
+When deploying `ldnode` in production, we recommend that you go the
+usual Certificate Authority route to generate your SSL certificate (as you
+would with any website that supports HTTPS). However, for testing it locally,
+you can easily generate a self-signed certificate for whatever domain you're
+working with.
+
+For example, here is how to generate a self-signed certificate for `localhost`
+using the `openssl` library:
+
+```bash
+openssl genrsa 2048 > ../localhost.key
+openssl req -new -x509 -nodes -sha1 -days 3650 -key ../localhost.key -subj '/CN=*.localhost' > ../localhost.cert
+
+ldnode --webid --port 8443 --cert ../localhost.cert --key ../localhost.key -v
+```
+
+Note that this example creates the `localhost.cert` and `localhost.key` files
+in a directory one level higher from the current, so that you don't
+accidentally commit your certificates to `ldnode` while you're developing.
+
+#### Accessing your server
+
+If you started your `ldnode` server locally on port 8443 as in the example
+above, you would then be able to visit `https://localhost:8443` in the browser
+(ignoring the Untrusted Connection browser warnings as usual), where your
+`ldnode` server would redirect you to the default viewer app (see the  `--skin`
+server config parameter), which is usually the
+[github.io/warp](https://linkeddata.github.io/warp/#/list/) file browser.
+
+Accessing most Solid apps (such as Warp) will prompt you to select your browser
+side certificate which contains a WebID from a Solid storage provider (see
+the [pre-requisites](#pre-requisites) discussion above).
+
+#### Running the Unit Tests
+
+```bash
+$ npm test
+# running the tests with logs
+$ DEBUG="ldnode:*" npm test
+```
+
+In order to test a single component, you can run
+
+```javascript
+npm run test-(acl|formats|params|patch)
+```
 
 ## Library
 
-### Install
+### Install Dependencies
 
 ```
 npm install
 ```
 
-### Usage
+### Library Usage
 
 The library provides two APIs:
 
-- `ldnode.createServer(settings)`: starts a ready to use [Express](http://expressjs.com) app.
-- `lnode(settings)`: creates an [Express](http://expressjs.com) that you can mount in your existing express app.
+- `ldnode.createServer(settings)`: starts a ready to use
+    [Express](http://expressjs.com) app.
+- `lnode(settings)`: creates an [Express](http://expressjs.com) that you can
+    mount in your existing express app.
 
-In case the `settings` is not passed, then it will start with the following default settings.
+In case the `settings` is not passed, then it will start with the following
+default settings.
 
 ```javascript
 {
@@ -115,11 +189,13 @@ In case the `settings` is not passed, then it will start with the following defa
 }
 ```
 
-Have a look at the following examples or in the [`examples/`](https://github.com/linkeddata/ldnode/tree/master/examples) folder for more complex ones
+Have a look at the following examples or in the
+[`examples/`](https://github.com/linkeddata/ldnode/tree/master/examples) folder
+for more complex ones
 
-##### Simple
+##### Simple Example
 
-You can create an ldnode server ready to use using `ldnode.createServer(opts)`
+You can create an `ldnode` server ready to use using `ldnode.createServer(opts)`
 
 ```javascript
 var ldnode = require('ldnode')
@@ -133,9 +209,10 @@ ldp.listen(3000, function() {
 })
 ```
 
-##### Advanced
+##### Advanced Example
 
-You can integrate ldnode in your existing [Express](https://expressjs.org) app, by mounting the ldnode app on a specific path using `lnode(opts)`.
+You can integrate `ldnode` in your existing [Express](https://expressjs.org)
+app, by mounting the `ldnode` app on a specific path using `lnode(opts)`.
 
 ```javascript
 var ldnode = require('ldnode')
@@ -147,26 +224,12 @@ app.listen(3000, function() {
 ...
 ```
 
-##### Logs
+##### Logging
 
 Run your app with the `DEBUG` variable set:
 
 ```bash
 $ DEBUG="ldnode:*" node app.js
-```
-
-## Tests
-
-```bash
-$ npm test
-# running the tests with logs
-$ DEBUG="ldnode:*" npm test
-```
-
-In order to test a single component, you can run
-
-```javascript
-npm run test-(acl|formats|params|patch)
 ```
 
 ## Contributing
