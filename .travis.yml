@@ -5,3 +5,8 @@ node_js:
 cache:
   directories:
     - node_modules
+addons:
+  hosts:
+    - nic.localhost
+    - tim.localhost
+    - nicola.localhost
