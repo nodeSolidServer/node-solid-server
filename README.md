@@ -137,6 +137,20 @@ Accessing most Solid apps (such as Warp) will prompt you to select your browser
 side certificate which contains a WebID from a Solid storage provider (see
 the [pre-requisites](#pre-requisites) discussion above).
 
+#### Editing your local `/etc/hosts`
+
+To test certificates and account creation on subdomains, `ldnode`'s test suite
+uses the following localhost domains: `nic.localhost`, `tim.localhost`, and
+`nicola.localhost`. You will need to create host file entries for these, in
+order for the tests to pass.
+
+Edit your `/etc/hosts` file, and append:
+
+```
+# Used for unit testing ldnode
+127.0.0.1 nic.localhost, tim.localhost, nicola.localhost
+```
+
 #### Running the Unit Tests
 
 ```bash
