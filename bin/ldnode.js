@@ -102,6 +102,9 @@ var argv = require('nomnom')
     full: 'default-app',
     help: 'URI to use as a default app for resources (default: https://linkeddata.github.io/warp/#/list/)'
   })
+  .option('signup', {
+    help: 'Creates a WebID and sets it as owner'
+  })
   .parse();
 
 // Print version and leave
