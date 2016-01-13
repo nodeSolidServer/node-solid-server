@@ -20,7 +20,7 @@ var argv = require('nomnom')
   })
   .option('mount', {
     abbr: 'm',
-    help: 'Where to mount Linked Data Platform (default: \'/\')'
+    help: 'Relative URL from which to serve the Linked Data Platform (default: \'/\')'
   })
   .option('root', {
     abbr: 'r',
@@ -35,13 +35,13 @@ var argv = require('nomnom')
     help: 'Set cache time (in seconds), 0 for no cache'
   })
   .option('key', {
-    help: 'Path to the ssl key',
+    help: 'Path to the ssl key file',
     abbr: 'K',
     full: 'key'
   })
   .option('cert', {
     full: 'cert',
-    help: 'Path to the ssl cert',
+    help: 'Path to the ssl cert file',
     abbr: 'C'
   })
   .option('webid', {
@@ -56,11 +56,11 @@ var argv = require('nomnom')
     flag: true
   })
   .option('secret', {
-    help: 'HTTP Session secret key (e.g. "your secret phrase")',
+    help: 'HTTP Session cookie secret key (e.g. "your secret phrase")',
     abbr: 's'
   })
   .option('forceUser', {
-    help: 'Force a WebID to always be logged in (usefull when offline)',
+    help: 'Force a WebID to always be logged in (useful when offline)',
     abbr: 'fU',
     full: 'force-user'
   })
@@ -98,8 +98,9 @@ var argv = require('nomnom')
     full: 'error-pages',
     help: 'Folder from which to look for custom error pages files (files must be named <error-code>.html -- eg. 500.html)'
   })
-  .option('skin', {
-    help: 'URI to a skin to load (default: https://linkeddata.github.io/warp/#/list/)'
+  .option('defaultApp', {
+    full: 'default-app',
+    help: 'URI to use as a default app for resources (default: https://linkeddata.github.io/warp/#/list/)'
   })
   .parse();
 
