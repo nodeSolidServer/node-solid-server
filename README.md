@@ -29,26 +29,26 @@ The command line tool has the following options
 Usage: ldnode [options]
 
 Options:
-   -v, --verbose               Print the logs to console
-   --version                   Print current ldnode version
-   -m, --mount                 Where to mount Linked Data Platform (default: '/')
-   -r, --root                  Root location on the filesystem to serve resources
-   -p, --port                  Port to use
-   -K, --key                   Path to the ssl key
-   -C, --cert                  Path to the ssl cert
-   --webid                     Enable WebID+TLS authentication
-   -idp, --identity-provider   Allow registration of WebIDs
-   -s, --secret                HTTP Session secret key (e.g. "your secret phrase")
-   -fU, --force-user           Force a WebID to always be logged in (usefull when offline)
-   -P, --proxy                 Use a proxy on example.tld/proxyPath
-   --no-live                   Disable live support through WebSockets
-   -sA, --suffix-acl           Suffix for acl files (default: '.acl')
-   -sM, --suffix-meta          Suffix for metadata files (default: '.meta')
-   -sE, --suffix-sse           Suffix for SSE files (default: '.events')
-   --no-error-pages            Disable custom error pages (use Node.js default pages instead)
-   --error-pages               Folder from which to look for custom error pages files (files must be named <error-code>.html -- eg. 500.html)
-   --skin                      URI to a skin to load (default: https://linkeddata.github.io/warp/#/list/)
-
+  -v, --verbose               Print the logs to console
+  --version                   Print current ldnode version
+  -m, --mount                 Relative URL from which to serve the Linked Data Platform (default: '/')
+  -r, --root                  Root location on the filesystem to serve resources
+  -p, --port                  Port to use
+  -c, --cache                 Set cache time (in seconds), 0 for no cache
+  -K, --key                   Path to the ssl key file
+  -C, --cert                  Path to the ssl cert file
+  --webid                     Enable WebID+TLS authentication
+  -idp, --identity-provider   Allow registration of WebIDs
+  -s, --secret                HTTP Session cookie secret key (e.g. "your secret phrase")
+  -fU, --force-user           Force a WebID to always be logged in (useful when offline)
+  -P, --proxy                 Use a proxy on example.tld/proxyPath
+  --no-live                   Disable live support through WebSockets
+  -sA, --suffix-acl           Suffix for acl files (default: '.acl')
+  -sM, --suffix-meta          Suffix for metadata files (default: '.meta')
+  -sE, --suffix-sse           Suffix for SSE files (default: '.events')
+  --no-error-pages            Disable custom error pages (use Node.js default pages instead)
+  --error-pages               Folder from which to look for custom error pages files (files must be named <error-code>.html -- eg. 500.html)
+  --default-app               URI to use as a default app for resources (default: https://linkeddata.github.io/warp/#/list/)
 ```
 
 ### Running the server
@@ -129,13 +129,27 @@ accidentally commit your certificates to `ldnode` while you're developing.
 If you started your `ldnode` server locally on port 8443 as in the example
 above, you would then be able to visit `https://localhost:8443` in the browser
 (ignoring the Untrusted Connection browser warnings as usual), where your
-`ldnode` server would redirect you to the default viewer app (see the  `--skin`
-server config parameter), which is usually the
+`ldnode` server would redirect you to the default viewer app (see the
+`--default-app` server config parameter), which is usually the
 [github.io/warp](https://linkeddata.github.io/warp/#/list/) file browser.
 
 Accessing most Solid apps (such as Warp) will prompt you to select your browser
 side certificate which contains a WebID from a Solid storage provider (see
 the [pre-requisites](#pre-requisites) discussion above).
+
+#### Editing your local `/etc/hosts`
+
+To test certificates and account creation on subdomains, `ldnode`'s test suite
+uses the following localhost domains: `nic.localhost`, `tim.localhost`, and
+`nicola.localhost`. You will need to create host file entries for these, in
+order for the tests to pass.
+
+Edit your `/etc/hosts` file, and append:
+
+```
+# Used for unit testing ldnode
+127.0.0.1 nic.localhost, tim.localhost, nicola.localhost
+```
 
 #### Running the Unit Tests
 
