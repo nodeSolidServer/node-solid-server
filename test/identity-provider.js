@@ -116,11 +116,6 @@ describe('Identity Provider', function () {
       rm('accounts/nicola.localhost')
     })
 
-    it('should return 406 if username is not given', function (done) {
-      var subdomain = supertest('https://nicola.' + host)
-      subdomain.post('/accounts/new')
-        .expect(406, done)
-    })
     it('should return create WebID if only username is given', function (done) {
       var subdomain = supertest('https://nicola.' + host)
       subdomain.post('/accounts/new')

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ldnode: Admin Signup</title>
+</head>
+
+<body>
+
+<form id="accounts">
+  <input type="email">
+</form>
+
+<form id="cert" method="POST" action='/accounts/cert' target="spkacResult">
+  <keygen name="spkac" >
+  <input name="webid">
+  <button onclick='createGen()'></button>
+</form>
+
+<script type="text/javascript">
+
+var email = document.querySelector("#email").value
+
+function createAccount (email, callback) {
+  var hostname = location.hostname 
+  var url = '/accounts/new'
+  var data = "email=" + email;
+
+  var http = new XMLHttpRequest()
+  http.open('POST', url)
+  http.withCredentials = true
+  http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
+  http.onreadystatechange = function() {
+    if (this.readyState !== this.DONE
+        || this.status !== 200) {
+      return callback(new Error('Request failed'))
+    }
+    var webid = this.getResponseHeader("User")
+    if (!webid || webid.length === 0) {
+      return callback(new Error('WebID is not set in User'))
+    }
+
+    callback(null, webid)
+    // Account is created
+  }
+  http.send(data);
+}
+
+function createGen () {
+  var iframe = document.createElement('iframe')
+  iframe.name = 'spkacResult'
+  iframe.style.visibility = 'none'
+  iframe.style.width = '0px'
+  iframe.style.height = '0px'
+  document.querySelector('body').appendChild(iframe)
+
+  iframe.onload = function () {
+    var done = document.createElement('div')
+    done.innerHTML = '<p>restart your server without --signup</p>'
+    document.querySelector('body').appendChild(done)
+  }
+}
+
+document.querySelector('#cert').style.display = 'none'
+createAccount(email, function (err, webid) {
+  document.querySelector('#accounts').style.display = 'none'
+  document.querySelector('#cert').style.display = ''
+  document.querySelector('#webid').value = webid
+})
+</script>
+</body>
+</html>
