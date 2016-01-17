@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-var fs = require('fs');
-var path = require('path');
+var fs = require('fs')
+var path = require('path')
 var argv = require('nomnom')
   .script('ldnode')
   .option('verbose', {
@@ -13,14 +13,14 @@ var argv = require('nomnom')
     flag: true,
     help: 'Print current ldnode version',
     callback: function () {
-      fs.readFile(path.resolve(__dirname, '../package.json'), 'utf-8', function(err, file) {
-        console.log(JSON.parse(file).version);
-      });
+      fs.readFile(path.resolve(__dirname, '../package.json'), 'utf-8', function (_, file) {
+        console.log(JSON.parse(file).version)
+      })
     }
   })
   .option('mount', {
     abbr: 'm',
-    help: 'Relative URL from which to serve the Linked Data Platform (default: \'/\')'
+    help: "Relative URL from which to serve the Linked Data Platform (default: '/')"
   })
   .option('root', {
     abbr: 'r',
@@ -76,12 +76,12 @@ var argv = require('nomnom')
   })
   .option('suffixAcl', {
     full: 'suffix-acl',
-    help: 'Suffix for acl files (default: \'.acl\')',
+    help: "Suffix for acl files (default: '.acl')",
     abbr: 'sA'
   })
   .option('suffixMeta', {
     full: 'suffix-meta',
-    help: 'Suffix for metadata files (default: \'.meta\')',
+    help: "Suffix for metadata files (default: '.meta')",
     abbr: 'sM'
   })
   .option('noErrorPages', {
@@ -97,42 +97,46 @@ var argv = require('nomnom')
     full: 'default-app',
     help: 'URI to use as a default app for resources (default: https://linkeddata.github.io/warp/#/list/)'
   })
-  .parse();
+  .parse()
 
-// Print version and leave
-if (argv.version) {
-  return;
-}
+function bin (argv) {
+  // Print version and leave
+  if (argv.version) {
+    return 0
+  }
 
-// Set up --no-*
-argv.live = !argv.noLive;
+  // Set up --no-*
+  argv.live = !argv.noLive
 
-// Set up debug environment
-process.env.DEBUG = argv.verbose ? 'ldnode:*' : false;
-var debug = require('../lib/debug').server;
+  // Set up debug environment
+  process.env.DEBUG = argv.verbose ? 'ldnode:*' : false
+  var debug = require('../lib/debug').server
 
-// Set up port
-argv.port = argv.port || 3456;
+  // Set up port
+  argv.port = argv.port || 3456
 
-// Signal handling (e.g. CTRL+C)
-if (process.platform !== 'win32') {
+  // Signal handling (e.g. CTRL+C)
+  if (process.platform !== 'win32') {
     // Signal handlers don't work on Windows.
-    process.on('SIGINT', function() {
-        debug("LDP stopped.");
-        process.exit();
-    });
+    process.on('SIGINT', function () {
+      debug('LDP stopped.')
+      process.exit()
+    })
+  }
+
+  // Finally starting ldnode
+  var ldnode = require('../')
+  var app
+  try {
+    app = ldnode.createServer(argv)
+  } catch(e) {
+    console.log(e.message)
+    console.log(e.stack)
+    return 1
+  }
+  app.listen(argv.port, function () {
+    debug('LDP started on port ' + argv.port)
+  })
 }
 
-// Finally starting ldnode
-var ldnode = require('../');
-var app;
-try {
-  app = ldnode.createServer(argv);
-} catch(e) {
-  console.log(e.message);
-  console.log(e.stack)
-  return 1;
-}
-app.listen(argv.port, function() {
-    debug('LDP started on port ' + argv.port);
-});
+bin(argv)

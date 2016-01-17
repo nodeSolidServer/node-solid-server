@@ -1,17 +1,9 @@
-var assert = require('chai').assert
-var fs = require('fs')
-var $rdf = require('rdflib')
-var request = require('request')
-var S = require('string')
 var supertest = require('supertest')
-var async = require('async')
-
 // Helper functions for the FS
 var rm = require('./test-utils').rm
-var write = require('./test-utils').write
-var cp = require('./test-utils').cp
+// var write = require('./test-utils').write
+// var cp = require('./test-utils').cp
 var read = require('./test-utils').read
-
 var ldnode = require('../index')
 
 describe('Identity Provider', function () {
@@ -29,29 +21,15 @@ describe('Identity Provider', function () {
     idp: true
   })
 
-  var ldpHttpsServer
   before(function (done) {
-      ldpHttpsServer = ldp.listen(3457, done)
+    ldpHttpsServer = ldp.listen(3457, done)
   })
 
   after(function () {
-      if (ldpHttpsServer) ldpHttpsServer.close()
+    if (ldpHttpsServer) ldpHttpsServer.close()
   })
 
   var server = supertest(address)
-  var user1 = 'https://user1.databox.me/profile/card#me'
-  var user2 = 'https://user2.databox.me/profile/card#me'
-
-  var userCredentials = {
-    user1: {
-      cert: fs.readFileSync(__dirname + '/keys/user1-cert.pem'),
-      key: fs.readFileSync(__dirname + '/keys/user1-key.pem')
-    },
-    user2: {
-      cert: fs.readFileSync(__dirname + '/keys/user2-cert.pem'),
-      key: fs.readFileSync(__dirname + '/keys/user2-key.pem')
-    }
-  }
 
   it('should redirect to signup on GET /accounts', function (done) {
     server.get('/accounts')

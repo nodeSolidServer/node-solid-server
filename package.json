@@ -62,12 +62,15 @@
     "chai": "^3.0.0",
     "mocha": "^2.2.5",
     "nock": "^2.10.0",
+    "standard": "^5.4.1",
     "supertest": "^1.0.1"
   },
   "main": "index.js",
   "scripts": {
     "start": "node ./bin/ldnode.js",
-    "test": "./node_modules/mocha/bin/mocha ./test/*.js",
+    "standard": "standard --global it --global describe --global after --global beforeEach --global before",
+    "mocha": "./node_modules/mocha/bin/mocha ./test/*.js",
+    "test": "npm run standard && npm run mocha",
     "test-debug": "DEBUG='ldnode:*' ./node_modules/mocha/bin/mocha ./test/*.js",
     "test-acl": "./node_modules/mocha/bin/mocha ./test/acl.js",
     "test-params": "./node_modules/mocha/bin/mocha ./test/params.js",
