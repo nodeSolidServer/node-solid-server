@@ -196,7 +196,6 @@ default settings.
   mount: '/', // Where to mount Linked Data Platform
   webid: false, // Enable WebID+TLS authentication
   suffixAcl: '.acl', // Suffix for acl files
-  suffixSSE: '.events', // Suffix for SSE files
   proxy: false, // Where to mount the proxy
   errorHandler: false, // function(err, req, res, next) to have a custom error handler
   errorPages: false // specify a path where the error pages are

@@ -84,11 +84,6 @@ var argv = require('nomnom')
     help: 'Suffix for metadata files (default: \'.meta\')',
     abbr: 'sM'
   })
-  .option('suffixSSE', {
-    full: 'suffix-sse',
-    help: 'Suffix for SSE files (default: \'.events\')',
-    abbr: 'sE'
-  })
   .option('noErrorPages', {
     full: 'no-error-pages',
     flag: true,

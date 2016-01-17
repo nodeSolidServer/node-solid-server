@@ -271,22 +271,22 @@ describe('HTTP APIs', function() {
       var postRequest2Body = fs.readFileSync(__dirname + '/resources/sampleContainer/post2.ttl', {
           'encoding': 'utf8'
       });
-      it('Should create new resource', function(done) {
+      it('Should create new resource', function (done) {
           server.post('/')
               .send(postRequest1Body)
               .set('content-type', 'text/turtle')
-              .set('slug', 'post-resource-1')
-              .expect('location',  /\/post-resource-1.ttl/)
+              .set('slug', 'post-resource-1.ttl')
+              .expect('location',  /\/post-resource-1/)
               .expect(hasHeader('describedBy', suffixMeta))
               .expect(hasHeader('acl', suffixAcl))
               .expect(201, done);
       });
-      it('Should reject requests to existing resources', function(done) {
+      it('Should create a new slug if there is a resource with the same name', function(done) {
           server.post('/')
               .send(postRequest1Body)
               .set('content-type', 'text/turtle')
-              .set('slug', 'post-resource-1')
-              .expect(400, done);
+              .set('slug', 'post-resource-1.ttl')
+              .expect(201, done);
       });
       it('Should be able to delete newly created resource', function(done) {
           server.delete('/post-resource-1.ttl')
