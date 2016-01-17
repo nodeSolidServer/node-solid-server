@@ -24,7 +24,6 @@ ldnode
           message: err.message
         })
       }
-
     }
   })
   .listen(3456, function () {

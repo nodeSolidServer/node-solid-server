@@ -129,7 +129,7 @@ function bin (argv) {
   var app
   try {
     app = ldnode.createServer(argv)
-  } catch(e) {
+  } catch (e) {
     console.log(e.message)
     console.log(e.stack)
     return 1

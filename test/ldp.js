@@ -102,9 +102,7 @@ describe('LDP', function () {
         })
       })
     })
-
   })
-
   describe('listContainer', function () {
     it('should inherit type if file is .ttl', function (done) {
       write('@prefix dcterms: <http://purl.org/dc/terms/>.' +
