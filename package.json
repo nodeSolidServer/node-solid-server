@@ -45,7 +45,6 @@
     "raw-body": "^2.1.2",
     "rdflib": "^0.2.10",
     "request": "^2.58.0",
-    "response-time": "^2.3.1",
     "rimraf": "^2.5.0",
     "solid-ws": "^0.2.0",
     "string": "^3.3.0",
