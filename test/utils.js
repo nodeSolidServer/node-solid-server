@@ -19,7 +19,6 @@ describe('Utility functions', function () {
     it('should return empty as relative path for undefined path', function () {
       assert.equal(utils.pathBasename(undefined), '')
     })
-
     it('should properly decode a uri', function () {
       assert.equal(utils.uriToFilename('uri%20', 'base/'), 'base/uri ')
     })
