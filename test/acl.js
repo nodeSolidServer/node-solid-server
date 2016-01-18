@@ -75,7 +75,7 @@ describe('ACL HTTP', function () {
     return options
   }
 
-  describe('No ACL', function () {
+  describe('no ACL', function () {
     it('should return 403 for any resource', function (done) {
       var options = createOptions('/acl/no-acl', 'user1')
       request(options, function (error, response, body) {
@@ -84,7 +84,7 @@ describe('ACL HTTP', function () {
         done()
       })
     })
-    it('should have User in the Header', function (done) {
+    it('should have `User` set in the Response Header', function (done) {
       var options = createOptions('/acl/no-acl', 'user1')
       request(options, function (error, response, body) {
         assert.equal(error, null)
@@ -177,7 +177,7 @@ describe('ACL HTTP', function () {
           done()
         })
       })
-      it('Should return text/turtle for the acl file', function (done) {
+      it('should return text/turtle for the acl file', function (done) {
         var options = createOptions('/acl/write-acl/.acl', 'user1')
         options.headers = {
           accept: 'text/turtle'
@@ -189,7 +189,7 @@ describe('ACL HTTP', function () {
           done()
         })
       })
-      it('Should create test file', function (done) {
+      it('should create test file', function (done) {
         var options = createOptions('/acl/write-acl/test-file', 'user1')
         options.headers = {
           'content-type': 'text/turtle'
@@ -201,7 +201,7 @@ describe('ACL HTTP', function () {
           done()
         })
       })
-      it("Should create test file's acl file", function (done) {
+      it("should create test file's acl file", function (done) {
         var options = createOptions('/acl/write-acl/test-file.acl', 'user1')
         options.headers = {
           'content-type': 'text/turtle'
@@ -213,7 +213,7 @@ describe('ACL HTTP', function () {
           done()
         })
       })
-      it("Should access test file's acl file", function (done) {
+      it("should access test file's acl file", function (done) {
         var options = createOptions('/acl/write-acl/test-file.acl', 'user1')
         options.headers = {
           accept: 'text/turtle'
@@ -241,7 +241,7 @@ describe('ACL HTTP', function () {
       rm('acl/origin/test-folder/.acl')
     })
 
-    it('Should PUT new ACL file', function (done) {
+    it('should PUT new ACL file', function (done) {
       var options = createOptions('/acl/origin/test-folder/.acl', 'user1')
       options.headers = {
         'content-type': 'text/turtle'
@@ -361,7 +361,7 @@ describe('ACL HTTP', function () {
         done()
       })
     })
-    it('Should create new ACL file', function (done) {
+    it('should create new ACL file', function (done) {
       var options = createOptions(testDirAclFile, 'user1')
       options.headers = {
         'content-type': 'text/turtle'

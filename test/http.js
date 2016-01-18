@@ -52,11 +52,11 @@ describe('HTTP APIs', function () {
         .expect(200, done)
     })
 
-    it('Should exists', function (done) {
+    it('should exist', function (done) {
       server.get('/')
         .expect(200, done)
     })
-    it('Should be a turtle file by default', function (done) {
+    it('should be a turtle file by default', function (done) {
       server.get('/')
         .expect('content-type', /text\/turtle/)
         .expect(200, done)
@@ -186,7 +186,7 @@ describe('HTTP APIs', function () {
         .expect(200, done)
     })
 
-    it('Should return empty response body', function (done) {
+    it('should return empty response body', function (done) {
       server.head('/patch-5-initial.ttl')
         .expect(emptyResponse)
         .expect(200, done)
@@ -223,13 +223,13 @@ describe('HTTP APIs', function () {
     var putRequestBody = fs.readFileSync(__dirname + '/resources/sampleContainer/put1.ttl', {
       'encoding': 'utf8'
     })
-    it('Should create new resource', function (done) {
+    it('should create new resource', function (done) {
       server.put('/put-resource-1.ttl')
         .send(putRequestBody)
         .set('content-type', 'text/turtle')
         .expect(201, done)
     })
-    it('Should create directories if they do not exist', function (done) {
+    it('should create directories if they do not exist', function (done) {
       server.put('/foo/bar/baz.ttl')
         .send(putRequestBody)
         .set('content-type', 'text/turtle')
@@ -242,19 +242,19 @@ describe('HTTP APIs', function () {
         })
         .expect(201, done)
     })
-    it('Should return 409 code when trying to put to a container', function (done) {
+    it('should return 409 code when trying to put to a container', function (done) {
       server.put('/')
         .expect(409, done)
     })
   })
 
   describe('DELETE API', function () {
-    it('Should return 404 status when deleting a file that does not exists',
+    it('should return 404 status when deleting a file that does not exists',
       function (done) {
         server.delete('/false-file-48484848')
           .expect(404, done)
       })
-    it('Should delete previously PUT file', function (done) {
+    it('should delete previously PUT file', function (done) {
       server.delete('/put-resource-1.ttl')
         .expect(200, done)
     })
@@ -267,7 +267,7 @@ describe('HTTP APIs', function () {
     var postRequest2Body = fs.readFileSync(__dirname + '/resources/sampleContainer/post2.ttl', {
       'encoding': 'utf8'
     })
-    it('Should create new resource', function (done) {
+    it('should create new resource', function (done) {
       server.post('/')
         .send(postRequest1Body)
         .set('content-type', 'text/turtle')
@@ -277,7 +277,7 @@ describe('HTTP APIs', function () {
         .expect(hasHeader('acl', suffixAcl))
         .expect(201, done)
     })
-    it('Should create new resource even if no trailing / is in the target', function (done) {
+    it('should create new resource even if no trailing / is in the target', function (done) {
       rm('target.ttl')
       server.post('')
         .send(postRequest1Body)
@@ -291,7 +291,7 @@ describe('HTTP APIs', function () {
           return done(err)
         })
     })
-    it('Should fail return 404 if no parent container found', function (done) {
+    it('should fail return 404 if no parent container found', function (done) {
       rm('target.ttl')
       server.post('/hello.html/')
         .send(postRequest1Body)
@@ -302,14 +302,14 @@ describe('HTTP APIs', function () {
           return done(err)
         })
     })
-    it('Should create a new slug if there is a resource with the same name', function (done) {
+    it('should create a new slug if there is a resource with the same name', function (done) {
       server.post('/')
         .send(postRequest1Body)
         .set('content-type', 'text/turtle')
         .set('slug', 'post-resource-1.ttl')
         .expect(201, done)
     })
-    it('Should be able to delete newly created resource', function (done) {
+    it('should be able to delete newly created resource', function (done) {
       server.delete('/post-resource-1.ttl')
         .expect(200, done)
     })
@@ -317,7 +317,7 @@ describe('HTTP APIs', function () {
     var setResourceName = function (res) {
       postResourceName = res.header.location
     }
-    it('Should create new resource without slug header', function (done) {
+    it('should create new resource without slug header', function (done) {
       server.post('/')
         .send(postRequest1Body)
         .set('content-type', 'text/turtle')
@@ -325,11 +325,11 @@ describe('HTTP APIs', function () {
         .expect(setResourceName)
         .end(done)
     })
-    it('Should be able to delete newly created resource', function (done) {
+    it('should be able to delete newly created resource', function (done) {
       server.delete('/' + postResourceName.replace(/https?\:\/\/127.0.0.1:[0-9]*\//, ''))
         .expect(200, done)
     })
-    it('Should create container', function (done) {
+    it('should create container', function (done) {
       server.post('/')
         .set('content-type', 'text/turtle')
         .set('slug', 'loans')
@@ -337,7 +337,7 @@ describe('HTTP APIs', function () {
         .send(postRequest2Body)
         .expect(201, done)
     })
-    it('Should be able to access container', function (done) {
+    it('should be able to access container', function (done) {
       server.get('/loans')
         .expect('content-type', /text\/turtle/)
         .expect(function () {
