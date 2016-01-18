@@ -2,6 +2,7 @@ var supertest = require('supertest')
 var fs = require('fs')
 var li = require('li')
 var ldnode = require('../index')
+var rm = require('./test-utils').rm
 
 describe('HTTP APIs', function () {
   var emptyResponse = function (res) {
@@ -275,6 +276,31 @@ describe('HTTP APIs', function () {
         .expect(hasHeader('describedBy', suffixMeta))
         .expect(hasHeader('acl', suffixAcl))
         .expect(201, done)
+    })
+    it('Should create new resource even if no trailing / is in the target', function (done) {
+      rm('target.ttl')
+      server.post('')
+        .send(postRequest1Body)
+        .set('content-type', 'text/turtle')
+        .set('slug', 'target.ttl')
+        .expect('location', /\/target\.ttl/)
+        .expect(hasHeader('describedBy', suffixMeta))
+        .expect(hasHeader('acl', suffixAcl))
+        .expect(201, function (err) {
+          rm('target.ttl')
+          return done(err)
+        })
+    })
+    it('Should fail return 404 if no parent container found', function (done) {
+      rm('target.ttl')
+      server.post('/hello.html/')
+        .send(postRequest1Body)
+        .set('content-type', 'text/turtle')
+        .set('slug', 'no- target.ttl')
+        .expect(404, function (err) {
+          rm('target.ttl')
+          return done(err)
+        })
     })
     it('Should create a new slug if there is a resource with the same name', function (done) {
       server.post('/')
