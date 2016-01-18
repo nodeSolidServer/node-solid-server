@@ -45,7 +45,6 @@ Options:
   --no-live                   Disable live support through WebSockets
   -sA, --suffix-acl           Suffix for acl files (default: '.acl')
   -sM, --suffix-meta          Suffix for metadata files (default: '.meta')
-  -sE, --suffix-sse           Suffix for SSE files (default: '.events')
   --no-error-pages            Disable custom error pages (use Node.js default pages instead)
   --error-pages               Folder from which to look for custom error pages files (files must be named <error-code>.html -- eg. 500.html)
   --default-app               URI to use as a default app for resources (default: https://linkeddata.github.io/warp/#/list/)
