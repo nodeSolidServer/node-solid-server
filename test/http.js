@@ -113,6 +113,22 @@ describe('HTTP APIs', function () {
   })
 
   describe('GET API', function () {
+    it('should have the same size of the file on disk', function (done) {
+      server.get('/sampleContainer/solid.png')
+        .expect(200)
+        .end(function (err, res) {
+          if (err) {
+            return done(err)
+          }
+
+          var size = fs.statSync(__dirname + '/resources/sampleContainer/solid.png').size
+          if (res.body.length !== size) {
+            return done(new Error('files are not of the same size'))
+          }
+          done()
+        })
+    })
+
     it('should have Access-Control-Allow-Origin as Origin on containers', function (done) {
       server.get('/sampleContainer')
         .set('Origin', 'http://example.com')
