@@ -2,26 +2,61 @@
 <html>
 <head>
   <title>Ldnode: Admin Signup</title>
-</head>
 
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+    input {
+      width: 200px;
+      line-height: 1.5em;
+      padding: 5px;
+      font-size: 1.2em;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      display: inline-block;
+      padding: 25px;
+      background: #69f;
+      border-radius: 4px;
+      font-weight: normal;
+      font-size: 14px;
+      color: #fff;
+      letter-spacing: 1px;
+      line-height: 1px;
+      text-transform: uppercase;
+      border: 0;
+    }
+  </style>
+
+</head>
 <body>
 
-<form id="accounts">
-  <input type="email">
-</form>
 
-<form id="cert" method="POST" action='/accounts/cert' target="spkacResult">
-  <keygen name="spkac" >
-  <input name="webid">
-  <button onclick='createGen()'></button>
+<div id="accounts">
+  <h2>Create your local account.</h2>
+  <input id="name" type="name" placeholder="Your name">
+  <br>
+  <input id="email" type="email" placeholder="Recovery email">
+  <br>
+  <button onclick='createAccount()'>Create account</button>
+</div>
+
+<form id="cert" method="POST" action='/accounts/cert' target="spkacResult" style="display: none">
+  <h2>Finish by issuing credentials in the form of a certificate</h2>
+  <keygen name="spkac" hidden>
+  <p>Your WebID is: <span id="webid"></span></p>
+  <br>
+  <button onclick='createGen()'>Issue credentials</button>
 </form>
 
 <script type="text/javascript">
 
-var email = document.querySelector("#email").value
-
-function createAccount (email, callback) {
-  var hostname = location.hostname 
+function createAccount () {
+  var email = document.querySelector("#email").value
+  var hostname = location.hostname
   var url = '/accounts/new'
   var data = "email=" + email;
 
@@ -32,17 +67,17 @@ function createAccount (email, callback) {
   http.onreadystatechange = function() {
     if (this.readyState !== this.DONE
         || this.status !== 200) {
-      return callback(new Error('Request failed'))
+      return done(new Error('Request failed'))
     }
     var webid = this.getResponseHeader("User")
     if (!webid || webid.length === 0) {
-      return callback(new Error('WebID is not set in User'))
+      return done(new Error('WebID is not set in User'))
     }
 
-    callback(null, webid)
+
     // Account is created
   }
-  http.send(data);
+  http.send(data)
 }
 
 function createGen () {
@@ -61,11 +96,16 @@ function createGen () {
 }
 
 document.querySelector('#cert').style.display = 'none'
-createAccount(email, function (err, webid) {
+
+function done (err) {
+  if (err) {
+    console.log(err)
+  }
   document.querySelector('#accounts').style.display = 'none'
   document.querySelector('#cert').style.display = ''
   document.querySelector('#webid').value = webid
-})
+}
+
 </script>
 </body>
 </html>
