@@ -47,7 +47,8 @@
 <form id="cert" method="POST" action='/accounts/cert' target="spkacResult" style="display: none">
   <h2>Finish by issuing credentials in the form of a certificate</h2>
   <keygen name="spkac" hidden>
-  <p>Your WebID is: <span id="webid"></span></p>
+  <input type="hidden" id="webid" name="webid" value="">
+  <p>Your WebID is: <span id="your-webid"></span></p>
   <br>
   <button onclick='createGen()'>Issue credentials</button>
 </form>
@@ -73,9 +74,12 @@ function createAccount () {
     if (!webid || webid.length === 0) {
       return done(new Error('WebID is not set in User'))
     }
-
-
     // Account is created
+    document.querySelector('#webid').value = webid
+    document.querySelector('#your-webid').innerHTML = webid
+    document.querySelector('#accounts').style.display = 'none'
+    document.querySelector('#cert').style.display = ''
+
   }
   http.send(data)
 }
@@ -101,9 +105,6 @@ function done (err) {
   if (err) {
     console.log(err)
   }
-  document.querySelector('#accounts').style.display = 'none'
-  document.querySelector('#cert').style.display = ''
-  document.querySelector('#webid').value = webid
 }
 
 </script>
