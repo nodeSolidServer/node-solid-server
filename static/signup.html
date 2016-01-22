@@ -55,22 +55,23 @@
 
 <script type="text/javascript">
 
+document.querySelector('#cert').style.display = 'none'
+
 function createAccount () {
-  var email = document.querySelector("#email").value
-  var hostname = location.hostname
+  var email = document.querySelector('#email').value
   var url = '/accounts/new'
-  var data = "email=" + email;
+  var data = 'email=' + email
 
   var http = new XMLHttpRequest()
   http.open('POST', url)
   http.withCredentials = true
-  http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
-  http.onreadystatechange = function() {
-    if (this.readyState !== this.DONE
-        || this.status !== 200) {
+  http.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+  http.onreadystatechange = function () {
+    if (this.readyState !== this.DONE ||
+        this.status !== 200) {
       return done(new Error('Request failed'))
     }
-    var webid = this.getResponseHeader("User")
+    var webid = this.getResponseHeader('User')
     if (!webid || webid.length === 0) {
       return done(new Error('WebID is not set in User'))
     }
@@ -79,7 +80,6 @@ function createAccount () {
     document.querySelector('#your-webid').innerHTML = webid
     document.querySelector('#accounts').style.display = 'none'
     document.querySelector('#cert').style.display = ''
-
   }
   http.send(data)
 }
@@ -98,8 +98,6 @@ function createGen () {
     document.querySelector('body').appendChild(done)
   }
 }
-
-document.querySelector('#cert').style.display = 'none'
 
 function done (err) {
   if (err) {
