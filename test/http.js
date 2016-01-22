@@ -351,7 +351,15 @@ describe('HTTP APIs', function () {
         .set('slug', 'loans')
         .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
         .send(postRequest2Body)
-        .expect(201, done)
+        .expect(201)
+        .end(function (err) {
+          if (err) return done(err)
+          var stats = fs.statSync(__dirname + '/resources/loans/')
+          if (!stats.isDirectory()) {
+            return done(new Error('Cannot read file just created'))
+          }
+          done()
+        })
     })
     it('should be able to access container', function (done) {
       server.get('/loans')
