@@ -18,6 +18,7 @@ You can run `ldnode` as a [command-line tool](https://github.com/linkeddata/ldno
 - [x] WebID+TLS Authentication
 - [x] Real-time live updates (using WebSockets)
 - [x] Identity provider for WebID+TLS
+- [ ] Group members in ACL
 
 ## Command Line Usage
 

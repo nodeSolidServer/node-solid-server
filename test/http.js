@@ -113,6 +113,22 @@ describe('HTTP APIs', function () {
   })
 
   describe('GET API', function () {
+    it('should have the same size of the file on disk', function (done) {
+      server.get('/sampleContainer/solid.png')
+        .expect(200)
+        .end(function (err, res) {
+          if (err) {
+            return done(err)
+          }
+
+          var size = fs.statSync(__dirname + '/resources/sampleContainer/solid.png').size
+          if (res.body.length !== size) {
+            return done(new Error('files are not of the same size'))
+          }
+          done()
+        })
+    })
+
     it('should have Access-Control-Allow-Origin as Origin on containers', function (done) {
       server.get('/sampleContainer')
         .set('Origin', 'http://example.com')
@@ -335,7 +351,15 @@ describe('HTTP APIs', function () {
         .set('slug', 'loans')
         .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
         .send(postRequest2Body)
-        .expect(201, done)
+        .expect(201)
+        .end(function (err) {
+          if (err) return done(err)
+          var stats = fs.statSync(__dirname + '/resources/loans/')
+          if (!stats.isDirectory()) {
+            return done(new Error('Cannot read file just created'))
+          }
+          done()
+        })
     })
     it('should be able to access container', function (done) {
       server.get('/loans')
@@ -345,6 +369,30 @@ describe('HTTP APIs', function () {
           fs.rmdirSync(__dirname + '/resources/loans/')
         })
         .expect(200, done)
+    })
+  })
+  describe('POST (multipart)', function () {
+    it('should create as many files as the ones passed in multipart', function (done) {
+      server.post('/sampleContainer/')
+        .attach('timbl', __dirname + '/resources/timbl.jpg')
+        .attach('nicola', __dirname + '/resources/nicola.jpg')
+        .expect(200)
+        .end(function (err) {
+          if (err) return done(err)
+
+          var sizeNicola = fs.statSync(__dirname + '/resources/nicola.jpg').size
+          var sizeTim = fs.statSync(__dirname + '/resources/timbl.jpg').size
+          var sizeNicolaLocal = fs.statSync(__dirname + '/resources/sampleContainer/nicola.jpg').size
+          var sizeTimLocal = fs.statSync(__dirname + '/resources/sampleContainer/timbl.jpg').size
+
+          if (sizeNicola === sizeNicolaLocal && sizeTim === sizeTimLocal) {
+            return done()
+          } else {
+            return done(new Error('Either the size (remote/local) don\'t match or files are not stored'))
+          }
+          rm('sampleContainer/nicola.jpg')
+          rm('sampleContainer/timbl.jpg')
+        })
     })
   })
 })

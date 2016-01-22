@@ -1,7 +1,7 @@
 {
   "name": "ldnode",
   "description": "Linked Data Platform",
-  "version": "0.2.15",
+  "version": "0.2.16",
   "author": {
     "name": "Tim Berners-Lee",
     "email": "timbl@w3.org"
@@ -26,6 +26,7 @@
   "dependencies": {
     "async": "^1.3.0",
     "body-parser": "^1.14.2",
+    "busboy": "^0.2.12",
     "cors": "^2.7.1",
     "debug": "^2.2.0",
     "express": "^4.13.3",
@@ -42,10 +43,8 @@
     "node-forge": "^0.6.38",
     "node-uuid": "^1.4.3",
     "nomnom": "^1.8.1",
-    "raw-body": "^2.1.2",
     "rdflib": "^0.2.10",
     "request": "^2.58.0",
-    "response-time": "^2.3.1",
     "rimraf": "^2.5.0",
     "solid-ws": "^0.2.0",
     "string": "^3.3.0",

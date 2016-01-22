@@ -135,6 +135,14 @@ function bin (argv) {
   try {
     app = ldnode.createServer(argv)
   } catch (e) {
+    if (e.code === 'EACCES') {
+      console.log('You need root privileges to start on this port')
+      return 1
+    }
+    if (e.code === 'EADDRINUSE') {
+      console.log('The port ' + argv.port + ' is already in use')
+      return 1
+    }
     console.log(e.message)
     console.log(e.stack)
     return 1
