@@ -374,12 +374,24 @@ describe('HTTP APIs', function () {
   describe('POST (multipart)', function () {
     it('should create as many files as the ones passed in multipart', function (done) {
       server.post('/sampleContainer/')
-        .attach('test1', __dirname + '/resources/hello.html')
-        .attach('test2', __dirname + '/resources/hello.html')
+        .attach('timbl', __dirname + '/resources/timbl.jpg')
+        .attach('nicola', __dirname + '/resources/nicola.jpg')
         .expect(200)
         .end(function (err) {
           if (err) return done(err)
-          done()
+
+          var sizeNicola = fs.statSync(__dirname + '/resources/nicola.jpg').size
+          var sizeTim = fs.statSync(__dirname + '/resources/timbl.jpg').size
+          var sizeNicolaLocal = fs.statSync(__dirname + '/resources/sampleContainer/nicola.jpg').size
+          var sizeTimLocal = fs.statSync(__dirname + '/resources/sampleContainer/timbl.jpg').size
+
+          if (sizeNicola === sizeNicolaLocal && sizeTim === sizeTimLocal) {
+            return done()
+          } else {
+            return done(new Error('Either the size (remote/local) don\'t match or files are not stored'))
+          }
+          rm('sampleContainer/nicola.jpg')
+          rm('sampleContainer/timbl.jpg')
         })
     })
   })
