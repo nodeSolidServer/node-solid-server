@@ -2,7 +2,7 @@ var assert = require('chai').assert
 var $rdf = require('rdflib')
 var ns = require('../lib/vocab/ns.js').ns
 var LDP = require('../lib/ldp')
-var stringToStream = require('./utils').stringToStream
+var stringToStream = require('../lib/utils').stringToStream
 
 // Helper functions for the FS
 var rm = require('./test-utils').rm
@@ -90,7 +90,8 @@ describe('LDP', function () {
 
   describe('delete', function () {
     it('should delete a file in an existing dir', function (done) {
-      ldp.put('localhost', '/resources/testPut.txt', 'hello world', function (err) {
+      var stream = stringToStream('hello world')
+      ldp.put('localhost', '/resources/testPut.txt', stream, function (err) {
         assert.notOk(err)
         fs.stat(ldp.root + '/resources/testPut.txt', function (err) {
           if (err) {
