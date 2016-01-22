@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Ldnode: Admin Signup</title>
+
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+    input {
+      width: 200px;
+      line-height: 1.5em;
+      padding: 5px;
+      font-size: 1.2em;
+      border-radius: 4px;
+      margin-bottom: 10px;
+    }
+
+    button {
+      display: inline-block;
+      padding: 25px;
+      background: #69f;
+      border-radius: 4px;
+      font-weight: normal;
+      font-size: 14px;
+      color: #fff;
+      letter-spacing: 1px;
+      line-height: 1px;
+      text-transform: uppercase;
+      border: 0;
+    }
+  </style>
+
+</head>
+<body>
+
+
+<div id="accounts">
+  <h2>Create your local account.</h2>
+  <input id="name" type="name" placeholder="Your name">
+  <br>
+  <input id="email" type="email" placeholder="Recovery email">
+  <br>
+  <button onclick='createAccount()'>Create account</button>
+</div>
+
+<form id="cert" method="POST" action='/accounts/cert' target="spkacResult" style="display: none">
+  <h2>Finish by issuing credentials in the form of a certificate</h2>
+  <keygen name="spkac" hidden>
+  <input type="hidden" id="webid" name="webid" value="">
+  <p>Your WebID is: <span id="your-webid"></span></p>
+  <br>
+  <button onclick='createGen()'>Issue credentials</button>
+</form>
+
+<script type="text/javascript">
+
+document.querySelector('#cert').style.display = 'none'
+
+function createAccount () {
+  var email = document.querySelector('#email').value
+  var url = '/accounts/new'
+  var data = 'email=' + email
+
+  var http = new XMLHttpRequest()
+  http.open('POST', url)
+  http.withCredentials = true
+  http.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+  http.onreadystatechange = function () {
+    if (this.readyState !== this.DONE ||
+        this.status !== 200) {
+      return done(new Error('Request failed'))
+    }
+    var webid = this.getResponseHeader('User')
+    if (!webid || webid.length === 0) {
+      return done(new Error('WebID is not set in User'))
+    }
+    // Account is created
+    document.querySelector('#webid').value = webid
+    document.querySelector('#your-webid').innerHTML = webid
+    document.querySelector('#accounts').style.display = 'none'
+    document.querySelector('#cert').style.display = ''
+  }
+  http.send(data)
+}
+
+function createGen () {
+  var iframe = document.createElement('iframe')
+  iframe.name = 'spkacResult'
+  iframe.style.visibility = 'none'
+  iframe.style.width = '0px'
+  iframe.style.height = '0px'
+  document.querySelector('body').appendChild(iframe)
+
+  iframe.onload = function () {
+    var done = document.createElement('div')
+    done.innerHTML = '<p>restart your server without --create-admin</p>'
+    document.querySelector('body').appendChild(done)
+  }
+}
+
+function done (err) {
+  if (err) {
+    console.log(err)
+  }
+}
+
+</script>
+</body>
+</html>
