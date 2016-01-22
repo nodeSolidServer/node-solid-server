@@ -374,12 +374,12 @@ describe('HTTP APIs', function () {
   describe('POST (multipart)', function () {
     it('should create as many files as the ones passed in multipart', function (done) {
       server.post('/sampleContainer/')
-        .set('content-type', 'multipart/form-data')
         .attach('test1', __dirname + '/resources/hello.html')
         .attach('test2', __dirname + '/resources/hello.html')
         .expect(200)
         .end(function (err) {
           if (err) return done(err)
+          done()
         })
     })
   })
