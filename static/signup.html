@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Ldnode: Admin Signup</title>
-
+  <title>Admin Signup</title>
+  <link href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAABIAAAASABGyWs+AAAAF0lEQVRIx2NgGAWjYBSMglEwCkbBSAcACBAAAeaR9cIAAAAASUVORK5CYII=" rel="favicon" type="image/x-icon" />
   <style>
     body {
       font-family: sans-serif;
@@ -13,6 +13,7 @@
       padding: 5px;
       font-size: 1.2em;
       border-radius: 4px;
+      border: 1px solid #ddd;
       margin-bottom: 10px;
     }
 
@@ -28,6 +29,7 @@
       line-height: 1px;
       text-transform: uppercase;
       border: 0;
+      min-width: 200px;
     }
   </style>
 
@@ -36,9 +38,7 @@
 
 
 <div id="accounts">
-  <h2>Create your local account.</h2>
-  <input id="name" type="name" placeholder="Your name">
-  <br>
+  <h2>Create your account</h2>
   <input id="email" type="email" placeholder="Recovery email">
   <br>
   <button onclick='createAccount()'>Create account</button>
@@ -46,64 +46,63 @@
 
 <form id="cert" method="POST" action='/accounts/cert' target="spkacResult" style="display: none">
   <h2>Finish by issuing credentials in the form of a certificate</h2>
-  <keygen name="spkac" hidden>
+  <keygen name="spkac" keytype="rsa" hidden>
+  <iframe id="spkacResult" name="spkacResult" sandbox="allow-same-origin allow-forms" hidden></iframe>
   <input type="hidden" id="webid" name="webid" value="">
   <p>Your WebID is: <span id="your-webid"></span></p>
   <br>
-  <button onclick='createGen()'>Issue credentials</button>
+  <input type="text" id="name" name="name" placeholder="Certificate name"> (e.g. your name)
+  <br>
+  <button onclick="done()" type="submit">Issue credentials</button>
 </form>
 
 <script type="text/javascript">
-
-document.querySelector('#cert').style.display = 'none'
-
 function createAccount () {
-  var email = document.querySelector('#email').value
+  var email = document.getElementById("email").value
+  var hostname = location.hostname
   var url = '/accounts/new'
-  var data = 'email=' + email
+  var data = "email=" + email;
 
   var http = new XMLHttpRequest()
   http.open('POST', url)
   http.withCredentials = true
-  http.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
-  http.onreadystatechange = function () {
-    if (this.readyState !== this.DONE ||
-        this.status !== 200) {
-      return done(new Error('Request failed'))
+  http.setRequestHeader("Content-Type", "application/x-www-form-urlencoded")
+  http.onreadystatechange = function() {
+    if (this.readyState === this.DONE) {
+      if (this.status !== 200) {
+        return err(new Error('Request failed'))
+      }
+      var webid = this.getResponseHeader("User")
+      if (!webid || webid.length === 0) {
+        return err(new Error('WebID is not set in User'))
+      }
+      // Account is created
+      document.getElementById('webid').value = webid
+      document.getElementById('your-webid').innerHTML = webid
+      document.getElementById('accounts').style.display = 'none'
+      document.getElementById('cert').style.display = ''
     }
-    var webid = this.getResponseHeader('User')
-    if (!webid || webid.length === 0) {
-      return done(new Error('WebID is not set in User'))
-    }
-    // Account is created
-    document.querySelector('#webid').value = webid
-    document.querySelector('#your-webid').innerHTML = webid
-    document.querySelector('#accounts').style.display = 'none'
-    document.querySelector('#cert').style.display = ''
   }
   http.send(data)
 }
 
-function createGen () {
-  var iframe = document.createElement('iframe')
-  iframe.name = 'spkacResult'
-  iframe.style.visibility = 'none'
-  iframe.style.width = '0px'
-  iframe.style.height = '0px'
-  document.querySelector('body').appendChild(iframe)
-
-  iframe.onload = function () {
-    var done = document.createElement('div')
-    done.innerHTML = '<p>restart your server without --create-admin</p>'
-    document.querySelector('body').appendChild(done)
-  }
-}
-
-function done (err) {
+function err (err) {
+  console.log('called done')
   if (err) {
     console.log(err)
   }
 }
+
+function done() {
+    document.getElementById('cert').style.display = 'none'
+    var done = document.createElement('div')
+    done.innerHTML = '<h2>You\'re all set!</h2>'
+    done.innerHTML += '<p>Please restart your server without the <strong>--create-admin</strong> parameter.</p>'
+    done.innerHTML += '<p>If an error occured and a certificate was not installed, please reload this page and start again.</p>'
+    document.querySelector('body').appendChild(done)
+}
+
+document.querySelector('keygen').setAttribute('challenge', Date.now())
 
 </script>
 </body>
