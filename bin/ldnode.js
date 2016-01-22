@@ -102,7 +102,7 @@ var argv = require('nomnom')
     flag: true,
     help: 'Allow a user to set up its initial identity'
   })
-  .parse();
+  .parse()
 
 function bin (argv) {
   // Print version and leave
