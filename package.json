@@ -50,7 +50,7 @@
     "string": "^3.3.0",
     "uuid": "^2.0.1",
     "vhost": "^3.0.2",
-    "webid": "^0.3.3"
+    "webid": "^0.3.7"
   },
   "devDependencies": {
     "chai": "^3.0.0",
