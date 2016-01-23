@@ -198,7 +198,7 @@ describe('HTTP APIs', function () {
 
     it('should fallback on index.html if it exists and content-type is given', function (done) {
       server.get('/sampleContainer/')
-        .set('content-type', 'text/html')
+        .set('accept', 'text/html')
         .expect('content-type', /text\/html/)
         .end(done)
     })
