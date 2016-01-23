@@ -132,6 +132,7 @@ describe('HTTP APIs', function () {
     it('should have Access-Control-Allow-Origin as Origin on containers', function (done) {
       server.get('/sampleContainer')
         .set('Origin', 'http://example.com')
+        .expect('content-type', /text\/turtle/)
         .expect('Access-Control-Allow-Origin', 'http://example.com')
         .expect(200, done)
     })
@@ -139,6 +140,7 @@ describe('HTTP APIs', function () {
     it('should have Access-Control-Allow-Origin as Origin on resources', function (done) {
       server.get('/sampleContainer/example1.ttl')
         .set('Origin', 'http://example.com')
+        .expect('content-type', /text\/turtle/)
         .expect('Access-Control-Allow-Origin', 'http://example.com')
         .expect(200, done)
     })
@@ -190,6 +192,14 @@ describe('HTTP APIs', function () {
       server.get('/sampleContainer/')
         .expect(hasHeader('acl', suffixAcl))
         .expect(hasHeader('describedBy', suffixMeta))
+        .expect('content-type', /text\/turtle/)
+        .end(done)
+    })
+
+    it('should fallback on index.html if it exists and content-type is given', function (done) {
+      server.get('/sampleContainer/')
+        .set('accept', 'text/html')
+        .expect('content-type', /text\/html/)
         .end(done)
     })
   })
