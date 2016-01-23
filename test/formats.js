@@ -77,7 +77,7 @@ describe('formats', function () {
 
     it('should return turtle when listing container', function (done) {
       server.get('/sampleContainer/')
-        .set('accept', 'application/rdf+xml, application/xhtml+xml;q=0.3, text/xml;q=0.2, application/xml;q=0.2, text/html;q=0.3, text/plain;q=0.1, text/n3;q=1.0, application/x-turtle;q=1, text/turtle;q=1')
+        .set('accept', 'application/rdf+xml;q=0.4, application/xhtml+xml;q=0.3, text/xml;q=0.2, application/xml;q=0.2, text/html;q=0.3, text/plain;q=0.1, text/turtle;q=1.0, application/n3;q=1')
         .expect('content-type', /text\/turtle/)
         .expect(200, done)
     })
