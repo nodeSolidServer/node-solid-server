@@ -196,6 +196,17 @@ describe('HTTP APIs', function () {
         .end(done)
     })
 
+    it('should return requested index.html resource by default', function (done) {
+      server.get('/sampleContainer/index.html')
+        .set('accept', 'text/html')
+        .expect(200)
+        .expect('content-type', /text\/html/)
+        .expect(function (res) {
+          if (res.text.indexOf('<!DOCTYPE html>') < 0) throw new Error('wrong content returned for index.html')
+        })
+        .end(done)
+    })
+
     it('should fallback on index.html if it exists and content-type is given', function (done) {
       server.get('/sampleContainer/')
         .set('accept', 'text/html')
