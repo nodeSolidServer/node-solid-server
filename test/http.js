@@ -292,10 +292,10 @@ describe('HTTP APIs', function () {
       server.put('/fooo/bar.ttl')
         .set('content-type', 'text/turtle')
         .expect(function () {
-          server.delete('/fooo/')
+          server.delete('/foo/')
             .expect(function () {
-              fs.unlinkSync(__dirname + '/resources/fooo/bar.ttl')
-              fs.rmdirSync(__dirname + '/resources/fooo/')
+              fs.unlinkSync(__dirname + '/resources/foo/bar.ttl')
+              fs.rmdirSync(__dirname + '/resources/foo/')
             })
             .expect(409)
         })
@@ -304,13 +304,13 @@ describe('HTTP APIs', function () {
     it('should delete a new and empty container', function (done) {
       server.post('/')
         .set('content-type', 'text/turtle')
-        .set('slug', 'fooo')
+        .set('slug', 'foo')
         .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
         .set('content-type', 'text/turtle')
         .expect(function () {
-          server.delete('/fooo/')
+          server.delete('/foo/')
             .expect(function () {
-              server.get('/fooo/')
+              server.get('/foo/')
                 .expect(404)
             })
             .expect(200)
