@@ -288,6 +288,35 @@ describe('HTTP APIs', function () {
       server.delete('/put-resource-1.ttl')
         .expect(200, done)
     })
+    it('should fail to delete non-empty containers', function (done) {
+      server.put('/fooo/bar.ttl')
+        .set('content-type', 'text/turtle')
+        .expect(function () {
+          server.delete('/fooo/')
+            .expect(function () {
+              fs.unlinkSync(__dirname + '/resources/fooo/bar.ttl')
+              fs.rmdirSync(__dirname + '/resources/fooo/')
+            })
+            .expect(409)
+        })
+        .expect(201, done)
+    })
+    it('should delete a new and empty container', function (done) {
+      server.post('/')
+        .set('content-type', 'text/turtle')
+        .set('slug', 'fooo')
+        .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
+        .set('content-type', 'text/turtle')
+        .expect(function () {
+          server.delete('/fooo/')
+            .expect(function () {
+              server.get('/fooo/')
+                .expect(404)
+            })
+            .expect(200)
+        })
+        .expect(201, done)
+    })
   })
 
   describe('POST API', function () {
