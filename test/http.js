@@ -3,6 +3,51 @@ var fs = require('fs')
 var li = require('li')
 var ldnode = require('../index')
 var rm = require('./test-utils').rm
+var RSVP = require('rsvp')
+
+var suffixAcl = '.acl'
+var suffixMeta = '.meta'
+var ldpServer = ldnode({
+  root: __dirname + '/resources'
+})
+var server = supertest(ldpServer)
+
+/**
+ * Creates a new test basic container via an LDP POST
+ *   (located in `test/resources/{containerName}`)
+ * @method createTestContainer
+ * @param containerName {String} Container name used as slug, no leading `/`
+ * @return {RSVP.Promise} Promise obj, for use with Mocha's `before()` etc
+ */
+function createTestContainer (containerName) {
+  return new RSVP.Promise(function (resolve, reject) {
+    server.post('/')
+      .set('content-type', 'text/turtle')
+      .set('slug', containerName)
+      .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
+      .set('content-type', 'text/turtle')
+      .end(function (error, res) {
+        error ? reject(error) : resolve(res)
+      })
+  })
+}
+
+/**
+ * Creates a new turtle test resource via an LDP PUT
+ *   (located in `test/resources/{resourceName}`)
+ * @method createTestResource
+ * @param resourceName {String} Resource name (should have a leading `/`)
+ * @return {RSVP.Promise} Promise obj, for use with Mocha's `before()` etc
+ */
+function createTestResource (resourceName) {
+  return new RSVP.Promise(function (resolve, reject) {
+    server.put(resourceName)
+      .set('content-type', 'text/turtle')
+      .end(function (error, res) {
+        error ? reject(error) : resolve(res)
+      })
+  })
+}
 
 describe('HTTP APIs', function () {
   var emptyResponse = function (res) {
@@ -34,15 +79,6 @@ describe('HTTP APIs', function () {
     }
     return handler
   }
-
-  var ldpServer = ldnode({
-    root: __dirname + '/resources'
-  })
-
-  var suffixAcl = '.acl'
-  var suffixMeta = '.meta'
-
-  var server = supertest(ldpServer)
 
   describe('GET Root container', function () {
     it('should have Access-Control-Allow-Origin as the req.Origin', function (done) {
@@ -265,28 +301,63 @@ describe('HTTP APIs', function () {
         .set('content-type', 'text/turtle')
         .expect(hasHeader('describedBy', 'baz.ttl' + suffixMeta))
         .expect(hasHeader('acl', 'baz.ttl' + suffixAcl))
-        .expect(function () {
-          fs.unlinkSync(__dirname + '/resources/foo/bar/baz.ttl')
-          fs.rmdirSync(__dirname + '/resources/foo/bar/')
-          fs.rmdirSync(__dirname + '/resources/foo/')
-        })
         .expect(201, done)
     })
-    it('should return 409 code when trying to put to a container', function (done) {
-      server.put('/')
-        .expect(409, done)
+    it('should return 409 code when trying to put to a container',
+      function (done) {
+        server.put('/')
+          .expect(409, done)
+      }
+    )
+    // Cleanup
+    after(function () {
+      rm('/foo/')
     })
   })
 
   describe('DELETE API', function () {
+    before(function () {
+      // Ensure all these are finished before running tests
+      return RSVP.all([
+        rm('/false-file-48484848'),
+        createTestContainer('delete-test-empty-container'),
+        createTestResource('/put-resource-1.ttl'),
+        createTestContainer('delete-test-non-empty'),
+        createTestResource('/delete-test-non-empty/test.ttl')
+      ])
+    })
+
     it('should return 404 status when deleting a file that does not exists',
       function (done) {
         server.delete('/false-file-48484848')
           .expect(404, done)
       })
+
     it('should delete previously PUT file', function (done) {
       server.delete('/put-resource-1.ttl')
         .expect(200, done)
+    })
+
+    it('should fail to delete non-empty containers', function (done) {
+      server.delete('/delete-test-non-empty/')
+        .expect(409, done)
+    })
+
+    it('should delete a new and empty container', function (done) {
+      server.delete('/delete-test-empty-container/')
+        .expect(function () {
+          // Ensure container was deleted
+          server.get('/delete-test-empty-container/')
+            .expect(404)
+        })
+        .end(done)
+    })
+
+    after(function () {
+      // Clean up after DELETE API tests
+      rm('/put-resource-1.ttl')
+      rm('/delete-test-non-empty/')
+      rm('/delete-test-empty-container/')
     })
   })
 
