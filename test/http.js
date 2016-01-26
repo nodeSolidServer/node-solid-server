@@ -34,7 +34,7 @@ function createTestContainer (containerName) {
 
 /**
  * Creates a new turtle test resource via an LDP PUT
- *   (located in `test/resources/{containerName}`)
+ *   (located in `test/resources/{resourceName}`)
  * @method createTestResource
  * @param resourceName {String} Resource name (should have a leading `/`)
  * @return {RSVP.Promise} Promise obj, for use with Mocha's `before()` etc
