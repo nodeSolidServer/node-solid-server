@@ -81,13 +81,13 @@ describe('HTTP APIs', function () {
   }
 
   describe('GET Root container', function () {
-    it('should have Access-Control-Allow-Origin as the req.Origin', function (done) {
-      server.get('/')
-        .set('Origin', 'http://example.com')
-        .expect('Access-Control-Allow-Origin', 'http://example.com')
-        .expect(200, done)
-    })
-
+    it('should have Access-Control-Allow-Origin as the req.Origin',
+      function (done) {
+        server.get('/')
+          .set('Origin', 'http://example.com')
+          .expect('Access-Control-Allow-Origin', 'http://example.com')
+          .expect(200, done)
+      })
     it('should exist', function (done) {
       server.get('/')
         .expect(200, done)
@@ -119,12 +119,13 @@ describe('HTTP APIs', function () {
         .end(done)
     })
 
-    it('should have set acl and describedBy Links for resource', function (done) {
-      server.options('/sampleContainer/example1.ttl')
-        .expect(hasHeader('acl', 'example1.ttl' + suffixAcl))
-        .expect(hasHeader('describedBy', 'example1.ttl' + suffixMeta))
-        .end(done)
-    })
+    it('should have set acl and describedBy Links for resource',
+      function (done) {
+        server.options('/sampleContainer/example1.ttl')
+          .expect(hasHeader('acl', 'example1.ttl' + suffixAcl))
+          .expect(hasHeader('describedBy', 'example1.ttl' + suffixMeta))
+          .end(done)
+      })
 
     it('should have set Link as resource', function (done) {
       server.options('/sampleContainer/example1.ttl')
@@ -157,7 +158,8 @@ describe('HTTP APIs', function () {
             return done(err)
           }
 
-          var size = fs.statSync(__dirname + '/resources/sampleContainer/solid.png').size
+          var size = fs.statSync(__dirname +
+            '/resources/sampleContainer/solid.png').size
           if (res.body.length !== size) {
             return done(new Error('files are not of the same size'))
           }
@@ -173,28 +175,28 @@ describe('HTTP APIs', function () {
         .expect(200, done)
     })
 
-    it('should have Access-Control-Allow-Origin as Origin on resources', function (done) {
-      server.get('/sampleContainer/example1.ttl')
-        .set('Origin', 'http://example.com')
-        .expect('content-type', /text\/turtle/)
-        .expect('Access-Control-Allow-Origin', 'http://example.com')
-        .expect(200, done)
-    })
-
+    it('should have Access-Control-Allow-Origin as Origin on resources',
+      function (done) {
+        server.get('/sampleContainer/example1.ttl')
+          .set('Origin', 'http://example.com')
+          .expect('content-type', /text\/turtle/)
+          .expect('Access-Control-Allow-Origin', 'http://example.com')
+          .expect(200, done)
+      })
     it('should have set Link as resource', function (done) {
       server.get('/sampleContainer/example1.ttl')
         .expect('content-type', /text\/turtle/)
         .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Resource>; rel="type"/)
         .expect(200, done)
     })
-    it('should have set acl and describedBy Links for resource', function (done) {
-      server.get('/sampleContainer/example1.ttl')
-        .expect('content-type', /text\/turtle/)
-        .expect(hasHeader('acl', 'example1.ttl' + suffixAcl))
-        .expect(hasHeader('describedBy', 'example1.ttl' + suffixMeta))
-        .end(done)
-    })
-
+    it('should have set acl and describedBy Links for resource',
+      function (done) {
+        server.get('/sampleContainer/example1.ttl')
+          .expect('content-type', /text\/turtle/)
+          .expect(hasHeader('acl', 'example1.ttl' + suffixAcl))
+          .expect(hasHeader('describedBy', 'example1.ttl' + suffixMeta))
+          .end(done)
+      })
     it('should have set Link as Container/BasicContainer', function (done) {
       server.get('/sampleContainer/')
         .expect('content-type', /text\/turtle/)
@@ -223,25 +225,27 @@ describe('HTTP APIs', function () {
         .expect('content-type', /text\/turtle/)
         .expect(200, done)
     })
-
-    it('should have set acl and describedBy Links for container', function (done) {
-      server.get('/sampleContainer/')
-        .expect(hasHeader('acl', suffixAcl))
-        .expect(hasHeader('describedBy', suffixMeta))
-        .expect('content-type', /text\/turtle/)
-        .end(done)
-    })
-
-    it('should fallback on index.html if it exists and content-type is given', function (done) {
-      server.get('/sampleContainer/')
-        .set('accept', 'text/html')
-        .expect(200)
-        .expect('content-type', /text\/html/)
-        .expect(function (res) {
-          if (res.text.indexOf('<!DOCTYPE html>') < 0) throw new Error('wrong content returned for index.html')
-        })
-        .end(done)
-    })
+    it('should have set acl and describedBy Links for container',
+      function (done) {
+        server.get('/sampleContainer/')
+          .expect(hasHeader('acl', suffixAcl))
+          .expect(hasHeader('describedBy', suffixMeta))
+          .expect('content-type', /text\/turtle/)
+          .end(done)
+      })
+    it('should fallback on index.html if it exists and content-type is given',
+      function (done) {
+        server.get('/sampleContainer/')
+          .set('accept', 'text/html')
+          .expect(200)
+          .expect('content-type', /text\/html/)
+          .expect(function (res) {
+            if (res.text.indexOf('<!DOCTYPE html>') < 0) {
+              throw new Error('wrong content returned for index.html')
+            }
+          })
+          .end(done)
+      })
   })
 
   describe('HEAD API', function () {
@@ -251,44 +255,44 @@ describe('HTTP APIs', function () {
         .expect('Access-Control-Allow-Origin', 'http://example.com')
         .expect(200, done)
     })
-
     it('should return empty response body', function (done) {
       server.head('/patch-5-initial.ttl')
         .expect(emptyResponse)
         .expect(200, done)
     })
-
     it('should have set Link as Resource', function (done) {
       server.head('/sampleContainer/example1.ttl')
         .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Resource>; rel="type"/)
         .expect(200, done)
     })
-    it('should have set acl and describedBy Links for resource', function (done) {
-      server.get('/sampleContainer/example1.ttl')
-        .expect(hasHeader('acl', 'example1.ttl' + suffixAcl))
-        .expect(hasHeader('describedBy', 'example1.ttl' + suffixMeta))
-        .end(done)
-    })
-
-    it('should have set Link as Container/BasicContainer', function (done) {
-      server.get('/sampleContainer/')
-        .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#BasicContainer>; rel="type"/)
-        .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Container>; rel="type"/)
-        .expect(200, done)
-    })
-
-    it('should have set acl and describedBy Links for container', function (done) {
-      server.get('/sampleContainer/')
-        .expect(hasHeader('acl', suffixAcl))
-        .expect(hasHeader('describedBy', suffixMeta))
-        .end(done)
-    })
+    it('should have set acl and describedBy Links for resource',
+      function (done) {
+        server.get('/sampleContainer/example1.ttl')
+          .expect(hasHeader('acl', 'example1.ttl' + suffixAcl))
+          .expect(hasHeader('describedBy', 'example1.ttl' + suffixMeta))
+          .end(done)
+      })
+    it('should have set Link as Container/BasicContainer',
+      function (done) {
+        server.get('/sampleContainer/')
+          .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#BasicContainer>; rel="type"/)
+          .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Container>; rel="type"/)
+          .expect(200, done)
+      })
+    it('should have set acl and describedBy Links for container',
+      function (done) {
+        server.get('/sampleContainer/')
+          .expect(hasHeader('acl', suffixAcl))
+          .expect(hasHeader('describedBy', suffixMeta))
+          .end(done)
+      })
   })
 
   describe('PUT API', function () {
-    var putRequestBody = fs.readFileSync(__dirname + '/resources/sampleContainer/put1.ttl', {
-      'encoding': 'utf8'
-    })
+    var putRequestBody = fs.readFileSync(__dirname +
+      '/resources/sampleContainer/put1.ttl', {
+        'encoding': 'utf8'
+      })
     it('should create new resource', function (done) {
       server.put('/put-resource-1.ttl')
         .send(putRequestBody)
@@ -322,7 +326,6 @@ describe('HTTP APIs', function () {
         rm('/false-file-48484848'),
         createTestContainer('delete-test-empty-container'),
         createTestResource('/put-resource-1.ttl'),
-        createTestContainer('delete-test-non-empty'),
         createTestResource('/delete-test-non-empty/test.ttl')
       ])
     })
@@ -362,14 +365,25 @@ describe('HTTP APIs', function () {
   })
 
   describe('POST API', function () {
-    var postRequest1Body = fs.readFileSync(__dirname + '/resources/sampleContainer/put1.ttl', {
-      'encoding': 'utf8'
+    before(function () {
+      // Ensure all these are finished before running tests
+      return RSVP.all([
+        createTestContainer('post-tests'),
+        rm('post-test-target.ttl')
+        // createTestResource('/put-resource-1.ttl'),
+      ])
     })
-    var postRequest2Body = fs.readFileSync(__dirname + '/resources/sampleContainer/post2.ttl', {
-      'encoding': 'utf8'
-    })
+
+    var postRequest1Body = fs.readFileSync(__dirname +
+      '/resources/sampleContainer/put1.ttl', {
+        'encoding': 'utf8'
+      })
+    var postRequest2Body = fs.readFileSync(__dirname +
+      '/resources/sampleContainer/post2.ttl', {
+        'encoding': 'utf8'
+      })
     it('should create new resource', function (done) {
-      server.post('/')
+      server.post('/post-tests/')
         .send(postRequest1Body)
         .set('content-type', 'text/turtle')
         .set('slug', 'post-resource-1.ttl')
@@ -378,60 +392,56 @@ describe('HTTP APIs', function () {
         .expect(hasHeader('acl', suffixAcl))
         .expect(201, done)
     })
-    it('should create new resource even if no trailing / is in the target', function (done) {
-      rm('target.ttl')
-      server.post('')
-        .send(postRequest1Body)
-        .set('content-type', 'text/turtle')
-        .set('slug', 'target.ttl')
-        .expect('location', /\/target\.ttl/)
-        .expect(hasHeader('describedBy', suffixMeta))
-        .expect(hasHeader('acl', suffixAcl))
-        .expect(201, function (err) {
-          rm('target.ttl')
-          return done(err)
-        })
-    })
+    it('should create new resource even if no trailing / is in the target',
+      function (done) {
+        server.post('')
+          .send(postRequest1Body)
+          .set('content-type', 'text/turtle')
+          .set('slug', 'post-test-target.ttl')
+          .expect('location', /\/post-test-target\.ttl/)
+          .expect(hasHeader('describedBy', suffixMeta))
+          .expect(hasHeader('acl', suffixAcl))
+          .expect(201, done)
+      })
     it('should fail return 404 if no parent container found', function (done) {
-      rm('target.ttl')
       server.post('/hello.html/')
         .send(postRequest1Body)
         .set('content-type', 'text/turtle')
-        .set('slug', 'no- target.ttl')
-        .expect(404, function (err) {
-          rm('target.ttl')
-          return done(err)
-        })
+        .set('slug', 'post-test-target2.ttl')
+        .expect(404, done)
     })
-    it('should create a new slug if there is a resource with the same name', function (done) {
-      server.post('/')
-        .send(postRequest1Body)
-        .set('content-type', 'text/turtle')
-        .set('slug', 'post-resource-1.ttl')
-        .expect(201, done)
-    })
+    it('should create a new slug if there is a resource with the same name',
+      function (done) {
+        server.post('/post-tests/')
+          .send(postRequest1Body)
+          .set('content-type', 'text/turtle')
+          .set('slug', 'post-resource-1.ttl')
+          .expect(201, done)
+      })
     it('should be able to delete newly created resource', function (done) {
-      server.delete('/post-resource-1.ttl')
+      server.delete('/post-tests/post-resource-1.ttl')
         .expect(200, done)
     })
-    var postResourceName
-    var setResourceName = function (res) {
-      postResourceName = res.header.location
+    // Capture the resource name generated by server by parsing Location: header
+    var postedResourceName
+    var getResourceName = function (res) {
+      postedResourceName = res.header.location
     }
     it('should create new resource without slug header', function (done) {
-      server.post('/')
+      server.post('/post-tests/')
         .send(postRequest1Body)
         .set('content-type', 'text/turtle')
         .expect(201)
-        .expect(setResourceName)
+        .expect(getResourceName)
         .end(done)
     })
     it('should be able to delete newly created resource', function (done) {
-      server.delete('/' + postResourceName.replace(/https?\:\/\/127.0.0.1:[0-9]*\//, ''))
+      server.delete('/' +
+          postedResourceName.replace(/https?\:\/\/127.0.0.1:[0-9]*\//, ''))
         .expect(200, done)
     })
     it('should create container', function (done) {
-      server.post('/')
+      server.post('/post-tests/')
         .set('content-type', 'text/turtle')
         .set('slug', 'loans')
         .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
@@ -439,45 +449,58 @@ describe('HTTP APIs', function () {
         .expect(201)
         .end(function (err) {
           if (err) return done(err)
-          var stats = fs.statSync(__dirname + '/resources/loans/')
+          var stats = fs.statSync(__dirname + '/resources/post-tests/loans/')
           if (!stats.isDirectory()) {
             return done(new Error('Cannot read file just created'))
           }
           done()
         })
     })
-    it('should be able to access container', function (done) {
-      server.get('/loans')
+    it('should be able to access newly container', function (done) {
+      server.get('/post-tests/loans')
         .expect('content-type', /text\/turtle/)
-        .expect(function () {
-          fs.unlinkSync(__dirname + '/resources/loans/.meta')
-          fs.rmdirSync(__dirname + '/resources/loans/')
-        })
         .expect(200, done)
     })
+    after(function () {
+      // Clean up after POST API tests
+      return RSVP.all([
+        rm('/post-tests/'),
+        rm('post-test-target.ttl')
+      ])
+    })
   })
+
   describe('POST (multipart)', function () {
-    it('should create as many files as the ones passed in multipart', function (done) {
-      server.post('/sampleContainer/')
-        .attach('timbl', __dirname + '/resources/timbl.jpg')
-        .attach('nicola', __dirname + '/resources/nicola.jpg')
-        .expect(200)
-        .end(function (err) {
-          if (err) return done(err)
+    it('should create as many files as the ones passed in multipart',
+      function (done) {
+        server.post('/sampleContainer/')
+          .attach('timbl', __dirname + '/resources/timbl.jpg')
+          .attach('nicola', __dirname + '/resources/nicola.jpg')
+          .expect(200)
+          .end(function (err) {
+            if (err) return done(err)
 
-          var sizeNicola = fs.statSync(__dirname + '/resources/nicola.jpg').size
-          var sizeTim = fs.statSync(__dirname + '/resources/timbl.jpg').size
-          var sizeNicolaLocal = fs.statSync(__dirname + '/resources/sampleContainer/nicola.jpg').size
-          var sizeTimLocal = fs.statSync(__dirname + '/resources/sampleContainer/timbl.jpg').size
+            var sizeNicola = fs.statSync(__dirname +
+              '/resources/nicola.jpg').size
+            var sizeTim = fs.statSync(__dirname + '/resources/timbl.jpg').size
+            var sizeNicolaLocal = fs.statSync(__dirname +
+              '/resources/sampleContainer/nicola.jpg').size
+            var sizeTimLocal = fs.statSync(__dirname +
+              '/resources/sampleContainer/timbl.jpg').size
 
-          if (sizeNicola === sizeNicolaLocal && sizeTim === sizeTimLocal) {
-            return done()
-          } else {
-            return done(new Error('Either the size (remote/local) don\'t match or files are not stored'))
-          }
-          rm('sampleContainer/nicola.jpg')
-          rm('sampleContainer/timbl.jpg')
-        })
+            if (sizeNicola === sizeNicolaLocal && sizeTim === sizeTimLocal) {
+              return done()
+            } else {
+              return done(new Error('Either the size (remote/local) don\'t match or files are not stored'))
+            }
+          })
+      })
+    after(function () {
+      // Clean up after POST (multipart) API tests
+      return RSVP.all([
+        rm('/sampleContainer/nicola.jpg'),
+        rm('/sampleContainer/timbl.jpg')
+      ])
     })
   })
 })

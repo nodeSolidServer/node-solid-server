@@ -63,7 +63,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node ./bin/ldnode.js",
-    "standard": "standard --global it --global describe --global after --global beforeEach --global before",
+    "standard": "standard",
     "mocha": "./node_modules/mocha/bin/mocha ./test/*.js",
     "test": "npm run standard && npm run mocha",
     "test-debug": "DEBUG='ldnode:*' ./node_modules/mocha/bin/mocha ./test/*.js",
@@ -74,6 +74,9 @@
     "test-errors": "./node_modules/mocha/bin/mocha ./test/errors.js",
     "ldp-webid": "node ./bin/ldnode.js --webid --cert ./test/keys/cert.pem --key ./test/keys/key.pem -v -r ./test/resources",
     "ldp-ssl": "node ./bin/ldnode.js --cert ./test/keys/cert.pem --key ./test/keys/key.pem -v -r ./test/resources"
+  },
+  "standard": {
+    "globals": [ "after", "before", "beforeEach", "describe", "it" ]
   },
   "bin": {
     "ldnode": "./bin/ldnode.js"
