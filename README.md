@@ -132,7 +132,7 @@ using the `openssl` library:
 
 ```bash
 openssl genrsa 2048 > ../localhost.key
-openssl req -new -x509 -nodes -sha1 -days 3650 -key ../localhost.key -subj '/CN=*.localhost' > ../localhost.cert
+openssl req -new -x509 -nodes -sha256 -days 3650 -key ../localhost.key -subj '/CN=*.localhost' > ../localhost.cert
 
 ldnode --webid --port 8443 --cert ../localhost.cert --key ../localhost.key -v
 ```
