@@ -204,6 +204,18 @@ describe('HTTP APIs', function () {
         .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Container>; rel="type"/)
         .expect(200, done)
     })
+    it('should serve the right content type if requested as text/html', function (done) {
+      server.get('/sampleContainer/example1.ttl')
+        .set('Accept', 'text/html')
+        .expect('content-type', /text\/turtle/)
+        .expect(200, done)
+    })
+    it('should redirect to defaultApp if container was requested as text/html', function (done) {
+      server.get('/sampleContainer/')
+        .set('Accept', 'text/html')
+        .expect('content-type', /text\/html/)
+        .expect(200, done) // Can't check for 303 because of internal redirects
+    })
     it('should return 404 for non-existent resource', function (done) {
       server.get('/invalidfile.foo')
         .expect(404, done)
