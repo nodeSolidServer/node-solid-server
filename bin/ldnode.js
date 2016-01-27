@@ -100,7 +100,7 @@ var argv = require('nomnom')
   .option('createAdmin', {
     full: 'create-admin',
     flag: true,
-    help: 'Allow a user to set up its initial identity'
+    help: 'Allow a user to set up their initial identity in single-user mode'
   })
   .parse()
 
