@@ -1,7 +1,7 @@
 {
   "name": "ldnode",
   "description": "Linked Data Platform",
-  "version": "0.2.16",
+  "version": "0.2.17",
   "author": {
     "name": "Tim Berners-Lee",
     "email": "timbl@w3.org"
@@ -46,7 +46,7 @@
     "rdflib": "^0.2.10",
     "request": "^2.58.0",
     "rimraf": "^2.5.0",
-    "solid-ws": "^0.2.0",
+    "solid-ws": "^0.2.1",
     "string": "^3.3.0",
     "uuid": "^2.0.1",
     "vhost": "^3.0.2",
@@ -56,13 +56,14 @@
     "chai": "^3.0.0",
     "mocha": "^2.2.5",
     "nock": "^2.10.0",
+    "rsvp": "^3.1.0",
     "standard": "^5.4.1",
     "supertest": "^1.0.1"
   },
   "main": "index.js",
   "scripts": {
     "start": "node ./bin/ldnode.js",
-    "standard": "standard --global it --global describe --global after --global beforeEach --global before",
+    "standard": "standard",
     "mocha": "./node_modules/mocha/bin/mocha ./test/*.js",
     "test": "npm run standard && npm run mocha",
     "test-debug": "DEBUG='ldnode:*' ./node_modules/mocha/bin/mocha ./test/*.js",
@@ -73,6 +74,9 @@
     "test-errors": "./node_modules/mocha/bin/mocha ./test/errors.js",
     "ldp-webid": "node ./bin/ldnode.js --webid --cert ./test/keys/cert.pem --key ./test/keys/key.pem -v -r ./test/resources",
     "ldp-ssl": "node ./bin/ldnode.js --cert ./test/keys/cert.pem --key ./test/keys/key.pem -v -r ./test/resources"
+  },
+  "standard": {
+    "globals": [ "after", "before", "beforeEach", "describe", "it" ]
   },
   "bin": {
     "ldnode": "./bin/ldnode.js"
