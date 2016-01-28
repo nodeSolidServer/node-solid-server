@@ -150,6 +150,12 @@ describe('HTTP APIs', function () {
   })
 
   describe('GET API', function () {
+    it('should handle ld+json requests to containers', function (done) {
+      server.get('/sampleContainer/')
+        .set('Accept', 'application/ld+json')
+        .expect(200, done)
+    })
+
     it('should have the same size of the file on disk', function (done) {
       server.get('/sampleContainer/solid.png')
         .expect(200)
