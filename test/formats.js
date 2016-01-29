@@ -29,6 +29,13 @@ describe('formats', function () {
         .expect('content-type', /application\/ld\+json/)
         .end(done)
     })
+    it('should return the container listing in JSON-LD if Accept is set to only application/ld+json', function (done) {
+      server.get('/')
+        .set('accept', 'application/ld+json')
+        .expect(200)
+        .expect('content-type', /application\/ld\+json/)
+        .end(done)
+    })
     it('should prefer to avoid translation even if type is listed with less priority', function (done) {
       server.get('/patch-5-initial.ttl')
         .set('accept', 'application/ld+json;q=0.9,text/turtle;q=0.8,text/plain;q=0.7,*/*;q=0.5')
