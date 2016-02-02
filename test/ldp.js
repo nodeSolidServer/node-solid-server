@@ -2,6 +2,7 @@ var assert = require('chai').assert
 var $rdf = require('rdflib')
 var ns = require('../lib/vocab/ns.js').ns
 var LDP = require('../lib/ldp')
+var stringToStream = require('../lib/utils').stringToStream
 
 // Helper functions for the FS
 var rm = require('./test-utils').rm
@@ -68,7 +69,8 @@ describe('LDP', function () {
 
   describe('put', function () {
     it('should write a file in an existing dir', function (done) {
-      ldp.put('localhost', '/resources/testPut.txt', 'hello world', function (err) {
+      var stream = stringToStream('hello world')
+      ldp.put('localhost', '/resources/testPut.txt', stream, function (err) {
         assert.notOk(err)
         var found = read('testPut.txt')
         rm('testPut.txt')
@@ -78,7 +80,8 @@ describe('LDP', function () {
     })
 
     it('should fail if a trailing `/` is passed', function (done) {
-      ldp.put('localhost', '/resources/', 'hello world', function (err) {
+      var stream = stringToStream('hello world')
+      ldp.put('localhost', '/resources/', stream, function (err) {
         assert.equal(err.status, 409)
         done()
       })
@@ -87,7 +90,8 @@ describe('LDP', function () {
 
   describe('delete', function () {
     it('should delete a file in an existing dir', function (done) {
-      ldp.put('localhost', '/resources/testPut.txt', 'hello world', function (err) {
+      var stream = stringToStream('hello world')
+      ldp.put('localhost', '/resources/testPut.txt', stream, function (err) {
         assert.notOk(err)
         fs.stat(ldp.root + '/resources/testPut.txt', function (err) {
           if (err) {

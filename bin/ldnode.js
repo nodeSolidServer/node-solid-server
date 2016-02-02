@@ -97,6 +97,11 @@ var argv = require('nomnom')
     full: 'default-app',
     help: 'URI to use as a default app for resources (default: https://linkeddata.github.io/warp/#/list/)'
   })
+  .option('createAdmin', {
+    full: 'create-admin',
+    flag: true,
+    help: 'Allow a user to set up their initial identity in single-user mode'
+  })
   .parse()
 
 function bin (argv) {

@@ -40,6 +40,7 @@ Options:
   -C, --cert                  Path to the ssl cert file
   --webid                     Enable WebID+TLS authentication
   -idp, --identity-provider   Allow registration of WebIDs
+  --create-admin              Allow a user to set up their initial identity in single-user mode
   -s, --secret                HTTP Session cookie secret key (e.g. "your secret phrase")
   -fU, --force-user           Force a WebID to always be logged in (useful when offline)
   -P, --proxy                 Use a proxy on example.tld/proxyPath
@@ -53,21 +54,37 @@ Options:
 
 ### Running the server
 
-#### Solid server mode (HTTPS / WebID enabled)
+#### Solid server, Single User mode (HTTPS / WebID enabled)
 
-To start `ldnode` in Solid server mode, you will need to enable the `--webid`
-flag, and also pass in a valid SSL key and certificate files:
+To start `ldnode` in Solid Single User mode, you will need to enable the
+`--webid` flag, and also pass in a valid SSL key and certificate files.
+LDNode will use these certificates for its own server use (these are
+different from the Admin user identity certificate discussed below).
+
+**Initial Admin User Setup:**
+The *first* time you run `ldnode`, you will also want to use the
+`--create-admin` flag, to set up the initial Admin user identity and
+certificates.
+
+```bash
+ldnode --webid --port 8443 --cert /path/to/cert --key /path/to/key --create-admin
+```
+
+You can then visit your LDNode server (at `https://localhost:8443/`, if you're
+running it locally), and set up a new account.
+
+You should then restart `ldnode`, this time without the `--create-admin` flag:
 
 ```bash
 ldnode --webid --port 8443 --cert /path/to/cert --key /path/to/key
 ```
 
-#### Solid server mode with WebID Identity Provider
+#### Solid server, Multi-user Mode (Allows account creation)
 
 To allow users to create a WebID on your server:
 
 ```bash
-$ ldnode --webid --port 8443 --cert /path/to/cert --key /path/to/key -idp --root ./accounts
+ldnode --webid --port 8443 --cert /path/to/cert --key /path/to/key -idp --root ./accounts
 ```
 
 Your users will have a dedicated folder under `./accounts`. Also, your root domain's website will be in `./accounts/yourdomain.tld`.
@@ -115,7 +132,7 @@ using the `openssl` library:
 
 ```bash
 openssl genrsa 2048 > ../localhost.key
-openssl req -new -x509 -nodes -sha1 -days 3650 -key ../localhost.key -subj '/CN=*.localhost' > ../localhost.cert
+openssl req -new -x509 -nodes -sha256 -days 3650 -key ../localhost.key -subj '/CN=*.localhost' > ../localhost.cert
 
 ldnode --webid --port 8443 --cert ../localhost.cert --key ../localhost.key -v
 ```

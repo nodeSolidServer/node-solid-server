@@ -101,6 +101,14 @@ to address, apply your changes in a separate commit and push that to your
 feature branch.  Post a comment in the pull request afterwards; GitHub does
 not send out notifications when you add commits.
 
+### Step 7: PUBLISH
+
+If you have permission access, we reccomend using:
+
+```bash
+$ npm version patch && npm publish && git push --follow-tags
+```
+
 ## Using HUB
 
 [hub](https://hub.github.com/) is a tool released by Github to help developers to use their website from command line.
