@@ -1,7 +1,7 @@
 {
   "name": "ldnode",
   "description": "Linked Data Platform",
-  "version": "0.2.17",
+  "version": "0.2.18",
   "author": {
     "name": "Tim Berners-Lee",
     "email": "timbl@w3.org"
