@@ -1,9 +1,10 @@
 var supertest = require('supertest')
 var ldnode = require('../index')
+var path = require('path')
 
 describe('formats', function () {
   var ldp = ldnode.createServer({
-    root: __dirname + '/resources'
+    root: path.join(__dirname, '/resources')
   })
 
   var server = supertest(ldp)

@@ -4,11 +4,12 @@ var li = require('li')
 var ldnode = require('../index')
 var rm = require('./test-utils').rm
 var RSVP = require('rsvp')
+var path = require('path')
 
 var suffixAcl = '.acl'
 var suffixMeta = '.meta'
 var ldpServer = ldnode({
-  root: __dirname + '/resources'
+  root: path.join(__dirname, '/resources')
 })
 var server = supertest(ldpServer)
 
@@ -473,7 +474,7 @@ describe('HTTP APIs', function () {
         .expect(201)
         .end(function (err) {
           if (err) return done(err)
-          var stats = fs.statSync(__dirname + '/resources/post-tests/loans/')
+          var stats = fs.statSync(path.join(__dirname, '/resources/post-tests/loans/'))
           if (!stats.isDirectory()) {
             return done(new Error('Cannot read file just created'))
           }
@@ -498,19 +499,19 @@ describe('HTTP APIs', function () {
     it('should create as many files as the ones passed in multipart',
       function (done) {
         server.post('/sampleContainer/')
-          .attach('timbl', __dirname + '/resources/timbl.jpg')
-          .attach('nicola', __dirname + '/resources/nicola.jpg')
+          .attach('timbl', path.join(__dirname, '/resources/timbl.jpg'))
+          .attach('nicola', path.join(__dirname, '/resources/nicola.jpg'))
           .expect(200)
           .end(function (err) {
             if (err) return done(err)
 
             var sizeNicola = fs.statSync(__dirname +
               '/resources/nicola.jpg').size
-            var sizeTim = fs.statSync(__dirname + '/resources/timbl.jpg').size
-            var sizeNicolaLocal = fs.statSync(__dirname +
-              '/resources/sampleContainer/nicola.jpg').size
-            var sizeTimLocal = fs.statSync(__dirname +
-              '/resources/sampleContainer/timbl.jpg').size
+            var sizeTim = fs.statSync(path.join(__dirname, '/resources/timbl.jpg')).size
+            var sizeNicolaLocal = fs.statSync(path.join(__dirname,
+              '/resources/sampleContainer/nicola.jpg')).size
+            var sizeTimLocal = fs.statSync(path.join(__dirname,
+              '/resources/sampleContainer/timbl.jpg')).size
 
             if (sizeNicola === sizeNicolaLocal && sizeTim === sizeTimLocal) {
               return done()

@@ -1,4 +1,5 @@
 var supertest = require('supertest')
+var path = require('path')
 
 // Helper functions for the FS
 // var rm = require('./test-utils').rm
@@ -11,14 +12,14 @@ var ldnode = require('../index')
 describe('Error pages', function () {
   // LDP with error pages
   var errorLdp = ldnode({
-    root: __dirname + '/resources',
-    errorPages: __dirname + '/resources/errorPages'
+    root: path.join(__dirname, '/resources'),
+    errorPages: path.join(__dirname, '/resources/errorPages')
   })
   var errorServer = supertest(errorLdp)
 
   // LDP with no error pages
   var noErrorLdp = ldnode({
-    root: __dirname + '/resources',
+    root: path.join(__dirname, '/resources'),
     noErrorPages: true
   })
   var noErrorServer = supertest(noErrorLdp)

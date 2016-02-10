@@ -2,6 +2,7 @@ var assert = require('chai').assert
 var supertest = require('supertest')
 var nock = require('nock')
 var async = require('async')
+var path = require('path')
 // Helper functions for the FS
 var rm = require('./test-utils').rm
 var write = require('./test-utils').write
@@ -13,7 +14,7 @@ var ldnode = require('../index')
 describe('LDNODE params', function () {
   describe('proxy', function () {
     var ldp = ldnode({
-      root: __dirname + '/resources',
+      root: path.join(__dirname, '/resources'),
       proxy: '/proxy'
     })
     var server = supertest(ldp)
@@ -142,9 +143,9 @@ describe('LDNODE params', function () {
     var ldpHttpsServer
     var ldp = ldnode.createServer({
       forceUser: 'https://fakeaccount.com/profile#me',
-      root: __dirname + '/resources/acl/fake-account',
-      key: __dirname + '/keys/key.pem',
-      cert: __dirname + '/keys/cert.pem',
+      root: path.join(__dirname, '/resources/acl/fake-account'),
+      key: path.join(__dirname, '/keys/key.pem'),
+      cert: path.join(__dirname, '/keys/cert.pem'),
       webid: true,
       host: 'localhost:3457'
     })
