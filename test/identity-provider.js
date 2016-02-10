@@ -121,5 +121,32 @@ describe('Identity Provider', function () {
             })
         })
     })
+
+    it('should create a private settings container', function (done) {
+      var subdomain = supertest('https://nicola.' + host)
+      subdomain.head('/settings/')
+        .expect(401)
+        .end(function (err) {
+          done(err)
+        })
+    })
+
+    it('should create a private prefs file in the settings container', function (done) {
+      var subdomain = supertest('https://nicola.' + host)
+      subdomain.head('/inbox/prefs.ttl')
+        .expect(401)
+        .end(function (err) {
+          done(err)
+        })
+    })
+
+    it('should create a private inbox container', function (done) {
+      var subdomain = supertest('https://nicola.' + host)
+      subdomain.head('/inbox/')
+        .expect(401)
+        .end(function (err) {
+          done(err)
+        })
+    })
   })
 })
