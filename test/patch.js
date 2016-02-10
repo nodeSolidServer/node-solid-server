@@ -1,6 +1,7 @@
 var ldnode = require('../')
 var supertest = require('supertest')
 var assert = require('chai').assert
+var path = require('path')
 
 // Helper functions for the FS
 var rm = require('./test-utils').rm
@@ -11,7 +12,7 @@ var read = require('./test-utils').read
 describe('PATCH', function () {
   // Starting LDP
   var ldp = ldnode({
-    root: __dirname + '/resources/sampleContainer',
+    root: path.join(__dirname, '/resources/sampleContainer'),
     mount: '/test'
   })
   var server = supertest(ldp)

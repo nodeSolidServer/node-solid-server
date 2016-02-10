@@ -159,8 +159,8 @@ describe('HTTP APIs', function () {
             return done(err)
           }
 
-          var size = fs.statSync(__dirname +
-            '/resources/sampleContainer/solid.png').size
+          var size = fs.statSync(path.join(__dirname,
+            '/resources/sampleContainer/solid.png')).size
           if (res.body.length !== size) {
             return done(new Error('files are not of the same size'))
           }
@@ -314,8 +314,8 @@ describe('HTTP APIs', function () {
   })
 
   describe('PUT API', function () {
-    var putRequestBody = fs.readFileSync(__dirname +
-      '/resources/sampleContainer/put1.ttl', {
+    var putRequestBody = fs.readFileSync(path.join(__dirname,
+      '/resources/sampleContainer/put1.ttl'), {
         'encoding': 'utf8'
       })
     it('should create new resource', function (done) {
@@ -399,12 +399,12 @@ describe('HTTP APIs', function () {
       ])
     })
 
-    var postRequest1Body = fs.readFileSync(__dirname +
-      '/resources/sampleContainer/put1.ttl', {
+    var postRequest1Body = fs.readFileSync(path.join(__dirname,
+      '/resources/sampleContainer/put1.ttl'), {
         'encoding': 'utf8'
       })
-    var postRequest2Body = fs.readFileSync(__dirname +
-      '/resources/sampleContainer/post2.ttl', {
+    var postRequest2Body = fs.readFileSync(path.join(__dirname,
+      '/resources/sampleContainer/post2.ttl'), {
         'encoding': 'utf8'
       })
     it('should create new resource', function (done) {
@@ -505,8 +505,8 @@ describe('HTTP APIs', function () {
           .end(function (err) {
             if (err) return done(err)
 
-            var sizeNicola = fs.statSync(__dirname +
-              '/resources/nicola.jpg').size
+            var sizeNicola = fs.statSync(path.join(__dirname,
+              '/resources/nicola.jpg')).size
             var sizeTim = fs.statSync(path.join(__dirname, '/resources/timbl.jpg')).size
             var sizeNicolaLocal = fs.statSync(path.join(__dirname,
               '/resources/sampleContainer/nicola.jpg')).size
