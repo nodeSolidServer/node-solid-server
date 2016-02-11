@@ -5,6 +5,7 @@ var rm = require('./test-utils').rm
 // var cp = require('./test-utils').cp
 var read = require('./test-utils').read
 var ldnode = require('../index')
+var path = require('path')
 
 describe('Identity Provider', function () {
   this.timeout(10000)
@@ -119,6 +120,56 @@ describe('Identity Provider', function () {
             .end(function (err) {
               done(err)
             })
+        })
+    })
+
+    it('should create the default folders', function (done) {
+      var subdomain = supertest('https://nicola.' + host)
+      subdomain.post('/accounts/new')
+        .send('username=nicola')
+        .expect(200)
+        .end(function (err) {
+          if (err) {
+            return done(err)
+          }
+          var domain = host.split(':')[0]
+          var card = read(path.join('accounts/nicola.' + domain, 'profile/card'))
+          var cardAcl = read(path.join('accounts/nicola.' + domain, 'profile/card.acl'))
+          var prefs = read(path.join('accounts/nicola.' + domain, 'settings/prefs.ttl'))
+          var inboxAcl = read(path.join('accounts/nicola.' + domain, 'inbox/.acl'))
+
+          if (domain && card && cardAcl && prefs && inboxAcl) {
+            done()
+          } else {
+            done(new Error('failed to create default files'))
+          }
+        })
+    })
+
+    it('should create a private settings container', function (done) {
+      var subdomain = supertest('https://nicola.' + host)
+      subdomain.head('/settings/')
+        .expect(401)
+        .end(function (err) {
+          done(err)
+        })
+    })
+
+    it('should create a private prefs file in the settings container', function (done) {
+      var subdomain = supertest('https://nicola.' + host)
+      subdomain.head('/inbox/prefs.ttl')
+        .expect(401)
+        .end(function (err) {
+          done(err)
+        })
+    })
+
+    it('should create a private inbox container', function (done) {
+      var subdomain = supertest('https://nicola.' + host)
+      subdomain.head('/inbox/')
+        .expect(401)
+        .end(function (err) {
+          done(err)
         })
     })
   })
