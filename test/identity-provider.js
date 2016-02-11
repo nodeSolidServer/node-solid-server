@@ -1,5 +1,4 @@
 var supertest = require('supertest')
-var path = require('path')
 // Helper functions for the FS
 var rm = require('./test-utils').rm
 // var write = require('./test-utils').write
