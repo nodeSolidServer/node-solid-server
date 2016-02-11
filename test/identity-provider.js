@@ -1,4 +1,5 @@
 var supertest = require('supertest')
+var path = require('path')
 // Helper functions for the FS
 var rm = require('./test-utils').rm
 // var write = require('./test-utils').write
@@ -15,9 +16,9 @@ describe('Identity Provider', function () {
   var host = 'localhost:3457'
   var ldpHttpsServer
   var ldp = ldnode.createServer({
-    root: __dirname + '/resources/accounts/',
-    key: __dirname + '/keys/key.pem',
-    cert: __dirname + '/keys/cert.pem',
+    root: path.join(__dirname, '/resources/accounts/'),
+    key: path.join(__dirname, '/keys/key.pem'),
+    cert: path.join(__dirname, '/keys/cert.pem'),
     webid: true,
     idp: true
   })

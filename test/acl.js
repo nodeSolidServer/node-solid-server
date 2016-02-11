@@ -2,6 +2,7 @@ var assert = require('chai').assert
 var fs = require('fs')
 var $rdf = require('rdflib')
 var request = require('request')
+var path = require('path')
 
 // Helper functions for the FS
 var rm = require('./test-utils').rm
@@ -21,9 +22,9 @@ describe('ACL HTTP', function () {
   var ldpHttpsServer
   var ldp = ldnode.createServer({
     mount: '/test',
-    root: __dirname + '/resources',
-    key: __dirname + '/keys/key.pem',
-    cert: __dirname + '/keys/cert.pem',
+    root: path.join(__dirname, '/resources'),
+    key: path.join(__dirname, '/keys/key.pem'),
+    cert: path.join(__dirname, '/keys/cert.pem'),
     webid: true
   })
 
@@ -56,12 +57,12 @@ describe('ACL HTTP', function () {
   var user2 = 'https://user2.databox.me/profile/card#me'
   var userCredentials = {
     user1: {
-      cert: fs.readFileSync(__dirname + '/keys/user1-cert.pem'),
-      key: fs.readFileSync(__dirname + '/keys/user1-key.pem')
+      cert: fs.readFileSync(path.join(__dirname, '/keys/user1-cert.pem')),
+      key: fs.readFileSync(path.join(__dirname, '/keys/user1-key.pem'))
     },
     user2: {
-      cert: fs.readFileSync(__dirname + '/keys/user2-cert.pem'),
-      key: fs.readFileSync(__dirname + '/keys/user2-key.pem')
+      cert: fs.readFileSync(path.join(__dirname, '/keys/user2-cert.pem')),
+      key: fs.readFileSync(path.join(__dirname, '/keys/user2-key.pem'))
     }
   }
 
@@ -444,7 +445,7 @@ describe('ACL HTTP', function () {
   })
 
   describe('Read-only', function () {
-    var body = fs.readFileSync(__dirname + '/resources/acl/read-acl/.acl')
+    var body = fs.readFileSync(path.join(__dirname, '/resources/acl/read-acl/.acl'))
     it('user1 should be able to access ACL file', function (done) {
       var options = createOptions('/acl/read-acl/.acl', 'user1')
       request.head(options, function (error, response, body) {
@@ -1019,14 +1020,14 @@ describe('ACL HTTP', function () {
     it('should remove all files and dirs created', function (done) {
       try {
         // must remove the ACLs in sync
-        fs.unlinkSync(__dirname + '/resources/' + testDir + '/dir1/dir2/abcd.ttl')
-        fs.rmdirSync(__dirname + '/resources/' + testDir + '/dir1/dir2/')
-        fs.rmdirSync(__dirname + '/resources/' + testDir + '/dir1/')
-        fs.unlinkSync(__dirname + '/resources/' + abcFile)
-        fs.unlinkSync(__dirname + '/resources/' + testDirAclFile)
-        fs.unlinkSync(__dirname + '/resources/' + testDirMetaFile)
-        fs.rmdirSync(__dirname + '/resources/' + testDir)
-        fs.rmdirSync(__dirname + '/resources/acl/')
+        fs.unlinkSync(path.join(__dirname, '/resources/' + testDir + '/dir1/dir2/abcd.ttl'))
+        fs.rmdirSync(path.join(__dirname, '/resources/' + testDir + '/dir1/dir2/'))
+        fs.rmdirSync(path.join(__dirname, '/resources/' + testDir + '/dir1/'))
+        fs.unlinkSync(path.join(__dirname, '/resources/' + abcFile))
+        fs.unlinkSync(path.join(__dirname, '/resources/' + testDirAclFile))
+        fs.unlinkSync(path.join(__dirname, '/resources/' + testDirMetaFile))
+        fs.rmdirSync(path.join(__dirname, '/resources/' + testDir))
+        fs.rmdirSync(path.join(__dirname, '/resources/acl/'))
         done()
       } catch (e) {
         done(e)
