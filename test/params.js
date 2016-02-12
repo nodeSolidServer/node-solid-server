@@ -67,6 +67,13 @@ describe('LDNODE params', function () {
         .expect('Access-Control-Allow-Origin', 'http://example.com')
         .expect(200, done)
     })
+
+    it('should work with a real request', function (done) {
+      server.get('/proxy/?uri=http://melvincarvalho.com')
+        .set('Origin', 'http://example.com')
+        .expect('Access-Control-Allow-Origin', 'http://example.com')
+        .expect(200, done)
+    })
   })
 
   describe('suffixMeta', function () {
