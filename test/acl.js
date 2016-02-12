@@ -606,7 +606,7 @@ describe('ACL HTTP', function () {
         done()
       })
     })
-    it('user2 should be able to modify test file', function (done) {
+    it('user2 (with append permission) cannot use PUT to append', function (done) {
       var options = createOptions('/acl/append-acl/abc.ttl', 'user2')
       options.headers = {
         'content-type': 'text/turtle'
@@ -614,7 +614,7 @@ describe('ACL HTTP', function () {
       options.body = '<d> <e> <f> .\n'
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
-        assert.equal(response.statusCode, 201)
+        assert.equal(response.statusCode, 403)
         done()
       })
     })
@@ -626,7 +626,7 @@ describe('ACL HTTP', function () {
         done()
       })
     })
-    it('agent should be able to modify test file', function (done) {
+    it('agent (with append permissions) should not PUT', function (done) {
       var options = createOptions('/acl/append-acl/abc.ttl')
       options.headers = {
         'content-type': 'text/turtle'
@@ -634,7 +634,7 @@ describe('ACL HTTP', function () {
       options.body = '<g> <h> <i> .\n'
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
-        assert.equal(response.statusCode, 201)
+        assert.equal(response.statusCode, 401)
         done()
       })
     })
