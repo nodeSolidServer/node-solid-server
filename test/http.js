@@ -82,13 +82,6 @@ describe('HTTP APIs', function () {
   }
 
   describe('GET Root container', function () {
-    it('should have Access-Control-Allow-Origin as the req.Origin',
-      function (done) {
-        server.get('/')
-          .set('Origin', 'http://example.com')
-          .expect('Access-Control-Allow-Origin', 'http://example.com')
-          .expect(200, done)
-      })
     it('should exist', function (done) {
       server.get('/')
         .expect(200, done)
@@ -101,6 +94,17 @@ describe('HTTP APIs', function () {
   })
 
   describe('OPTIONS API', function () {
+    it('should set the proper CORS headers',
+      function (done) {
+        server.options('/')
+          .set('Origin', 'http://example.com')
+          .expect('Access-Control-Allow-Origin', 'http://example.com')
+          .expect('Access-Control-Allow-Credentials', 'true')
+          .expect('Access-Control-Allow-Methods', 'OPTIONS,HEAD,GET')
+          .expect('Access-Control-Expose-Headers', 'User, Location, Link, Vary, Last-Modified, ETag, Accept-Patch, Content-Length')
+          .expect(204, done)
+      })
+
     it('should have an empty response', function (done) {
       server.options('/sampleContainer/example1.ttl')
         .expect(emptyResponse)
