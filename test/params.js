@@ -28,11 +28,19 @@ describe('LDNODE params', function () {
     it('should return the same headers of proxied request', function (done) {
       nock('https://amazingwebsite.tld')
         .get('/')
-        .reply(200, 'Hello World', {'Content-Type': 'text/plain'})
+        .reply(function (uri, req) {
+          if (this.req.headers['test'] && this.req.headers['test'] === 'test1') {
+            return [200, 'YES', {'content-type': this.req.headers['accept']}]
+          } else {
+            return [500, 'empty']
+          }
+        })
 
       server.get('/proxy?uri=https://amazingwebsite.tld/')
-        .expect('Content-Type', 'text/plain')
+        .set('test', 'test1')
+        .set('accept', 'application/json')
         .expect(200)
+        .expect('content-type', 'application/json')
         .end(function (err, data) {
           if (err) return done(err)
           done(err)
