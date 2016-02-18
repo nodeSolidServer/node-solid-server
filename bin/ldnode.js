@@ -4,10 +4,6 @@ var fs = require('fs')
 var path = require('path')
 var argv = require('nomnom')
   .script('ldnode')
-  .option('mount', {
-    abbr: 'm',
-    help: 'Serve on a specific URL path (default: \'/\')'
-  })
   .option('root', {
     abbr: 'r',
     help: 'Root folder to serve (defaut: \'./\')'
@@ -40,6 +36,11 @@ var argv = require('nomnom')
   .option('secret', {
     help: 'Secret used to sign the session ID cookie (e.g. "your secret phrase")',
     abbr: 's'
+  })
+  .option('createAdmin', {
+    full: 'create-admin',
+    flag: true,
+    help: 'Allow a user to set up their initial identity in single-user mode'
   })
   .option('noLive', {
     full: 'no-live',
@@ -74,10 +75,9 @@ var argv = require('nomnom')
     full: 'default-app',
     help: 'URI to use as a default app for resources (default: https://linkeddata.github.io/warp/#/list/)'
   })
-  .option('createAdmin', {
-    full: 'create-admin',
-    flag: true,
-    help: 'Allow a user to set up their initial identity in single-user mode'
+  .option('mount', {
+    abbr: 'm',
+    help: 'Serve on a specific URL path (default: \'/\')'
   })
   .option('forceUser', {
     help: 'Force a WebID to always be logged in (useful when offline)',
