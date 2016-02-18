@@ -25,6 +25,20 @@ describe('LDNODE params', function () {
         .expect(200, done)
     })
 
+    it('should return the same headers of proxied request', function (done) {
+      nock('https://amazingwebsite.tld')
+        .get('/')
+        .reply(200, 'Hello World', {'Content-Type': 'text/plain'})
+
+      server.get('/proxy?uri=https://amazingwebsite.tld/')
+        .expect('Content-Type', 'text/plain')
+        .expect(200)
+        .end(function (err, data) {
+          if (err) return done(err)
+          done(err)
+        })
+    })
+
     it('should also work on /proxy/ ?uri', function (done) {
       nock('https://amazingwebsite.tld').get('/').reply(200)
       server.get('/proxy/?uri=https://amazingwebsite.tld/')
