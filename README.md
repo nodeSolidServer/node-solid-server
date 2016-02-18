@@ -4,20 +4,18 @@
 [![NPM Version](https://img.shields.io/npm/v/ldnode.svg?style=flat)](https://npm.im/ldnode)
 [![Gitter chat](https://img.shields.io/badge/gitter-join%20chat%20%E2%86%92-brightgreen.svg?style=flat)](http://gitter.im/linkeddata/ldnode)
 
-Ldnode implements the [Linked Data Platform](http://www.w3.org/TR/ldp/) and
-[Solid](https://github.com/solid) in [NodeJS](https://nodejs.org/). This is all
-you need to run distributed Linked Data apps on top of the file system.
+> Implementation of a [Solid](https://github.com/solid)'s server spec in [NodeJS](https://nodejs.org/).
+> This is all you need to run distributed Linked Data apps on top of the file system.
 
-You can run `ldnode` as a [command-line tool](https://github.com/linkeddata/ldnode/blob/master/README.md#command-line-tool) or as a [library](https://github.com/linkeddata/ldnode/blob/master/README.md#library) for your [Express](https://expressjs.com) app.
+You can use `ldnode` as a [command-line tool](https://github.com/linkeddata/ldnode/blob/master/README.md#command-line-tool) or as a [library](https://github.com/linkeddata/ldnode/blob/master/README.md#library) for your [Express](https://expressjs.com) app.
 
-## Features
-
-- [x] Linked Data Platform compliant HEAD, OPTIONS, GET, PUT, POST, PATCH, DELETE
+## Solid Features supported
+- [x] [Linked Data Platform](http://www.w3.org/TR/ldp/)
+- [x] [Web Access Control](http://www.w3.org/wiki/WebAccessControl)
+- [x] [WebID+TLS Authentication](https://www.w3.org/2005/Incubator/webid/spec/tls/)
+- [x] [Real-time live updates](https://github.com/solid/solid-spec#subscribing) (using WebSockets)
+- [x] Identity provider for WebID
 - [x] Proxy for cross-site data access
-- [x] Access control using [Web Access Control](http://www.w3.org/wiki/WebAccessControl)
-- [x] WebID+TLS Authentication
-- [x] Real-time live updates (using WebSockets)
-- [x] Identity provider for WebID+TLS
 - [ ] Group members in ACL
 
 ## Command Line Usage
