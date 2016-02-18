@@ -4,44 +4,26 @@ var fs = require('fs')
 var path = require('path')
 var argv = require('nomnom')
   .script('ldnode')
-  .option('verbose', {
-    abbr: 'v',
-    flag: true,
-    help: 'Print the logs to console'
-  })
-  .option('version', {
-    flag: true,
-    help: 'Print current ldnode version',
-    callback: function () {
-      fs.readFile(path.resolve(__dirname, '../package.json'), 'utf-8', function (_, file) {
-        console.log(JSON.parse(file).version)
-      })
-    }
-  })
   .option('mount', {
     abbr: 'm',
-    help: "Relative URL from which to serve the Linked Data Platform (default: '/')"
+    help: 'Serve on a specific URL path (default: \'/\')'
   })
   .option('root', {
     abbr: 'r',
-    help: 'Root location on the filesystem to serve resources'
+    help: 'Root folder to serve (defaut: \'./\')'
   })
   .option('port', {
     abbr: 'p',
     help: 'Port to use'
   })
-  .option('cache', {
-    abbr: 'c',
-    help: 'Set cache time (in seconds), 0 for no cache'
-  })
   .option('key', {
-    help: 'Path to the ssl key file',
+    help: 'Path to the SSL private key in PEM format',
     abbr: 'K',
     full: 'key'
   })
   .option('cert', {
     full: 'cert',
-    help: 'Path to the ssl cert file',
+    help: 'Path to the SSL certificate key in PEM format',
     abbr: 'C'
   })
   .option('webid', {
@@ -50,29 +32,24 @@ var argv = require('nomnom')
     flag: true
   })
   .option('idp', {
-    help: 'Allow registration of WebIDs',
+    help: 'Allow users to register their WebID on subdomains',
     abbr: 'idp',
     full: 'identity-provider',
     flag: true
   })
   .option('secret', {
-    help: 'HTTP Session cookie secret key (e.g. "your secret phrase")',
+    help: 'Secret used to sign the session ID cookie (e.g. "your secret phrase")',
     abbr: 's'
-  })
-  .option('forceUser', {
-    help: 'Force a WebID to always be logged in (useful when offline)',
-    abbr: 'fU',
-    full: 'force-user'
-  })
-  .option('proxy', {
-    full: 'proxy',
-    help: 'Use a proxy on example.tld/proxyPath',
-    abbr: 'P'
   })
   .option('noLive', {
     full: 'no-live',
     help: 'Disable live support through WebSockets',
     flag: true
+  })
+  .option('proxy', {
+    full: 'proxy',
+    help: 'Use a proxy on example.tld/proxyPath',
+    abbr: 'P'
   })
   .option('suffixAcl', {
     full: 'suffix-acl',
@@ -101,6 +78,25 @@ var argv = require('nomnom')
     full: 'create-admin',
     flag: true,
     help: 'Allow a user to set up their initial identity in single-user mode'
+  })
+  .option('forceUser', {
+    help: 'Force a WebID to always be logged in (useful when offline)',
+    abbr: 'fU',
+    full: 'force-user'
+  })
+  .option('verbose', {
+    abbr: 'v',
+    flag: true,
+    help: 'Print the logs to console'
+  })
+  .option('version', {
+    flag: true,
+    help: 'Print current ldnode version',
+    callback: function () {
+      fs.readFile(path.resolve(__dirname, '../package.json'), 'utf-8', function (_, file) {
+        console.log(JSON.parse(file).version)
+      })
+    }
   })
   .parse()
 
