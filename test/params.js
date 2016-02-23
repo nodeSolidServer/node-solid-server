@@ -29,8 +29,11 @@ describe('LDNODE params', function () {
       nock('https://amazingwebsite.tld')
         .get('/')
         .reply(function (uri, req) {
+          if (this.req.headers['accept'] !== 'text/turtle') {
+            throw Error('Accept is received on the header')
+          }
           if (this.req.headers['test'] && this.req.headers['test'] === 'test1') {
-            return [200, 'YES', {'content-type': this.req.headers['accept']}]
+            return [200, 'YES']
           } else {
             return [500, 'empty']
           }
@@ -38,9 +41,8 @@ describe('LDNODE params', function () {
 
       server.get('/proxy?uri=https://amazingwebsite.tld/')
         .set('test', 'test1')
-        .set('accept', 'application/json')
+        .set('accept', 'text/turtle')
         .expect(200)
-        .expect('content-type', 'application/json')
         .end(function (err, data) {
           if (err) return done(err)
           done(err)
