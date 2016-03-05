@@ -462,14 +462,6 @@ describe('ACL HTTP', function () {
         done()
       })
     })
-    it('user1 should be able to access test directory without trailing slash in the url', function (done) {
-      var options = createOptions('/acl/read-acl', 'user1')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
-      })
-    })
     it('user1 should be able to modify ACL file', function (done) {
       var options = createOptions('/acl/read-acl/.acl', 'user1')
       options.headers = {
