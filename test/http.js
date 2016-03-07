@@ -173,13 +173,12 @@ describe('HTTP APIs', function () {
     })
 
     it('should have Access-Control-Allow-Origin as Origin on containers', function (done) {
-      server.get('/sampleContainer')
+      server.get('/sampleContainer/')
         .set('Origin', 'http://example.com')
         .expect('content-type', /text\/turtle/)
         .expect('Access-Control-Allow-Origin', 'http://example.com')
         .expect(200, done)
     })
-
     it('should have Access-Control-Allow-Origin as Origin on resources',
       function (done) {
         server.get('/sampleContainer/example1.ttl')
@@ -220,6 +219,10 @@ describe('HTTP APIs', function () {
         .set('Accept', 'text/html')
         .expect('content-type', /text\/html/)
         .expect(200, done) // Can't check for 303 because of internal redirects
+    })
+    it('should redirect to the right container URI if missing /', function (done) {
+      server.get('/sampleContainer')
+        .expect(301, done)
     })
     it('should return 404 for non-existent resource', function (done) {
       server.get('/invalidfile.foo')
@@ -486,7 +489,7 @@ describe('HTTP APIs', function () {
         })
     })
     it('should be able to access newly container', function (done) {
-      server.get('/post-tests/loans')
+      server.get('/post-tests/loans/')
         .expect('content-type', /text\/turtle/)
         .expect(200, done)
     })
