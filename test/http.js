@@ -208,11 +208,16 @@ describe('HTTP APIs', function () {
         .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Container>; rel="type"/)
         .expect(200, done)
     })
-    it('should serve the right content type if requested as text/html', function (done) {
+    it('should load skin (mashlib) if resource was requested as text/html', function (done) {
       server.get('/sampleContainer/example1.ttl')
         .set('Accept', 'text/html')
-        .expect('content-type', /text\/turtle/)
-        .expect(200, done)
+        .expect('content-type', /text\/html/)
+        .expect(function (res) {
+          if (res.text.indexOf('TabulatorOutline') < 0) {
+            throw new Error('did not load the Tabulator skin by default')
+          }
+        })
+        .expect(200, done) // Can't check for 303 because of internal redirects
     })
     it('should redirect to defaultApp if container was requested as text/html', function (done) {
       server.get('/sampleContainer/')
