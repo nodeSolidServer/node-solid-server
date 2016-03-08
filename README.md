@@ -47,7 +47,8 @@ Options:
   -sM, --suffix-meta          Suffix for metadata files (default: '.meta')
   --no-error-pages            Disable custom error pages (use Node.js default pages instead)
   --error-pages               Folder from which to look for custom error pages files (files must be named <error-code>.html -- eg. 500.html)
-  --default-app               URI to use as a default app for resources (default: https://linkeddata.github.io/warp/#/list/)
+  --file-browser               URI to use as a default app for resources (default: https://linkeddata.github.io/warp/#/list/)
+  --data-browser               Enable viewing RDF resources using a default data browser application (e.g. mashlib)
 ```
 
 ### Running the server
@@ -145,7 +146,7 @@ If you started your `ldnode` server locally on port 8443 as in the example
 above, you would then be able to visit `https://localhost:8443` in the browser
 (ignoring the Untrusted Connection browser warnings as usual), where your
 `ldnode` server would redirect you to the default viewer app (see the
-`--default-app` server config parameter), which is usually the
+`--file-browser` server config parameter), which is usually the
 [github.io/warp](https://linkeddata.github.io/warp/#/list/) file browser.
 
 Accessing most Solid apps (such as Warp) will prompt you to select your browser
