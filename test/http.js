@@ -278,6 +278,13 @@ describe('HTTP APIs', function () {
           })
           .end(done)
       })
+    it('should still redirect to the right container URI if missing / and HTML is requested',
+      function (done) {
+        server.get('/sampleContainer')
+          .set('accept', 'text/html')
+          .expect('location', /\/sampleContainer\//)
+          .expect(301, done)
+      })
   })
 
   describe('HEAD API', function () {
