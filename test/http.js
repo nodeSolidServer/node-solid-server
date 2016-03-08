@@ -219,13 +219,13 @@ describe('HTTP APIs', function () {
         })
         .expect(200, done) // Can't check for 303 because of internal redirects
     })
-    it('should NOT load skin (mashlib) if resource is not RDF', function (done) {
+    it('should NOT load data browser (mashlib) if resource is not RDF', function (done) {
       server.get('/sampleContainer/solid.png')
         .set('Accept', 'text/html')
         .expect('content-type', /image\/png/)
         .expect(200, done)
     })
-    it('should redirect to defaultApp if container was requested as text/html', function (done) {
+    it('should redirect to file browser if container was requested as text/html', function (done) {
       server.get('/sampleContainer/')
         .set('Accept', 'text/html')
         .expect('content-type', /text\/html/)
