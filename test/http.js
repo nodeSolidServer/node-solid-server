@@ -8,7 +8,8 @@ var path = require('path')
 
 var suffixAcl = '.acl'
 var suffixMeta = '.meta'
-var ldpServer = ldnode({
+var ldpServer = ldnode.createServer({
+  live: true,
   root: path.join(__dirname, '/resources')
 })
 var server = supertest(ldpServer)
@@ -193,6 +194,11 @@ describe('HTTP APIs', function () {
         .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Resource>; rel="type"/)
         .expect(200, done)
     })
+    it('should have set Updates-Via to use WebSockets', function (done) {
+      server.get('/sampleContainer/example1.ttl')
+        .expect('updates-via', /wss?:\/\//)
+        .expect(200, done)
+    })
     it('should have set acl and describedBy Links for resource',
       function (done) {
         server.get('/sampleContainer/example1.ttl')
@@ -308,6 +314,11 @@ describe('HTTP APIs', function () {
     it('should return empty response body', function (done) {
       server.head('/patch-5-initial.ttl')
         .expect(emptyResponse)
+        .expect(200, done)
+    })
+    it('should have set Updates-Via to use WebSockets', function (done) {
+      server.get('/sampleContainer/example1.ttl')
+        .expect('updates-via', /wss?:\/\//)
         .expect(200, done)
     })
     it('should have set Link as Resource', function (done) {
