@@ -93,9 +93,14 @@ var argv = require('nomnom')
     full: 'error-pages',
     help: 'Folder from which to look for custom error pages files (files must be named <error-code>.html -- eg. 500.html)'
   })
-  .option('defaultApp', {
-    full: 'default-app',
+  .option('fileBrowser', {
+    full: 'file-browser',
     help: 'URI to use as a default app for resources (default: https://linkeddata.github.io/warp/#/list/)'
+  })
+  .option('dataBrowser', {
+    full: 'data-browser',
+    flag: true,
+    help: 'Enable viewing RDF resources using a default data browser application (e.g. mashlib)'
   })
   .option('createAdmin', {
     full: 'create-admin',
