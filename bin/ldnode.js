@@ -50,9 +50,8 @@ var argv = require('nomnom')
     flag: true
   })
   .option('idp', {
-    help: 'Allow registration of WebIDs',
-    abbr: 'idp',
-    full: 'identity-provider',
+    help: 'Identity Provider (multi user mode), allows registration of WebIDs',
+    full: 'idp',
     flag: true
   })
   .option('secret', {
@@ -61,12 +60,11 @@ var argv = require('nomnom')
   })
   .option('forceUser', {
     help: 'Force a WebID to always be logged in (useful when offline)',
-    abbr: 'fU',
     full: 'force-user'
   })
   .option('proxy', {
     full: 'proxy',
-    help: 'Use a proxy on example.tld/proxyPath',
+    help: 'Use a CORS/XSS proxy on example.tld/proxyPath',
     abbr: 'P'
   })
   .option('noLive', {
@@ -76,13 +74,11 @@ var argv = require('nomnom')
   })
   .option('suffixAcl', {
     full: 'suffix-acl',
-    help: "Suffix for acl files (default: '.acl')",
-    abbr: 'sA'
+    help: "Suffix for acl files (default: '.acl')"
   })
   .option('suffixMeta', {
     full: 'suffix-meta',
-    help: "Suffix for metadata files (default: '.meta')",
-    abbr: 'sM'
+    help: "Suffix for metadata files (default: '.meta')"
   })
   .option('noErrorPages', {
     full: 'no-error-pages',
