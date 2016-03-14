@@ -34,20 +34,20 @@ To run your server, simply run `ldnode` with the following flags:
 
 ```bash
 $ ldnode --port 8443 --ssl-key path/to/ssl-key.pem --ssl-cert path/to/ssl-cert.pem
-> Solid server (ldnode v0.2.24) running on https://localhost:8443/
+# Solid server (ldnode v0.2.24) running on https://localhost:8443/
 ```
 
 First time user? If you have never run `ldnode` before, let's get you a WebID to access your server.
 ```bash
 $ ldnode --port 8443 --ssl-key path/to/ssl-key.pem --ssl-cert path/to/ssl-cert.pem
-> Action required: Create your admin account on https://localhost:8080/
-> When done, stop your server (<ctrl>+c) and restart without "--create-admin"
+# Action required: Create your admin account on https://localhost:8080/
+# When done, stop your server (<ctrl>+c) and restart without "--create-admin"
 ```
 
 If you want to run `ldnode` on a particular folder (different from the one you are in, e.g. `path/to/folder`):
 ```bash
 $ ldnode --root path/to/folder --port 8443 --ssl-key path/to/ssl-key.pem --ssl-cert path/to/ssl-cert.pem
-> Solid server (ldnode v0.2.24) running on https://localhost:8443/
+# Solid server (ldnode v0.2.24) running on https://localhost:8443/
 ```
 
 ##### How do I get the --ssl-key and the --ssl-cert?
@@ -69,7 +69,7 @@ Pre-requisites:
 - (If you are running locally) Add the line `127.0.0.1 *.localhost` to `/etc/hosts`
 
 ```bash
-ldnode --allow-signup --port 8443 --cert /path/to/cert --key /path/to/key --root ./accounts
+$ ldnode --allow-signup --port 8443 --cert /path/to/cert --key /path/to/key --root ./accounts
 ```
 
 Your users will have a dedicated folder under `./accounts`. Also, your root domain's website will be in `./accounts/yourdomain.tld`. New users can create accounts on `/accounts/new` and create new certificates on `/accounts/cert`. An easy-to-use sign-up tool is found on `/accounts`.
