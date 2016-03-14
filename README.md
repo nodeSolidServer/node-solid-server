@@ -6,7 +6,7 @@
 
 > [Solid](https://github.com/solid) server in [NodeJS](https://nodejs.org/)
 
-Ldnode lets you run a Solid server on top of the file-system. You can use it as a [command-line tool](https://github.com/linkeddata/ldnode/blob/master/README.md#command-line-tool) (easy) or as a [library](https://github.com/linkeddata/ldnode/blob/master/README.md#library) (advanced).
+Ldnode lets you run a Solid server on top of the file-system. You can use it as a [command-line tool](https://github.com/linkeddata/ldnode/blob/master/README.md#command-line-usage) (easy) or as a [library](https://github.com/linkeddata/ldnode/blob/master/README.md#library-usage) (advanced).
 
 ## Solid Features supported
 - [x] [Linked Data Platform](http://www.w3.org/TR/ldp/)
@@ -116,7 +116,7 @@ Options:
    --force-user       Force a WebID to always be logged in (useful when offline)
 ```
 
-## Library
+## Library Usage
 
 ### Install Dependencies
 
