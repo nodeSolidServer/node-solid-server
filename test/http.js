@@ -9,7 +9,8 @@ var path = require('path')
 var suffixAcl = '.acl'
 var suffixMeta = '.meta'
 var ldpServer = ldnode({
-  root: path.join(__dirname, '/resources')
+  root: path.join(__dirname, '/resources'),
+  webid: false
 })
 var server = supertest(ldpServer)
 

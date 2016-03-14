@@ -125,6 +125,11 @@ function bin (argv) {
   // Set up port
   argv.port = argv.port || 3456
 
+  // Webid to be default in command line
+  if (argv.webid !== false) {
+    argv.webid = true
+  }
+
   // Signal handling (e.g. CTRL+C)
   if (process.platform !== 'win32') {
     // Signal handlers don't work on Windows.
