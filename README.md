@@ -28,27 +28,29 @@ The command line tool has the following options
 Usage: ldnode [options]
 
 Options:
-  -v, --verbose               Print the logs to console
-  --version                   Print current ldnode version
-  -m, --mount                 Relative URL from which to serve the Linked Data Platform (default: '/')
-  -r, --root                  Root location on the filesystem to serve resources
-  -p, --port                  Port to use
-  -c, --cache                 Set cache time (in seconds), 0 for no cache
-  -K, --key                   Path to the ssl key file
-  -C, --cert                  Path to the ssl cert file
-  --webid                     Enable WebID+TLS authentication
-  -idp, --identity-provider   Allow registration of WebIDs
-  --create-admin              Allow a user to set up their initial identity in single-user mode
-  -s, --secret                HTTP Session cookie secret key (e.g. "your secret phrase")
-  -fU, --force-user           Force a WebID to always be logged in (useful when offline)
-  -P, --proxy                 Use a proxy on example.tld/proxyPath
-  --no-live                   Disable live support through WebSockets
-  -sA, --suffix-acl           Suffix for acl files (default: '.acl')
-  -sM, --suffix-meta          Suffix for metadata files (default: '.meta')
-  --no-error-pages            Disable custom error pages (use Node.js default pages instead)
-  --error-pages               Folder from which to look for custom error pages files (files must be named <error-code>.html -- eg. 500.html)
-  --file-browser               URI to use as a default app for resources (default: https://linkeddata.github.io/warp/#/list/)
-  --data-browser               Enable viewing RDF resources using a default data browser application (e.g. mashlib)
+   --version          Print current ldnode version
+   -v, --verbose      Print the logs to console
+
+   --root             Root folder to serve (defaut: './')
+   --port             Port to use
+   --webid            Enable WebID+TLS authentication
+   --ssl-key          Path to the SSL private key in PEM format
+   --ssl-cert         Path to the SSL certificate key in PEM format
+   --allow-signup     Allow users to register their WebID on subdomains
+
+   --create-admin     Allow a user to set up their initial identity in single-user mode
+   --no-live          Disable live support through WebSockets
+   --default-app      URI to use as a default app for resources (default: https://linkeddata.github.io/warp/#/list/)
+   --proxy            Use a proxy on example.tld/proxyPath
+   --file-browser     URI to use as a default app for resources (default: https://linkeddata.github.io/warp/#/list/)
+   --data-browser     Enable viewing RDF resources using a default data browser application (e.g. mashlib)
+   --suffix-acl       Suffix for acl files (default: '.acl')
+   --suffix-meta      Suffix for metadata files (default: '.meta')
+   --session-secret   Secret used to sign the session ID cookie (e.g. "your secret phrase")
+   --no-error-pages   Disable custom error pages (use Node.js default pages instead)
+   --error-pages      Folder from which to look for custom error pages files (files must be named <error-code>.html -- eg. 500.html)
+   --mount            Serve on a specific URL path (default: '/')
+   --force-user       Force a WebID to always be logged in (useful when offline)
 ```
 
 ### Running the server
