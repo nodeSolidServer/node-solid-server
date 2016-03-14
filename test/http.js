@@ -8,7 +8,8 @@ var path = require('path')
 
 var suffixAcl = '.acl'
 var suffixMeta = '.meta'
-var ldpServer = ldnode({
+var ldpServer = ldnode.createServer({
+  live: true,
   root: path.join(__dirname, '/resources')
 })
 var server = supertest(ldpServer)
@@ -100,8 +101,8 @@ describe('HTTP APIs', function () {
           .set('Origin', 'http://example.com')
           .expect('Access-Control-Allow-Origin', 'http://example.com')
           .expect('Access-Control-Allow-Credentials', 'true')
-          .expect('Access-Control-Allow-Methods', 'OPTIONS,HEAD,GET')
-          .expect('Access-Control-Expose-Headers', 'User, Location, Link, Vary, Last-Modified, ETag, Accept-Patch, Content-Length')
+          .expect('Access-Control-Allow-Methods', 'OPTIONS,HEAD,GET,PATCH,POST,PUT,DELETE')
+          .expect('Access-Control-Expose-Headers', 'User, Location, Link, Vary, Last-Modified, ETag, Accept-Patch, Updates-Via, Allow, Content-Length')
           .expect(204, done)
       })
 
@@ -173,13 +174,12 @@ describe('HTTP APIs', function () {
     })
 
     it('should have Access-Control-Allow-Origin as Origin on containers', function (done) {
-      server.get('/sampleContainer')
+      server.get('/sampleContainer/')
         .set('Origin', 'http://example.com')
         .expect('content-type', /text\/turtle/)
         .expect('Access-Control-Allow-Origin', 'http://example.com')
         .expect(200, done)
     })
-
     it('should have Access-Control-Allow-Origin as Origin on resources',
       function (done) {
         server.get('/sampleContainer/example1.ttl')
@@ -192,6 +192,11 @@ describe('HTTP APIs', function () {
       server.get('/sampleContainer/example1.ttl')
         .expect('content-type', /text\/turtle/)
         .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Resource>; rel="type"/)
+        .expect(200, done)
+    })
+    it('should have set Updates-Via to use WebSockets', function (done) {
+      server.get('/sampleContainer/example1.ttl')
+        .expect('updates-via', /wss?:\/\//)
         .expect(200, done)
     })
     it('should have set acl and describedBy Links for resource',
@@ -209,17 +214,32 @@ describe('HTTP APIs', function () {
         .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Container>; rel="type"/)
         .expect(200, done)
     })
-    it('should serve the right content type if requested as text/html', function (done) {
+    it('should load skin (mashlib) if resource was requested as text/html', function (done) {
       server.get('/sampleContainer/example1.ttl')
         .set('Accept', 'text/html')
-        .expect('content-type', /text\/turtle/)
+        .expect('content-type', /text\/html/)
+        .expect(function (res) {
+          if (res.text.indexOf('TabulatorOutline') < 0) {
+            throw new Error('did not load the Tabulator skin by default')
+          }
+        })
+        .expect(200, done) // Can't check for 303 because of internal redirects
+    })
+    it('should NOT load data browser (mashlib) if resource is not RDF', function (done) {
+      server.get('/sampleContainer/solid.png')
+        .set('Accept', 'text/html')
+        .expect('content-type', /image\/png/)
         .expect(200, done)
     })
-    it('should redirect to defaultApp if container was requested as text/html', function (done) {
+    it('should redirect to file browser if container was requested as text/html', function (done) {
       server.get('/sampleContainer/')
         .set('Accept', 'text/html')
         .expect('content-type', /text\/html/)
-        .expect(200, done) // Can't check for 303 because of internal redirects
+        .expect(303, done)
+    })
+    it('should redirect to the right container URI if missing /', function (done) {
+      server.get('/sampleContainer')
+        .expect(301, done)
     })
     it('should return 404 for non-existent resource', function (done) {
       server.get('/invalidfile.foo')
@@ -266,14 +286,16 @@ describe('HTTP APIs', function () {
       function (done) {
         server.get('/sampleContainer/')
           .set('accept', 'text/html')
-          .expect(200)
+          .expect(303)
           .expect('content-type', /text\/html/)
-          .expect(function (res) {
-            if (res.text.indexOf('<!DOCTYPE html>') < 0) {
-              throw new Error('wrong content returned for index.html')
-            }
-          })
           .end(done)
+      })
+    it('should still redirect to the right container URI if missing / and HTML is requested',
+      function (done) {
+        server.get('/sampleContainer')
+          .set('accept', 'text/html')
+          .expect('location', /\/sampleContainer\//)
+          .expect(301, done)
       })
   })
 
@@ -287,6 +309,11 @@ describe('HTTP APIs', function () {
     it('should return empty response body', function (done) {
       server.head('/patch-5-initial.ttl')
         .expect(emptyResponse)
+        .expect(200, done)
+    })
+    it('should have set Updates-Via to use WebSockets', function (done) {
+      server.get('/sampleContainer/example1.ttl')
+        .expect('updates-via', /wss?:\/\//)
         .expect(200, done)
     })
     it('should have set Link as Resource', function (done) {
@@ -486,7 +513,7 @@ describe('HTTP APIs', function () {
         })
     })
     it('should be able to access newly container', function (done) {
-      server.get('/post-tests/loans')
+      server.get('/post-tests/loans/')
         .expect('content-type', /text\/turtle/)
         .expect(200, done)
     })

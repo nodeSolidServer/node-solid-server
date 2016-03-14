@@ -78,7 +78,7 @@ describe('ACL HTTP', function () {
 
   describe('no ACL', function () {
     it('should return 403 for any resource', function (done) {
-      var options = createOptions('/acl/no-acl', 'user1')
+      var options = createOptions('/acl/no-acl/', 'user1')
       request(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 403)
@@ -86,7 +86,7 @@ describe('ACL HTTP', function () {
       })
     })
     it('should have `User` set in the Response Header', function (done) {
-      var options = createOptions('/acl/no-acl', 'user1')
+      var options = createOptions('/acl/no-acl/', 'user1')
       request(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 403)

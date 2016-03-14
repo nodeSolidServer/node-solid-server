@@ -4,20 +4,18 @@
 [![NPM Version](https://img.shields.io/npm/v/ldnode.svg?style=flat)](https://npm.im/ldnode)
 [![Gitter chat](https://img.shields.io/badge/gitter-join%20chat%20%E2%86%92-brightgreen.svg?style=flat)](http://gitter.im/linkeddata/ldnode)
 
-Ldnode implements the [Linked Data Platform](http://www.w3.org/TR/ldp/) and
-[Solid](https://github.com/solid) in [NodeJS](https://nodejs.org/). This is all
-you need to run distributed Linked Data apps on top of the file system.
+> Implementation of a [Solid](https://github.com/solid)'s server spec in [NodeJS](https://nodejs.org/).
+> This is all you need to run distributed Linked Data apps on top of the file system.
 
-You can run `ldnode` as a [command-line tool](https://github.com/linkeddata/ldnode/blob/master/README.md#command-line-tool) or as a [library](https://github.com/linkeddata/ldnode/blob/master/README.md#library) for your [Express](https://expressjs.com) app.
+You can use `ldnode` as a [command-line tool](https://github.com/linkeddata/ldnode/blob/master/README.md#command-line-tool) or as a [library](https://github.com/linkeddata/ldnode/blob/master/README.md#library) for your [Express](https://expressjs.com) app.
 
-## Features
-
-- [x] Linked Data Platform compliant HEAD, OPTIONS, GET, PUT, POST, PATCH, DELETE
+## Solid Features supported
+- [x] [Linked Data Platform](http://www.w3.org/TR/ldp/)
+- [x] [Web Access Control](http://www.w3.org/wiki/WebAccessControl)
+- [x] [WebID+TLS Authentication](https://www.w3.org/2005/Incubator/webid/spec/tls/)
+- [x] [Real-time live updates](https://github.com/solid/solid-spec#subscribing) (using WebSockets)
+- [x] Identity provider for WebID
 - [x] Proxy for cross-site data access
-- [x] Access control using [Web Access Control](http://www.w3.org/wiki/WebAccessControl)
-- [x] WebID+TLS Authentication
-- [x] Real-time live updates (using WebSockets)
-- [x] Identity provider for WebID+TLS
 - [ ] Group members in ACL
 
 ## Command Line Usage
@@ -49,7 +47,8 @@ Options:
   -sM, --suffix-meta          Suffix for metadata files (default: '.meta')
   --no-error-pages            Disable custom error pages (use Node.js default pages instead)
   --error-pages               Folder from which to look for custom error pages files (files must be named <error-code>.html -- eg. 500.html)
-  --default-app               URI to use as a default app for resources (default: https://linkeddata.github.io/warp/#/list/)
+  --file-browser               URI to use as a default app for resources (default: https://linkeddata.github.io/warp/#/list/)
+  --data-browser               Enable viewing RDF resources using a default data browser application (e.g. mashlib)
 ```
 
 ### Running the server
@@ -147,7 +146,7 @@ If you started your `ldnode` server locally on port 8443 as in the example
 above, you would then be able to visit `https://localhost:8443` in the browser
 (ignoring the Untrusted Connection browser warnings as usual), where your
 `ldnode` server would redirect you to the default viewer app (see the
-`--default-app` server config parameter), which is usually the
+`--file-browser` server config parameter), which is usually the
 [github.io/warp](https://linkeddata.github.io/warp/#/list/) file browser.
 
 Accessing most Solid apps (such as Warp) will prompt you to select your browser

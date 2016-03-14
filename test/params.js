@@ -25,6 +25,30 @@ describe('LDNODE params', function () {
         .expect(200, done)
     })
 
+    it('should return the same headers of proxied request', function (done) {
+      nock('https://amazingwebsite.tld')
+        .get('/')
+        .reply(function (uri, req) {
+          if (this.req.headers['accept'] !== 'text/turtle') {
+            throw Error('Accept is received on the header')
+          }
+          if (this.req.headers['test'] && this.req.headers['test'] === 'test1') {
+            return [200, 'YES']
+          } else {
+            return [500, 'empty']
+          }
+        })
+
+      server.get('/proxy?uri=https://amazingwebsite.tld/')
+        .set('test', 'test1')
+        .set('accept', 'text/turtle')
+        .expect(200)
+        .end(function (err, data) {
+          if (err) return done(err)
+          done(err)
+        })
+    })
+
     it('should also work on /proxy/ ?uri', function (done) {
       nock('https://amazingwebsite.tld').get('/').reply(200)
       server.get('/proxy/?uri=https://amazingwebsite.tld/')
