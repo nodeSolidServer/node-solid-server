@@ -4,10 +4,9 @@
 [![NPM Version](https://img.shields.io/npm/v/ldnode.svg?style=flat)](https://npm.im/ldnode)
 [![Gitter chat](https://img.shields.io/badge/gitter-join%20chat%20%E2%86%92-brightgreen.svg?style=flat)](http://gitter.im/linkeddata/ldnode)
 
-> Implementation of a [Solid](https://github.com/solid)'s server spec in [NodeJS](https://nodejs.org/).
-> This is all you need to run distributed Linked Data apps on top of the file system.
+> [Solid](https://github.com/solid)'s server in [NodeJS](https://nodejs.org/)
 
-You can use `ldnode` as a [command-line tool](https://github.com/linkeddata/ldnode/blob/master/README.md#command-line-tool) or as a [library](https://github.com/linkeddata/ldnode/blob/master/README.md#library) for your [Express](https://expressjs.com) app.
+Ldnode lets you run a Solid server on top of the file-system. You can use it as a [command-line tool](https://github.com/linkeddata/ldnode/blob/master/README.md#command-line-tool) (easy) or as a [library](https://github.com/linkeddata/ldnode/blob/master/README.md#library)(advanced).
 
 ## Solid Features supported
 - [x] [Linked Data Platform](http://www.w3.org/TR/ldp/)
@@ -17,11 +16,75 @@ You can use `ldnode` as a [command-line tool](https://github.com/linkeddata/ldno
 - [x] Identity provider for WebID
 - [x] Proxy for cross-site data access
 - [ ] Group members in ACL
+- [ ] Email account recovery
 
 ## Command Line Usage
 
-    npm install -g ldnode
+### Install
 
+To install, first install [Node](https://nodejs.org/en/) and then run the following
+
+```bash
+$ npm install -g ldnode
+```
+
+### Run a single-user server (beginner)
+
+To run your server, simply run `ldnode` with the following flags:
+
+```bash
+$ ldnode --port 8443 --ssl-key path/to/ssl-key.pem --ssl-cert path/to/ssl-cert.pem
+> Solid server (ldnode v0.2.24) running on https://localhost:8443/
+```
+
+First time user? If you have never run `ldnode` before, let's get you a WebID to access your server.
+```bash
+$ ldnode --port 8443 --ssl-key path/to/ssl-key.pem --ssl-cert path/to/ssl-cert.pem
+> Action required: Create your admin account on https://localhost:8080/
+> When done, stop your server (<ctrl>+c) and restart without "--create-admin"
+```
+
+If you want to run `ldnode` on a particular folder (different from the one you are in, e.g. `path/to/folder`):
+```bash
+$ ldnode --root path/to/folder --port 8443 --ssl-key path/to/ssl-key.pem --ssl-cert path/to/ssl-cert.pem
+> Solid server (ldnode v0.2.24) running on https://localhost:8443/
+```
+
+##### How do I get the --ssl-key and the --ssl-cert?
+You need an SSL certificate you get this from your domain provider or for free from [Let's Encrypt!](https://letsencrypt.org/getting-started/).
+
+If you don't have one yet, or you just want to test `ldnode`, generate a certificate (**DO NOT USE IN PRODUCTION**):
+```
+$ openssl genrsa 2048 > ../localhost.key
+$ openssl req -new -x509 -nodes -sha256 -days 3650 -key ../localhost.key -subj '/CN=*.localhost' > ../localhost.cert
+```
+
+### Run multi-user server (intermediate)
+
+You can run `ldnode` so that new users can sign up, in other words, get their WebIDs _username.yourdomain.com_.
+
+Pre-requisites:
+- Get a [Wildcard Certificate](https://en.wikipedia.org/wiki/Wildcard_certificate)
+- Add a Wildcard DNS record in your DNS zone (e.g.`*.yourdomain.com`)
+- (If you are running locally) Add the line `127.0.0.1 *.localhost` to `/etc/hosts`
+
+```bash
+ldnode --allow-signup --port 8443 --cert /path/to/cert --key /path/to/key --root ./accounts
+```
+
+Your users will have a dedicated folder under `./accounts`. Also, your root domain's website will be in `./accounts/yourdomain.tld`. New users can create accounts on `/accounts/new` and create new certificates on `/accounts/cert`. An easy-to-use sign-up tool is found on `/accounts`.
+
+### Run the Linked Data Platform (intermediate)
+If you don't want WebID Authentication and Web Access Control, you can run a simple Linked Data Platform.
+
+```bash
+# over HTTP
+$ ldnode --port 8080
+# over HTTPS
+$ ldnode --port 8080 --ssl-key key.pem --ssl-cert cert.pem
+```
+
+### Extra flags (expert)
 The command line tool has the following options
 
 ```
@@ -53,57 +116,7 @@ Options:
    --force-user       Force a WebID to always be logged in (useful when offline)
 ```
 
-### Running the server
-
-#### Solid server, Single User mode (HTTPS / WebID enabled)
-
-To start `ldnode` in Solid Single User mode, you will need to enable the
-`--webid` flag, and also pass in a valid SSL key and certificate files.
-LDNode will use these certificates for its own server use (these are
-different from the Admin user identity certificate discussed below).
-
-**Initial Admin User Setup:**
-The *first* time you run `ldnode`, you will also want to use the
-`--create-admin` flag, to set up the initial Admin user identity and
-certificates.
-
-```bash
-ldnode --webid --port 8443 --cert /path/to/cert --key /path/to/key --create-admin
-```
-
-You can then visit your LDNode server (at `https://localhost:8443/`, if you're
-running it locally), and set up a new account.
-
-You should then restart `ldnode`, this time without the `--create-admin` flag:
-
-```bash
-ldnode --webid --port 8443 --cert /path/to/cert --key /path/to/key
-```
-
-#### Solid server, Multi-user Mode (Allows account creation)
-
-To allow users to create a WebID on your server:
-
-```bash
-ldnode --webid --port 8443 --cert /path/to/cert --key /path/to/key -idp --root ./accounts
-```
-
-Your users will have a dedicated folder under `./accounts`. Also, your root domain's website will be in `./accounts/yourdomain.tld`.
-
-New users can create accounts on `/accounts/new` and create new certificates on `/accounts/cert`. An easy-to-use sign-up tool is found on `/accounts`.
-
-#### LDP-only server mode (HTTP, no WebID)
-
-You can also use `ldnode` as a Linked Data Platform server in HTTP mode (note
-that this will not support WebID authentication, and so will not be able to use
-any Solid apps such as the default [Warp](https://github.com/linkeddata/warp)
-app).
-
-```bash
-ldnode --port 8080
-```
-
-### Testing `ldnode` Locally
+## Testing `ldnode` Locally
 
 #### Pre-Requisites
 
@@ -132,8 +145,6 @@ For example, here is how to generate a self-signed certificate for `localhost`
 using the `openssl` library:
 
 ```bash
-openssl genrsa 2048 > ../localhost.key
-openssl req -new -x509 -nodes -sha256 -days 3650 -key ../localhost.key -subj '/CN=*.localhost' > ../localhost.cert
 
 ldnode --webid --port 8443 --cert ../localhost.cert --key ../localhost.key -v
 ```

@@ -143,7 +143,15 @@ function bin (argv) {
     return 1
   }
   app.listen(argv.port, function () {
-    debug('LDP started on port ' + argv.port)
+    fs.readFile(path.resolve(__dirname, '../package.json'), 'utf-8', function (_, file) {
+      if (argv.createAdmin) {
+        console.log('Action required: Create your admin account on \u001b[4mhttps://localhost:' + argv.port + '/\u001b[0m')
+        console.log('When done, stop your server (<ctrl>+c) and restart without "--create-admin"')
+      } else {
+        console.log('Solid server (ldnode v' + JSON.parse(file).version + ') running on \u001b[4mhttps://localhost:' + argv.port + '/\u001b[0m')
+        console.log('Press <ctrl>+c to stop')
+      }
+    })
   })
 }
 
