@@ -116,84 +116,6 @@ Options:
    --force-user       Force a WebID to always be logged in (useful when offline)
 ```
 
-## Testing `ldnode` Locally
-
-#### Pre-Requisites
-
-In order to really get a feel for the Solid platform, and to test out `ldnode`,
-you will need the following:
-
-1. A WebID profile and browser certificate from one of the Solid-compliant
-    identity providers, such as [databox.me](https://databox.me).
-
-2. A server-side SSL certificate for `ldnode` to use (see the section below
-    on creating a self-signed certificate for testing).
-
-While these steps are technically optional (since you could launch it in
-HTTP/LDP-only mode), you will not be able to use any actual Solid features
-without them.
-
-#### Creating a certificate for local testing
-
-When deploying `ldnode` in production, we recommend that you go the
-usual Certificate Authority route to generate your SSL certificate (as you
-would with any website that supports HTTPS). However, for testing it locally,
-you can easily generate a self-signed certificate for whatever domain you're
-working with.
-
-For example, here is how to generate a self-signed certificate for `localhost`
-using the `openssl` library:
-
-```bash
-
-ldnode --webid --port 8443 --cert ../localhost.cert --key ../localhost.key -v
-```
-
-Note that this example creates the `localhost.cert` and `localhost.key` files
-in a directory one level higher from the current, so that you don't
-accidentally commit your certificates to `ldnode` while you're developing.
-
-#### Accessing your server
-
-If you started your `ldnode` server locally on port 8443 as in the example
-above, you would then be able to visit `https://localhost:8443` in the browser
-(ignoring the Untrusted Connection browser warnings as usual), where your
-`ldnode` server would redirect you to the default viewer app (see the
-`--file-browser` server config parameter), which is usually the
-[github.io/warp](https://linkeddata.github.io/warp/#/list/) file browser.
-
-Accessing most Solid apps (such as Warp) will prompt you to select your browser
-side certificate which contains a WebID from a Solid storage provider (see
-the [pre-requisites](#pre-requisites) discussion above).
-
-#### Editing your local `/etc/hosts`
-
-To test certificates and account creation on subdomains, `ldnode`'s test suite
-uses the following localhost domains: `nic.localhost`, `tim.localhost`, and
-`nicola.localhost`. You will need to create host file entries for these, in
-order for the tests to pass.
-
-Edit your `/etc/hosts` file, and append:
-
-```
-# Used for unit testing ldnode
-127.0.0.1 nic.localhost, tim.localhost, nicola.localhost
-```
-
-#### Running the Unit Tests
-
-```bash
-$ npm test
-# running the tests with logs
-$ DEBUG="ldnode:*" npm test
-```
-
-In order to test a single component, you can run
-
-```javascript
-npm run test-(acl|formats|params|patch)
-```
-
 ## Library
 
 ### Install Dependencies
@@ -273,6 +195,85 @@ Run your app with the `DEBUG` variable set:
 ```bash
 $ DEBUG="ldnode:*" node app.js
 ```
+
+## Testing `ldnode` Locally
+
+#### Pre-Requisites
+
+In order to really get a feel for the Solid platform, and to test out `ldnode`,
+you will need the following:
+
+1. A WebID profile and browser certificate from one of the Solid-compliant
+    identity providers, such as [databox.me](https://databox.me).
+
+2. A server-side SSL certificate for `ldnode` to use (see the section below
+    on creating a self-signed certificate for testing).
+
+While these steps are technically optional (since you could launch it in
+HTTP/LDP-only mode), you will not be able to use any actual Solid features
+without them.
+
+#### Creating a certificate for local testing
+
+When deploying `ldnode` in production, we recommend that you go the
+usual Certificate Authority route to generate your SSL certificate (as you
+would with any website that supports HTTPS). However, for testing it locally,
+you can easily generate a self-signed certificate for whatever domain you're
+working with.
+
+For example, here is how to generate a self-signed certificate for `localhost`
+using the `openssl` library:
+
+```bash
+
+ldnode --webid --port 8443 --cert ../localhost.cert --key ../localhost.key -v
+```
+
+Note that this example creates the `localhost.cert` and `localhost.key` files
+in a directory one level higher from the current, so that you don't
+accidentally commit your certificates to `ldnode` while you're developing.
+
+#### Accessing your server
+
+If you started your `ldnode` server locally on port 8443 as in the example
+above, you would then be able to visit `https://localhost:8443` in the browser
+(ignoring the Untrusted Connection browser warnings as usual), where your
+`ldnode` server would redirect you to the default viewer app (see the
+`--file-browser` server config parameter), which is usually the
+[github.io/warp](https://linkeddata.github.io/warp/#/list/) file browser.
+
+Accessing most Solid apps (such as Warp) will prompt you to select your browser
+side certificate which contains a WebID from a Solid storage provider (see
+the [pre-requisites](#pre-requisites) discussion above).
+
+#### Editing your local `/etc/hosts`
+
+To test certificates and account creation on subdomains, `ldnode`'s test suite
+uses the following localhost domains: `nic.localhost`, `tim.localhost`, and
+`nicola.localhost`. You will need to create host file entries for these, in
+order for the tests to pass.
+
+Edit your `/etc/hosts` file, and append:
+
+```
+# Used for unit testing ldnode
+127.0.0.1 nic.localhost, tim.localhost, nicola.localhost
+```
+
+#### Running the Unit Tests
+
+```bash
+$ npm test
+# running the tests with logs
+$ DEBUG="ldnode:*" npm test
+```
+
+In order to test a single component, you can run
+
+```javascript
+npm run test-(acl|formats|params|patch)
+```
+
 
 ## Contributing
 
