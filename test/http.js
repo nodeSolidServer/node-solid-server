@@ -235,7 +235,7 @@ describe('HTTP APIs', function () {
       server.get('/sampleContainer/')
         .set('Accept', 'text/html')
         .expect('content-type', /text\/html/)
-        .expect(200, done) // Can't check for 303 because of internal redirects
+        .expect(303, done)
     })
     it('should redirect to the right container URI if missing /', function (done) {
       server.get('/sampleContainer')
@@ -286,13 +286,8 @@ describe('HTTP APIs', function () {
       function (done) {
         server.get('/sampleContainer/')
           .set('accept', 'text/html')
-          .expect(200)
+          .expect(303)
           .expect('content-type', /text\/html/)
-          .expect(function (res) {
-            if (res.text.indexOf('<!DOCTYPE html>') < 0) {
-              throw new Error('wrong content returned for index.html')
-            }
-          })
           .end(done)
       })
     it('should still redirect to the right container URI if missing / and HTML is requested',
