@@ -4,7 +4,7 @@
 [![NPM Version](https://img.shields.io/npm/v/ldnode.svg?style=flat)](https://npm.im/ldnode)
 [![Gitter chat](https://img.shields.io/badge/gitter-join%20chat%20%E2%86%92-brightgreen.svg?style=flat)](http://gitter.im/linkeddata/ldnode)
 
-> [Solid](https://github.com/solid)'s server in [NodeJS](https://nodejs.org/)
+> [Solid](https://github.com/solid) server in [NodeJS](https://nodejs.org/)
 
 Ldnode lets you run a Solid server on top of the file-system. You can use it as a [command-line tool](https://github.com/linkeddata/ldnode/blob/master/README.md#command-line-tool) (easy) or as a [library](https://github.com/linkeddata/ldnode/blob/master/README.md#library)(advanced).
 
