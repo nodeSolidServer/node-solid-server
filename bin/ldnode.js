@@ -4,11 +4,6 @@ var fs = require('fs')
 var path = require('path')
 var argv = require('nomnom')
   .script('ldnode')
-  .option('verbose', {
-    abbr: 'v',
-    flag: true,
-    help: 'Print the logs to console'
-  })
   .option('version', {
     flag: true,
     help: 'Print current ldnode version',
@@ -18,80 +13,52 @@ var argv = require('nomnom')
       })
     }
   })
-  .option('mount', {
-    abbr: 'm',
-    help: "Relative URL from which to serve the Linked Data Platform (default: '/')"
+  .option('verbose', {
+    abbr: 'v',
+    flag: true,
+    help: 'Print the logs to console\n'
   })
   .option('root', {
-    abbr: 'r',
-    help: 'Root location on the filesystem to serve resources'
+    help: 'Root folder to serve (defaut: \'./\')'
   })
   .option('port', {
-    abbr: 'p',
     help: 'Port to use'
-  })
-  .option('cache', {
-    abbr: 'c',
-    help: 'Set cache time (in seconds), 0 for no cache'
-  })
-  .option('key', {
-    help: 'Path to the ssl key file',
-    abbr: 'K',
-    full: 'key'
-  })
-  .option('cert', {
-    full: 'cert',
-    help: 'Path to the ssl cert file',
-    abbr: 'C'
   })
   .option('webid', {
     help: 'Enable WebID+TLS authentication',
     full: 'webid',
     flag: true
   })
+  .option('key', {
+    help: 'Path to the SSL private key in PEM format',
+    full: 'ssl-key'
+  })
+  .option('cert', {
+    full: 'ssl-cert',
+    help: 'Path to the SSL certificate key in PEM format'
+  })
   .option('idp', {
-    help: 'Allow registration of WebIDs',
-    abbr: 'idp',
-    full: 'identity-provider',
+    help: 'Allow users to register their WebID on subdomains\n',
+    full: 'allow-signup',
     flag: true
   })
-  .option('secret', {
-    help: 'HTTP Session cookie secret key (e.g. "your secret phrase")',
-    abbr: 's'
-  })
-  .option('forceUser', {
-    help: 'Force a WebID to always be logged in (useful when offline)',
-    abbr: 'fU',
-    full: 'force-user'
-  })
-  .option('proxy', {
-    full: 'proxy',
-    help: 'Use a proxy on example.tld/proxyPath',
-    abbr: 'P'
+  .option('createAdmin', {
+    full: 'create-admin',
+    flag: true,
+    help: 'Allow a user to set up their initial identity in single-user mode'
   })
   .option('noLive', {
     full: 'no-live',
     help: 'Disable live support through WebSockets',
     flag: true
   })
-  .option('suffixAcl', {
-    full: 'suffix-acl',
-    help: "Suffix for acl files (default: '.acl')",
-    abbr: 'sA'
+  .option('defaultApp', {
+    full: 'default-app',
+    help: 'URI to use as a default app for resources (default: https://linkeddata.github.io/warp/#/list/)'
   })
-  .option('suffixMeta', {
-    full: 'suffix-meta',
-    help: "Suffix for metadata files (default: '.meta')",
-    abbr: 'sM'
-  })
-  .option('noErrorPages', {
-    full: 'no-error-pages',
-    flag: true,
-    help: 'Disable custom error pages (use Node.js default pages instead)'
-  })
-  .option('errorPages', {
-    full: 'error-pages',
-    help: 'Folder from which to look for custom error pages files (files must be named <error-code>.html -- eg. 500.html)'
+  .option('proxy', {
+    full: 'proxy',
+    help: 'Use a proxy on example.tld/proxyPath'
   })
   .option('fileBrowser', {
     full: 'file-browser',
@@ -102,10 +69,33 @@ var argv = require('nomnom')
     flag: true,
     help: 'Enable viewing RDF resources using a default data browser application (e.g. mashlib)'
   })
-  .option('createAdmin', {
-    full: 'create-admin',
+  .option('suffixAcl', {
+    full: 'suffix-acl',
+    help: 'Suffix for acl files (default: \'.acl\')'
+  })
+  .option('suffixMeta', {
+    full: 'suffix-meta',
+    help: 'Suffix for metadata files (default: \'.meta\')'
+  })
+  .option('secret', {
+    help: 'Secret used to sign the session ID cookie (e.g. "your secret phrase")',
+    full: 'session-secret'
+  })
+  .option('noErrorPages', {
+    full: 'no-error-pages',
     flag: true,
-    help: 'Allow a user to set up their initial identity in single-user mode'
+    help: 'Disable custom error pages (use Node.js default pages instead)'
+  })
+  .option('errorPages', {
+    full: 'error-pages',
+    help: 'Folder from which to look for custom error pages files (files must be named <error-code>.html -- eg. 500.html)'
+  })
+  .option('mount', {
+    help: 'Serve on a specific URL path (default: \'/\')'
+  })
+  .option('forceUser', {
+    help: 'Force a WebID to always be logged in (useful when offline)',
+    full: 'force-user'
   })
   .parse()
 
@@ -158,7 +148,15 @@ function bin (argv) {
     return 1
   }
   app.listen(argv.port, function () {
-    debug('LDP started on port ' + argv.port)
+    fs.readFile(path.resolve(__dirname, '../package.json'), 'utf-8', function (_, file) {
+      if (argv.createAdmin) {
+        console.log('Action required: Create your admin account on \u001b[4mhttps://localhost:' + argv.port + '/\u001b[0m')
+        console.log('When done, stop your server (<ctrl>+c) and restart without "--create-admin"')
+      } else {
+        console.log('Solid server (ldnode v' + JSON.parse(file).version + ') running on \u001b[4mhttps://localhost:' + argv.port + '/\u001b[0m')
+        console.log('Press <ctrl>+c to stop')
+      }
+    })
   })
 }
 
