@@ -114,6 +114,7 @@ Options:
    --error-pages      Folder from which to look for custom error pages files (files must be named <error-code>.html -- eg. 500.html)
    --mount            Serve on a specific URL path (default: '/')
    --force-user       Force a WebID to always be logged in (useful when offline)
+   --strict-origin    Enforce same origin policy in the ACL
 ```
 
 ## Library Usage
