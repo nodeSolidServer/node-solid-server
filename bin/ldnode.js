@@ -97,6 +97,11 @@ var argv = require('nomnom')
     help: 'Force a WebID to always be logged in (useful when offline)',
     full: 'force-user'
   })
+  .option('strictOrigin', {
+    help: 'Enforce same origin policy in the ACL',
+    full: 'strict-origin',
+    flag: true
+  })
   .parse()
 
 function bin (argv) {
