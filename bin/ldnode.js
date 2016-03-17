@@ -99,7 +99,8 @@ var argv = require('nomnom')
   })
   .option('strictOrigin', {
     help: 'Enforce same origin policy in the ACL',
-    full: 'strict-origin'
+    full: 'strict-origin',
+    flag: true
   })
   .parse()
 
