@@ -25,7 +25,7 @@ var argv = require('nomnom')
     help: 'Port to use'
   })
   .option('webid', {
-    help: 'Enable WebID+TLS authentication',
+    help: 'Enable WebID+TLS authentication (use `--no-webid` for HTTP instead of HTTPS)',
     full: 'webid',
     flag: true
   })
