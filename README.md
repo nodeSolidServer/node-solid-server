@@ -99,7 +99,7 @@ Options:
 
    --root             Root folder to serve (defaut: './')
    --port             Port to use
-   --webid            Enable WebID+TLS authentication
+   --webid            Enable WebID+TLS authentication (use `--no-webid` for HTTP instead of HTTPS)
    --ssl-key          Path to the SSL private key in PEM format
    --ssl-cert         Path to the SSL certificate key in PEM format
    --allow-signup     Allow users to register their WebID on subdomains
