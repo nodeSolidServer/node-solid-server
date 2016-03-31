@@ -79,10 +79,13 @@ If you don't want WebID Authentication and Web Access Control, you can run a sim
 
 ```bash
 # over HTTP
-$ ldnode --port 8080
+$ ldnode --port 8080 --no-webid
 # over HTTPS
-$ ldnode --port 8080 --ssl-key key.pem --ssl-cert cert.pem
+$ ldnode --port 8080 --ssl-key key.pem --ssl-cert cert.pem --no-webid
 ```
+
+**Note:** if you want to run on HTTP, do not pass the `--ssl-*` flags, but keep `--no-webid`
+
 
 ### Extra flags (expert)
 The command line tool has the following options
