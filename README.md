@@ -39,7 +39,7 @@ $ ldnode --port 8443 --ssl-key path/to/ssl-key.pem --ssl-cert path/to/ssl-cert.p
 
 First time user? If you have never run `ldnode` before, let's get you a WebID to access your server.
 ```bash
-$ ldnode --port 8443 --ssl-key path/to/ssl-key.pem --ssl-cert path/to/ssl-cert.pem
+$ ldnode --port 8443 --ssl-key path/to/ssl-key.pem --ssl-cert path/to/ssl-cert.pem --create-admin
 # Action required: Create your admin account on https://localhost:8080/
 # When done, stop your server (<ctrl>+c) and restart without "--create-admin"
 ```
