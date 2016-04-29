@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LDNode Sign In</title>
+  <!-- Bootstrap CSS and Theme for demo purposes -->
+  <link rel="stylesheet" href="css/bootstrap-3.3.6.min.css">
+</head>
+<body>
+<div class="container">
+  <div>
+    <h2>Sign In</h2>
+  </div>
+</div><!-- / page's .container -->
+<div class="container">
+  <form method="post" action="/oidc/signin">
+    <div class="form-group">
+      <label for="oidcServer">WebID or server URL:</label>
+      <input type="text" class="form-control" name="oidcServer" id="oidcServer" placeholder="databox.me">
+    </div>
+    <!-- See the loginTest() function below -->
+    <button type="submit" class="btn btn-primary"
+            id="login">Sign In</button>
+  </form>
+</div> <!-- / Login Test section -->
+</body>
+</html>
