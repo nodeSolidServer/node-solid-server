@@ -44,7 +44,7 @@
     "node-uuid": "^1.4.3",
     "nomnom": "^1.8.1",
     "rdflib": "^0.6.1",
-    "request": "^2.58.0",
+    "request": "^2.72.0",
     "rimraf": "^2.5.0",
     "solid-ws": "^0.2.2",
     "string": "^3.3.0",
