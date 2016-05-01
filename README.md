@@ -52,6 +52,32 @@ $ openssl genrsa 2048 > ../localhost.key
 $ openssl req -new -x509 -nodes -sha256 -days 3650 -key ../localhost.key -subj '/CN=*.localhost' > ../localhost.cert
 ```
 
+### Single-user server with Docker
+
+(First, install [Docker](https://docker.com)).
+
+Self-signed SSL cert and key are generated at build time (not for production! You can override this during the `run` step). The root ACL is also generated, with the owner being the WebID passed in:
+
+```bash
+$ sudo docker build --build-arg admin_user=https://yourwebsite.com/#me -t ldnode .
+```
+
+This `admin_user` needs to be a real WebID with the corresponding certificate installed in your browser.
+
+Then `run`, mounting the directory in which your data will be contained (this can be anywhere on your local machine):
+
+```bash
+$ sudo docker run -d -p 8443:8443 -v /path/to/data:/src/data --name my-ldnode ldnode
+```
+
+If you already have an SSL cert (eg. from LetsEncrypt), make sure they are named `ssl-cert.pem` and `ssl-key.pem` and mount the containing directory for those as well:
+
+```bash
+$ sudo docker run -d -p 8443:8443 -v /path/to/data:/src/data -v /path/to/certs:/opt/ldnode/certs --name my-ldnode ldnode
+```
+
+Go to `https://localhost:8443` and you should be good to go.
+
 ### Run multi-user server (intermediate)
 
 You can run `ldnode` so that new users can sign up, in other words, get their WebIDs _username.yourdomain.com_.
@@ -78,7 +104,6 @@ $ ldnode --port 8080 --ssl-key key.pem --ssl-cert cert.pem --no-webid
 ```
 
 **Note:** if you want to run on HTTP, do not pass the `--ssl-*` flags, but keep `--no-webid`
-
 
 ### Extra flags (expert)
 The command line tool has the following options
