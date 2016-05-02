@@ -54,15 +54,13 @@ $ openssl req -new -x509 -nodes -sha256 -days 3650 -key ../localhost.key -subj '
 
 ### Single-user server with Docker
 
-(First, install [Docker](https://docker.com)).
+(First, install [Docker](https://docs.docker.com/engine/installation/)).
 
-Self-signed SSL cert and key are generated at build time (not for production! You can override this during the `run` step). The root ACL is also generated, with the owner being the WebID passed in:
+Self-signed SSL cert and key are generated at build time (not for production! You can override this during the `run` step).
 
 ```bash
-$ sudo docker build --build-arg admin_user=https://yourwebsite.com/#me -t ldnode .
+$ sudo docker build -t ldnode .
 ```
-
-This `admin_user` needs to be a real WebID with the corresponding certificate installed in your browser.
 
 Then `run`, mounting the directory in which your data will be contained (this can be anywhere on your local machine):
 
@@ -70,13 +68,33 @@ Then `run`, mounting the directory in which your data will be contained (this ca
 $ sudo docker run -d -p 8443:8443 -v /path/to/data:/src/data --name my-ldnode ldnode
 ```
 
-If you already have an SSL cert (eg. from LetsEncrypt), make sure they are named `ssl-cert.pem` and `ssl-key.pem` and mount the containing directory for those as well:
+If you already have an SSL cert (eg. from LetsEncrypt), make sure they are named `ssl-cert.pem` and `ssl-key.pem` and mount the containing directory (which doesn't contain anything else) for those as well:
 
 ```bash
 $ sudo docker run -d -p 8443:8443 -v /path/to/data:/src/data -v /path/to/certs:/opt/ldnode/certs --name my-ldnode ldnode
 ```
 
 Go to `https://localhost:8443` and you should be good to go.
+
+If you have an existing WebID (with corresponding cert installed) that you want to use as the owner, include this `.acl` in your local `data` directory:
+
+```
+@prefix n0: <http://www.w3.org/ns/auth/acl#>.
+@prefix n1: <http://xmlns.com/foaf/0.1/>.
+
+<#owner>
+    a                 n0:Authorization;
+    n0:accessTo       <./>;
+    n0:agent          <YOUR WEBID HERE>;
+    n0:defaultForNew  <./>;
+    n0:mode           n0:Control, n0:Read, n0:Write.
+<#everyone>
+    a                 n0:Authorization;
+    n0:               n1:Agent;
+    n0:accessTo       <./>;
+    n0:defaultForNew  <./>;
+    n0:mode           n0:Read.
+```
 
 ### Run multi-user server (intermediate)
 
