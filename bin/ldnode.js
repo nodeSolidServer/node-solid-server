@@ -42,11 +42,6 @@ var argv = require('nomnom')
     full: 'allow-signup',
     flag: true
   })
-  .option('createAdmin', {
-    full: 'create-admin',
-    flag: true,
-    help: 'Allow a user to set up their initial identity in single-user mode'
-  })
   .option('noLive', {
     full: 'no-live',
     help: 'Disable live support through WebSockets',
@@ -154,13 +149,8 @@ function bin (argv) {
   }
   app.listen(argv.port, function () {
     fs.readFile(path.resolve(__dirname, '../package.json'), 'utf-8', function (_, file) {
-      if (argv.createAdmin) {
-        console.log('Action required: Create your admin account on \u001b[4mhttps://localhost:' + argv.port + '/\u001b[0m')
-        console.log('When done, stop your server (<ctrl>+c) and restart without "--create-admin"')
-      } else {
-        console.log('Solid server (ldnode v' + JSON.parse(file).version + ') running on \u001b[4mhttps://localhost:' + argv.port + '/\u001b[0m')
-        console.log('Press <ctrl>+c to stop')
-      }
+      console.log('Solid server (ldnode v' + JSON.parse(file).version + ') running on \u001b[4mhttps://localhost:' + argv.port + '/\u001b[0m')
+      console.log('Press <ctrl>+c to stop')
     })
   })
 }

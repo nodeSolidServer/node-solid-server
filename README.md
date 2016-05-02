@@ -37,13 +37,6 @@ $ ldnode --port 8443 --ssl-key path/to/ssl-key.pem --ssl-cert path/to/ssl-cert.p
 # Solid server (ldnode v0.2.24) running on https://localhost:8443/
 ```
 
-First time user? If you have never run `ldnode` before, let's get you a WebID to access your server.
-```bash
-$ ldnode --port 8443 --ssl-key path/to/ssl-key.pem --ssl-cert path/to/ssl-cert.pem
-# Action required: Create your admin account on https://localhost:8080/
-# When done, stop your server (<ctrl>+c) and restart without "--create-admin"
-```
-
 If you want to run `ldnode` on a particular folder (different from the one you are in, e.g. `path/to/folder`):
 ```bash
 $ ldnode --root path/to/folder --port 8443 --ssl-key path/to/ssl-key.pem --ssl-cert path/to/ssl-cert.pem
@@ -104,7 +97,6 @@ Options:
    --ssl-cert         Path to the SSL certificate key in PEM format
    --allow-signup     Allow users to register their WebID on subdomains
 
-   --create-admin     Allow a user to set up their initial identity in single-user mode
    --no-live          Disable live support through WebSockets
    --default-app      URI to use as a default app for resources (default: https://linkeddata.github.io/warp/#/list/)
    --proxy            Use a proxy on example.tld/proxyPath
