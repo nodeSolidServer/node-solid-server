@@ -1,7 +1,5 @@
 FROM node:5.11-wheezy
 
-ARG owner
-
 RUN cd /opt \
  && mkdir -p ldnode/certs && cd ldnode/certs \
  && openssl genrsa 2048 > ssl-key.pem \
@@ -13,4 +11,3 @@ RUN cd /src && mkdir data \
 
 ENTRYPOINT ["node", "/src/bin/ldnode.js"]
 CMD ["--port=8443", "--ssl-key=/opt/ldnode/certs/ssl-key.pem", "--ssl-cert=/opt/ldnode/certs/ssl-cert.pem", "--root=/src/data"]
-
