@@ -29,6 +29,9 @@ var argv = require('nomnom')
     full: 'webid',
     flag: true
   })
+  .option('owner', {
+    help: 'Set the owner of the storage'
+  })
   .option('key', {
     help: 'Path to the SSL private key in PEM format',
     full: 'ssl-key'
@@ -127,6 +130,35 @@ function bin (argv) {
       debug('LDP stopped.')
       process.exit()
     })
+  }
+
+  if (argv.owner) {
+    var rootPath = argv.root
+    if (!rootPath) {
+      rootPath = process.cwd()
+    }
+    if (!(rootPath.endsWith('/'))) {
+      rootPath += '/'
+    }
+    rootPath += (argv.suffixAcl || '.acl')
+
+    var defaultAcl = `@prefix n0: <http://www.w3.org/ns/auth/acl#>.
+  @prefix n2: <http://xmlns.com/foaf/0.1/>.
+
+  <#owner>
+     a                 n0:Authorization;
+     n0:accessTo       <./>;
+     n0:agent          <${argv.owner}>;
+     n0:defaultForNew  <./>;
+     n0:mode           n0:Control, n0:Read, n0:Write.
+  <#everyone>
+     a                 n0:Authorization;
+     n0:               n2:Agent;
+     n0:accessTo       <./>;
+     n0:defaultForNew  <./>;
+     n0:mode           n0:Read.' > .acl`
+
+    fs.writeFileSync(rootPath, defaultAcl)
   }
 
   // Finally starting ldnode
