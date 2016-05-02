@@ -76,7 +76,15 @@ $ sudo docker run -d -p 8443:8443 -v /path/to/data:/src/data -v /path/to/certs:/
 
 Go to `https://localhost:8443` and you should be good to go.
 
-If you have an existing WebID (with corresponding cert installed) that you want to use as the owner, include this `.acl` in your local `data` directory:
+#### With owner
+
+If you have an existing WebID (with corresponding cert installed) that you want to use as the owner, you can either run with all the args:
+
+```
+sudo docker run -d -p 8443:8443 -v /path/to/data:/src/data -v /path/to/certs:/opt/ldnode/certs --name my-ldnode ldnode --owner=YOUR WEBID HERE --port 8443 --ssl-key /opt/ldnode/certs/ssl-key.pem --ssl-cert /opt/ldnode/certs/ssl-cert.pem --root=/src/data
+```
+
+OR include this `.acl` in your local `data` directory:
 
 ```
 @prefix n0: <http://www.w3.org/ns/auth/acl#>.
