@@ -1,4 +1,4 @@
-# solid-sever in NodeJS
+# solid-sever in Node
 
 [![Build Status](https://travis-ci.org/solid/node-solid-server.svg?branch=master)](https://travis-ci.org/solid/node-solid-server)
 [![NPM Version](https://img.shields.io/npm/v/solid-server.svg?style=flat)](https://npm.im/solid-server)
