@@ -3,8 +3,3 @@ node_modules/
 *.swp
 .tern-port
 npm-debug.log
-.acl
-profile/
-accounts/
-settings/
-temp/

@@ -37,15 +37,8 @@ $ solid --port 8443 --ssl-key path/to/ssl-key.pem --ssl-cert path/to/ssl-cert.pe
 # Solid server (solid v0.2.24) running on https://localhost:8443/
 ```
 
-First time user? If you have never run `solid` before, let's get you a WebID to access your server.
-```bash
-
-$ solid --port 8443 --ssl-key path/to/ssl-key.pem --ssl-cert path/to/ssl-cert.pem
-# Action required: Create your admin account on https://localhost:8080/
-# When done, stop your server (<ctrl>+c) and restart without "--create-admin"
-```
-
 If you want to run `solid` on a particular folder (different from the one you are in, e.g. `path/to/folder`):
+
 ```bash
 $ solid --root path/to/folder --port 8443 --ssl-key path/to/ssl-key.pem --ssl-cert path/to/ssl-cert.pem
 # Solid server (solid v0.2.24) running on https://localhost:8443/
@@ -105,11 +98,10 @@ Options:
    --ssl-cert         Path to the SSL certificate key in PEM format
    --allow-signup     Allow users to register their WebID on subdomains
 
-   --create-admin     Allow a user to set up their initial identity in single-user mode
    --no-live          Disable live support through WebSockets
-   --default-app      URI to use as a default app for resources (default: https://solid.github.io/warp/#/list/)
+   --default-app      URI to use as a default app for resources (default: https://linkeddata.github.io/warp/#/list/)
    --proxy            Use a proxy on example.tld/proxyPath
-   --file-browser     URI to use as a default app for resources (default: https://solid.github.io/warp/#/list/)
+   --file-browser     URI to use as a default app for resources (default: https://linkeddata.github.io/warp/#/list/)
    --data-browser     Enable viewing RDF resources using a default data browser application (e.g. mashlib)
    --suffix-acl       Suffix for acl files (default: '.acl')
    --suffix-meta      Suffix for metadata files (default: '.meta')
@@ -245,7 +237,7 @@ above, you would then be able to visit `https://localhost:8443` in the browser
 (ignoring the Untrusted Connection browser warnings as usual), where your
 `solid` server would redirect you to the default viewer app (see the
 `--file-browser` server config parameter), which is usually the
-[github.io/warp](https://solid.github.io/warp/#/list/) file browser.
+[github.io/warp](https://linkeddata.github.io/warp/#/list/) file browser.
 
 Accessing most Solid apps (such as Warp) will prompt you to select your browser
 side certificate which contains a WebID from a Solid storage provider (see
