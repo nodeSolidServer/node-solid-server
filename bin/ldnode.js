@@ -29,6 +29,9 @@ var argv = require('nomnom')
     full: 'webid',
     flag: true
   })
+  .option('owner', {
+    help: 'Set the owner of the storage'
+  })
   .option('key', {
     help: 'Path to the SSL private key in PEM format',
     full: 'ssl-key'
@@ -41,11 +44,6 @@ var argv = require('nomnom')
     help: 'Allow users to register their WebID on subdomains\n',
     full: 'allow-signup',
     flag: true
-  })
-  .option('createAdmin', {
-    full: 'create-admin',
-    flag: true,
-    help: 'Allow a user to set up their initial identity in single-user mode'
   })
   .option('noLive', {
     full: 'no-live',
@@ -134,6 +132,35 @@ function bin (argv) {
     })
   }
 
+  if (argv.owner) {
+    var rootPath = argv.root
+    if (!rootPath) {
+      rootPath = process.cwd()
+    }
+    if (!(rootPath.endsWith('/'))) {
+      rootPath += '/'
+    }
+    rootPath += (argv.suffixAcl || '.acl')
+
+    var defaultAcl = `@prefix n0: <http://www.w3.org/ns/auth/acl#>.
+  @prefix n2: <http://xmlns.com/foaf/0.1/>.
+
+  <#owner>
+     a                 n0:Authorization;
+     n0:accessTo       <./>;
+     n0:agent          <${argv.owner}>;
+     n0:defaultForNew  <./>;
+     n0:mode           n0:Control, n0:Read, n0:Write.
+  <#everyone>
+     a                 n0:Authorization;
+     n0:               n2:Agent;
+     n0:accessTo       <./>;
+     n0:defaultForNew  <./>;
+     n0:mode           n0:Read.' > .acl`
+
+    fs.writeFileSync(rootPath, defaultAcl)
+  }
+
   // Finally starting ldnode
   var ldnode = require('../')
   var app
@@ -154,13 +181,8 @@ function bin (argv) {
   }
   app.listen(argv.port, function () {
     fs.readFile(path.resolve(__dirname, '../package.json'), 'utf-8', function (_, file) {
-      if (argv.createAdmin) {
-        console.log('Action required: Create your admin account on \u001b[4mhttps://localhost:' + argv.port + '/\u001b[0m')
-        console.log('When done, stop your server (<ctrl>+c) and restart without "--create-admin"')
-      } else {
-        console.log('Solid server (ldnode v' + JSON.parse(file).version + ') running on \u001b[4mhttps://localhost:' + argv.port + '/\u001b[0m')
-        console.log('Press <ctrl>+c to stop')
-      }
+      console.log('Solid server (ldnode v' + JSON.parse(file).version + ') running on \u001b[4mhttps://localhost:' + argv.port + '/\u001b[0m')
+      console.log('Press <ctrl>+c to stop')
     })
   })
 }
