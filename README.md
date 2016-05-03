@@ -39,6 +39,7 @@ $ solid --port 8443 --ssl-key path/to/ssl-key.pem --ssl-cert path/to/ssl-cert.pe
 
 First time user? If you have never run `solid` before, let's get you a WebID to access your server.
 ```bash
+
 $ solid --port 8443 --ssl-key path/to/ssl-key.pem --ssl-cert path/to/ssl-cert.pem
 # Action required: Create your admin account on https://localhost:8080/
 # When done, stop your server (<ctrl>+c) and restart without "--create-admin"
