@@ -68,11 +68,12 @@ module.exports = [
     default: false,
     prompt: true
   },
-  // {
-  //   full: 'no-live',
-  //   help: 'Disable live support through WebSockets',
-  //   flag: true
-  // },
+  {
+    name: 'no-live',
+    help: 'Disable live support through WebSockets',
+    flag: true,
+    default: false
+  },
   // {
   //   full: 'default-app',
   //   help: 'URI to use as a default app for resources (default: https://linkeddata.github.io/warp/#/list/)'
