@@ -168,8 +168,8 @@ describe('LDNODE params', function () {
     var ldp = ldnode.createServer({
       forceUser: 'https://fakeaccount.com/profile#me',
       root: path.join(__dirname, '/resources/acl/fake-account'),
-      key: path.join(__dirname, '/keys/key.pem'),
-      cert: path.join(__dirname, '/keys/cert.pem'),
+      sslKey: path.join(__dirname, '/keys/key.pem'),
+      sslCert: path.join(__dirname, '/keys/cert.pem'),
       webid: true,
       host: 'localhost:3457'
     })
