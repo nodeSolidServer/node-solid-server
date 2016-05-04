@@ -65,7 +65,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "start": "node ./bin/solid.js start",
+    "solid": "node ./bin/solid.js",
     "standard": "standard",
     "mocha": "./node_modules/mocha/bin/mocha ./test/*.js",
     "test": "npm run standard && npm run mocha",
