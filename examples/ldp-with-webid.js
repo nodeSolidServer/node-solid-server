@@ -1,7 +1,7 @@
-var ldnode = require('../') // or require('ldnode')
+var solid = require('../') // or require('solid')
 var path = require('path')
 
-ldnode
+solid
   .createServer({
     webid: true,
     cert: path.resolve('../test/keys/cert.pem'),

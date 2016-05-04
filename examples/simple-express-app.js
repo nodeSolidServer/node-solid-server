@@ -1,5 +1,5 @@
 var express = require('express')
-var ldnode = require('../') // or require('ldnode')
+var solid = require('../') // or require('solid')
 
 // Starting our express app
 var app = express()
@@ -10,8 +10,8 @@ app.get('/', function (req, res) {
   res.send('Welcome to my server!')
 })
 
-// Mounting ldnode on /ldp
-var ldp = ldnode()
+// Mounting solid on /ldp
+var ldp = solid()
 app.use('/ldp', ldp)
 
 // Starting server

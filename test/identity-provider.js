@@ -16,8 +16,8 @@ describe('Identity Provider', function () {
   var ldpHttpsServer
   var ldp = ldnode.createServer({
     root: path.join(__dirname, '/resources/accounts/'),
-    key: path.join(__dirname, '/keys/key.pem'),
-    cert: path.join(__dirname, '/keys/cert.pem'),
+    sslKey: path.join(__dirname, '/keys/key.pem'),
+    sslCert: path.join(__dirname, '/keys/cert.pem'),
     webid: true,
     idp: true
   })
