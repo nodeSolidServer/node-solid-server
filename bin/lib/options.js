@@ -9,14 +9,14 @@ module.exports = [
   {
     name: 'root',
     help: 'Root folder to serve (defaut: \'./\')',
-    question: 'Provide the path to the document root (or use current one)',
+    question: 'Path to the folder you want to serve. Default is',
     default: './',
     prompt: true
   },
   {
     name: 'port',
     help: 'SSL port to use',
-    question: 'Provide SSL port (or use the default)',
+    question: 'SSL port to run on. Default is',
     default: '8443',
     prompt: true
   },
@@ -110,7 +110,7 @@ module.exports = [
     name: 'data-browser',
     flag: true,
     help: 'Enable viewing RDF resources using a default data browser application (e.g. mashlib)',
-    question: 'Enable data browsing using Tabulator',
+    question: 'Enable data viewer (defaults to using Tabulator)',
     prompt: true
   },
   {
