@@ -1,12 +1,12 @@
-# ldnode
+# solid-sever in Node
 
-[![Build Status](https://travis-ci.org/linkeddata/ldnode.svg?branch=master)](https://travis-ci.org/linkeddata/ldnode)
-[![NPM Version](https://img.shields.io/npm/v/ldnode.svg?style=flat)](https://npm.im/ldnode)
-[![Gitter chat](https://img.shields.io/badge/gitter-join%20chat%20%E2%86%92-brightgreen.svg?style=flat)](http://gitter.im/linkeddata/ldnode)
+[![Build Status](https://travis-ci.org/solid/node-solid-server.svg?branch=master)](https://travis-ci.org/solid/node-solid-server)
+[![NPM Version](https://img.shields.io/npm/v/solid-server.svg?style=flat)](https://npm.im/solid-server)
+[![Gitter chat](https://img.shields.io/badge/gitter-join%20chat%20%E2%86%92-brightgreen.svg?style=flat)](http://gitter.im/solid/node-solid-server)
 
 > [Solid](https://github.com/solid) server in [NodeJS](https://nodejs.org/)
 
-Ldnode lets you run a Solid server on top of the file-system. You can use it as a [command-line tool](https://github.com/linkeddata/ldnode/blob/master/README.md#command-line-usage) (easy) or as a [library](https://github.com/linkeddata/ldnode/blob/master/README.md#library-usage) (advanced).
+`solid-server` lets you run a Solid server on top of the file-system. You can use it as a [command-line tool](https://github.com/solid/node-solid-server/blob/master/README.md#command-line-usage) (easy) or as a [library](https://github.com/solid/node-solid-server/blob/master/README.md#library-usage) (advanced).
 
 ## Solid Features supported
 - [x] [Linked Data Platform](http://www.w3.org/TR/ldp/)
@@ -25,28 +25,29 @@ Ldnode lets you run a Solid server on top of the file-system. You can use it as 
 To install, first install [Node](https://nodejs.org/en/) and then run the following
 
 ```bash
-$ npm install -g ldnode
+$ npm install -g solid-server
 ```
 
 ### Run a single-user server (beginner)
 
-To run your server, simply run `ldnode` with the following flags:
+To run your server, simply run `solid` with the following flags:
 
 ```bash
-$ ldnode --port 8443 --ssl-key path/to/ssl-key.pem --ssl-cert path/to/ssl-cert.pem
-# Solid server (ldnode v0.2.24) running on https://localhost:8443/
+$ solid --port 8443 --ssl-key path/to/ssl-key.pem --ssl-cert path/to/ssl-cert.pem
+# Solid server (solid v0.2.24) running on https://localhost:8443/
 ```
 
-If you want to run `ldnode` on a particular folder (different from the one you are in, e.g. `path/to/folder`):
+If you want to run `solid` on a particular folder (different from the one you are in, e.g. `path/to/folder`):
+
 ```bash
-$ ldnode --root path/to/folder --port 8443 --ssl-key path/to/ssl-key.pem --ssl-cert path/to/ssl-cert.pem
-# Solid server (ldnode v0.2.24) running on https://localhost:8443/
+$ solid --root path/to/folder --port 8443 --ssl-key path/to/ssl-key.pem --ssl-cert path/to/ssl-cert.pem
+# Solid server (solid v0.2.24) running on https://localhost:8443/
 ```
 
 ##### How do I get the --ssl-key and the --ssl-cert?
 You need an SSL certificate you get this from your domain provider or for free from [Let's Encrypt!](https://letsencrypt.org/getting-started/).
 
-If you don't have one yet, or you just want to test `ldnode`, generate a certificate (**DO NOT USE IN PRODUCTION**):
+If you don't have one yet, or you just want to test `solid`, generate a certificate (**DO NOT USE IN PRODUCTION**):
 ```
 $ openssl genrsa 2048 > ../localhost.key
 $ openssl req -new -x509 -nodes -sha256 -days 3650 -key ../localhost.key -subj '/CN=*.localhost' > ../localhost.cert
@@ -54,7 +55,7 @@ $ openssl req -new -x509 -nodes -sha256 -days 3650 -key ../localhost.key -subj '
 
 ### Run multi-user server (intermediate)
 
-You can run `ldnode` so that new users can sign up, in other words, get their WebIDs _username.yourdomain.com_.
+You can run `solid` so that new users can sign up, in other words, get their WebIDs _username.yourdomain.com_.
 
 Pre-requisites:
 - Get a [Wildcard Certificate](https://en.wikipedia.org/wiki/Wildcard_certificate)
@@ -62,7 +63,7 @@ Pre-requisites:
 - (If you are running locally) Add the line `127.0.0.1 *.localhost` to `/etc/hosts`
 
 ```bash
-$ ldnode --allow-signup --port 8443 --cert /path/to/cert --key /path/to/key --root ./accounts
+$ solid --allow-signup --port 8443 --cert /path/to/cert --key /path/to/key --root ./accounts
 ```
 
 Your users will have a dedicated folder under `./accounts`. Also, your root domain's website will be in `./accounts/yourdomain.tld`. New users can create accounts on `/accounts/new` and create new certificates on `/accounts/cert`. An easy-to-use sign-up tool is found on `/accounts`.
@@ -72,9 +73,9 @@ If you don't want WebID Authentication and Web Access Control, you can run a sim
 
 ```bash
 # over HTTP
-$ ldnode --port 8080 --no-webid
+$ solid --port 8080 --no-webid
 # over HTTPS
-$ ldnode --port 8080 --ssl-key key.pem --ssl-cert cert.pem --no-webid
+$ solid --port 8080 --ssl-key key.pem --ssl-cert cert.pem --no-webid
 ```
 
 **Note:** if you want to run on HTTP, do not pass the `--ssl-*` flags, but keep `--no-webid`
@@ -84,10 +85,10 @@ $ ldnode --port 8080 --ssl-key key.pem --ssl-cert cert.pem --no-webid
 The command line tool has the following options
 
 ```
-Usage: ldnode [options]
+Usage: solid [options]
 
 Options:
-   --version          Print current ldnode version
+   --version          Print current solid version
    -v, --verbose      Print the logs to console
 
    --root             Root folder to serve (defaut: './')
@@ -124,7 +125,7 @@ npm install
 
 The library provides two APIs:
 
-- `ldnode.createServer(settings)`: starts a ready to use
+- `solid.createServer(settings)`: starts a ready to use
     [Express](http://expressjs.com) app.
 - `lnode(settings)`: creates an [Express](http://expressjs.com) that you can
     mount in your existing express app.
@@ -150,16 +151,16 @@ default settings.
 ```
 
 Have a look at the following examples or in the
-[`examples/`](https://github.com/linkeddata/ldnode/tree/master/examples) folder
+[`examples/`](https://github.com/solid/node-solid-server/tree/master/examples) folder
 for more complex ones
 
 ##### Simple Example
 
-You can create an `ldnode` server ready to use using `ldnode.createServer(opts)`
+You can create an `solid` server ready to use using `solid.createServer(opts)`
 
 ```javascript
-var ldnode = require('ldnode')
-var ldp = ldnode.createServer({
+var solid = require('solid-server')
+var ldp = solid.createServer({
     key: '/path/to/sslKey.pem',
     cert: '/path/to/sslCert.pem',
     webid: true
@@ -171,13 +172,13 @@ ldp.listen(3000, function() {
 
 ##### Advanced Example
 
-You can integrate `ldnode` in your existing [Express](https://expressjs.org)
-app, by mounting the `ldnode` app on a specific path using `lnode(opts)`.
+You can integrate `solid` in your existing [Express](https://expressjs.org)
+app, by mounting the `solid` app on a specific path using `lnode(opts)`.
 
 ```javascript
-var ldnode = require('ldnode')
+var solid = require('solid-server')
 var app = require('express')()
-app.use('/test', ldnode(yourSettings))
+app.use('/test', solid(yourSettings))
 app.listen(3000, function() {
   // Started Express app with ldp on '/test'
 })
@@ -189,20 +190,20 @@ app.listen(3000, function() {
 Run your app with the `DEBUG` variable set:
 
 ```bash
-$ DEBUG="ldnode:*" node app.js
+$ DEBUG="solid:*" node app.js
 ```
 
-## Testing `ldnode` Locally
+## Testing `solid` Locally
 
 #### Pre-Requisites
 
-In order to really get a feel for the Solid platform, and to test out `ldnode`,
+In order to really get a feel for the Solid platform, and to test out `solid`,
 you will need the following:
 
 1. A WebID profile and browser certificate from one of the Solid-compliant
     identity providers, such as [databox.me](https://databox.me).
 
-2. A server-side SSL certificate for `ldnode` to use (see the section below
+2. A server-side SSL certificate for `solid` to use (see the section below
     on creating a self-signed certificate for testing).
 
 While these steps are technically optional (since you could launch it in
@@ -211,7 +212,7 @@ without them.
 
 #### Creating a certificate for local testing
 
-When deploying `ldnode` in production, we recommend that you go the
+When deploying `solid` in production, we recommend that you go the
 usual Certificate Authority route to generate your SSL certificate (as you
 would with any website that supports HTTPS). However, for testing it locally,
 you can easily generate a self-signed certificate for whatever domain you're
@@ -222,19 +223,19 @@ using the `openssl` library:
 
 ```bash
 
-ldnode --webid --port 8443 --cert ../localhost.cert --key ../localhost.key -v
+solid --webid --port 8443 --cert ../localhost.cert --key ../localhost.key -v
 ```
 
 Note that this example creates the `localhost.cert` and `localhost.key` files
 in a directory one level higher from the current, so that you don't
-accidentally commit your certificates to `ldnode` while you're developing.
+accidentally commit your certificates to `solid` while you're developing.
 
 #### Accessing your server
 
-If you started your `ldnode` server locally on port 8443 as in the example
+If you started your `solid` server locally on port 8443 as in the example
 above, you would then be able to visit `https://localhost:8443` in the browser
 (ignoring the Untrusted Connection browser warnings as usual), where your
-`ldnode` server would redirect you to the default viewer app (see the
+`solid` server would redirect you to the default viewer app (see the
 `--file-browser` server config parameter), which is usually the
 [github.io/warp](https://linkeddata.github.io/warp/#/list/) file browser.
 
@@ -244,7 +245,7 @@ the [pre-requisites](#pre-requisites) discussion above).
 
 #### Editing your local `/etc/hosts`
 
-To test certificates and account creation on subdomains, `ldnode`'s test suite
+To test certificates and account creation on subdomains, `solid`'s test suite
 uses the following localhost domains: `nic.localhost`, `tim.localhost`, and
 `nicola.localhost`. You will need to create host file entries for these, in
 order for the tests to pass.
@@ -252,7 +253,7 @@ order for the tests to pass.
 Edit your `/etc/hosts` file, and append:
 
 ```
-# Used for unit testing ldnode
+# Used for unit testing solid
 127.0.0.1 nic.localhost, tim.localhost, nicola.localhost
 ```
 
@@ -261,7 +262,7 @@ Edit your `/etc/hosts` file, and append:
 ```bash
 $ npm test
 # running the tests with logs
-$ DEBUG="ldnode:*" npm test
+$ DEBUG="solid:*" npm test
 ```
 
 In order to test a single component, you can run
@@ -273,7 +274,7 @@ npm run test-(acl|formats|params|patch)
 
 ## Contributing
 
-`ldnode` is only possible due to the excellent work of the following contributors:
+`solid` is only possible due to the excellent work of the following contributors:
 
 <table>
   <tbody>
@@ -306,11 +307,11 @@ npm run test-(acl|formats|params|patch)
 
 #### Do you want to contribute?
 
-- [Join us in Gitter](https://gitter.im/linkeddata/chat) to help with development or to hang out with us :)
-- [Create a new issue](https://github.com/linkeddata/ldnode/issues/new) to report bugs
-- [Fix an issue](https://github.com/linkeddata/ldnode/issues)
+- [Join us in Gitter](https://gitter.im/solid/chat) to help with development or to hang out with us :)
+- [Create a new issue](https://github.com/solid/node-solid-server/issues/new) to report bugs
+- [Fix an issue](https://github.com/solid/node-solid-server/issues)
 
-Have a look at [CONTRIBUTING.md](https://github.com/linkeddata/ldnode/blob/master/CONTRIBUTING.md).
+Have a look at [CONTRIBUTING.md](https://github.com/solid/node-solid-server/blob/master/CONTRIBUTING.md).
 
 ## License
 

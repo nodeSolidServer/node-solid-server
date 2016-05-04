@@ -1,17 +1,17 @@
 # CONTRIBUTING
 
-The MIT Linked Data group and the `ldnode` project welcomes new contributors. This document will guide you
+The MIT Linked Data group and the `solid` project welcomes new contributors. This document will guide you
 through the process.
 
 ### Step 1: FORK
 
-Fork the project [on GitHub](https://github.com/linkeddata/ldnode) and check out
+Fork the project [on GitHub](https://github.com/solid/node-solid-server) and check out
 your copy.
 
 ```sh
-$ git clone git@github.com:your_username/ldnode.git
-$ cd ldnode
-$ git remote add upstream git://github.com/linkeddata/ldnode.git
+$ git clone git@github.com:your_username/node-solid-server.git
+$ cd node-solid-server
+$ git remote add upstream git://github.com/solid/node-solid-server.git
 ```
 
 
@@ -93,7 +93,7 @@ Makeall tests pass.  Please, do not submit patches that fail either check.
 $ git push origin my-feature-branch
 ```
 
-Go to https://github.com/username/ldnode and select your feature branch.  Click
+Go to https://github.com/username/node-solid-server and select your feature branch.  Click
 the 'Pull Request' button and fill out the form.
 
 Pull requests are usually reviewed within a few days.  If there are comments
@@ -116,8 +116,8 @@ $ npm version patch && npm publish && git push --follow-tags
 The described guidelines can be resumed as following:
 
 ```bash
-$ git clone https://github.com/linkeddata/ldnode
-$ cd ldnode
+$ git clone https://github.com/solid/node-solid-server
+$ cd node-solid-server
 
 # to fork the repository
 $ hub fork
@@ -135,4 +135,4 @@ $ hub pull-request
 This document is forked from [joyent/node](https://github.com/joyent/node/blob/master/CONTRIBUTING.md)
 
 
-[issue tracker]: https://github.com/linkeddata/ldnode/issues
+[issue tracker]: https://github.com/solid/node-solid-server/issues

@@ -3,10 +3,10 @@
 var fs = require('fs')
 var path = require('path')
 var argv = require('nomnom')
-  .script('ldnode')
+  .script('solid')
   .option('version', {
     flag: true,
-    help: 'Print current ldnode version',
+    help: 'Print current solid version',
     callback: function () {
       fs.readFile(path.resolve(__dirname, '../package.json'), 'utf-8', function (_, file) {
         console.log(JSON.parse(file).version)
@@ -112,7 +112,7 @@ function bin (argv) {
   argv.live = !argv.noLive
 
   // Set up debug environment
-  process.env.DEBUG = argv.verbose ? 'ldnode:*' : false
+  process.env.DEBUG = argv.verbose ? 'solid:*' : false
   var debug = require('../lib/debug').server
 
   // Set up port
@@ -161,11 +161,11 @@ function bin (argv) {
     fs.writeFileSync(rootPath, defaultAcl)
   }
 
-  // Finally starting ldnode
-  var ldnode = require('../')
+  // Finally starting solid
+  var solid = require('../')
   var app
   try {
-    app = ldnode.createServer(argv)
+    app = solid.createServer(argv)
   } catch (e) {
     if (e.code === 'EACCES') {
       console.log('You need root privileges to start on this port')
@@ -181,7 +181,7 @@ function bin (argv) {
   }
   app.listen(argv.port, function () {
     fs.readFile(path.resolve(__dirname, '../package.json'), 'utf-8', function (_, file) {
-      console.log('Solid server (ldnode v' + JSON.parse(file).version + ') running on \u001b[4mhttps://localhost:' + argv.port + '/\u001b[0m')
+      console.log('Solid server (solid v' + JSON.parse(file).version + ') running on \u001b[4mhttps://localhost:' + argv.port + '/\u001b[0m')
       console.log('Press <ctrl>+c to stop')
     })
   })
