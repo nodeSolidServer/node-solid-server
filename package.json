@@ -27,6 +27,8 @@
     "async": "^1.3.0",
     "body-parser": "^1.14.2",
     "busboy": "^0.2.12",
+    "camelize": "^1.0.0",
+    "colors": "^1.1.2",
     "cors": "^2.7.1",
     "debug": "^2.2.0",
     "express": "^4.13.3",
@@ -35,6 +37,7 @@
     "from2": "^2.1.0",
     "fs-extra": "^0.30.0",
     "glob": "^7.0.0",
+    "inquirer": "^1.0.2",
     "jsonld": "^0.4.5",
     "li": "^1.0.1",
     "mime": "^1.3.4",
@@ -62,7 +65,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "start": "node ./bin/solid.js",
+    "solid": "node ./bin/solid.js",
     "standard": "standard",
     "mocha": "./node_modules/mocha/bin/mocha ./test/*.js",
     "test": "npm run standard && npm run mocha",
@@ -71,9 +74,7 @@
     "test-params": "./node_modules/mocha/bin/mocha ./test/params.js",
     "test-http": "./node_modules/mocha/bin/mocha ./test/http.js",
     "test-formats": "./node_modules/mocha/bin/mocha ./test/formats.js",
-    "test-errors": "./node_modules/mocha/bin/mocha ./test/errors.js",
-    "ldp-webid": "node ./bin/solid.js --webid --cert ./test/keys/cert.pem --key ./test/keys/key.pem -v -r ./test/resources",
-    "ldp-ssl": "node ./bin/solid.js --cert ./test/keys/cert.pem --key ./test/keys/key.pem -v -r ./test/resources"
+    "test-errors": "./node_modules/mocha/bin/mocha ./test/errors.js"
   },
   "standard": {
     "globals": [

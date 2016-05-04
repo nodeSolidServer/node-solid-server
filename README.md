@@ -30,17 +30,30 @@ $ npm install -g solid-server
 
 ### Run a single-user server (beginner)
 
-To run your server, simply run `solid` with the following flags:
+The easiest way to setup `solid-sever` is by running the wizard. This will create a `config.json` in your current folder
 
 ```bash
-$ solid --port 8443 --ssl-key path/to/ssl-key.pem --ssl-cert path/to/ssl-cert.pem
+$ solid init
+```
+
+To run your server, simply run `solid start`:
+
+```bash
+$ solid start
+# Solid server (solid v0.2.24) running on https://localhost:8443/
+```
+
+If you prefer to use flags instead, the following would be the equivalent
+
+```bash
+$ solid start --port 8443 --ssl-key path/to/ssl-key.pem --ssl-cert path/to/ssl-cert.pem
 # Solid server (solid v0.2.24) running on https://localhost:8443/
 ```
 
 If you want to run `solid` on a particular folder (different from the one you are in, e.g. `path/to/folder`):
 
 ```bash
-$ solid --root path/to/folder --port 8443 --ssl-key path/to/ssl-key.pem --ssl-cert path/to/ssl-cert.pem
+$ solid start --root path/to/folder --port 8443 --ssl-key path/to/ssl-key.pem --ssl-cert path/to/ssl-cert.pem
 # Solid server (solid v0.2.24) running on https://localhost:8443/
 ```
 
@@ -63,6 +76,16 @@ Pre-requisites:
 - (If you are running locally) Add the line `127.0.0.1 *.localhost` to `/etc/hosts`
 
 ```bash
+$ solid init 
+..
+? Allow users to register their WebID (y/N) # write `y` here
+..
+$ solid start
+```
+
+Otherwise, if you want to use flags, this would be the equivalent
+
+```bash
 $ solid --allow-signup --port 8443 --cert /path/to/cert --key /path/to/key --root ./accounts
 ```
 
@@ -73,9 +96,9 @@ If you don't want WebID Authentication and Web Access Control, you can run a sim
 
 ```bash
 # over HTTP
-$ solid --port 8080 --no-webid
+$ solid start --port 8080 --no-webid
 # over HTTPS
-$ solid --port 8080 --ssl-key key.pem --ssl-cert cert.pem --no-webid
+$ solid start --port 8080 --ssl-key key.pem --ssl-cert cert.pem --no-webid
 ```
 
 **Note:** if you want to run on HTTP, do not pass the `--ssl-*` flags, but keep `--no-webid`
@@ -85,32 +108,53 @@ $ solid --port 8080 --ssl-key key.pem --ssl-cert cert.pem --no-webid
 The command line tool has the following options
 
 ```
-Usage: solid [options]
+$ solid 
 
-Options:
-   --version          Print current solid version
-   -v, --verbose      Print the logs to console
+  Usage: solid [options] [command]
 
-   --root             Root folder to serve (defaut: './')
-   --port             Port to use
-   --webid            Enable WebID+TLS authentication (use `--no-webid` for HTTP instead of HTTPS)
-   --ssl-key          Path to the SSL private key in PEM format
-   --ssl-cert         Path to the SSL certificate key in PEM format
-   --allow-signup     Allow users to register their WebID on subdomains
+  Commands:
+    init [options]    create solid server configurations
+    start [options]   run the Solid server
 
-   --no-live          Disable live support through WebSockets
-   --default-app      URI to use as a default app for resources (default: https://linkeddata.github.io/warp/#/list/)
-   --proxy            Use a proxy on example.tld/proxyPath
-   --file-browser     URI to use as a default app for resources (default: https://linkeddata.github.io/warp/#/list/)
-   --data-browser     Enable viewing RDF resources using a default data browser application (e.g. mashlib)
-   --suffix-acl       Suffix for acl files (default: '.acl')
-   --suffix-meta      Suffix for metadata files (default: '.meta')
-   --session-secret   Secret used to sign the session ID cookie (e.g. "your secret phrase")
-   --no-error-pages   Disable custom error pages (use Node.js default pages instead)
-   --error-pages      Folder from which to look for custom error pages files (files must be named <error-code>.html -- eg. 500.html)
-   --mount            Serve on a specific URL path (default: '/')
-   --force-user       Force a WebID to always be logged in (useful when offline)
-   --strict-origin    Enforce same origin policy in the ACL
+  Options:
+    -h, --help     output usage information
+    -V, --version  output the version number
+
+
+$ solid init --help
+
+  Usage: init [options]
+  Create solid server configurations
+
+  Options:
+    -h, --help  output usage information
+    --advanced  Ask for all the settings
+
+
+$ solid start --help
+  Usage: start [options]
+  run the Solid server
+
+  Options:
+    -h, --help              output usage information
+    --root [value]          Root folder to serve (defaut: './')
+    --port [value]          Port to use
+    --webid                 Enable WebID+TLS authentication (use `--no-webid` for HTTP instead of HTTPS)
+    --owner [value]         Set the owner of the storage
+    --ssl-key [value]       Path to the SSL private key in PEM format
+    --ssl-cert [value]      Path to the SSL certificate key in PEM format
+    --idp                   Allow users to register their WebID
+    --proxy [value]         Serve proxy on path
+    --file-browser [value]  App to browse files
+    --data-browser          Enable viewing RDF resources using a default data browser application (e.g. mashlib)
+    --suffix-acl [value]    Suffix for acl files
+    --suffix-meta [value]   Suffix for metadata files
+    --secret [value]        Secret used to sign the session ID cookie (e.g. "your secret phrase")
+    --error-pages [value]   Folder from which to look for custom error pages files (files must be named <error-code>.html -- eg. 500.html)
+    --mount [value]         Serve on a specific URL path (default: '/')
+    --force-user [value]    Force a WebID to always be logged in (useful when offline)
+    --strict-origin         Enforce same origin policy in the ACL
+    -v, --verbose           Print the logs to console
 ```
 
 ## Library Usage
