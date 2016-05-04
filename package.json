@@ -65,7 +65,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "start": "node ./bin/solid.js",
+    "solid": "node ./bin/solid.js",
     "standard": "standard",
     "mocha": "./node_modules/mocha/bin/mocha ./test/*.js",
     "test": "npm run standard && npm run mocha",
@@ -74,9 +74,7 @@
     "test-params": "./node_modules/mocha/bin/mocha ./test/params.js",
     "test-http": "./node_modules/mocha/bin/mocha ./test/http.js",
     "test-formats": "./node_modules/mocha/bin/mocha ./test/formats.js",
-    "test-errors": "./node_modules/mocha/bin/mocha ./test/errors.js",
-    "ldp-webid": "node ./bin/solid.js --webid --cert ./test/keys/cert.pem --key ./test/keys/key.pem -v -r ./test/resources",
-    "ldp-ssl": "node ./bin/solid.js --cert ./test/keys/cert.pem --key ./test/keys/key.pem -v -r ./test/resources"
+    "test-errors": "./node_modules/mocha/bin/mocha ./test/errors.js"
   },
   "standard": {
     "globals": [
