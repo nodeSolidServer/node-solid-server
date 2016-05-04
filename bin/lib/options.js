@@ -9,14 +9,14 @@ module.exports = [
   {
     name: 'root',
     help: 'Root folder to serve (defaut: \'./\')',
-    question: 'Serve folder',
+    question: 'Provide the path to the document root (or use current one)',
     default: './',
     prompt: true
   },
   {
     name: 'port',
-    help: 'Port to use',
-    question: 'Run on port',
+    help: 'SSL port to use',
+    question: 'Provide SSL port (or use the default)',
     default: '8443',
     prompt: true
   },
@@ -24,7 +24,7 @@ module.exports = [
     name: 'webid',
     help: 'Enable WebID+TLS authentication (use `--no-webid` for HTTP instead of HTTPS)',
     flag: true,
-    question: 'Enable authentication',
+    question: 'Enable WebID-TLS authentication',
     prompt: true
   },
   {
@@ -62,7 +62,7 @@ module.exports = [
   },
   {
     name: 'idp',
-    help: 'Allow users to register their WebID',
+    help: 'Allow users to sign up for an account',
     full: 'allow-signup',
     flag: true,
     default: false,
@@ -96,7 +96,7 @@ module.exports = [
   },
   {
     name: 'file-browser',
-    help: 'App to browse files',
+    help: 'Type the URL of default app to use for browsing files (or use default)',
     default: 'default',
     filter: function (value) {
       if (value === 'default' || value === 'warp') {
@@ -110,7 +110,7 @@ module.exports = [
     name: 'data-browser',
     flag: true,
     help: 'Enable viewing RDF resources using a default data browser application (e.g. mashlib)',
-    question: 'Enable tabulator for data browsing',
+    question: 'Enable data browsing using Tabulator',
     prompt: true
   },
   {
