@@ -31,18 +31,10 @@ module.exports = function (program) {
       if (err) {
         console.log(colors.cyan.bold('TIP'), 'create a config.json: `$ solid init`')
       } else {
-        // Overwrite current configs with config file
+        // Use flags with priority over config file
         const config = JSON.parse(file)
         Object.keys(config).forEach((option) => {
-          // however, some flags have priority from command line
-          if (option === 'port' ||
-              option === 'sslCert' ||
-              option === 'owner' ||
-              option === 'sslKey') {
-            argv[option] = argv[option] || config[option]
-          } else {
-            argv[option] = config[option]
-          }
+          argv[option] = argv[option] || config[option]
         })
       }
 
