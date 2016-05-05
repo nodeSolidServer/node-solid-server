@@ -3,3 +3,8 @@ node_modules/
 *.swp
 .tern-port
 npm-debug.log
+accounts
+profile
+inbox
+.acl
+config.json

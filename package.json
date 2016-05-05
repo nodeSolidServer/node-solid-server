@@ -1,7 +1,7 @@
 {
   "name": "solid-server",
   "description": "Linked Data Platform",
-  "version": "0.2.31",
+  "version": "0.3.0",
   "author": {
     "name": "Tim Berners-Lee",
     "email": "timbl@w3.org"
@@ -74,7 +74,8 @@
     "test-params": "./node_modules/mocha/bin/mocha ./test/params.js",
     "test-http": "./node_modules/mocha/bin/mocha ./test/http.js",
     "test-formats": "./node_modules/mocha/bin/mocha ./test/formats.js",
-    "test-errors": "./node_modules/mocha/bin/mocha ./test/errors.js"
+    "test-errors": "./node_modules/mocha/bin/mocha ./test/errors.js",
+    "clean": "rm -rf config.json accounts profile inbox .acl"
   },
   "standard": {
     "globals": [
