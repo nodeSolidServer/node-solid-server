@@ -45,6 +45,22 @@ module.exports = function (program) {
 
 function bin (argv) {
 
+  if (!argv.email) {
+    argv.email = {
+      host: answers['emailHost'],
+      port: answers['emailPort'],
+      secure: true,
+      auth: {
+        user: answers['emailAuthUser'],
+        pass: answers['emailAuthPass']
+      }
+    }
+    delete answers['emailHost']
+    delete answers['emailPort']
+    delete answers['emailAuthUser']
+    delete answers['emailAuthPass']
+  }
+
   // Set up --no-*
   argv.live = !argv.noLive
 
