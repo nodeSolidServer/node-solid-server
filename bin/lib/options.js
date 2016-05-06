@@ -1,4 +1,5 @@
 const fs = require('fs')
+const path = require('path')
 
 module.exports = [
   // {
@@ -11,7 +12,8 @@ module.exports = [
     help: 'Root folder to serve (defaut: \'./\')',
     question: 'Path to the folder you want to serve. Default is',
     default: './',
-    prompt: true
+    prompt: true,
+    filter: (value) => path.resolve(value)
   },
   {
     name: 'port',
