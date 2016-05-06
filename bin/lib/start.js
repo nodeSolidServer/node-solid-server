@@ -44,6 +44,7 @@ module.exports = function (program) {
 }
 
 function bin (argv) {
+
   // Set up --no-*
   argv.live = !argv.noLive
 

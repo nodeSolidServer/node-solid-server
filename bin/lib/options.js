@@ -162,6 +162,54 @@ module.exports = [
     help: 'Enforce same origin policy in the ACL',
     flag: true,
     prompt: true
+  },
+  {
+    name: 'useEmail',
+    help: 'Do you want to set up an email service?',
+    flag: true,
+    prompt: true,
+    default: true
+  },
+  {
+    name: 'email-host',
+    help: 'Host of your email service',
+    prompt: true,
+    default: 'smtp.gmail.com',
+    when: (answers) => {
+      return answers.useEmail
+    }
+  },
+  {
+    name: 'email-port',
+    help: 'Port of your email service',
+    prompt: true,
+    default: '465',
+    when: (answers) => {
+      return answers.useEmail
+    }
+  },
+  {
+    name: 'email-auth-user',
+    help: 'User of your email service',
+    prompt: true,
+    when: (answers) => {
+      return answers.useEmail
+    },
+    validate: (value) => {
+      if (!value || value === '') {
+        return 'You must enter this information'
+      }
+      return true
+    }
+  },
+  {
+    name: 'email-auth-pass',
+    help: 'Password of your email service',
+    type: 'password',
+    prompt: true,
+    when: (answers) => {
+      return answers.useEmail
+    }
   }
 ]
 
