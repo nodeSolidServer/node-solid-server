@@ -44,7 +44,6 @@ module.exports = function (program) {
 }
 
 function bin (argv) {
-
   if (!argv.email) {
     argv.email = {
       host: argv['emailHost'],
