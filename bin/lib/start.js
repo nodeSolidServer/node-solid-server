@@ -47,18 +47,18 @@ function bin (argv) {
 
   if (!argv.email) {
     argv.email = {
-      host: answers['emailHost'],
-      port: answers['emailPort'],
+      host: argv['emailHost'],
+      port: argv['emailPort'],
       secure: true,
       auth: {
-        user: answers['emailAuthUser'],
-        pass: answers['emailAuthPass']
+        user: argv['emailAuthUser'],
+        pass: argv['emailAuthPass']
       }
     }
-    delete answers['emailHost']
-    delete answers['emailPort']
-    delete answers['emailAuthUser']
-    delete answers['emailAuthPass']
+    delete argv['emailHost']
+    delete argv['emailPort']
+    delete argv['emailAuthUser']
+    delete argv['emailAuthPass']
   }
 
   // Set up --no-*
