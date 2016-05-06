@@ -10,7 +10,7 @@ describe('Email Service', function () {
       name: 'testsend',
       version: '1',
       send: function (data, callback) {
-        callback();
+        callback()
       },
       logger: false
     }
@@ -23,7 +23,7 @@ describe('Email Service', function () {
     email.sendMail({
       subject: 'test'
     }, function (err, info) {
-      expect(err).to.not.exist;
+      expect(err).to.not.exist
       expect(info).to.equal('bep bop')
       done()
     })
