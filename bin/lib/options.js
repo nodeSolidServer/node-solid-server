@@ -5,11 +5,11 @@ module.exports = [
   // {
   //   abbr: 'v',
   //   flag: true,
-  //   help: 'Print the logs to console\n'
+  //   description: 'Print the logs to console\n'
   // },
   {
     name: 'root',
-    help: 'Root folder to serve (defaut: \'./\')',
+    description: 'Root folder to serve (defaut: \'./\')',
     question: 'Path to the folder you want to serve. Default is',
     default: './',
     prompt: true,
@@ -17,14 +17,14 @@ module.exports = [
   },
   {
     name: 'port',
-    help: 'SSL port to use',
+    description: 'SSL port to use',
     question: 'SSL port to run on. Default is',
     default: '8443',
     prompt: true
   },
   {
     name: 'webid',
-    help: 'Enable WebID+TLS authentication (use `--no-webid` for HTTP instead of HTTPS)',
+    description: 'Enable WebID+TLS authentication (use `--no-webid` for HTTP instead of HTTPS)',
     flag: true,
     question: 'Enable WebID-TLS authentication',
     prompt: true
@@ -38,7 +38,7 @@ module.exports = [
   },
   {
     name: 'owner',
-    help: 'Set the owner of the storage',
+    description: 'Set the owner of the storage',
     question: 'Your webid',
     validate: function (value) {
       if (value === '' || !value.startsWith('http')) {
@@ -52,19 +52,19 @@ module.exports = [
   },
   {
     name: 'ssl-key',
-    help: 'Path to the SSL private key in PEM format',
+    description: 'Path to the SSL private key in PEM format',
     validate: validPath,
     prompt: true
   },
   {
     name: 'ssl-cert',
-    help: 'Path to the SSL certificate key in PEM format',
+    description: 'Path to the SSL certificate key in PEM format',
     validate: validPath,
     prompt: true
   },
   {
     name: 'idp',
-    help: 'Allow users to sign up for an account',
+    description: 'Allow users to sign up for an account',
     full: 'allow-signup',
     flag: true,
     default: false,
@@ -72,24 +72,24 @@ module.exports = [
   },
   {
     name: 'no-live',
-    help: 'Disable live support through WebSockets',
+    description: 'Disable live support through WebSockets',
     flag: true,
     default: false
   },
   // {
   //   full: 'default-app',
-  //   help: 'URI to use as a default app for resources (default: https://linkeddata.github.io/warp/#/list/)'
+  //   description: 'URI to use as a default app for resources (default: https://linkeddata.github.io/warp/#/list/)'
   // },
   {
     name: 'useProxy',
-    help: 'Do you want to have a proxy?',
+    description: 'Do you want to have a proxy?',
     flag: true,
     prompt: false,
     hide: true
   },
   {
     name: 'proxy',
-    help: 'Serve proxy on path',
+    description: 'Serve proxy on path',
     when: function (answers) {
       return answers.useProxy
     },
@@ -98,7 +98,7 @@ module.exports = [
   },
   {
     name: 'file-browser',
-    help: 'Type the URL of default app to use for browsing files (or use default)',
+    description: 'Type the URL of default app to use for browsing files (or use default)',
     default: 'default',
     filter: function (value) {
       if (value === 'default' || value === 'warp') {
@@ -111,25 +111,23 @@ module.exports = [
   {
     name: 'data-browser',
     flag: true,
-    help: 'Enable viewing RDF resources using a default data browser application (e.g. mashlib)',
+    description: 'Enable viewing RDF resources using a default data browser application (e.g. mashlib)',
     question: 'Enable data viewer (defaults to using Tabulator)',
     prompt: true
   },
   {
     name: 'suffix-acl',
-    full: 'suffix-acl',
-    help: 'Suffix for acl files',
+    description: 'Suffix for acl files',
     default: '.acl'
   },
   {
     name: 'suffix-meta',
-    full: 'suffix-meta',
-    help: 'Suffix for metadata files',
+    description: 'Suffix for metadata files',
     default: '.meta'
   },
   {
     name: 'secret',
-    help: 'Secret used to sign the session ID cookie (e.g. "your secret phrase")',
+    description: 'Secret used to sign the session ID cookie (e.g. "your secret phrase")',
     question: 'Session secret for cookie',
     default: 'random',
     filter: function (value) {
@@ -142,39 +140,39 @@ module.exports = [
   // {
   //   full: 'no-error-pages',
   //   flag: true,
-  //   help: 'Disable custom error pages (use Node.js default pages instead)'
+  //   description: 'Disable custom error pages (use Node.js default pages instead)'
   // },
   {
     name: 'error-pages',
-    help: 'Folder from which to look for custom error pages files (files must be named <error-code>.html -- eg. 500.html)',
+    description: 'Folder from which to look for custom error pages files (files must be named <error-code>.html -- eg. 500.html)',
     validate: validPath
   },
   {
     name: 'mount',
-    help: 'Serve on a specific URL path (default: \'/\')',
+    description: 'Serve on a specific URL path (default: \'/\')',
     question: 'Serve Solid on path',
     default: '/'
   },
   {
     name: 'force-user',
-    help: 'Force a WebID to always be logged in (useful when offline)'
+    description: 'Force a WebID to always be logged in (useful when offline)'
   },
   {
     name: 'strict-origin',
-    help: 'Enforce same origin policy in the ACL',
+    description: 'Enforce same origin policy in the ACL',
     flag: true,
     prompt: true
   },
   {
     name: 'useEmail',
-    help: 'Do you want to set up an email service?',
+    description: 'Do you want to set up an email service?',
     flag: true,
     prompt: true,
     default: true
   },
   {
     name: 'email-host',
-    help: 'Host of your email service',
+    description: 'Host of your email service',
     prompt: true,
     default: 'smtp.gmail.com',
     when: (answers) => {
@@ -183,7 +181,7 @@ module.exports = [
   },
   {
     name: 'email-port',
-    help: 'Port of your email service',
+    description: 'Port of your email service',
     prompt: true,
     default: '465',
     when: (answers) => {
@@ -192,7 +190,7 @@ module.exports = [
   },
   {
     name: 'email-auth-user',
-    help: 'User of your email service',
+    description: 'User of your email service',
     prompt: true,
     when: (answers) => {
       return answers.useEmail
@@ -206,7 +204,7 @@ module.exports = [
   },
   {
     name: 'email-auth-pass',
-    help: 'Password of your email service',
+    description: 'Password of your email service',
     type: 'password',
     prompt: true,
     when: (answers) => {

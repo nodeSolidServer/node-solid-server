@@ -6,45 +6,26 @@ const extend = require('extend')
 const packageJson = require('../../package.json')
 const colors = require('colors/safe')
 
-module.exports = function (program) {
-  const start = program
-    .command('start')
-    .description('run the Solid server')
+module.exports = function (argv) {
+  fs.readFile(process.cwd() + '/config.json', (err, file) => {
+    // No file exists, not a problem
+    if (err) {
+      console.log(colors.cyan.bold('TIP'), 'create a config.json: `$ solid init`')
+    } else {
+      // Use flags with priority over config file
+      const config = JSON.parse(file)
+      Object.keys(config).forEach((option) => {
+        argv[option] = argv[option] || config[option]
+      })
+    }
 
-  options
-    .filter((option) => !option.hide)
-    .forEach((option) => {
-      var name = '--' + option.name
-      if (!option.flag) {
-        name += ' [value]'
-      }
-      start.option(name, option.help)
-    })
-
-  start.option('-v, --verbose', 'Print the logs to console')
-
-  start.action((opts) => {
-    let argv = extend({}, opts)
-
-    fs.readFile(process.cwd() + '/config.json', (err, file) => {
-      // No file exists, not a problem
-      if (err) {
-        console.log(colors.cyan.bold('TIP'), 'create a config.json: `$ solid init`')
-      } else {
-        // Use flags with priority over config file
-        const config = JSON.parse(file)
-        Object.keys(config).forEach((option) => {
-          argv[option] = argv[option] || config[option]
-        })
-      }
-
-      bin(argv)
-    })
+    bin(argv)
   })
 }
 
 function bin (argv) {
-  if (!argv.email) {
+  // if email is not set but email flag is set
+  if (!argv.email && argv['emailHost']) {
     argv.email = {
       host: argv['emailHost'],
       port: argv['emailPort'],
