@@ -1,8 +1,6 @@
 'use strict'
 
-const options = require('./options')
 const fs = require('fs')
-const extend = require('extend')
 const packageJson = require('../../package.json')
 const colors = require('colors/safe')
 

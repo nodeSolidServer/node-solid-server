@@ -39,9 +39,9 @@ const argv = yargs
     let command = yargs
       .usage('usage: solid create [options]')
 
-    const createOpts = options
+    options
       .filter((option) => !option.hide)
-      .forEach(option => {
+      .forEach((option) => {
         if (option.default) delete option.default
         command.option(option.name, option)
       })
