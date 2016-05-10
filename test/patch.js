@@ -17,6 +17,20 @@ describe('PATCH', function () {
   })
   var server = supertest(ldp)
 
+  it('should create a new file if file does not exist', function (done) {
+    server.patch('/notExisting.ttl')
+      .set('content-type', 'application/sparql-update')
+      .send('INSERT DATA { :test  :hello 456 .}')
+      .expect(200)
+      .end(function (err, res, body) {
+        assert.equal(
+          read('sampleContainer/notExisting.ttl'),
+          '\n')
+        rm('sampleContainer/notExisting.ttl')
+        done(err)
+      })
+  })
+
   describe('DELETE', function () {
     it('should be an empty resource if last triple is deleted', function (done) {
       write(
