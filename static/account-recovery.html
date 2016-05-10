@@ -48,7 +48,7 @@
 function retrieveAccount () {
   var account = document.getElementById('account').value
   var url = '/recovery/request'
-  var data = 'account=' + account
+  var data = 'webid=' + account
 
   var http = new XMLHttpRequest()
   http.open('POST', url)
