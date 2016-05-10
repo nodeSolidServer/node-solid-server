@@ -1,7 +1,7 @@
 {
   "name": "solid-server",
   "description": "Linked Data Platform",
-  "version": "2.1.1",
+  "version": "2.1.2",
   "author": {
     "name": "Tim Berners-Lee",
     "email": "timbl@w3.org"
