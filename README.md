@@ -91,6 +91,10 @@ $ solid --allow-signup --port 8443 --cert /path/to/cert --key /path/to/key --roo
 
 Your users will have a dedicated folder under `./accounts`. Also, your root domain's website will be in `./accounts/yourdomain.tld`. New users can create accounts on `/accounts/new` and create new certificates on `/accounts/cert`. An easy-to-use sign-up tool is found on `/accounts`.
 
+##### How can send emails to my users with my Gmail?
+
+> To use Gmail you may need to configure ["Allow Less Secure Apps"](https://www.google.com/settings/security/lesssecureapps) in your Gmail account unless you are using 2FA in which case you would have to create an [Application Specific](https://security.google.com/settings/security/apppasswords) password. You also may need to unlock your account with ["Allow access to your Google account"](https://accounts.google.com/DisplayUnlockCaptcha) to use SMTP.
+
 ### Run the Linked Data Platform (intermediate)
 If you don't want WebID Authentication and Web Access Control, you can run a simple Linked Data Platform.
 
