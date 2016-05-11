@@ -31,18 +31,18 @@ module.exports = [
   },
   {
     name: 'auth',
-    help: 'Pick an authentication strategy `tls` or `oidc`',
-    question: 'What authentication strategy do you want to provide?',
+    help: 'Pick an authentication strategy for WebID: `tls` or `oidc`',
+    question: 'Select authentication strategy',
     type: 'list',
     choices: [
-      'TLS',
-      'OpenID Connect'
+      'WebID-TLS',
+      'WebID-OpenID Connect'
     ],
     prompt: true,
-    default: 'TLS',
+    default: 'WebID-TLS',
     filter: (value) => {
-      if (value === 'TLS') return 'tls'
-      if (value === 'OpenID Connect') return 'oidc'
+      if (value === 'WebID-TLS') return 'tls'
+      if (value === 'WebID-OpenID Connect') return 'oidc'
     },
     when: (answers) => {
       return answers.webid
