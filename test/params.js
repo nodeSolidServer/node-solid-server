@@ -25,7 +25,7 @@ describe('LDNODE params', function () {
         .expect(200, done)
     })
 
-    it('should return local network requests', function (done) {
+    it('should return error on local network requests', function (done) {
       nock('https://192.168.0.0').get('/').reply(200)
       server.get('/proxy?uri=https://192.168.0.0/')
         .expect(406, done)
