@@ -18,6 +18,7 @@ describe('PATCH', function () {
   var server = supertest(ldp)
 
   it('should create a new file if file does not exist', function (done) {
+    rm('sampleContainer/notExisting.ttl')
     server.patch('/notExisting.ttl')
       .set('content-type', 'application/sparql-update')
       .send('INSERT DATA { :test  :hello 456 .}')
@@ -25,7 +26,7 @@ describe('PATCH', function () {
       .end(function (err, res, body) {
         assert.equal(
           read('sampleContainer/notExisting.ttl'),
-          '\n')
+          '\n   <#test> <#hello> 456 .\n')
         rm('sampleContainer/notExisting.ttl')
         done(err)
       })
