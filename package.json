@@ -1,6 +1,6 @@
 {
   "name": "solid-server",
-  "description": "Linked Data Platform",
+  "description": "Solid server on top of the file-system",
   "version": "2.1.2",
   "author": {
     "name": "Tim Berners-Lee",
