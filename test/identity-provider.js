@@ -33,7 +33,7 @@ describe('Identity Provider', function () {
   var server = supertest(address)
 
   it('should redirect to signup on GET /accounts', function (done) {
-    server.get('/accounts')
+    server.get('/api/accounts')
       .expect(302, done)
   })
 
@@ -56,13 +56,13 @@ describe('Identity Provider', function () {
     it('should generate a certificate if spkac is valid', function (done) {
       var spkac = read('example_spkac.cnf')
       var subdomain = supertest.agent('https://nicola.' + host)
-      subdomain.post('/accounts/new')
+      subdomain.post('/api/accounts/new')
         .send('username=nicola')
         .expect(200)
         .end(function (err, req) {
           if (err) return done(err)
 
-          subdomain.post('/accounts/cert')
+          subdomain.post('/api/accounts/cert')
             .send('spkac=' + spkac + '&webid=https%3A%2F%2Fnicola.localhost%3A3457%2Fprofile%2Fcard%23me')
             .expect('Content-Type', /application\/x-x509-user-cert/)
             .expect(200)
@@ -72,14 +72,14 @@ describe('Identity Provider', function () {
 
     it('should not generate a certificate if spkac is not valid', function (done) {
       var subdomain = supertest('https://nicola.' + host)
-      subdomain.post('/accounts/new')
+      subdomain.post('/api/accounts/new')
         .send('username=nicola')
         .expect(200)
         .end(function (err) {
           if (err) return done(err)
 
           var spkac = ''
-          subdomain.post('/accounts/cert')
+          subdomain.post('/api/accounts/cert')
             .send('webid=https://nicola.' + host + '/profile/card#me&spkac=' + spkac)
             .expect(500, done)
         })
@@ -97,7 +97,7 @@ describe('Identity Provider', function () {
 
     it('should return create WebID if only username is given', function (done) {
       var subdomain = supertest('https://nicola.' + host)
-      subdomain.post('/accounts/new')
+      subdomain.post('/api/accounts/new')
         .send('username=nicola')
         .expect(200)
         .end(function (err) {
@@ -107,14 +107,14 @@ describe('Identity Provider', function () {
 
     it('should not create a WebID if it already exists', function (done) {
       var subdomain = supertest('https://nicola.' + host)
-      subdomain.post('/accounts/new')
+      subdomain.post('/api/accounts/new')
         .send('username=nicola')
         .expect(200)
         .end(function (err) {
           if (err) {
             return done(err)
           }
-          subdomain.post('/accounts/new')
+          subdomain.post('/api/accounts/new')
             .send('username=nicola')
             .expect(406)
             .end(function (err) {
@@ -125,7 +125,7 @@ describe('Identity Provider', function () {
 
     it('should create the default folders', function (done) {
       var subdomain = supertest('https://nicola.' + host)
-      subdomain.post('/accounts/new')
+      subdomain.post('/api/accounts/new')
         .send('username=nicola')
         .expect(200)
         .end(function (err) {
