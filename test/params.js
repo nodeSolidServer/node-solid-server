@@ -25,6 +25,22 @@ describe('LDNODE params', function () {
         .expect(200, done)
     })
 
+    it('should return local network requests', function (done) {
+      nock('https://192.168.0.0').get('/').reply(200)
+      server.get('/proxy?uri=https://192.168.0.0/')
+        .expect(406, done)
+    })
+
+    it('should return error on invalid uri', function (done) {
+      server.get('/proxy?uri=HELLOWORLD')
+        .expect(406, done)
+    })
+
+    it('should return error on relative paths', function (done) {
+      server.get('/proxy?uri=../')
+        .expect(406, done)
+    })
+
     it('should return the same headers of proxied request', function (done) {
       nock('https://amazingwebsite.tld')
         .get('/')
