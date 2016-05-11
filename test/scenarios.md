@@ -3,14 +3,14 @@
       - (1) User tries to get a resource
         - GET BOB/foo
           - sends 401 with redirect in HTML header
-          - redirect GET BOB/discoverSignin
+          - redirect GET BOB/api/accounts/signin
       - (2) User enters the webId so that the authorization endpoint is discovered
         - POST BOB/signin with WebID
-          - response is a 302 to ALICE/authorize?callback=BOB/api/oidc/rp
+          - response is a 302 to oidc.ALICE/authorize?callback=BOB/api/oidc/rp
       - (3) User is prompted password? and consent
         - (user enters password)?
         - user presses conset
-        - form submit to ALICE/authorize?callback=BOB/api/oidc/rp
+        - form submit to oidc.ALICE/authorize?callback=BOB/api/oidc/rp
           - response is a 302 to BOB/api/oidc/rp
             - BOB/api/oidc/rp redirects to BOB/foo
 
