@@ -7,7 +7,7 @@ const supertest = require('supertest')
 // In this test we always assume that we are Alice
 
 function getBobFoo (alice, bob, done) {
-  bob.get('/foo')
+  bob.get('/')
     .expect(401)
     .end(done)
 }
@@ -17,7 +17,7 @@ function postBobDiscoverSignIn (alice, bob, done) {
 }
 
 function entersPasswordAndConsent (alice, bob, done) {
-
+  done()
 }
 
 describe('OIDC flow', () => {
