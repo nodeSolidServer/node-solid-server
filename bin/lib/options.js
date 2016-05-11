@@ -26,8 +26,27 @@ module.exports = [
     name: 'webid',
     help: 'Enable WebID+TLS authentication (use `--no-webid` for HTTP instead of HTTPS)',
     flag: true,
-    question: 'Enable WebID-TLS authentication',
+    question: 'Enable WebID authentication',
     prompt: true
+  },
+  {
+    name: 'auth',
+    help: 'Pick an authentication strategy `tls` or `oidc`',
+    question: 'What authentication strategy do you want to provide?',
+    type: 'list',
+    choices: [
+      'TLS',
+      'OpenID Connect'
+    ],
+    prompt: true,
+    default: 'TLS',
+    filter: (value) => {
+      if (value === 'TLS') return 'tls'
+      if (value === 'OpenID Connect') return 'oidc'
+    },
+    when: (answers) => {
+      return answers.webid
+    }
   },
   {
     name: 'useOwner',
