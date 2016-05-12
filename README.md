@@ -17,7 +17,7 @@
 - [x] Identity provider for WebID
 - [x] Proxy for cross-site data access
 - [ ] Group members in ACL
-- [ ] Email account recovery
+- [x] Email account recovery
 
 ## Command Line Usage
 
