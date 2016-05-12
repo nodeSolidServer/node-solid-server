@@ -3,11 +3,10 @@ const parallel = require('run-parallel')
 const waterfall = require('run-waterfall')
 const path = require('path')
 const supertest = require('supertest')
-
 // In this test we always assume that we are Alice
 
 function getBobFoo (alice, bob, done) {
-  bob.get('/')
+  bob.get('/foo')
     .expect(401)
     .end(done)
 }
@@ -26,22 +25,32 @@ describe('OIDC flow', () => {
   let alice
   let bob
 
-  const solid = Solid.createServer({
-    root: path.join(__dirname, '/resources'),
+  const alicePod = Solid.createServer({
+    root: path.join(__dirname, '/resources/accounts-scenario/alice'),
     sslKey: path.join(__dirname, '/keys/key.pem'),
     sslCert: path.join(__dirname, '/keys/cert.pem'),
-    webid: true
+    auth: 'oidc',
+    dataBrowser: false,
+    fileBrowser: false
+  })
+  const bobPod = Solid.createServer({
+    root: path.join(__dirname, '/resources/accounts-scenario/bob'),
+    sslKey: path.join(__dirname, '/keys/key.pem'),
+    sslCert: path.join(__dirname, '/keys/cert.pem'),
+    auth: 'oidc',
+    dataBrowser: false,
+    fileBrowser: false
   })
 
   before(function (done) {
     parallel([
       (cb) => {
-        aliceServer = solid.listen(3456, cb)
-        alice = supertest('https://localhost:3456')
+        aliceServer = alicePod.listen(5000, cb)
+        alice = supertest('https://localhost:5000')
       },
       (cb) => {
-        bobServer = solid.listen(3457, cb)
-        bob = supertest('https://localhost:3457')
+        bobServer = bobPod.listen(5001, cb)
+        bob = supertest('https://localhost:5001')
       }
     ], done)
   })
