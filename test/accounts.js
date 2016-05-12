@@ -3,12 +3,17 @@ const parallel = require('run-parallel')
 const waterfall = require('run-waterfall')
 const path = require('path')
 const supertest = require('supertest')
+const expect = require('chai').expect
 // In this test we always assume that we are Alice
 
 function getBobFoo (alice, bob, done) {
   bob.get('/foo')
     .expect(401)
-    .end(done)
+    .end((err, res) => {
+      if (err) return done(err)
+      expect(res).to.match(/META http-equiv="refresh"/)
+      done()
+    })
 }
 
 function postBobDiscoverSignIn (alice, bob, done) {
