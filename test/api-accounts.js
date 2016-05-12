@@ -4,27 +4,10 @@ const waterfall = require('run-waterfall')
 const path = require('path')
 const supertest = require('supertest')
 const expect = require('chai').expect
+const nock = require('nock')
 // In this test we always assume that we are Alice
 
-function getBobFoo (alice, bob, done) {
-  bob.get('/foo')
-    .expect(401)
-    .end((err, res) => {
-      if (err) return done(err)
-      expect(res).to.match(/META http-equiv="refresh"/)
-      done()
-    })
-}
-
-function postBobDiscoverSignIn (alice, bob, done) {
-  done()
-}
-
-function entersPasswordAndConsent (alice, bob, done) {
-  done()
-}
-
-describe('OIDC flow', () => {
+describe('API', () => {
   let aliceServer
   let bobServer
   let alice
@@ -49,6 +32,24 @@ describe('OIDC flow', () => {
     webid: true
   })
 
+  function getBobFoo (alice, bob, done) {
+    bob.get('/foo')
+      .expect(401)
+      .end((err, res) => {
+        if (err) return done(err)
+        expect(res).to.match(/META http-equiv="refresh"/)
+        done()
+      })
+  }
+
+  function postBobDiscoverSignIn (alice, bob, done) {
+    done()
+  }
+
+  function entersPasswordAndConsent (alice, bob, done) {
+    done()
+  }
+
   before(function (done) {
     parallel([
       (cb) => {
@@ -67,23 +68,61 @@ describe('OIDC flow', () => {
     if (bobServer) bobServer.close()
   })
 
-  it.skip('step1: User tries to get /foo and gets 401 and meta redirect', (done) => {
-    getBobFoo(alice, bob, done)
+  describe('APIs', () => {
+    describe('/api/accounts/signin', () => {
+      it('should complain if a URL is missing', (done) => {
+        alice.post('/api/accounts/signin')
+          .expect(406)
+          .end(done)
+      })
+      it('should complain if a URL is invalid', (done) => {
+        alice.post('/api/accounts/signin')
+          .send('webid=HELLO')
+          .expect(406)
+          .end(done)
+      })
+      it('should return a 409 if endpoint doesn\'t have Link Headers', (done) => {
+        nock('https://amazingwebsite.tld').intercept('/', 'OPTIONS').reply(200)
+        alice.post('/api/accounts/signin')
+          .send('webid=https://amazingwebsite.tld/')
+          .expect(409)
+          .end(done)
+      })
+      it('should return a 409 if endpoint doesn\'t have oidc in the headers', (done) => {
+        nock('https://amazingwebsite.tld').intercept('/', 'OPTIONS').reply(200, '', {
+          'Link': function (req, res, body) {
+            return '<https://oidc.amazingwebsite.tld>; rel="oidc"'
+          }})
+        alice.post('/api/accounts/signin')
+          .send('webid=https://amazingwebsite.tld/')
+          .expect(302)
+          .end((err, res) => {
+            expect(res.header.location).to.eql('https://oidc.amazingwebsite.tld')
+            done(err)
+          })
+      })
+    })
   })
 
-  it.skip('step2: User enters webId to signin', (done) => {
-    postBobDiscoverSignIn(alice, bob, done)
-  })
+  describe('Auth workflow', () => {
+    it.skip('step1: User tries to get /foo and gets 401 and meta redirect', (done) => {
+      getBobFoo(alice, bob, done)
+    })
 
-  it.skip('step3: User enters password', (done) => {
-    entersPasswordAndConsent(alice, bob, done)
-  })
+    it.skip('step2: User enters webId to signin', (done) => {
+      postBobDiscoverSignIn(alice, bob, done)
+    })
 
-  it.skip('entire flow', (done) => {
-    waterfall([
-      (cb) => getBobFoo(alice, bob, cb),
-      (cb) => postBobDiscoverSignIn(alice, bob, cb),
-      (cb) => entersPasswordAndConsent(alice, bob, cb)
-    ], done)
+    it.skip('step3: User enters password', (done) => {
+      entersPasswordAndConsent(alice, bob, done)
+    })
+
+    it.skip('entire flow', (done) => {
+      waterfall([
+        (cb) => getBobFoo(alice, bob, cb),
+        (cb) => postBobDiscoverSignIn(alice, bob, cb),
+        (cb) => entersPasswordAndConsent(alice, bob, cb)
+      ], done)
+    })
   })
 })
