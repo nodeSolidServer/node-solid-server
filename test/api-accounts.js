@@ -67,19 +67,19 @@ describe('OIDC flow', () => {
     if (bobServer) bobServer.close()
   })
 
-  it('step1: User tries to get /foo and gets 401 and meta redirect', (done) => {
+  it.skip('step1: User tries to get /foo and gets 401 and meta redirect', (done) => {
     getBobFoo(alice, bob, done)
   })
 
-  it('step2: User enters webId to signin', (done) => {
+  it.skip('step2: User enters webId to signin', (done) => {
     postBobDiscoverSignIn(alice, bob, done)
   })
 
-  it('step3: User enters password', (done) => {
+  it.skip('step3: User enters password', (done) => {
     entersPasswordAndConsent(alice, bob, done)
   })
 
-  it('entire flow', (done) => {
+  it.skip('entire flow', (done) => {
     waterfall([
       (cb) => getBobFoo(alice, bob, cb),
       (cb) => postBobDiscoverSignIn(alice, bob, cb),
