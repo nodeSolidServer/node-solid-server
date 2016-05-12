@@ -7,5 +7,5 @@ npm-debug.log
 ./profile
 ./inbox
 ./.acl
-./config.json
+config.json
 ./settings
