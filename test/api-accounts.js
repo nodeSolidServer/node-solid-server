@@ -72,23 +72,23 @@ describe('API', () => {
     describe('/api/accounts/signin', () => {
       it('should complain if a URL is missing', (done) => {
         alice.post('/api/accounts/signin')
-          .expect(406)
+          .expect(400)
           .end(done)
       })
       it('should complain if a URL is invalid', (done) => {
         alice.post('/api/accounts/signin')
           .send('webid=HELLO')
-          .expect(406)
+          .expect(400)
           .end(done)
       })
-      it('should return a 409 if endpoint doesn\'t have Link Headers', (done) => {
+      it('should return a 400 if endpoint doesn\'t have Link Headers', (done) => {
         nock('https://amazingwebsite.tld').intercept('/', 'OPTIONS').reply(200)
         alice.post('/api/accounts/signin')
           .send('webid=https://amazingwebsite.tld/')
-          .expect(409)
+          .expect(400)
           .end(done)
       })
-      it('should return a 409 if endpoint doesn\'t have oidc in the headers', (done) => {
+      it('should return a 400 if endpoint doesn\'t have oidc in the headers', (done) => {
         nock('https://amazingwebsite.tld').intercept('/', 'OPTIONS').reply(200, '', {
           'Link': function (req, res, body) {
             return '<https://oidc.amazingwebsite.tld>; rel="oidc"'
