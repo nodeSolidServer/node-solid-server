@@ -31,7 +31,8 @@ describe('OIDC flow', () => {
     sslCert: path.join(__dirname, '/keys/cert.pem'),
     auth: 'oidc',
     dataBrowser: false,
-    fileBrowser: false
+    fileBrowser: false,
+    webid: true
   })
   const bobPod = Solid.createServer({
     root: path.join(__dirname, '/resources/accounts-scenario/bob'),
@@ -39,7 +40,8 @@ describe('OIDC flow', () => {
     sslCert: path.join(__dirname, '/keys/cert.pem'),
     auth: 'oidc',
     dataBrowser: false,
-    fileBrowser: false
+    fileBrowser: false,
+    webid: true
   })
 
   before(function (done) {
