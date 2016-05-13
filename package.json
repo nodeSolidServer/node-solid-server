@@ -24,7 +24,7 @@
   "homepage": "http://github.com/solid/node-solid-server",
   "bugs": "http://github.com/solid/node-solid-server/issues",
   "dependencies": {
-    "anvil-connect-express": "^0.3.1",
+    "anvil-connect-express": "^0.3.2",
     "async": "^1.3.0",
     "body-parser": "^1.14.2",
     "busboy": "^0.2.12",
