@@ -27,7 +27,15 @@ describe('Capability Discovery', function () {
           return done(err)
         })
     })
-    it('includes an app urls section', function (done) {
+    it('includes an apps config section', function (done) {
+      const config = {
+        apps: {
+          'signin': '/signin/',
+          'signup': '/signup/'
+        }
+      }
+      const solid = ldnode(config)
+      let server = supertest(solid)
       server.get('/.well-known/solid')
         .end(function (err, req) {
           expect(req.body.apps).to.exist
