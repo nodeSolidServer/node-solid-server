@@ -27,6 +27,13 @@ describe('Capability Discovery', function () {
           return done(err)
         })
     })
+    it('includes an app urls section', function (done) {
+      server.get('/.well-known/solid')
+        .end(function (err, req) {
+          expect(req.body.apps).to.exist
+          return done(err)
+        })
+    })
   })
 
   describe('OPTIONS API', function () {
