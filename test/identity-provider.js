@@ -178,7 +178,7 @@ describe('Identity Provider', function () {
                 'text/turtle')
               var statements = graph.statementsMatching(
                 undefined,
-                $rdf.sym('http://xmlns.com/foaf/0.1/account'),
+                $rdf.sym('http://www.w3.org/ns/solid/terms#account'),
                 undefined)
               if (statements.length === 1) {
                 done()
