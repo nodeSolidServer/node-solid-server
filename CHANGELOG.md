@@ -1,5 +1,11 @@
 # History
 
+## 3.0.0
+- feat Discover WebID from root account https://github.com/solid/node-solid-server/pull/371
+- feat: Server capabilities https://github.com/solid/node-solid-server/pull/365
+- feat: pass app in createServer https://github.com/solid/node-solid-server/pull/357
+- beaking: Accounts API https://github.com/solid/node-solid-server/pull/339
+
 ## 2.3.0
 - feat: added Capability discovery https://github.com/solid/node-solid-server/pull/347
 
