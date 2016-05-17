@@ -1,6 +1,7 @@
 var supertest = require('supertest')
 // Helper functions for the FS
 var rm = require('./test-utils').rm
+var $rdf = require('rdflib')
 // var write = require('./test-utils').write
 // var cp = require('./test-utils').cp
 var read = require('./test-utils').read
@@ -133,16 +134,58 @@ describe('Identity Provider', function () {
             return done(err)
           }
           var domain = host.split(':')[0]
-          var card = read(path.join('accounts/nicola.' + domain, 'profile/card'))
-          var cardAcl = read(path.join('accounts/nicola.' + domain, 'profile/card.acl'))
-          var prefs = read(path.join('accounts/nicola.' + domain, 'settings/prefs.ttl'))
-          var inboxAcl = read(path.join('accounts/nicola.' + domain, 'inbox/.acl'))
+          var card = read(path.join('accounts/nicola.' + domain,
+           'profile/card'))
+          var cardAcl = read(path.join('accounts/nicola.' + domain,
+           'profile/card.acl'))
+          var prefs = read(path.join('accounts/nicola.' + domain,
+           'settings/prefs.ttl'))
+          var inboxAcl = read(path.join('accounts/nicola.' + domain,
+           'inbox/.acl'))
+          var rootMeta = read(path.join('accounts/nicola.' + domain, '.meta'))
+          var rootMetaAcl = read(path.join('accounts/nicola.' + domain,
+           '.meta.acl'))
 
-          if (domain && card && cardAcl && prefs && inboxAcl) {
+          if (domain && card && cardAcl && prefs && inboxAcl && rootMeta &&
+             rootMetaAcl) {
             done()
           } else {
             done(new Error('failed to create default files'))
           }
+        })
+    })
+
+    it('should link WebID to the root account', function (done) {
+      var subdomain = supertest('https://nicola.' + host)
+      subdomain.post('/api/accounts/new')
+        .send('username=nicola')
+        .expect(200)
+        .end(function (err) {
+          if (err) {
+            return done(err)
+          }
+          subdomain.get('/.meta')
+            .expect(200)
+            .end(function (err, data) {
+              if (err) {
+                return done(err)
+              }
+              var graph = $rdf.graph()
+              $rdf.parse(
+                data.text,
+                graph,
+                'https://nicola.' + host + '/.meta',
+                'text/turtle')
+              var statements = graph.statementsMatching(
+                undefined,
+                $rdf.sym('http://xmlns.com/foaf/0.1/account'),
+                undefined)
+              if (statements.length === 1) {
+                done()
+              } else {
+                done(new Error('missing link to WebID of account'))
+              }
+            })
         })
     })
 
