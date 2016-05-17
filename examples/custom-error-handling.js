@@ -4,8 +4,8 @@ var path = require('path')
 solid
   .createServer({
     webid: true,
-    cert: path.resolve('./test/keys/cert.pem'),
-    key: path.resolve('./test/keys/key.pem'),
+    sslCert: path.resolve('../test/keys/cert.pem'),
+    sslKey: path.resolve('../test/keys/key.pem'),
     errorHandler: function (err, req, res, next) {
       if (err.status !== 200) {
         console.log('Oh no! There is an error:' + err.message)

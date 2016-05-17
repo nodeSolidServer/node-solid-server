@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Signup</title>
+  <link href="data:image/x-icon;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQEAYAAABPYyMiAAAABmJLR0T///////8JWPfcAAAACXBIWXMAAABIAAAASABGyWs+AAAAF0lEQVRIx2NgGAWjYBSMglEwCkbBSAcACBAAAeaR9cIAAAAASUVORK5CYII=" rel="favicon" type="image/x-icon" />
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+    input {
+      width: 200px;
+      line-height: 1.5em;
+      padding: 5px;
+      font-size: 1.2em;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      margin-bottom: 10px;
+    }
+
+    button {
+      display: inline-block;
+      padding: 25px;
+      background: #69f;
+      border-radius: 4px;
+      font-weight: normal;
+      font-size: 14px;
+      color: #fff;
+      letter-spacing: 1px;
+      line-height: 1px;
+      text-transform: uppercase;
+      border: 0;
+      min-width: 200px;
+      cursor: pointer;
+    }
+  </style>
+
+</head>
+<body>
+
+<div id="accounts">
+  <h2>Recover your account</h2>
+  <input id="account" type="account" placeholder="Enter your account address">
+  <br>
+  <button onclick='retrieveAccount()'>Retrieve account</button>
+</div>
+
+<script type="text/javascript">
+function retrieveAccount () {
+  var account = document.getElementById('account').value
+  var url = '/recovery/request'
+  var data = 'webid=' + account
+
+  var http = new XMLHttpRequest()
+  http.open('POST', url)
+  http.withCredentials = true
+  http.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded')
+  http.onreadystatechange = function () {
+    if (this.readyState === this.DONE) {
+      if (this.status !== 200) {
+        return err(new Error('Request failed'))
+      }
+
+      alert('An email should arrive to you in minutes')
+    }
+  }
+  http.send(data)
+}
+
+function err (err) {
+  console.log('called done')
+  if (err) {
+    console.log(err)
+  }
+}
+
+</script>
+</body>
+</html>
