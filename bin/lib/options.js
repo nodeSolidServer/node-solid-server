@@ -31,7 +31,7 @@ module.exports = [
   },
   {
     name: 'auth',
-    help: 'Pick an authentication strategy for WebID: `tls` or `oidc`',
+    description: 'Pick an authentication strategy for WebID: `tls` or `oidc`',
     question: 'Select authentication strategy',
     type: 'list',
     choices: [
@@ -187,7 +187,8 @@ module.exports = [
     description: 'Do you want to set up an email service?',
     flag: true,
     prompt: true,
-    default: true
+    default: true,
+    hide: true
   },
   {
     name: 'email-host',

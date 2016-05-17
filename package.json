@@ -60,7 +60,7 @@
     "valid-url": "^1.0.9",
     "vhost": "^3.0.2",
     "webid": "^0.3.7",
-    "yargs": "^4.7.0"
+    "yargs": "^4.7.1"
   },
   "devDependencies": {
     "chai": "^3.0.0",
