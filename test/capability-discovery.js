@@ -1,10 +1,8 @@
 const Solid = require('../')
 const parallel = require('run-parallel')
-const waterfall = require('run-waterfall')
 const path = require('path')
 const supertest = require('supertest')
 const expect = require('chai').expect
-const nock = require('nock')
 // In this test we always assume that we are Alice
 
 describe('API', () => {
