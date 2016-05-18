@@ -20,7 +20,8 @@ describe('Identity Provider', function () {
     sslKey: path.join(__dirname, '/keys/key.pem'),
     sslCert: path.join(__dirname, '/keys/cert.pem'),
     webid: true,
-    idp: true
+    idp: true,
+    strictOrigin: true
   })
 
   before(function (done) {
@@ -48,7 +49,10 @@ describe('Identity Provider', function () {
       var subdomain = supertest('https://nicola.' + host)
       subdomain.get('/')
         .set('Accept', 'text/turtle')
+        .set('Origin', 'http://example.com')
         .expect(404)
+        .expect('Access-Control-Allow-Origin', 'http://example.com')
+        .expect('Access-Control-Allow-Credentials', 'true')
         .end(function (err, res) {
           done(err)
         })
