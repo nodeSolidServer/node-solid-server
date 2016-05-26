@@ -45,9 +45,9 @@
   <button onclick='createAccount()'>Create account</button>
 </div>
 
-<form id="cert" method="POST" action='/accounts/cert' target="spkacResult" style="display: none">
+<form id="cert" method="POST" action='/api/accounts/cert' target="spkacResult" style="display: none">
   <h2>Finish by issuing credentials in the form of a certificate</h2>
-  <keygen name="spkac" keytype="rsa" hidden>
+  <keygen name="spkac" keytype="rsa" hidden />
   <iframe id="spkacResult" name="spkacResult" sandbox="allow-same-origin allow-forms" hidden></iframe>
   <input type="hidden" id="webid" name="webid" value="">
   <p>Your WebID is: <span id="your-webid"></span></p>
@@ -60,7 +60,7 @@
 <script type="text/javascript">
 function createAccount () {
   var email = document.getElementById('email').value
-  var url = '/accounts/new'
+  var url = '/api/accounts/new'
   var data = 'email=' + email
 
   var http = new XMLHttpRequest()
