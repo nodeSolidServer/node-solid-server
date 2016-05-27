@@ -52,10 +52,11 @@ module.exports = [
     question: 'Select authentication strategy',
     type: 'list',
     choices: [
+      'WebID-OpenID Connect',
       'WebID-TLS'
     ],
-    prompt: false,
-    default: 'WebID-TLS',
+    prompt: true,
+    default: 'WebID-OpenID Connect',
     filter: (value) => {
       if (value === 'WebID-TLS') return 'tls'
     },
