@@ -108,7 +108,7 @@ function bin (argv) {
      n0:               n2:Agent;
      n0:accessTo       <./>;
      n0:defaultForNew  <./>;
-     n0:mode           n0:Read.' > .acl`
+     n0:mode           n0:Read.`
 
     fs.writeFileSync(rootPath, defaultAcl)
   }
