@@ -87,10 +87,10 @@ $ solid start
 Otherwise, if you want to use flags, this would be the equivalent
 
 ```bash
-$ solid --allow-signup --port 8443 --cert /path/to/cert --key /path/to/key --root ./accounts
+$ solid --idp --port 8443 --cert /path/to/cert --key /path/to/key --root ./accounts
 ```
 
-Your users will have a dedicated folder under `./accounts`. Also, your root domain's website will be in `./accounts/yourdomain.tld`. New users can create accounts on `/accounts/new` and create new certificates on `/accounts/cert`. An easy-to-use sign-up tool is found on `/accounts`.
+Your users will have a dedicated folder under `./accounts`. Also, your root domain's website will be in `./accounts/yourdomain.tld`. New users can create accounts on `/api/accounts/new` and create new certificates on `/api/accounts/cert`. An easy-to-use sign-up tool is found on `/api/accounts`.
 
 ##### How can send emails to my users with my Gmail?
 

@@ -130,7 +130,7 @@ describe('Identity Provider', function () {
           }
           subdomain.post('/api/accounts/new')
             .send('username=nicola')
-            .expect(406)
+            .expect(400)
             .end(function (err) {
               done(err)
             })
