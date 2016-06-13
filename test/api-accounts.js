@@ -89,10 +89,13 @@ describe('Accounts API', () => {
           .end(done)
       })
       it("should return a 400 if endpoint doesn't have oidc in the headers", (done) => {
-        nock('https://amazingwebsite.tld').intercept('/', 'OPTIONS').reply(200, '', {
-          'Link': function (req, res, body) {
-            return '<https://oidc.amazingwebsite.tld>; rel="oidc.issuer"'
-        }})
+        nock('https://amazingwebsite.tld')
+          .intercept('/', 'OPTIONS')
+          .reply(200, '', {
+            'Link': function (req, res, body) {
+              return '<https://oidc.amazingwebsite.tld>; rel="oidc.issuer"'
+            }
+          })
         alice.post('/api/accounts/signin')
           .send('webid=https://amazingwebsite.tld/')
           .expect(302)
