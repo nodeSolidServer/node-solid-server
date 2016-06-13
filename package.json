@@ -97,5 +97,7 @@
   "bin": {
     "solid": "./bin/solid.js"
   },
-  "engines" : { "node" : ">=6.0" }
+  "engines": {
+    "node": ">=6.0"
+  }
 }
