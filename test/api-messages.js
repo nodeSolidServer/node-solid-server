@@ -8,9 +8,9 @@ const fs = require('fs')
 describe('Messages API', () => {
   let aliceServer
 
-  const peterCert = {
-    cert: fs.readFileSync(path.join(__dirname, '/keys/user1-cert.pem')),
-    key: fs.readFileSync(path.join(__dirname, '/keys/user1-key.pem'))
+  const bobCert = {
+    cert: fs.readFileSync(path.join(__dirname, '/keys/user2-cert.pem')),
+    key: fs.readFileSync(path.join(__dirname, '/keys/user2-key.pem'))
   }
   const aliceCert = {
     cert: fs.readFileSync(path.join(__dirname, '/keys/user1-cert.pem')),
@@ -18,13 +18,14 @@ describe('Messages API', () => {
   }
 
   const alicePod = Solid.createServer({
-    root: path.join(__dirname, '/resources/accounts-scenario/alice'),
+    root: path.join(__dirname, '/resources/messaging-scenario'),
     sslKey: path.join(__dirname, '/keys/key.pem'),
     sslCert: path.join(__dirname, '/keys/cert.pem'),
     auth: 'tls',
     dataBrowser: false,
     fileBrowser: false,
-    webid: true
+    webid: true,
+    idp: true
   })
 
   before(function (done) {
@@ -47,13 +48,11 @@ describe('Messages API', () => {
           .expectStatus(401)
           .end(done)
       })
-    })
-    describe('/api/messages', () => {
       it('should send 406 if message is missing', (done) => {
         hippie()
           // .json()
           .use(function (options, next) {
-            options.agentOptions = peterCert
+            options.agentOptions = bobCert
             options.strictSSL = false
             next(options)
           })
@@ -61,20 +60,60 @@ describe('Messages API', () => {
           .expectStatus(406)
           .end(done)
       })
-    })
-    describe('/api/messages', () => {
       it('should send 403 user is not of this IDP', (done) => {
         hippie()
           // .json()
           .use(function (options, next) {
-            options.agentOptions = peterCert
+            options.agentOptions = bobCert
+            options.strictSSL = false
+            next(options)
+          })
+          .form()
+          .send({message: 'thisisamessage', to: 'mailto:mail@email.com'})
+          .post('https://localhost:5000/api/messages')
+          .expectStatus(403)
+          .end(done)
+      })
+      it('should send 406 if not destination `to` is specified', (done) => {
+        hippie()
+          // .json()
+          .use(function (options, next) {
+            options.agentOptions = aliceCert
             options.strictSSL = false
             next(options)
           })
           .form()
           .send({message: 'thisisamessage'})
           .post('https://localhost:5000/api/messages')
-          .expectStatus(403)
+          .expectStatus(406)
+          .end(done)
+      })
+      it('should send 406 if not destination `to` is missing the protocol', (done) => {
+        hippie()
+          // .json()
+          .use(function (options, next) {
+            options.agentOptions = aliceCert
+            options.strictSSL = false
+            next(options)
+          })
+          .form()
+          .send({message: 'thisisamessage', to: 'mail@email.com'})
+          .post('https://localhost:5000/api/messages')
+          .expectStatus(406)
+          .end(done)
+      })
+      it('should send 406 if messaging protocol is not supported', (done) => {
+        hippie()
+          // .json()
+          .use(function (options, next) {
+            options.agentOptions = aliceCert
+            options.strictSSL = false
+            next(options)
+          })
+          .form()
+          .send({message: 'thisisamessage', to: 'email2:mail@email.com'})
+          .post('https://localhost:5000/api/messages')
+          .expectStatus(406)
           .end(done)
       })
     })
