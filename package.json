@@ -63,6 +63,7 @@
   },
   "devDependencies": {
     "chai": "^3.0.0",
+    "hippie": "^0.5.0",
     "mocha": "^2.2.5",
     "nock": "^7.0.2",
     "rsvp": "^3.1.0",
@@ -97,5 +98,7 @@
   "bin": {
     "solid": "./bin/solid.js"
   },
-  "engines" : { "node" : ">=6.0" }
+  "engines": {
+    "node": ">=6.0"
+  }
 }
