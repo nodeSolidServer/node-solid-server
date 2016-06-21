@@ -84,7 +84,8 @@
     "test-http": "./node_modules/mocha/bin/mocha ./test/http.js",
     "test-formats": "./node_modules/mocha/bin/mocha ./test/formats.js",
     "test-errors": "./node_modules/mocha/bin/mocha ./test/errors.js",
-    "clean": "rm -rf config.json accounts profile inbox .acl settings"
+    "clean": "rm -rf config.json accounts profile inbox .acl settings .meta .meta.acl",
+    "clean-account": "rm -rf accounts profile inbox .acl .meta settings .meta.acl"
   },
   "standard": {
     "globals": [
