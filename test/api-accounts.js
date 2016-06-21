@@ -7,7 +7,7 @@ const expect = require('chai').expect
 const nock = require('nock')
 // In this test we always assume that we are Alice
 
-describe('API', () => {
+describe('Accounts API', () => {
   let aliceServer
   let bobServer
   let alice
@@ -68,7 +68,7 @@ describe('API', () => {
     if (bobServer) bobServer.close()
   })
 
-  describe('APIs', () => {
+  describe('endpoints', () => {
     describe('/api/accounts/signin', () => {
       it('should complain if a URL is missing', (done) => {
         alice.post('/api/accounts/signin')
@@ -81,18 +81,21 @@ describe('API', () => {
           .expect(400)
           .end(done)
       })
-      it('should return a 400 if endpoint doesn\'t have Link Headers', (done) => {
+      it("should return a 400 if endpoint doesn't have Link Headers", (done) => {
         nock('https://amazingwebsite.tld').intercept('/', 'OPTIONS').reply(200)
         alice.post('/api/accounts/signin')
           .send('webid=https://amazingwebsite.tld/')
           .expect(400)
           .end(done)
       })
-      it('should return a 400 if endpoint doesn\'t have oidc in the headers', (done) => {
-        nock('https://amazingwebsite.tld').intercept('/', 'OPTIONS').reply(200, '', {
-          'Link': function (req, res, body) {
-            return '<https://oidc.amazingwebsite.tld>; rel="oidc.issuer"'
-          }})
+      it("should return a 400 if endpoint doesn't have oidc in the headers", (done) => {
+        nock('https://amazingwebsite.tld')
+          .intercept('/', 'OPTIONS')
+          .reply(200, '', {
+            'Link': function (req, res, body) {
+              return '<https://oidc.amazingwebsite.tld>; rel="oidc.issuer"'
+            }
+          })
         alice.post('/api/accounts/signin')
           .send('webid=https://amazingwebsite.tld/')
           .expect(302)

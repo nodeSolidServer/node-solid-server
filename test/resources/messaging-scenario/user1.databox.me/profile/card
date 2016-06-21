@@ -1,0 +1,21 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+
+<>
+    <http://purl.org/dc/terms/title> "WebID profile of user1" ;
+    a <http://xmlns.com/foaf/0.1/PersonalProfileDocument> ;
+    <http://xmlns.com/foaf/0.1/maker> <#me> ;
+    <http://xmlns.com/foaf/0.1/primaryTopic> <#me> .
+
+<#key>
+    a <http://www.w3.org/ns/auth/cert#RSAPublicKey> ;
+    <http://www.w3.org/ns/auth/cert#exponent> "65537"^^<http://www.w3.org/2001/XMLSchema#int> ;
+    <http://www.w3.org/ns/auth/cert#modulus> "bda6b820f613d5d480930c9a4ea617cee3a2a90d29ec13c2fe248db0a799c8c6000a58319f3a68cb7c937724993dd06d13afc163ad8db7d1704bf325bb246f4af783613f396d70fde56cc3d1b9bf4260f3fecfca4c8897702375b880833d05358ff37a7efc32302fcc55ade4c687c85dd81b9608e3813b7e4dac7442d307f9e46c122c5f8f1c7cb92421c9c8837ab03b2802a8e01f5fdc987ed51b2889f0075b65e3dabcc4129a8ffd6800cf1f6a82fec7b8b47a7c342c30d9e77d899e446fe4757e82bb48809939968e299cc86d652c9c813d8c36430bf1d31a3c74e2febdc66f67a24022356399db7370604e9526d29bca980467d4b0d69c56dc538c33645b"^^<http://www.w3.org/2001/XMLSchema#hexBinary> .
+
+<#me>
+    a <http://xmlns.com/foaf/0.1/Person> ;
+    <http://www.w3.org/ns/auth/cert#key> <#key> ;
+    <http://www.w3.org/ns/pim/space#preferencesFile> <../Preferences/prefs> ;
+    <http://www.w3.org/ns/pim/space#storage> <../> ;
+    <http://xmlns.com/foaf/0.1/mbox> <mailto:user1@example.com> ;
+    <http://xmlns.com/foaf/0.1/name> "user1" .
+
