@@ -233,19 +233,19 @@ module.exports = [
     }
   },
   {
-    name: 'useUi',
-    help: 'Do you want to load your ui on /api/ui?',
+    name: 'useApiApps',
+    help: 'Do you want to load your default apps on /api/apps?',
     flag: true,
     prompt: true,
     default: true
   },
   {
-    name: 'ui-path',
-    help: 'Path to the folder to mount on /api/ui',
+    name: 'api-apps',
+    help: 'Path to the folder to mount on /api/apps',
     prompt: true,
     validate: validPath,
     when: (answers) => {
-      return answers.useUi
+      return answers.useApiApps
     }
   }
 ]

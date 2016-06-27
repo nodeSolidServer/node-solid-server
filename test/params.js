@@ -83,12 +83,12 @@ describe('LDNODE params', function () {
   describe('ui-path', function () {
     var ldp = ldnode({
       root: './test/resources/',
-      uiPath: path.join(__dirname, 'resources/sampleContainer')
+      apiApps: path.join(__dirname, 'resources/sampleContainer')
     })
     var server = supertest(ldp)
 
     it('should serve static files on /api/ui', (done) => {
-      server.get('/api/ui/solid.png')
+      server.get('/api/apps/solid.png')
         .expect(200)
         .end(done)
     })
