@@ -9,7 +9,7 @@ module.exports = [
   // },
   {
     name: 'root',
-    help: 'Root folder to serve (defaut: \'./\')',
+    help: "Root folder to serve (defaut: './')",
     question: 'Path to the folder you want to serve. Default is',
     default: './',
     prompt: true,
@@ -170,7 +170,7 @@ module.exports = [
   },
   {
     name: 'mount',
-    help: 'Serve on a specific URL path (default: \'/\')',
+    help: "Serve on a specific URL path (default: '/')",
     question: 'Serve Solid on path',
     default: '/'
   },
@@ -189,7 +189,7 @@ module.exports = [
     help: 'Do you want to set up an email service?',
     flag: true,
     prompt: true,
-    default: true
+    default: false
   },
   {
     name: 'email-host',
@@ -230,6 +230,22 @@ module.exports = [
     prompt: true,
     when: (answers) => {
       return answers.useEmail
+    }
+  },
+  {
+    name: 'useUi',
+    help: 'Do you want to load your ui on /api/ui?',
+    flag: true,
+    prompt: true,
+    default: true
+  },
+  {
+    name: 'ui-path',
+    help: 'Path to the folder to mount on /api/ui',
+    prompt: true,
+    validate: validPath,
+    when: (answers) => {
+      return answers.useUi
     }
   }
 ]
