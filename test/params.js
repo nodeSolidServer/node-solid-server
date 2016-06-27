@@ -80,6 +80,20 @@ describe('LDNODE params', function () {
     })
   })
 
+  describe('ui-path', function () {
+    var ldp = ldnode({
+      root: './test/resources/',
+      apiApps: path.join(__dirname, 'resources/sampleContainer')
+    })
+    var server = supertest(ldp)
+
+    it('should serve static files on /api/ui', (done) => {
+      server.get('/api/apps/solid.png')
+        .expect(200)
+        .end(done)
+    })
+  })
+
   describe('forcedUser', function () {
     var ldpHttpsServer
     var ldp = ldnode.createServer({
