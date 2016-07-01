@@ -147,6 +147,13 @@ describe('HTTP APIs', function () {
         .end(done)
     })
 
+    it('should have set Accept-Post for containers', function (done) {
+      server.options('/sampleContainer/')
+        .set('Origin', 'http://example.com')
+        .expect('Accept-Post', '*/*')
+        .end(done)
+    })
+
     it('should have set acl and describedBy Links for container', function (done) {
       server.options('/sampleContainer/')
         .expect(hasHeader('acl', suffixAcl))
