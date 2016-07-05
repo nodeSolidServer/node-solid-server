@@ -102,7 +102,7 @@ describe('HTTP APIs', function () {
           .expect('Access-Control-Allow-Origin', 'http://example.com')
           .expect('Access-Control-Allow-Credentials', 'true')
           .expect('Access-Control-Allow-Methods', 'OPTIONS,HEAD,GET,PATCH,POST,PUT,DELETE')
-          .expect('Access-Control-Expose-Headers', 'User, Location, Link, Vary, Last-Modified, ETag, Accept-Patch, Updates-Via, Allow, Content-Length')
+          .expect('Access-Control-Expose-Headers', 'User, Location, Link, Vary, Last-Modified, ETag, Accept-Patch, Accept-Post, Updates-Via, Allow, Content-Length')
           .expect(204, done)
       })
 
@@ -144,6 +144,13 @@ describe('HTTP APIs', function () {
         .set('Origin', 'http://example.com')
         .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#BasicContainer>; rel="type"/)
         .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Container>; rel="type"/)
+        .end(done)
+    })
+
+    it('should have set Accept-Post for containers', function (done) {
+      server.options('/sampleContainer/')
+        .set('Origin', 'http://example.com')
+        .expect('Accept-Post', '*/*')
         .end(done)
     })
 
