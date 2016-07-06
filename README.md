@@ -31,11 +31,12 @@ $ npm install -g solid-server
 
 ### Run a single-user server (beginner)
 
-The easiest way to setup `solid-sever` is by running the wizard. This will create a `config.json` in your current folder
+The easiest way to setup `solid-server` is by running the wizard. This will create a `config.json` in your current folder
 
 ```bash
 $ solid init
 ```
+**Note**: If prompted for an SSL key and certificate, follow the instructions below.
 
 To run your server, simply run `solid start`:
 
@@ -58,7 +59,7 @@ $ solid start --root path/to/folder --port 8443 --ssl-key path/to/ssl-key.pem --
 # Solid server (solid v0.2.24) running on https://localhost:8443/
 ```
 
-##### How do I get the --ssl-key and the --ssl-cert?
+##### How do I get an SSL key and certificate?
 You need an SSL certificate you get this from your domain provider or for free from [Let's Encrypt!](https://letsencrypt.org/getting-started/).
 
 If you don't have one yet, or you just want to test `solid`, generate a certificate (**DO NOT USE IN PRODUCTION**):
