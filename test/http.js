@@ -106,6 +106,26 @@ describe('HTTP APIs', function () {
           .expect(204, done)
       })
 
+    describe('Accept-Patch header', function () {
+      it('should be present for resources', function (done) {
+        server.options('/sampleContainer/example1.ttl')
+          .expect('Accept-Patch', 'application/sparql-update')
+          .expect(204, done)
+      })
+
+      it('should be present for containers', function (done) {
+        server.options('/sampleContainer/')
+          .expect('Accept-Patch', 'application/sparql-update')
+          .expect(204, done)
+      })
+
+      it('should be present for non-rdf resources', function (done) {
+        server.options('/sampleContainer/solid.png')
+          .expect('Accept-Patch', 'application/sparql-update')
+          .expect(204, done)
+      })
+    })
+
     it('should have an empty response', function (done) {
       server.options('/sampleContainer/example1.ttl')
         .expect(emptyResponse)
