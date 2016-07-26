@@ -1,5 +1,10 @@
 # History
 
+## 3.1.0
+
+- Misc fixes and features (see commit log)
+- Implemented COPY verb
+
 ## 3.0.0
 - feat Discover WebID from root account https://github.com/solid/node-solid-server/pull/371
 - feat: Server capabilities https://github.com/solid/node-solid-server/pull/365
