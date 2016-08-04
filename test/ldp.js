@@ -1,6 +1,6 @@
 var assert = require('chai').assert
 var $rdf = require('rdflib')
-var ns = require('../lib/vocab/ns.js').ns
+var ns = require('solid-namespace')($rdf)
 var LDP = require('../lib/ldp')
 var path = require('path')
 var stringToStream = require('../lib/utils').stringToStream

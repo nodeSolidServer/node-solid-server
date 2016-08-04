@@ -11,7 +11,7 @@ var rm = require('./test-utils').rm
 // var read = require('./test-utils').read
 
 var ldnode = require('../index')
-var ns = require('../lib/vocab/ns.js').ns
+var ns = require('solid-namespace')($rdf)
 
 describe('ACL HTTP', function () {
   this.timeout(10000)
