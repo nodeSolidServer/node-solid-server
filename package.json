@@ -57,7 +57,7 @@
     "node-uuid": "^1.4.3",
     "nodemailer": "^2.3.2",
     "nomnom": "^1.8.1",
-    "rdflib": "^0.8.0",
+    "rdflib": "git://github.com/linkeddata/rdflib.js#dz_match_alias",
     "request": "^2.72.0",
     "rimraf": "^2.5.0",
     "run-waterfall": "^1.1.3",
