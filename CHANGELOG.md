@@ -1,5 +1,13 @@
 # History
 
+## 3.2.0
+
+- Refactor to use external solid-namespace library
+- Move debrack() to utils.js, remove unused vocab/rdf.js functions
+- Switch from node-mime to mime-types lib
+- Refactor acl.js to prep for external solid-permissions lib
+- Fix crash on PATCH request with no Content-Type
+
 ## 3.1.0
 
 - Misc fixes and features (see commit log)
