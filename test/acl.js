@@ -25,7 +25,8 @@ describe('ACL HTTP', function () {
     root: path.join(__dirname, '/resources'),
     sslKey: path.join(__dirname, '/keys/key.pem'),
     sslCert: path.join(__dirname, '/keys/cert.pem'),
-    webid: true
+    webid: true,
+    strictOrigin: true
   })
 
   before(function (done) {
