@@ -25,7 +25,8 @@ describe('ACL HTTP', function () {
     root: path.join(__dirname, '/resources'),
     sslKey: path.join(__dirname, '/keys/key.pem'),
     sslCert: path.join(__dirname, '/keys/cert.pem'),
-    webid: true
+    webid: true,
+    strictOrigin: true
   })
 
   before(function (done) {
@@ -247,12 +248,12 @@ describe('ACL HTTP', function () {
       options.headers = {
         'content-type': 'text/turtle'
       }
-      options.body = '<#Owner>\n' +
+      options.body = '<#Owner> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
         ' <http://www.w3.org/ns/auth/acl#accessTo> <https://localhost:3456/test/acl/origin/test-folder/.acl>;\n' +
         ' <http://www.w3.org/ns/auth/acl#agent> <' + user1 + '>;\n' +
         ' <http://www.w3.org/ns/auth/acl#origin> <' + origin1 + '>;\n' +
         ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Control> .\n' +
-        '<#Public>\n' +
+        '<#Public> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
         ' <http://www.w3.org/ns/auth/acl#accessTo> <./>;\n' +
         ' <http://www.w3.org/ns/auth/acl#agentClass> <http://xmlns.com/foaf/0.1/Agent>;\n' +
         ' <http://www.w3.org/ns/auth/acl#origin> <' + origin1 + '>;\n' +
@@ -338,109 +339,6 @@ describe('ACL HTTP', function () {
 
     after(function () {
       rm('acl/origin/test-folder/.acl')
-    })
-  })
-
-  describe.skip('Owner-only', function () {
-    var body = '<#Owner>\n' +
-      ' <http://www.w3.org/ns/auth/acl#accessTo> <./>;\n' +
-      ' <http://www.w3.org/ns/auth/acl#owner> <' + user1 + '>;\n' +
-      ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Control> .\n'
-    it('user1 should be able to access test directory', function (done) {
-      var options = createOptions('/acl/owner-only/test-folder/', 'user1')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
-      })
-    })
-    it('user2 should be able to access test directory', function (done) {
-      var options = createOptions(testDir, 'user2')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
-      })
-    })
-    it('should create new ACL file', function (done) {
-      var options = createOptions(testDirAclFile, 'user1')
-      options.headers = {
-        'content-type': 'text/turtle'
-      }
-      options.body = body
-      request.put(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 201)
-        done()
-      })
-    })
-    it('user1 should be able to access ACL file', function (done) {
-      var options = createOptions(testDirAclFile, 'user1')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
-      })
-    })
-    it('user1 should be able to access test directory', function (done) {
-      var options = createOptions(testDir, 'user1')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
-      })
-    })
-    it('user1 should be able to modify ACL file', function (done) {
-      var options = createOptions(testDirAclFile, 'user1')
-      options.headers = {
-        'content-type': 'text/turtle'
-      }
-      options.body = body
-      request.put(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 201)
-        done()
-      })
-    })
-    it('user2 should not be able to access test direcotory', function (done) {
-      var options = createOptions(testDir, 'user2')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 403)
-        done()
-      })
-    })
-    it('user2 should not be able to access ACL file', function (done) {
-      var options = createOptions(testDirAclFile, 'user2')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 403)
-        done()
-      })
-    })
-    it('user2 should not be able to modify ACL file', function (done) {
-      var options = createOptions(testDirAclFile, 'user2')
-      options.headers = {
-        'content-type': 'text/turtle'
-      }
-      options.body = '<d> <e> <f> .'
-      request.put(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 403)
-        done()
-      })
-    })
-    it('agent request should require authorization', function (done) {
-      var options = createOptions(testDirAclFile)
-      options.headers = {
-        'content-type': 'text/turtle'
-      }
-      options.body = '<d> <e> <f> .'
-      request.put(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 401)
-        done()
-      })
     })
   })
 
@@ -641,11 +539,11 @@ describe('ACL HTTP', function () {
   })
 
   describe('Restricted', function () {
-    var body = '<#Owner>\n' +
+    var body = '<#Owner> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
       ' <http://www.w3.org/ns/auth/acl#accessTo> <./abc2.ttl>;\n' +
       ' <http://www.w3.org/ns/auth/acl#agent> <' + user1 + '>;\n' +
       ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Control> .\n' +
-      '<#Restricted>\n' +
+      '<#Restricted> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
       ' <http://www.w3.org/ns/auth/acl#accessTo> <./abc2.ttl>;\n' +
       ' <http://www.w3.org/ns/auth/acl#agent> <' + user2 + '>;\n' +
       ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>.\n'
@@ -877,17 +775,17 @@ describe('ACL HTTP', function () {
       rm('/acl/write-acl/default-for-new/test-file.ttl')
     })
 
-    var body = '<#Owner>\n' +
+    var body = '<#Owner> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
       ' <http://www.w3.org/ns/auth/acl#accessTo> <./>;\n' +
       ' <http://www.w3.org/ns/auth/acl#agent> <' + user1 + '>;\n' +
       ' <http://www.w3.org/ns/auth/acl#defaultForNew> <./>;\n' +
       ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Control> .\n' +
-      '<#Default>\n' +
+      '<#Default> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
       ' <http://www.w3.org/ns/auth/acl#accessTo> <./>;\n' +
       ' <http://www.w3.org/ns/auth/acl#defaultForNew> <./>;\n' +
       ' <http://www.w3.org/ns/auth/acl#agentClass> <http://xmlns.com/foaf/0.1/Agent>;\n' +
       ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read> .\n'
-    it("user1 should be able to modify test direcotory's ACL file", function (done) {
+    it("user1 should be able to modify test directory's ACL file", function (done) {
       var options = createOptions('/acl/write-acl/default-for-new/.acl', 'user1')
       options.headers = {
         'content-type': 'text/turtle'
