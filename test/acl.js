@@ -247,12 +247,12 @@ describe('ACL HTTP', function () {
       options.headers = {
         'content-type': 'text/turtle'
       }
-      options.body = '<#Owner>\n' +
+      options.body = '<#Owner> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
         ' <http://www.w3.org/ns/auth/acl#accessTo> <https://localhost:3456/test/acl/origin/test-folder/.acl>;\n' +
         ' <http://www.w3.org/ns/auth/acl#agent> <' + user1 + '>;\n' +
         ' <http://www.w3.org/ns/auth/acl#origin> <' + origin1 + '>;\n' +
         ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Control> .\n' +
-        '<#Public>\n' +
+        '<#Public> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
         ' <http://www.w3.org/ns/auth/acl#accessTo> <./>;\n' +
         ' <http://www.w3.org/ns/auth/acl#agentClass> <http://xmlns.com/foaf/0.1/Agent>;\n' +
         ' <http://www.w3.org/ns/auth/acl#origin> <' + origin1 + '>;\n' +
@@ -641,11 +641,11 @@ describe('ACL HTTP', function () {
   })
 
   describe('Restricted', function () {
-    var body = '<#Owner>\n' +
+    var body = '<#Owner> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
       ' <http://www.w3.org/ns/auth/acl#accessTo> <./abc2.ttl>;\n' +
       ' <http://www.w3.org/ns/auth/acl#agent> <' + user1 + '>;\n' +
       ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Control> .\n' +
-      '<#Restricted>\n' +
+      '<#Restricted> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
       ' <http://www.w3.org/ns/auth/acl#accessTo> <./abc2.ttl>;\n' +
       ' <http://www.w3.org/ns/auth/acl#agent> <' + user2 + '>;\n' +
       ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>.\n'
@@ -877,17 +877,17 @@ describe('ACL HTTP', function () {
       rm('/acl/write-acl/default-for-new/test-file.ttl')
     })
 
-    var body = '<#Owner>\n' +
+    var body = '<#Owner> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
       ' <http://www.w3.org/ns/auth/acl#accessTo> <./>;\n' +
       ' <http://www.w3.org/ns/auth/acl#agent> <' + user1 + '>;\n' +
       ' <http://www.w3.org/ns/auth/acl#defaultForNew> <./>;\n' +
       ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Control> .\n' +
-      '<#Default>\n' +
+      '<#Default> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
       ' <http://www.w3.org/ns/auth/acl#accessTo> <./>;\n' +
       ' <http://www.w3.org/ns/auth/acl#defaultForNew> <./>;\n' +
       ' <http://www.w3.org/ns/auth/acl#agentClass> <http://xmlns.com/foaf/0.1/Agent>;\n' +
       ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read> .\n'
-    it("user1 should be able to modify test direcotory's ACL file", function (done) {
+    it("user1 should be able to modify test directory's ACL file", function (done) {
       var options = createOptions('/acl/write-acl/default-for-new/.acl', 'user1')
       options.headers = {
         'content-type': 'text/turtle'
