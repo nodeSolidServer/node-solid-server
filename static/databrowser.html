@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html id="docHTML">
 <head>
-    <link type="text/css" rel="stylesheet" href="https://w3.scripts.mit.edu/tabulator/tabbedtab.css" />
-    <script type="text/javascript" src="https://w3.scripts.mit.edu/tabulator/js/mashup/mashlib.js"></script>
+    <link type="text/css" rel="stylesheet" href="https://linkeddata.github.io/solid-app-set/style/tabbedtab.css" />
+    <script type="text/javascript" src="https://linkeddata.github.io/mashlib/dist/mashlib-prealpha.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    $rdf.Fetcher.crossSiteProxyTemplate = document.origin + '/' + ProxyPath + '?uri={uri}'
-    var uri = window.location.href
-    window.document.title = uri
-    var kb = tabulator.kb
-    var subject = kb.sym(uri)
-    tabulator.outline.GotoSubject(subject, true, undefined, true, undefined)
-})
+    var UI = require('mashlib')
+    var $rdf = UI.rdf
+
+    $rdf.Fetcher.crossSiteProxyTemplate = document.origin + '/xss?uri={uri}';
+    var uri = window.location.href;
+    window.document.title = uri;
+    var kb = UI.store;
+    var subject = kb.sym(uri);
+    UI.outline.GotoSubject(subject, true, undefined, true, undefined);
+});
 </script>
 </head>
 <body>
