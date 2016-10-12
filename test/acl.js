@@ -548,6 +548,9 @@ describe('ACL HTTP', function () {
         done()
       })
     })
+    after(function () {
+      rm('acl/append-inherited/test.ttl')
+    })
   })
 
   describe('Restricted', function () {
