@@ -467,6 +467,18 @@ describe('ACL HTTP', function () {
         done()
       })
     })
+    it('user1 should be able to PATCH a resource', function (done) {
+      var options = createOptions('/acl/append-inherited/test.ttl', 'user1')
+      options.headers = {
+        'content-type': 'application/sparql-update'
+      }
+      options.body = 'INSERT DATA { :test  :hello 456 .}'
+      request.patch(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 200)
+        done()
+      })
+    })
     it('user1 should be able to access test file', function (done) {
       var options = createOptions('/acl/append-acl/abc.ttl', 'user1')
       request.head(options, function (error, response, body) {
@@ -535,6 +547,9 @@ describe('ACL HTTP', function () {
         assert.equal(response.statusCode, 401)
         done()
       })
+    })
+    after(function () {
+      rm('acl/append-inherited/test.ttl')
     })
   })
 
