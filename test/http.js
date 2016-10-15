@@ -10,6 +10,7 @@ var suffixAcl = '.acl'
 var suffixMeta = '.meta'
 var ldpServer = ldnode.createServer({
   live: true,
+  dataBrowserPath: 'default',
   root: path.join(__dirname, '/resources')
 })
 var server = supertest(ldpServer)
