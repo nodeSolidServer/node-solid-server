@@ -115,6 +115,7 @@ module.exports = [
     default: '/proxy',
     prompt: true
   },
+
   {
     name: 'file-browser',
     help: 'Type the URL of default app to use for browsing files (or use default)',
@@ -127,11 +128,22 @@ module.exports = [
     },
     prompt: true
   },
+
   {
-    name: 'data-browser',
+    name: 'suppress-data-browser',
+    help: 'Suppres provision of a data browser',
     flag: true,
-    help: 'Enable viewing RDF resources using a default data browser application (e.g. mashlib)',
-    question: 'Enable data viewer (defaults to using Tabulator)',
+    prompt: true,
+    default: false,
+    hide: false
+  },
+
+  {
+    name: 'data-browser-path',
+    help: 'An HTML file which is sent to allow users to browse the data (eg using mashlib.js)',
+    question: 'Path of data viewer page (defaults to using mashlib)',
+    validate: validPath,
+    default: 'default',
     prompt: true
   },
   {
