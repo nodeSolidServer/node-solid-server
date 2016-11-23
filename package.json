@@ -54,7 +54,6 @@
     "n3": "^0.4.3",
     "negotiator": "^0.6.0",
     "node-forge": "^0.6.38",
-    "node-uuid": "^1.4.3",
     "nodemailer": "^2.3.2",
     "nomnom": "^1.8.1",
     "rdflib": "^0.10.0",
@@ -66,7 +65,7 @@
     "solid-ws": "^0.2.2",
     "string": "^3.3.0",
     "uid-safe": "^2.1.1",
-    "uuid": "^2.0.1",
+    "uuid": "^3.0.0",
     "valid-url": "^1.0.9",
     "vhost": "^3.0.2",
     "webid": "^0.3.7"
