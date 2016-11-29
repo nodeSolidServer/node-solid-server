@@ -116,7 +116,7 @@ describe('LDP', function () {
         '   dcterms:title "This is a magic type" ;' +
         '   o:limit 500000.00 .', 'sampleContainer/magicType.ttl')
 
-      ldp.listContainer(path.join(__dirname, '/resources/sampleContainer/'), 'https://server.tld', '', 'text/turtle', function (err, data) {
+      ldp.listContainer(path.join(__dirname, '/resources/sampleContainer/'), 'https://server.tld/resources/sampleContainer/', 'https://server.tld', '', 'text/turtle', function (err, data) {
         if (err) done(err)
         var graph = $rdf.graph()
         $rdf.parse(
@@ -156,7 +156,7 @@ describe('LDP', function () {
         '   dcterms:title "This is a container" ;' +
         '   o:limit 500000.00 .', 'sampleContainer/basicContainerFile.ttl')
 
-      ldp.listContainer(path.join(__dirname, '/resources/sampleContainer/'), 'https://server.tld', '', 'text/turtle', function (err, data) {
+      ldp.listContainer(path.join(__dirname, '/resources/sampleContainer/'), 'https://server.tld/resources/sampleContainer/', 'https://server.tld', '', 'text/turtle', function (err, data) {
         if (err) done(err)
         var graph = $rdf.graph()
         $rdf.parse(
@@ -194,7 +194,7 @@ describe('LDP', function () {
     })
 
     it('should ldp:contains the same amount of files in dir', function (done) {
-      ldp.listContainer(path.join(__dirname, '/resources/sampleContainer/'), 'https://server.tld', '', 'text/turtle', function (err, data) {
+      ldp.listContainer(path.join(__dirname, '/resources/sampleContainer/'), 'https://server.tld/resources/sampleContainer/', 'https://server.tld', '', 'text/turtle', function (err, data) {
         if (err) done(err)
         fs.readdir(path.join(__dirname, '/resources/sampleContainer/'), function (err, files) {
           var graph = $rdf.graph()
