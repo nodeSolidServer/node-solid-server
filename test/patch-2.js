@@ -24,7 +24,7 @@ describe('PATCH', function () {
       .send('INSERT DATA { :test  :hello 456 .}')
       .expect(200)
       .end(function (err, res, body) {
-        if (err){
+        if (err) {
           done(err)
         }
         console.log('@@@@ ' + read('sampleContainer/notExisting.ttl'))
