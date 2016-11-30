@@ -116,7 +116,7 @@ describe('LDP', function () {
         '   dcterms:title "This is a magic type" ;' +
         '   o:limit 500000.00 .', 'sampleContainer/magicType.ttl')
 
-      ldp.listContainer(path.join(__dirname, '/resources/sampleContainer/'), 'https://server.tld', '', 'text/turtle', function (err, data) {
+      ldp.listContainer(path.join(__dirname, '/resources/sampleContainer/'), 'https://server.tld/resources/sampleContainer/', 'https://server.tld', '', 'text/turtle', function (err, data) {
         if (err) done(err)
         var graph = $rdf.graph()
         $rdf.parse(
@@ -133,8 +133,11 @@ describe('LDP', function () {
           .map(function (d) {
             return d.uri
           })
-
-        assert.equal(statements.length, 2)
+        // statements should be:
+        // [ 'http://www.w3.org/ns/iana/media-types/text/turtle#Resource',
+        //   'http://www.w3.org/ns/ldp#MagicType',
+        //   'http://www.w3.org/ns/ldp#Resource' ]
+        assert.equal(statements.length, 3)
         assert.isAbove(statements.indexOf('http://www.w3.org/ns/ldp#MagicType'), -1)
         assert.isAbove(statements.indexOf('http://www.w3.org/ns/ldp#Resource'), -1)
 
@@ -156,7 +159,7 @@ describe('LDP', function () {
         '   dcterms:title "This is a container" ;' +
         '   o:limit 500000.00 .', 'sampleContainer/basicContainerFile.ttl')
 
-      ldp.listContainer(path.join(__dirname, '/resources/sampleContainer/'), 'https://server.tld', '', 'text/turtle', function (err, data) {
+      ldp.listContainer(path.join(__dirname, '/resources/sampleContainer/'), 'https://server.tld/resources/sampleContainer/', 'https://server.tld', '', 'text/turtle', function (err, data) {
         if (err) done(err)
         var graph = $rdf.graph()
         $rdf.parse(
@@ -165,27 +168,29 @@ describe('LDP', function () {
           'https://server.tld/sampleContainer',
           'text/turtle')
 
-        var basicContainerStatements = graph.each(
-          $rdf.sym('https://server.tld/basicContainerFile.ttl'),
-          ns.rdf('type'),
-          undefined)
+        var basicContainerStatements = graph
+          .each(
+            $rdf.sym('https://server.tld/basicContainerFile.ttl'),
+            ns.rdf('type'),
+            undefined
+          )
+          .map(d => { return d.uri })
 
-        assert.equal(basicContainerStatements.length, 1)
+        let expectedStatements = [
+          'http://www.w3.org/ns/iana/media-types/text/turtle#Resource',
+          'http://www.w3.org/ns/ldp#Resource'
+        ]
+        assert.deepEqual(basicContainerStatements.sort(), expectedStatements)
 
-        var containerStatements = graph.each(
-          $rdf.sym('https://server.tld/containerFile.ttl'),
-          ns.rdf('type'),
-          undefined)
+        var containerStatements = graph
+          .each(
+            $rdf.sym('https://server.tld/containerFile.ttl'),
+            ns.rdf('type'),
+          undefined
+          )
+          .map(d => { return d.uri })
 
-        assert.equal(containerStatements.length, 1)
-
-        basicContainerStatements.forEach(function (statement) {
-          assert.equal(statement.uri, ns.ldp('Resource').uri)
-        })
-
-        containerStatements.forEach(function (statement) {
-          assert.equal(statement.uri, ns.ldp('Resource').uri)
-        })
+        assert.deepEqual(containerStatements.sort(), expectedStatements)
 
         rm('sampleContainer/containerFile.ttl')
         rm('sampleContainer/basicContainerFile.ttl')
@@ -194,7 +199,7 @@ describe('LDP', function () {
     })
 
     it('should ldp:contains the same amount of files in dir', function (done) {
-      ldp.listContainer(path.join(__dirname, '/resources/sampleContainer/'), 'https://server.tld', '', 'text/turtle', function (err, data) {
+      ldp.listContainer(path.join(__dirname, '/resources/sampleContainer/'), 'https://server.tld/resources/sampleContainer/', 'https://server.tld', '', 'text/turtle', function (err, data) {
         if (err) done(err)
         fs.readdir(path.join(__dirname, '/resources/sampleContainer/'), function (err, files) {
           var graph = $rdf.graph()
