@@ -1,5 +1,14 @@
 # History
 
+- Allow video skip with Accept-Ranges
+- In a directory listing, add the media type class when we know it
+- Add the trailing slash on the URI of a folder listed within a folder
+
+## 3.3.0
+
+- Refactor acl checker to use solid-permissions lib
+- Various DataBrowser fixes, dataBrowserOption option to specify path of db file
+
 ## 3.2.0
 
 - Refactor to use external solid-namespace library
@@ -17,7 +26,7 @@
 - feat Discover WebID from root account https://github.com/solid/node-solid-server/pull/371
 - feat: Server capabilities https://github.com/solid/node-solid-server/pull/365
 - feat: pass app in createServer https://github.com/solid/node-solid-server/pull/357
-- beaking: Accounts API https://github.com/solid/node-solid-server/pull/339
+- breaking: Accounts API https://github.com/solid/node-solid-server/pull/339
 
 ## 2.3.0
 - feat: added Capability discovery https://github.com/solid/node-solid-server/pull/347
