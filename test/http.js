@@ -13,6 +13,7 @@ var ldpServer = ldnode.createServer({
   root: path.join(__dirname, '/resources')
 })
 var server = supertest(ldpServer)
+var assert = require('chai').assert
 
 /**
  * Creates a new test basic container via an LDP POST
@@ -534,7 +535,7 @@ describe('HTTP APIs', function () {
           if (err) return done(err)
           var stats = fs.statSync(path.join(__dirname, '/resources/post-tests/loans/'))
           if (!stats.isDirectory()) {
-            return done(new Error('Cannot read file just created'))
+            return done(new Error('Cannot read container just created'))
           }
           done()
         })
@@ -544,6 +545,36 @@ describe('HTTP APIs', function () {
         .expect('content-type', /text\/turtle/)
         .expect(200, done)
     })
+
+    it('should create a container with a url name', (done) => {
+      let containerName = 'https://example.com/page'
+      let expectedDirName = '/post-tests/https%3A%2F%2Fexample.com%2Fpage/'
+      server.post('/post-tests/')
+        .set('slug', containerName)
+        .set('content-type', 'text/turtle')
+        .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
+        .expect(201)
+        .end((err, res) => {
+          if (err) return done(err)
+          try {
+            assert.equal(res.headers.location, expectedDirName,
+              'Uri container names should be encoded')
+            let createdDir = fs.statSync(path.join(__dirname, 'resources', expectedDirName))
+            assert(createdDir.isDirectory(), 'Container should have been created')
+          } catch (err) {
+            return done(err)
+          }
+          done()
+        })
+    })
+
+    it('should be able to access new url-named container', (done) => {
+      let containerUrl = '/post-tests/https%3A%2F%2Fexample.com%2Fpage/'
+      server.get(containerUrl)
+        .expect('content-type', /text\/turtle/)
+        .expect(200, done)
+    })
+
     after(function () {
       // Clean up after POST API tests
       return Promise.all([
