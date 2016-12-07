@@ -1,5 +1,8 @@
 # History
 
+## 3.4.0
+
+- Fix handling/url-encoding of container names
 - Allow video skip with Accept-Ranges
 - In a directory listing, add the media type class when we know it
 - Add the trailing slash on the URI of a folder listed within a folder
