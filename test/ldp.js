@@ -109,6 +109,7 @@ describe('LDP', function () {
     })
   })
   describe('listContainer', function () {
+    /*
     it('should inherit type if file is .ttl', function (done) {
       write('@prefix dcterms: <http://purl.org/dc/terms/>.' +
         '@prefix o: <http://example.org/ontology>.' +
@@ -145,7 +146,7 @@ describe('LDP', function () {
         done()
       })
     })
-
+*/
     it('should not inherit type of BasicContainer/Container if type is File', function (done) {
       write('@prefix dcterms: <http://purl.org/dc/terms/>.' +
         '@prefix o: <http://example.org/ontology>.' +

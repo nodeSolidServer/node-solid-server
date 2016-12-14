@@ -19,8 +19,16 @@ describe('Utility functions', function () {
     it('should return empty as relative path for undefined path', function () {
       assert.equal(utils.pathBasename(undefined), '')
     })
-    it('should not decode uris', function () {
-      assert.equal(utils.uriToFilename('uri%20', 'base/'), 'base/uri%20')
+  })
+  describe('uriToFilename', function () {
+    it('should decode hex-encoded space', function () {
+      assert.equal(utils.uriToFilename('uri%20', 'base/'), 'base/uri ')
+    })
+    it('should decode hex-encoded at sign', function () {
+      assert.equal(utils.uriToFilename('film%4011', 'base/'), 'base/film@11')
+    })
+    it('should decode hex-encoded single quote', function () {
+      assert.equal(utils.uriToFilename('quote%27', 'base/'), 'base/quote\'')
     })
   })
 })
