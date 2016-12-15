@@ -275,11 +275,11 @@ function validPath (value) {
     return Promise.resolve(true)
   }
   if (!value || value === '') {
-    return 'You must enter a valid path'
+    return Promise.resolve('You must enter a valid path')
   }
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     fs.stat(value, function (err) {
-      if (err) return reject('Nothing found at this path')
+      if (err) return resolve('Nothing found at this path')
       return resolve(true)
     })
   })
