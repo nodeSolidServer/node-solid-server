@@ -24,9 +24,17 @@ module.exports = [
   },
   {
     name: 'webid',
-    help: 'Enable WebID+TLS authentication (use `--no-webid` for HTTP instead of HTTPS)',
+    help: 'Enable WebID authentication and access control (uses HTTPS)',
     flag: true,
+    default: true,
     question: 'Enable WebID authentication',
+    prompt: true
+  },
+  {
+    name: 'mount',
+    help: "Serve on a specific URL path (default: '/')",
+    question: 'Serve Solid on URL path',
+    default: '/',
     prompt: true
   },
   {
@@ -57,8 +65,8 @@ module.exports = [
   },
   {
     name: 'owner',
-    help: 'Set the owner of the storage',
-    question: 'Your webid',
+    help: 'Set the owner of the storage (overwrites the root ACL file)',
+    question: 'Your webid (to overwrite the root ACL with)',
     validate: function (value) {
       if (value === '' || !value.startsWith('http')) {
         return 'Enter a valid Webid'
@@ -83,7 +91,8 @@ module.exports = [
   },
   {
     name: 'idp',
-    help: 'Allow users to sign up for an account',
+    help: 'Enable multi-user mode (users can sign up for accounts)',
+    question: 'Enable multi-user mode (users can sign up for accounts)',
     full: 'allow-signup',
     flag: true,
     default: false,
@@ -101,9 +110,9 @@ module.exports = [
   // },
   {
     name: 'useProxy',
-    help: 'Do you want to have a proxy?',
+    help: 'Do you want to have a CORS proxy endpoint?',
     flag: true,
-    prompt: false,
+    prompt: true,
     hide: true
   },
   {
@@ -126,14 +135,14 @@ module.exports = [
       }
       return value
     },
-    prompt: true
+    prompt: false
   },
 
   {
     name: 'suppress-data-browser',
-    help: 'Suppres provision of a data browser',
+    help: 'Suppress provision of a data browser',
     flag: true,
-    prompt: true,
+    prompt: false,
     default: false,
     hide: false
   },
@@ -144,25 +153,28 @@ module.exports = [
     question: 'Path of data viewer page (defaults to using mashlib)',
     validate: validPath,
     default: 'default',
-    prompt: true
+    prompt: false
   },
   {
     name: 'suffix-acl',
     full: 'suffix-acl',
-    help: 'Suffix for acl files',
-    default: '.acl'
+    help: "Suffix for acl files (default: '.acl')",
+    default: '.acl',
+    prompt: false
   },
   {
     name: 'suffix-meta',
     full: 'suffix-meta',
-    help: 'Suffix for metadata files',
-    default: '.meta'
+    help: "Suffix for metadata files (default: '.meta')",
+    default: '.meta',
+    prompt: false
   },
   {
     name: 'secret',
     help: 'Secret used to sign the session ID cookie (e.g. "your secret phrase")',
     question: 'Session secret for cookie',
     default: 'random',
+    prompt: false,
     filter: function (value) {
       if (value === '' || value === 'random') {
         return
@@ -178,13 +190,8 @@ module.exports = [
   {
     name: 'error-pages',
     help: 'Folder from which to look for custom error pages files (files must be named <error-code>.html -- eg. 500.html)',
-    validate: validPath
-  },
-  {
-    name: 'mount',
-    help: "Serve on a specific URL path (default: '/')",
-    question: 'Serve Solid on path',
-    default: '/'
+    validate: validPath,
+    prompt: false
   },
   {
     name: 'force-user',
@@ -194,7 +201,8 @@ module.exports = [
     name: 'strict-origin',
     help: 'Enforce same origin policy in the ACL',
     flag: true,
-    prompt: true
+    default: false,
+    prompt: false
   },
   {
     name: 'useEmail',
@@ -248,7 +256,7 @@ module.exports = [
     name: 'useApiApps',
     help: 'Do you want to load your default apps on /api/apps?',
     flag: true,
-    prompt: true,
+    prompt: false,
     default: true
   },
   {
@@ -263,12 +271,15 @@ module.exports = [
 ]
 
 function validPath (value) {
-  if (!value || value === '') {
-    return 'You must enter a valid path'
+  if (value === 'default') {
+    return Promise.resolve(true)
   }
-  return new Promise((resolve, reject) => {
+  if (!value || value === '') {
+    return Promise.resolve('You must enter a valid path')
+  }
+  return new Promise((resolve) => {
     fs.stat(value, function (err) {
-      if (err) return reject('Nothing found at this path')
+      if (err) return resolve('Nothing found at this path')
       return resolve(true)
     })
   })

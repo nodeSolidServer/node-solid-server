@@ -78,7 +78,7 @@ Pre-requisites:
 - (If you are running locally) Add the line `127.0.0.1 *.localhost` to `/etc/hosts`
 
 ```bash
-$ solid init 
+$ solid init
 ..
 ? Allow users to register their WebID (y/N) # write `y` here
 ..
@@ -114,7 +114,7 @@ $ solid start --port 8080 --ssl-key key.pem --ssl-cert cert.pem --no-webid
 The command line tool has the following options
 
 ```
-$ solid 
+$ solid
 
   Usage: solid [options] [command]
 
@@ -144,17 +144,17 @@ $ solid start --help
   Options:
     -h, --help              output usage information
     --root [value]          Root folder to serve (defaut: './')
-    --port [value]          Port to use
-    --webid                 Enable WebID+TLS authentication (use `--no-webid` for HTTP instead of HTTPS)
-    --owner [value]         Set the owner of the storage
+    --port [value]          Port to use (default: '8443')
+    --webid                 Enable WebID authentication and access control (uses HTTPS. default: true)
+    --owner [value]         Set the owner of the storage (overwrites the root ACL file)
     --ssl-key [value]       Path to the SSL private key in PEM format
     --ssl-cert [value]      Path to the SSL certificate key in PEM format
-    --idp                   Allow users to register their WebID
-    --proxy [value]         Serve proxy on path
-    --file-browser [value]  App to browse files
+    --idp                   Enable multi-user mode (users can sign up for accounts)
+    --proxy [value]         Serve proxy on path (default: '/proxy')
+    --file-browser [value]  Url to file browser app (uses Warp by default)
     --data-browser          Enable viewing RDF resources using a default data browser application (e.g. mashlib)
-    --suffix-acl [value]    Suffix for acl files
-    --suffix-meta [value]   Suffix for metadata files
+    --suffix-acl [value]    Suffix for acl files (default: '.acl')
+    --suffix-meta [value]   Suffix for metadata files (default: '.meta')
     --secret [value]        Secret used to sign the session ID cookie (e.g. "your secret phrase")
     --error-pages [value]   Folder from which to look for custom error pages files (files must be named <error-code>.html -- eg. 500.html)
     --mount [value]         Serve on a specific URL path (default: '/')
