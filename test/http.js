@@ -546,6 +546,29 @@ describe('HTTP APIs', function () {
         .expect(200, done)
     })
 
+    it('should create a container with a name hex decoded from the slug', (done) => {
+      let containerName = 'Film%4011'
+      let expectedDirName = '/post-tests/Film@11/'
+      server.post('/post-tests/')
+        .set('slug', containerName)
+        .set('content-type', 'text/turtle')
+        .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
+        .expect(201)
+        .end((err, res) => {
+          if (err) return done(err)
+          try {
+            assert.equal(res.headers.location, expectedDirName,
+              'Uri container names should be encoded')
+            let createdDir = fs.statSync(path.join(__dirname, 'resources', expectedDirName))
+            assert(createdDir.isDirectory(), 'Container should have been created')
+          } catch (err) {
+            return done(err)
+          }
+          done()
+        })
+    })
+
+    /* No, URLs are NOT ex-encoded to make filenames -- the other way around.
     it('should create a container with a url name', (done) => {
       let containerName = 'https://example.com/page'
       let expectedDirName = '/post-tests/https%3A%2F%2Fexample.com%2Fpage/'
@@ -574,6 +597,7 @@ describe('HTTP APIs', function () {
         .expect('content-type', /text\/turtle/)
         .expect(200, done)
     })
+    */
 
     after(function () {
       // Clean up after POST API tests
