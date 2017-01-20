@@ -1,5 +1,5 @@
 const assert = require('chai').assert
-const { getUserId, verifyDelegator } = require('../lib/handlers/allow')
+const { getRequestingWebId, verifyDelegator } = require('../lib/handlers/allow')
 const rdf = require('rdflib')
 const ns = require('solid-namespace')(rdf)
 
@@ -14,117 +14,94 @@ verifiedSecretaryGraph.add(
   )
 const notVerifiedSecretaryGraph = rdf.graph()
 
-describe('allow() handler', () => {
-  describe('getUserId()', () => {
+describe('handlers/allow.js', () => {
+  describe('getRequestingWebId()', () => {
     const emptyFetchDocument = () => {}
-    it('no webId present', done => {
+
+    it('should return null if no webId and no onBehalfOf present', () => {
+      let webId  // no secretary
+      let onBehalfOf  // no principal
+
+      return getRequestingWebId(webId, onBehalfOf, emptyFetchDocument)
+        .then(userId => {
+          assert.equal(userId, null,
+            'Should return null when no webId is present')
+        })
+    })
+
+    it('should throw an error if onBehalfOf but no webId', done => {
       let webId  // no secretary
       let onBehalfOf = alice  // principal
-      getUserId(webId, onBehalfOf, emptyFetchDocument)
-        .then(userId => {
-          assert.equal(userId, undefined,
-            'Should return undefined when no webId is present')
+
+      getRequestingWebId(webId, onBehalfOf, emptyFetchDocument)
+        .catch(err => {
+          assert.equal(err.status, 400)
           done()
         })
     })
-    it('no onBehalfOf present', done => {
+
+    it('should return the webId if no delegation header present', () => {
       let webId = alice  // principal
       let onBehalfOf  // no delegation header
-      getUserId(webId, onBehalfOf, emptyFetchDocument)
+
+      return getRequestingWebId(webId, onBehalfOf, emptyFetchDocument)
         .then(userId => {
           assert.equal(webId, userId,
             'Should return webId when no onBehalfOf is present')
-          done()
         })
     })
-    it('throws 500 error if fetchDocument errors', done => {
-      let webId = agentWebId  // secretary
-      let onBehalfOf = alice  // principal
-      let fetchDocument = (url, callback) => {
-        callback(new Error('Some error while fetching'), null)
-      }
-      getUserId(webId, onBehalfOf, fetchDocument)
-        .catch(err => {
-          assert.equal(err.status, 500)
-          done()
-        })
-    })
-    it('returns principal (onBehalfOf) if secretary is verified', done => {
+
+    it('should return principal (onBehalfOf) if secretary is verified', () => {
       let webId = agentWebId  // secretary
       let onBehalfOf = alice  // principal
       let fetchDocument = (url, callback) => {
         callback(null, verifiedSecretaryGraph)
       }
-      getUserId(webId, onBehalfOf, fetchDocument)
+      return getRequestingWebId(webId, onBehalfOf, fetchDocument)
         .then(userId => {
           assert.equal(userId, alice,
             'Should return principal (onBehalfOf) if secretary is verified')
-          done()
-        })
-        .catch(err => {
-          console.error(err)
         })
     })
-    it('returns webId if secretary is NOT verified', done => {
+
+    it('returns webId if secretary is NOT verified', () => {
       let webId = agentWebId  // secretary
       let onBehalfOf = alice  // principal
       let fetchDocument = (url, callback) => {
         callback(null, notVerifiedSecretaryGraph)
       }
-      getUserId(webId, onBehalfOf, fetchDocument)
+      return getRequestingWebId(webId, onBehalfOf, fetchDocument)
         .then(userId => {
           assert.equal(userId, agentWebId,
             'Should return the webId (secretary id) if secretary is NOT verified')
-          done()
-        })
-        .catch(err => {
-          console.error(err)
         })
     })
   })
 
   describe('verifyDelegator()', () => {
-    it('should throw 500 error if fetchDocument errors', done => {
-      let secretary, principal
-      let fetchDocument = (url, callback) => {
-        callback(new Error('Some error while fetching'), null)
-      }
-      verifyDelegator(secretary, principal, fetchDocument)
-        .catch(err => {
-          assert.equal(err.status, 500)
-          done()
-        })
-    })
-    it("should return true if principal's profile authorizes secretary", done => {
+    it("should return true if principal's profile authorizes secretary", () => {
       let secretary = agentWebId
       let principal = alice
       let fetchDocument = (url, callback) => {
         callback(null, verifiedSecretaryGraph)
       }
-      verifyDelegator(secretary, principal, fetchDocument)
+      return verifyDelegator(secretary, principal, fetchDocument)
         .then(verified => {
           assert.equal(verified, true,
             'Should be true if profile authorizes the secretary')
-          done()
-        })
-        .catch(err => {
-          console.error(err)
         })
     })
-    it("should return false if principal's profile does NOT authorize secretary", done => {
+
+    it("should return false if principal's profile does NOT authorize secretary", () => {
       let secretary = agentWebId
       let principal = alice
       let fetchDocument = (url, callback) => {
         callback(null, notVerifiedSecretaryGraph)
       }
-      verifyDelegator(secretary, principal, fetchDocument)
+      return verifyDelegator(secretary, principal, fetchDocument)
         .then(verified => {
           assert.equal(verified, false,
             'Should be false if profile does not authorize the secretary')
-          done()
-        })
-        .catch(err => {
-          console.error(err)
         })
     })
   })
