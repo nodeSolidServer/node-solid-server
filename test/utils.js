@@ -32,26 +32,22 @@ describe('Utility functions', function () {
     })
   })
 
-  describe('debrack()', () => {
-    it('should return null if no string is passed', done => {
+  describe.only('debrack()', () => {
+    it('should return null if no string is passed', () => {
       assert.equal(utils.debrack(), null)
-      done()
     })
 
-    it('should return the string if no brackets are present', done => {
+    it('should return the string if no brackets are present', () => {
       assert.equal(utils.debrack('test string'), 'test string')
-      done()
     })
 
-    it('should return the string if less than 2 chars long', done => {
+    it('should return the string if less than 2 chars long', () => {
       assert.equal(utils.debrack(''), '')
       assert.equal(utils.debrack('<'), '<')
-      done()
     })
 
-    it('should remove brackets if wrapping the string', done => {
+    it('should remove brackets if wrapping the string', () => {
       assert.equal(utils.debrack('<test string>'), 'test string')
-      done()
     })
   })
 })
