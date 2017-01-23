@@ -73,7 +73,7 @@
   "devDependencies": {
     "chai": "^3.0.0",
     "hippie": "^0.5.0",
-    "mocha": "^2.2.5",
+    "mocha": "^2.5.3",
     "nock": "^7.0.2",
     "proxyquire": "^1.7.10",
     "run-waterfall": "^1.1.3",

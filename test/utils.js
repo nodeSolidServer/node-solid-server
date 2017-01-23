@@ -31,4 +31,23 @@ describe('Utility functions', function () {
       assert.equal(utils.uriToFilename('quote%27', 'base/'), 'base/quote\'')
     })
   })
+
+  describe.only('debrack()', () => {
+    it('should return null if no string is passed', () => {
+      assert.equal(utils.debrack(), null)
+    })
+
+    it('should return the string if no brackets are present', () => {
+      assert.equal(utils.debrack('test string'), 'test string')
+    })
+
+    it('should return the string if less than 2 chars long', () => {
+      assert.equal(utils.debrack(''), '')
+      assert.equal(utils.debrack('<'), '<')
+    })
+
+    it('should remove brackets if wrapping the string', () => {
+      assert.equal(utils.debrack('<test string>'), 'test string')
+    })
+  })
 })
