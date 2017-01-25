@@ -1,5 +1,7 @@
 # solid-server in Node
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/solid/node-solid-server.svg)](https://greenkeeper.io/)
+
 [![](https://img.shields.io/badge/project-Solid-7C4DFF.svg?style=flat-square)](https://github.com/solid/solid)
 [![Build Status](https://travis-ci.org/solid/node-solid-server.svg?branch=master&style=flat-square)](https://travis-ci.org/solid/node-solid-server)
 [![NPM Version](https://img.shields.io/npm/v/solid-server.svg?style=flat-square)](https://npm.im/solid-server)
