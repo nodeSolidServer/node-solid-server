@@ -82,7 +82,7 @@ describe('Identity Provider', function () {
             .expect(200)
             .end(done)
         })
-    })
+    }).timeout(20000)
 
     it('should not generate a certificate if spkac is not valid', function (done) {
       var subdomain = supertest('https://nicola.' + host)
@@ -97,7 +97,7 @@ describe('Identity Provider', function () {
             .send('webid=https://nicola.' + host + '/profile/card#me&spkac=' + spkac)
             .expect(500, done)
         })
-    })
+    }).timeout(20000)
   })
 
   describe('creating an account with POST', function () {
@@ -135,7 +135,7 @@ describe('Identity Provider', function () {
               done(err)
             })
         })
-    })
+    }).timeout(20000)
 
     it('should create the default folders', function (done) {
       var subdomain = supertest('https://nicola.' + host)
@@ -166,7 +166,7 @@ describe('Identity Provider', function () {
             done(new Error('failed to create default files'))
           }
         })
-    })
+    }).timeout(20000)
 
     it('should link WebID to the root account', function (done) {
       var subdomain = supertest('https://nicola.' + host)
@@ -200,7 +200,7 @@ describe('Identity Provider', function () {
               }
             })
         })
-    })
+    }).timeout(20000)
 
     it('should create a private settings container', function (done) {
       var subdomain = supertest('https://nicola.' + host)
