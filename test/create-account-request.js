@@ -6,85 +6,74 @@ const sinon = require('sinon')
 const sinonChai = require('sinon-chai')
 chai.use(sinonChai)
 chai.should()
+const HttpMocks = require('node-mocks-http')
 
 const AccountManager = require('../lib/models/account-manager')
 const SolidHost = require('../lib/models/solid-host')
-const {
-  CreateAccountRequest,
-  CreateTlsAccountRequest
-} = require('../lib/models/create-account-request')
+const { CreateAccountRequest } = require('../lib/models/create-account-request')
 
-describe('CreateAccountRequest', () => {
-  describe('configFromParams()', () => {
-    let host = SolidHost.fromConfig({ serverUri: 'https://example.com' })
-    let accountManager = AccountManager.fromConfig({
-      host,
-      authMethod: 'tls',
-      multiUser: true
-    })
-    let req = {
-      body: {
-        username: 'alice',
-        email: 'alice@alice.com',
-        name: 'Alice',
-        spkac: '12345'
-      }
-    }
-    let res = {}
+var host, accountManager
+var aliceData, userAccount
+var session, response
 
-    it('should return an assembled config object from request params', () => {
-      let config = CreateAccountRequest.configFromParams(accountManager, req, res)
-
-      expect(config.accountManager).to.equal(accountManager)
-      expect(config.req).to.equal(req)
-      expect(config.res).to.equal(res)
-
-      expect(config.authMethod).to.exist
-      expect(config.authMethod).to.equal(accountManager.authMethod)
-
-      expect(config.username).to.equal(req.body.username)
-      expect(config.email).to.equal(req.body.email)
-      expect(config.name).to.equal(req.body.name)
-      expect(config.spkac).to.equal(req.body.spkac)
-
-      expect(config.webId).to.equal('https://alice.example.com/profile/card#me')
-
-      // let firstUser = res.locals.firstUser
-      // let emailService = req.app.locals.email
-    })
+beforeEach(() => {
+  host = SolidHost.from({ serverUri: 'https://example.com' })
+  accountManager = AccountManager.from({
+    host,
+    authMethod: 'tls',
+    multiUser: true
   })
 
-  describe('fromParams()', () => {
-    let host = SolidHost.fromConfig({ serverUri: 'https://localhost' })
-    let accountManager = AccountManager.fromConfig({ host, authMethod: 'tls' })
-    let req = {
-      body: { username: 'alice' }
-    }
-    let res = {}
-    // let assembledConfig = CreateAccountRequest.configFromParams(accountManager, req, res)
+  aliceData = {
+    username: 'alice'
+  }
+  userAccount = accountManager.userAccountFrom(aliceData)
 
-    it('should assemble options and call fromConfig()', () => {
-      let fromConfig = sinon.spy(CreateAccountRequest, 'fromConfig')
-      let configFromParams = sinon.spy(CreateAccountRequest, 'configFromParams')
+  session = {}
+  response = HttpMocks.createResponse()
+})
 
-      CreateAccountRequest.fromParams(accountManager, req, res)
+describe('CreateAccountRequest', () => {
+  describe('from()', () => {
+    it('should create an instance with the given config', () => {
+      let config = { accountManager, userAccount, session, response }
+      let request = CreateAccountRequest.from(config)
 
-      expect(fromConfig).to.have.been.called
-      expect(configFromParams).to.have.been.called
+      expect(request.accountManager).to.equal(accountManager)
+      expect(request.userAccount).to.equal(userAccount)
+      expect(request.session).to.equal(session)
+      expect(request.response).to.equal(response)
+    })
 
-      CreateAccountRequest.fromConfig.restore()
-      CreateAccountRequest.configFromParams.restore()
+    it('should create subclass depending on authMethod', () => {
+      let accountManager = AccountManager.from({
+        host,
+        authMethod: 'tls',
+        multiUser: true
+      })
+      let config = { accountManager, userAccount, session, response }
+      let request = CreateAccountRequest.from(config)
+
+      expect(request).to.be.a.CreateTlsAccountRequest
+      expect(request.webidTls).to.exist
     })
   })
 
   describe('createAccount()', () => {
-    let host = SolidHost.fromConfig({ serverUri: 'https://localhost' })
-    let accountManager = AccountManager.fromConfig({ host, authMethod: 'tls' })
-    let req = { body: {} }
-    let res = {}
+    it('should return a UserAccount instance', () => {
+      let config = { accountManager, userAccount, session, response }
+      let request = CreateAccountRequest.from(config)
+
+      return request.createAccount()
+        .then(newUser => {
+          expect(newUser.username).to.equal('alice')
+          expect(newUser.webId).to.equal('https://alice.example.com/profile/card#me')
+        })
+    })
 
     it('should call generateCredentials()', () => {
-      let request = CreateAccountRequest.fromParams(accountManager, req, res)
+      let config = { accountManager, userAccount, session, response }
+      let request = CreateAccountRequest.from(config)
 
       let generateCredentials = sinon.spy(request, 'generateCredentials')
 
@@ -95,7 +84,8 @@ describe('CreateAccountRequest', () => {
     })
 
     it('should call createAccountFolders()', () => {
-      let request = CreateAccountRequest.fromParams(accountManager, req, res)
+      let config = { accountManager, userAccount, session, response }
+      let request = CreateAccountRequest.from(config)
 
       let credentials = 'test creds'
       request.generateCredentials = sinon.stub().returns(credentials)
@@ -108,7 +98,8 @@ describe('CreateAccountRequest', () => {
     })
 
     it('should call initSession()', () => {
-      let request = CreateAccountRequest.fromParams(accountManager, req, res)
+      let config = { accountManager, userAccount, session, response }
+      let request = CreateAccountRequest.from(config)
 
       let initSession = sinon.spy(request, 'initSession')
 
@@ -119,7 +110,8 @@ describe('CreateAccountRequest', () => {
     })
 
     it('should call sendResponse()', () => {
-      let request = CreateAccountRequest.fromParams(accountManager, req, res)
+      let config = { accountManager, userAccount, session, response }
+      let request = CreateAccountRequest.from(config)
 
       let sendResponse = sinon.spy(request, 'sendResponse')
 
@@ -132,30 +124,16 @@ describe('CreateAccountRequest', () => {
 })
 
 describe('CreateTlsAccountRequest', () => {
-  describe('fromConfig()', () => {
-    it('should create subclass depending on authMethod', () => {
-      let config = { authMethod: 'tls' }
-      let request = CreateAccountRequest.fromConfig(config)
-
-      expect(request).to.be.a.CreateTlsAccountRequest
-      expect(request.webidTls).to.exist
-    })
-  })
-
-  describe('createAccount()', () => {
-    let host = SolidHost.fromConfig({ serverUri: 'https://localhost' })
-    let accountManager = AccountManager.fromConfig({ host, authMethod: 'tls' })
-    let req = { body: {} }
-    let res = {}
-
+  describe('generateCredentials()', () => {
     it('should call generateTlsCertificate()', () => {
-      let request = CreateAccountRequest.fromParams(accountManager, req, res)
+      let config = { accountManager, userAccount, session, response }
+      let request = CreateAccountRequest.from(config)
 
       let generateTlsCertificate = sinon.spy(request, 'generateTlsCertificate')
 
-      return request.createAccount()
+      return request.generateCredentials(userAccount)
         .then(() => {
-          expect(generateTlsCertificate).to.have.been.called
+          expect(generateTlsCertificate).to.have.been.calledWith(userAccount)
         })
     })
   })
