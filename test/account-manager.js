@@ -7,7 +7,7 @@ const sinon = require('sinon')
 const sinonChai = require('sinon-chai')
 chai.use(sinonChai)
 chai.should()
-const HttpMocks = require('node-mocks-http')
+// const HttpMocks = require('node-mocks-http')
 
 const LDP = require('../lib/ldp')
 const SolidHost = require('../lib/models/solid-host')
@@ -142,66 +142,6 @@ describe('AccountManager', () => {
           .then(exists => {
             expect(exists).to.be.false
           })
-      })
-    })
-  })
-
-  describe('handleCreateAccount()', () => {
-    let multiUser = true
-    let store = new LDP({ root: testAccountsDir, idp: multiUser })
-
-    it('should call createAccountFor(), and call next() on success', done => {
-      let options = { host, store, multiUser, authMethod: 'tls' }
-      let accountManager = AccountManager.from(options)
-
-      let createAccountFor = sinon.spy(accountManager, 'createAccountFor')
-      let req = {
-        body: { username: 'alice' },
-        session: {}
-      }
-      let res = HttpMocks.createResponse()
-
-      accountManager.handleCreateAccount(req, res, () => {
-        expect(createAccountFor).to.have.been.called
-        done()
-      })
-    })
-
-    it('should call next(error) if an exception occurs in userAccountFrom()', done => {
-      let options = { host, store, multiUser, authMethod: 'tls' }
-      let accountManager = AccountManager.from(options)
-      let req = {
-        body: { username: 'alice' },
-        session: {}
-      }
-      let res = HttpMocks.createResponse()
-
-      accountManager.userAccountFrom = sinon.stub().throws()
-      let createAccountFor = sinon.spy(accountManager, 'createAccountFor')
-
-      accountManager.handleCreateAccount(req, res, (err) => {
-        expect(err.status).to.equal(400)
-        expect(createAccountFor).to.not.have.been.called
-        done()
-      })
-    })
-
-    it('should call next(error) if an exception occurs in createAccountFor()', done => {
-      let options = { host, store, multiUser, authMethod: 'tls' }
-      let accountManager = AccountManager.from(options)
-      let req = {
-        body: { username: 'alice' },
-        session: {}
-      }
-      let res = HttpMocks.createResponse()
-
-      accountManager.createAccountFor = sinon.stub().returns(Promise.reject(new Error()))
-      let userAccountFrom = sinon.spy(accountManager, 'userAccountFrom')
-
-      accountManager.handleCreateAccount(req, res, (err) => {
-        expect(err.status).to.equal(400)
-        expect(userAccountFrom).to.have.been.called
-        done()
       })
     })
   })
