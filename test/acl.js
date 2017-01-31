@@ -69,7 +69,10 @@ describe('ACL HTTP', function () {
 
   function createOptions (path, user) {
     var options = {
-      url: address + path
+      url: address + path,
+      headers: {
+        accept: 'text/turtle'
+      }
     }
     if (user) {
       options.agentOptions = userCredentials[user]
@@ -268,9 +271,8 @@ describe('ACL HTTP', function () {
     })
     it('user1 should be able to access test directory', function (done) {
       var options = createOptions('/acl/origin/test-folder/', 'user1')
-      options.headers = {
-        origin: origin1
-      }
+      options.headers.origin = origin1
+
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 200)
@@ -280,9 +282,8 @@ describe('ACL HTTP', function () {
     it('user1 should be able to access to test directory when origin is valid',
       function (done) {
         var options = createOptions('/acl/origin/test-folder/', 'user1')
-        options.headers = {
-          origin: origin1
-        }
+        options.headers.origin = origin1
+
         request.head(options, function (error, response, body) {
           assert.equal(error, null)
           assert.equal(response.statusCode, 200)
@@ -292,9 +293,8 @@ describe('ACL HTTP', function () {
     it('user1 should be denied access to test directory when origin is invalid',
       function (done) {
         var options = createOptions('/acl/origin/test-folder/', 'user1')
-        options.headers = {
-          origin: origin2
-        }
+        options.headers.origin = origin2
+
         request.head(options, function (error, response, body) {
           assert.equal(error, null)
           assert.equal(response.statusCode, 403)
@@ -303,9 +303,8 @@ describe('ACL HTTP', function () {
       })
     it('agent should be able to access test directory', function (done) {
       var options = createOptions('/acl/origin/test-folder/')
-      options.headers = {
-        origin: origin1
-      }
+      options.headers.origin = origin1
+
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 200)
@@ -315,9 +314,8 @@ describe('ACL HTTP', function () {
     it('agent should be able to access to test directory when origin is valid',
       function (done) {
         var options = createOptions('/acl/origin/test-folder/', 'user1')
-        options.headers = {
-          origin: origin1
-        }
+        options.headers.origin = origin1
+
         request.head(options, function (error, response, body) {
           assert.equal(error, null)
           assert.equal(response.statusCode, 200)
@@ -327,9 +325,8 @@ describe('ACL HTTP', function () {
     it('agent should be denied access to test directory when origin is invalid',
       function (done) {
         var options = createOptions('/acl/origin/test-folder/')
-        options.headers = {
-          origin: origin2
-        }
+        options.headers.origin = origin2
+
         request.head(options, function (error, response, body) {
           assert.equal(error, null)
           assert.equal(response.statusCode, 401)
