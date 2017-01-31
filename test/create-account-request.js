@@ -54,8 +54,7 @@ describe('CreateAccountRequest', () => {
       let config = { accountManager, userAccount, session, response }
       let request = CreateAccountRequest.from(config)
 
-      expect(request).to.be.a.CreateTlsAccountRequest
-      expect(request.webidTls).to.exist
+      expect(request).to.respondTo('generateTlsCertificate')
     })
   })
 
@@ -83,13 +82,13 @@ describe('CreateAccountRequest', () => {
         })
     })
 
-    it('should call createAccountFolders()', () => {
+    it('should call createAccountStorage()', () => {
       let config = { accountManager, userAccount, session, response }
       let request = CreateAccountRequest.from(config)
 
       let credentials = 'test creds'
       request.generateCredentials = sinon.stub().returns(credentials)
-      let createAccountFolders = sinon.spy(request, 'createAccountFolders')
+      let createAccountFolders = sinon.spy(request, 'createAccountStorage')
 
       return request.createAccount()
         .then(() => {
