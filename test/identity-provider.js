@@ -8,7 +8,7 @@ var read = require('./test-utils').read
 var ldnode = require('../index')
 var path = require('path')
 
-describe.skip('Identity Provider', function () {
+describe('Identity Provider', function () {
   this.timeout(10000)
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
@@ -59,7 +59,7 @@ describe.skip('Identity Provider', function () {
     })
   })
 
-  describe('generating a certificate', function () {
+  describe('generating a certificate', () => {
     beforeEach(function () {
       rm('accounts/nicola.localhost')
     })
@@ -67,36 +67,20 @@ describe.skip('Identity Provider', function () {
       rm('accounts/nicola.localhost')
     })
 
-    it('should generate a certificate if spkac is valid', function (done) {
+    it('should generate a certificate if spkac is valid', (done) => {
       var spkac = read('example_spkac.cnf')
       var subdomain = supertest.agent('https://nicola.' + host)
       subdomain.post('/api/accounts/new')
-        .send('username=nicola')
-        .expect(200)
-        .end(function (err, req) {
-          if (err) return done(err)
-
-          subdomain.post('/api/accounts/cert')
-            .send('spkac=' + spkac + '&webid=https%3A%2F%2Fnicola.localhost%3A3457%2Fprofile%2Fcard%23me')
-            .expect('Content-Type', /application\/x-x509-user-cert/)
-            .expect(200)
-            .end(done)
-        })
+        .send('username=nicola&spkac=' + spkac)
+        .expect('Content-Type', /application\/x-x509-user-cert/)
+        .expect(200, done)
     }).timeout(20000)
 
-    it('should not generate a certificate if spkac is not valid', function (done) {
+    it('should not generate a certificate if spkac is not valid', (done) => {
       var subdomain = supertest('https://nicola.' + host)
       subdomain.post('/api/accounts/new')
         .send('username=nicola')
-        .expect(200)
-        .end(function (err) {
-          if (err) return done(err)
-
-          var spkac = ''
-          subdomain.post('/api/accounts/cert')
-            .send('webid=https://nicola.' + host + '/profile/card#me&spkac=' + spkac)
-            .expect(400, done)
-        })
+        .expect(400, done)
     }).timeout(20000)
   })
 
@@ -109,29 +93,28 @@ describe.skip('Identity Provider', function () {
       rm('accounts/nicola.localhost')
     })
 
-    it('should return create WebID if only username is given', function (done) {
-      var subdomain = supertest('https://nicola.' + host)
+    it('should not create WebID if no username is given', (done) => {
+      let subdomain = supertest('https://nicola.' + host)
+      let spkac = read('example_spkac.cnf')
       subdomain.post('/api/accounts/new')
-        .send('username=nicola')
-        .expect(200)
-        .end(function (err) {
-          done(err)
-        })
+        .send('username=&spkac=' + spkac)
+        .expect(400, done)
     })
 
     it('should not create a WebID if it already exists', function (done) {
       var subdomain = supertest('https://nicola.' + host)
+      let spkac = read('example_spkac.cnf')
       subdomain.post('/api/accounts/new')
-        .send('username=nicola')
+        .send('username=nicola&spkac=' + spkac)
         .expect(200)
-        .end(function (err) {
+        .end((err) => {
           if (err) {
             return done(err)
           }
           subdomain.post('/api/accounts/new')
-            .send('username=nicola')
+            .send('username=nicola&spkac=' + spkac)
             .expect(400)
-            .end(function (err) {
+            .end((err) => {
               done(err)
             })
         })
