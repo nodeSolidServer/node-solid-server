@@ -11,9 +11,7 @@ describe('UserAccount', () => {
         username: 'alice',
         webId: 'https://alice.com/#me',
         name: 'Alice',
-        email: 'alice@alice.com',
-        spkac: '123',
-        certificate: '456'
+        email: 'alice@alice.com'
       }
 
       let account = UserAccount.from(options)
@@ -21,8 +19,6 @@ describe('UserAccount', () => {
       expect(account.webId).to.equal(options.webId)
       expect(account.name).to.equal(options.name)
       expect(account.email).to.equal(options.email)
-      expect(account.spkac).to.equal(options.spkac)
-      expect(account.certificate).to.equal(options.certificate)
     })
   })
 })
