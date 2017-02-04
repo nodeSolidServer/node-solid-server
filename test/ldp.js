@@ -68,6 +68,51 @@ describe('LDP', function () {
     })
   })
 
+  describe('getGraph', () => {
+    it('should read and parse an existing file', () => {
+      let uri = 'https://localhost:8443/resources/sampleContainer/example1.ttl'
+      return ldp.getGraph(uri)
+        .then(graph => {
+          assert.ok(graph)
+          let fullname = $rdf.namedNode('http://example.org/stuff/1.0/fullname')
+          let match = graph.match(null, fullname)
+          assert.equal(match[0].object.value, 'Dave Beckett')
+        })
+    })
+
+    it('should throw a 404 error on a non-existing file', (done) => {
+      let uri = 'https://localhost:8443/resources/nonexistent.ttl'
+      ldp.getGraph(uri)
+        .catch(error => {
+          assert.ok(error)
+          assert.equal(error.status, 404)
+          done()
+        })
+    })
+  })
+
+  describe('putGraph', () => {
+    it('should serialize and write a graph to a file', () => {
+      let originalResource = '/resources/sampleContainer/example1.ttl'
+      let newResource = '/resources/sampleContainer/example1-copy.ttl'
+
+      let uri = 'https://localhost:8443' + originalResource
+      return ldp.getGraph(uri)
+        .then(graph => {
+          let newUri = 'https://localhost:8443' + newResource
+          return ldp.putGraph(graph, newUri)
+        })
+        .then(() => {
+          // Graph serialized and written
+          let written = read('sampleContainer/example1-copy.ttl')
+          assert.ok(written)
+        })
+        // cleanup
+        .then(() => { rm('sampleContainer/example1-copy.ttl') })
+        .catch(() => { rm('sampleContainer/example1-copy.ttl') })
+    })
+  })
+
   describe('put', function () {
     it('should write a file in an existing dir', function (done) {
       var stream = stringToStream('hello world')

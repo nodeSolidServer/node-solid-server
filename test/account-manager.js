@@ -9,9 +9,12 @@ chai.use(sinonChai)
 chai.should()
 // const HttpMocks = require('node-mocks-http')
 
+const rdf = require('rdflib')
 const LDP = require('../lib/ldp')
 const SolidHost = require('../lib/models/solid-host')
 const AccountManager = require('../lib/models/account-manager')
+const UserAccount = require('../lib/models/user-account')
+const WebIdTlsCertificate = require('../lib/models/webid-tls-certificate')
 
 const testAccountsDir = path.join(__dirname, 'resources', 'accounts')
 
@@ -146,43 +149,152 @@ describe('AccountManager', () => {
     })
   })
 
-  describe('createAccountFor()', () => {
+  describe('userAccountFrom()', () => {
     describe('in multi user mode', () => {
       let multiUser = true
-      let store = new LDP({ root: testAccountsDir, idp: multiUser })
 
-      it('should return a 400 error if account already exists for username', done => {
-        let options = { host, store, multiUser, authMethod: 'tls' }
+      it('should throw an error if no username is passed', () => {
+        let options = { host, multiUser }
         let accountManager = AccountManager.from(options)
-        let newAccount = accountManager.userAccountFrom({ username: 'alice' })
 
-        accountManager.accountExists = sinon.stub().returns(Promise.resolve(true))
+        expect(() => {
+          accountManager.userAccountFrom({})
+        }).to.throw(Error)
+      })
 
-        accountManager.createAccountFor(newAccount)
-          .catch(err => {
-            expect(err.status).to.equal(400)
-            done()
-          })
+      it('should init webId from param if no username is passed', () => {
+        let options = { host, multiUser }
+        let accountManager = AccountManager.from(options)
+
+        let userData = { webid: 'https://example.com' }
+        let newAccount = accountManager.userAccountFrom(userData)
+        expect(newAccount.webId).to.equal(userData.webid)
       })
     })
 
     describe('in single user mode', () => {
       let multiUser = false
-      let store = new LDP({ root: testAccountsDir, idp: multiUser })
 
-      it('should return a 400 error if account already exists for username', done => {
-        let options = { host, store, multiUser, authMethod: 'tls' }
+      it('should not throw an error if no username is passed', () => {
+        let options = { host, multiUser }
         let accountManager = AccountManager.from(options)
-        let newAccount = accountManager.userAccountFrom({ username: 'alice' })
 
-        accountManager.accountExists = sinon.stub().returns(Promise.resolve(true))
-
-        accountManager.createAccountFor(newAccount)
-          .catch(err => {
-            expect(err.status).to.equal(400)
-            done()
-          })
+        expect(() => {
+          accountManager.userAccountFrom({})
+        }).to.not.throw(Error)
       })
+    })
+  })
+
+  describe('addCertKeyToProfile()', () => {
+    let accountManager, certificate, userAccount, profileGraph
+
+    beforeEach(() => {
+      let options = { host }
+      accountManager = AccountManager.from(options)
+      userAccount = accountManager.userAccountFrom({ username: 'alice' })
+      certificate = WebIdTlsCertificate.fromSpkacPost('1234', userAccount, host)
+      profileGraph = {}
+    })
+
+    it('should fetch the profile graph', () => {
+      accountManager.getProfileGraphFor = sinon.stub().returns(Promise.resolve())
+      accountManager.addCertKeyToGraph = sinon.stub()
+      accountManager.saveProfileGraph = sinon.stub()
+
+      return accountManager.addCertKeyToProfile(certificate, userAccount)
+        .then(() => {
+          expect(accountManager.getProfileGraphFor).to
+            .have.been.calledWith(userAccount)
+        })
+    })
+
+    it('should add the cert key to the account graph', () => {
+      accountManager.getProfileGraphFor = sinon.stub()
+        .returns(Promise.resolve(profileGraph))
+      accountManager.addCertKeyToGraph = sinon.stub()
+      accountManager.saveProfileGraph = sinon.stub()
+
+      return accountManager.addCertKeyToProfile(certificate, userAccount)
+        .then(() => {
+          expect(accountManager.addCertKeyToGraph).to
+            .have.been.calledWith(certificate, profileGraph)
+          expect(accountManager.addCertKeyToGraph).to
+            .have.been.calledAfter(accountManager.getProfileGraphFor)
+        })
+    })
+
+    it('should save the modified graph to the profile doc', () => {
+      accountManager.getProfileGraphFor = sinon.stub()
+        .returns(Promise.resolve(profileGraph))
+      accountManager.addCertKeyToGraph = sinon.stub()
+        .returns(Promise.resolve(profileGraph))
+      accountManager.saveProfileGraph = sinon.stub()
+
+      return accountManager.addCertKeyToProfile(certificate, userAccount)
+        .then(() => {
+          expect(accountManager.saveProfileGraph).to
+            .have.been.calledWith(profileGraph, userAccount)
+          expect(accountManager.saveProfileGraph).to
+            .have.been.calledAfter(accountManager.addCertKeyToGraph)
+        })
+    })
+  })
+
+  describe('getProfileGraphFor()', () => {
+    it('should throw an error if webId is missing', (done) => {
+      let emptyUserData = {}
+      let userAccount = UserAccount.from(emptyUserData)
+      let options = { host, multiUser: true }
+      let accountManager = AccountManager.from(options)
+
+      accountManager.getProfileGraphFor(userAccount)
+        .catch(error => {
+          expect(error.message).to
+            .equal('Cannot fetch profile graph, missing WebId URI')
+          done()
+        })
+    })
+
+    it('should fetch the profile graph via LDP store', () => {
+      let store = {
+        getGraph: sinon.stub().returns(Promise.resolve())
+      }
+      let webId = 'https://alice.example.com/#me'
+      let profileHostUri = 'https://alice.example.com/'
+
+      let userData = { webId }
+      let userAccount = UserAccount.from(userData)
+      let options = { host, multiUser: true, store }
+      let accountManager = AccountManager.from(options)
+
+      expect(userAccount.webId).to.equal(webId)
+
+      return accountManager.getProfileGraphFor(userAccount)
+        .then(() => {
+          expect(store.getGraph).to.have.been.calledWith(profileHostUri)
+        })
+    })
+  })
+
+  describe('saveProfileGraph()', () => {
+    it('should save the profile graph via the LDP store', () => {
+      let store = {
+        putGraph: sinon.stub().returns(Promise.resolve())
+      }
+      let webId = 'https://alice.example.com/#me'
+      let profileHostUri = 'https://alice.example.com/'
+
+      let userData = { webId }
+      let userAccount = UserAccount.from(userData)
+      let options = { host, multiUser: true, store }
+      let accountManager = AccountManager.from(options)
+      let profileGraph = rdf.graph()
+
+      return accountManager.saveProfileGraph(profileGraph, userAccount)
+        .then(() => {
+          expect(store.putGraph).to.have.been.calledWith(profileGraph, profileHostUri)
+        })
     })
   })
 })
