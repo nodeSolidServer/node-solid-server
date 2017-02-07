@@ -84,7 +84,7 @@ describe('Identity Provider', function () {
     }).timeout(20000)
   })
 
-  describe('creating an account with POST', function () {
+  describe.skip('creating an account with POST', function () {
     beforeEach(function () {
       rm('accounts/nicola.localhost')
     })
