@@ -1,6 +1,5 @@
 'use strict'
 
-// const path = require('path')
 const chai = require('chai')
 const expect = chai.expect
 const sinon = require('sinon')
@@ -13,8 +12,6 @@ const LDP = require('../lib/ldp')
 const AccountManager = require('../lib/models/account-manager')
 const SolidHost = require('../lib/models/solid-host')
 const { CreateAccountRequest } = require('../lib/requests/create-account-request')
-
-// const testAccountsDir = path.join(__dirname, 'resources', 'accounts')
 
 var host, store, accountManager
 var aliceData, userAccount
