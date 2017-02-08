@@ -20,6 +20,7 @@ describe('Utility functions', function () {
       assert.equal(utils.pathBasename(undefined), '')
     })
   })
+
   describe('uriToFilename', function () {
     it('should decode hex-encoded space', function () {
       assert.equal(utils.uriToFilename('uri%20', 'base/'), 'base/uri ')
@@ -29,6 +30,23 @@ describe('Utility functions', function () {
     })
     it('should decode hex-encoded single quote', function () {
       assert.equal(utils.uriToFilename('quote%27', 'base/'), 'base/quote\'')
+    })
+  })
+
+  describe('stripLineEndings()', () => {
+    it('should pass through falsy string arguments', () => {
+      assert.equal(utils.stripLineEndings(''), '')
+      assert.equal(utils.stripLineEndings(null), null)
+      assert.equal(utils.stripLineEndings(undefined), undefined)
+    })
+
+    it('should remove line-endings characters', () => {
+      let str = '123\n456'
+      assert.equal(utils.stripLineEndings(str), '123456')
+
+      str = `123
+456`
+      assert.equal(utils.stripLineEndings(str), '123456')
     })
   })
 })

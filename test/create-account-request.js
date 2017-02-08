@@ -80,8 +80,12 @@ describe('CreateAccountRequest', () => {
     it('should return a UserAccount instance', () => {
       let multiUser = true
       let accountManager = AccountManager.from({ host, store, multiUser })
+      accountManager.accountExists = sinon.stub().returns(Promise.resolve(false))
+      accountManager.createAccountFor = sinon.stub().returns(Promise.resolve())
+
       let request = CreateAccountRequest.fromParams(req, res, accountManager)
 
+      request.sendResponse = sinon.stub()
       request.generateCredentials = (userAccount) => {
         return Promise.resolve(userAccount)
       }
@@ -95,11 +99,15 @@ describe('CreateAccountRequest', () => {
 
     it('should call generateCredentials()', () => {
       let accountManager = AccountManager.from({ host, store })
+      accountManager.accountExists = sinon.stub().returns(Promise.resolve(false))
+      accountManager.createAccountFor = sinon.stub().returns(Promise.resolve())
+
       let request = CreateAccountRequest.fromParams(req, res, accountManager)
 
       request.generateCredentials = (userAccount) => {
         return Promise.resolve(userAccount)
       }
+      request.sendResponse = sinon.stub()
       let generateCredentials = sinon.spy(request, 'generateCredentials')
 
       return request.createAccount()
@@ -110,11 +118,15 @@ describe('CreateAccountRequest', () => {
 
     it('should call createAccountStorage()', () => {
       let accountManager = AccountManager.from({ host, store })
+      accountManager.accountExists = sinon.stub().returns(Promise.resolve(false))
+      accountManager.createAccountFor = sinon.stub().returns(Promise.resolve())
+
       let request = CreateAccountRequest.fromParams(req, res, accountManager)
 
       request.generateCredentials = (userAccount) => {
         return Promise.resolve(userAccount)
       }
+      request.sendResponse = sinon.stub()
       let createAccountStorage = sinon.spy(request, 'createAccountStorage')
 
       return request.createAccount()
@@ -125,11 +137,15 @@ describe('CreateAccountRequest', () => {
 
     it('should call initSession()', () => {
       let accountManager = AccountManager.from({ host, store })
+      accountManager.accountExists = sinon.stub().returns(Promise.resolve(false))
+      accountManager.createAccountFor = sinon.stub().returns(Promise.resolve())
+
       let request = CreateAccountRequest.fromParams(req, res, accountManager)
 
       request.generateCredentials = (userAccount) => {
         return Promise.resolve(userAccount)
       }
+      request.sendResponse = sinon.stub()
       let initSession = sinon.spy(request, 'initSession')
 
       return request.createAccount()
@@ -140,16 +156,19 @@ describe('CreateAccountRequest', () => {
 
     it('should call sendResponse()', () => {
       let accountManager = AccountManager.from({ host, store })
+      accountManager.accountExists = sinon.stub().returns(Promise.resolve(false))
+      accountManager.createAccountFor = sinon.stub().returns(Promise.resolve())
+
       let request = CreateAccountRequest.fromParams(req, res, accountManager)
 
       request.generateCredentials = (userAccount) => {
         return Promise.resolve(userAccount)
       }
-      let sendResponse = sinon.spy(request, 'sendResponse')
+      request.sendResponse = sinon.stub()
 
       return request.createAccount()
         .then(() => {
-          expect(sendResponse).to.have.been.called
+          expect(request.sendResponse).to.have.been.called
         })
     })
   })

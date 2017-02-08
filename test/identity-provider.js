@@ -84,7 +84,7 @@ describe('Identity Provider', function () {
     }).timeout(20000)
   })
 
-  describe.skip('creating an account with POST', function () {
+  describe('creating an account with POST', function () {
     beforeEach(function () {
       rm('accounts/nicola.localhost')
     })
@@ -122,8 +122,9 @@ describe('Identity Provider', function () {
 
     it('should create the default folders', function (done) {
       var subdomain = supertest('https://nicola.' + host)
+      let spkac = read('example_spkac.cnf')
       subdomain.post('/api/accounts/new')
-        .send('username=nicola')
+        .send('username=nicola&spkac=' + spkac)
         .expect(200)
         .end(function (err) {
           if (err) {
@@ -153,8 +154,9 @@ describe('Identity Provider', function () {
 
     it('should link WebID to the root account', function (done) {
       var subdomain = supertest('https://nicola.' + host)
+      let spkac = read('example_spkac.cnf')
       subdomain.post('/api/accounts/new')
-        .send('username=nicola')
+        .send('username=nicola&spkac=' + spkac)
         .expect(200)
         .end(function (err) {
           if (err) {

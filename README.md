@@ -145,6 +145,7 @@ $ solid start --help
     -h, --help              output usage information
     --root [value]          Root folder to serve (defaut: './')
     --port [value]          Port to use (default: '8443')
+    --serverUri [value]     Solid server uri (default: 'https://localhost:8443')
     --webid                 Enable WebID authentication and access control (uses HTTPS. default: true)
     --owner [value]         Set the owner of the storage (overwrites the root ACL file)
     --ssl-key [value]       Path to the SSL private key in PEM format

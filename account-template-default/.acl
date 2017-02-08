@@ -4,11 +4,10 @@
 <#owner>
     a acl:Authorization;
 
-    acl:agent
-        <{{webId}}>;
+    acl:agent <{{webId}}> ;
 
     # Optional owner email, to be used for account recovery:
-    {{accountMailto}}
+    {{{accountMailto}}}
 
     # Set the access to the root storage folder itself
     acl:accessTo </>;
