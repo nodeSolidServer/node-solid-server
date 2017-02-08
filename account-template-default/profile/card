@@ -13,7 +13,7 @@
     a foaf:Person ;
     a schema:Person ;
 
-    foaf:name {{name}} ;
+    foaf:name "{{name}}" ;
 
     solid:account </> ;  # link to the account uri
     pim:storage </> ;    # root storage

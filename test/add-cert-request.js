@@ -64,7 +64,7 @@ describe('AddCertificateRequest', () => {
 
       return AddCertificateRequest.addCertificate(request)
         .then(() => {
-          expect(certSpy).to.have.been.calledWith(request.userAccount, host)
+          expect(certSpy).to.have.been.called
         })
     })
   })

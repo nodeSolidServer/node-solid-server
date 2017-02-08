@@ -3,6 +3,7 @@
 const expect = require('chai').expect
 
 const SolidHost = require('../lib/models/solid-host')
+const defaults = require('../config/defaults')
 
 describe('SolidHost', () => {
   describe('from()', () => {
@@ -20,8 +21,8 @@ describe('SolidHost', () => {
 
     it('should init to default port and serverUri values', () => {
       let host = SolidHost.from({})
-      expect(host.port).to.equal(SolidHost.DEFAULT_PORT)
-      expect(host.serverUri).to.equal(SolidHost.DEFAULT_URI)
+      expect(host.port).to.equal(defaults.DEFAULT_PORT)
+      expect(host.serverUri).to.equal(defaults.DEFAULT_URI)
     })
   })
 

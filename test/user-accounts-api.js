@@ -15,7 +15,7 @@ const AccountManager = require('../lib/models/account-manager')
 const { CreateAccountRequest } = require('../lib/requests/create-account-request')
 const testAccountsDir = path.join(__dirname, 'resources', 'accounts')
 
-const api = require('../lib/api/accounts/user-accounts-api')
+const api = require('../lib/api/accounts/user-accounts')
 
 var host
 
