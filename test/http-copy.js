@@ -11,15 +11,13 @@ describe('HTTP COPY API', function () {
   this.timeout(10000)
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
-  var address = 'https://localhost:3456/test'
+  var address = 'https://localhost:3456'
 
   var ldpHttpsServer
   var ldp = solidServer.createServer({
-    mount: '/test',
-    root: path.join(__dirname, '/resources'),
+    root: path.join(__dirname, 'resources/accounts/localhost/'),
     sslKey: path.join(__dirname, '/keys/key.pem'),
-    sslCert: path.join(__dirname, '/keys/cert.pem'),
-    webid: true
+    sslCert: path.join(__dirname, '/keys/cert.pem')
   })
 
   before(function (done) {
@@ -30,7 +28,7 @@ describe('HTTP COPY API', function () {
     if (ldpHttpsServer) ldpHttpsServer.close()
     // Clean up after COPY API tests
     return Promise.all([
-      rm('/resources/sampleUser1Container/nicola-copy.jpg')
+      rm('/accounts/localhost/sampleUser1Container/nicola-copy.jpg')
     ])
   })
 
@@ -58,8 +56,8 @@ describe('HTTP COPY API', function () {
   }
 
   it('should create the copied resource', function (done) {
-    var copyFrom = '/resources/samplePublicContainer/nicola.jpg'
-    var copyTo = '/resources/sampleUser1Container/nicola-copy.jpg'
+    var copyFrom = '/samplePublicContainer/nicola.jpg'
+    var copyTo = '/sampleUser1Container/nicola-copy.jpg'
     var uri = address + copyTo
     var options = createOptions('COPY', uri, 'user1')
     options.headers[ 'Source' ] = copyFrom
@@ -67,7 +65,7 @@ describe('HTTP COPY API', function () {
       assert.equal(error, null)
       assert.equal(response.statusCode, 201)
       assert.equal(response.headers[ 'location' ], copyTo)
-      let destinationPath = path.join(__dirname, 'resources', copyTo)
+      let destinationPath = path.join(__dirname, 'resources/accounts/localhost', copyTo)
       assert.ok(fs.existsSync(destinationPath),
         'Resource created via COPY should exist')
       done()
@@ -75,8 +73,8 @@ describe('HTTP COPY API', function () {
   })
 
   it('should give a 404 if source document doesn\'t exist', function (done) {
-    var copyFrom = '/resources/samplePublicContainer/invalid-resource'
-    var copyTo = '/resources/sampleUser1Container/invalid-resource-copy'
+    var copyFrom = '/samplePublicContainer/invalid-resource'
+    var copyTo = '/sampleUser1Container/invalid-resource-copy'
     var uri = address + copyTo
     var options = createOptions('COPY', uri, 'user1')
     options.headers[ 'Source' ] = copyFrom
@@ -88,7 +86,7 @@ describe('HTTP COPY API', function () {
   })
 
   it('should give a 400 if Source header is not supplied', function (done) {
-    var copyTo = '/resources/sampleUser1Container/nicola-copy.jpg'
+    var copyTo = '/sampleUser1Container/nicola-copy.jpg'
     var uri = address + copyTo
     var options = createOptions('COPY', uri, 'user1')
     request(uri, options, function (error, response) {
