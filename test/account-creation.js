@@ -2,13 +2,11 @@ var supertest = require('supertest')
 // Helper functions for the FS
 var rm = require('./test-utils').rm
 var $rdf = require('rdflib')
-// var write = require('./test-utils').write
-// var cp = require('./test-utils').cp
 var read = require('./test-utils').read
 var ldnode = require('../index')
 var path = require('path')
 
-describe('Identity Provider', function () {
+describe('AccountManager (account creation tests)', function () {
   this.timeout(10000)
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
@@ -80,7 +78,14 @@ describe('Identity Provider', function () {
       var subdomain = supertest('https://nicola.' + host)
       subdomain.post('/api/accounts/new')
         .send('username=nicola')
-        .expect(400, done)
+        .expect(200)
+        .end((err) => {
+          if (err) return done(err)
+
+          subdomain.post('/api/accounts/cert')
+            .send('username=nicola&spkac=')
+            .expect(400, done)
+        })
     }).timeout(20000)
   })
 
