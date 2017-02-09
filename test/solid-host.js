@@ -41,4 +41,22 @@ describe('SolidHost', () => {
       expect(() => { host.accountUriFor() }).to.throw(TypeError)
     })
   })
+
+  describe('cookieDomain getter', () => {
+    it('should return null for single-part domains (localhost)', () => {
+      let host = SolidHost.from({
+        serverUri: 'https://localhost:8443'
+      })
+
+      expect(host.cookieDomain).to.be.null
+    })
+
+    it('should return a cookie domain for multi-part domains', () => {
+      let host = SolidHost.from({
+        serverUri: 'https://example.com:8443'
+      })
+
+      expect(host.cookieDomain).to.equal('.example.com')
+    })
+  })
 })
