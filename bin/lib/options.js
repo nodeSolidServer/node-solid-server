@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+const validUrl = require('valid-url')
 
 module.exports = [
   // {
@@ -293,7 +294,7 @@ function validPath (value) {
 }
 
 function validUri (value) {
-  if (!value || !value.startsWith('http')) {
+  if (!validUrl.isUri(value)) {
     return 'Enter a valid uri (with protocol)'
   }
   return true
