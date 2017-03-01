@@ -5,3 +5,5 @@
   a pim:ConfigurationFile;
 
   dct:title "Preferences file" .
+
+{{#if email}}<{{webId}}> foaf:mbox <mailto:{{{email}}}> .{{/if}}
