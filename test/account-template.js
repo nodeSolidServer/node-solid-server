@@ -75,7 +75,7 @@ describe('AccountTemplate', () => {
 
       let substitutions = AccountTemplate.templateSubstitutionsFor(userAccount)
       expect(substitutions.name).to.equal('Alice Q.')
-      expect(substitutions.accountMailto).to.equal('acl:agent <mailto:alice@example.com> ;')
+      expect(substitutions.email).to.equal('alice@example.com')
       expect(substitutions.webId).to.equal('https://alice.example.com/profile/card#me')
     })
   })
@@ -84,7 +84,7 @@ describe('AccountTemplate', () => {
     it('should process all the files in an account', () => {
       let substitutions = {
         webId: 'https://alice.example.com/#me',
-        accountMailto: 'acl:agent <mailto:alice@example.com> ;',
+        email: 'alice@example.com',
         name: 'Alice Q.'
       }
       let template = new AccountTemplate({ substitutions })
