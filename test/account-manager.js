@@ -42,6 +42,11 @@ describe('AccountManager', () => {
       expect(mgr.store).to.equal(config.store)
       expect(mgr.emailService).to.equal(config.emailService)
     })
+
+    it('should error if no host param is passed in', () => {
+      expect(() => { AccountManager.from() })
+        .to.throw(/AccountManager requires a host instance/)
+    })
   })
 
   describe('accountUriFor', () => {

@@ -10,3 +10,5 @@ config/account-template
 /.acl
 /config.json
 /settings
+.nyc_output
+coverage
