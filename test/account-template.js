@@ -11,7 +11,7 @@ chai.should()
 const AccountTemplate = require('../lib/models/account-template')
 const UserAccount = require('../lib/models/user-account')
 
-const templatePath = path.join(__dirname, '../account-template-default')
+const templatePath = path.join(__dirname, '../default-account-template')
 const accountPath = path.join(__dirname, 'resources', 'new-account')
 
 describe('AccountTemplate', () => {

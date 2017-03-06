@@ -1,31 +1,58 @@
-const EmailService = require('../lib/email-service')
+const EmailService = require('../lib/models/email-service')
 const sinon = require('sinon')
-const expect = require('chai').expect
+const chai = require('chai')
+const expect = chai.expect
+const sinonChai = require('sinon-chai')
+chai.use(sinonChai)
+chai.should()
 
 describe('Email Service', function () {
-  let email, transport
+  describe('EmailService constructor', () => {
+    it('should set up a nodemailer instance', () => {
+      let config = {
+        host: 'smtp.gmail.com',
+        auth: {
+          user: 'alice@gmail.com',
+          pass: '12345'
+        }
+      }
 
-  beforeEach(() => {
-    transport = {
-      name: 'testsend',
-      version: '1',
-      send: function (data, callback) {
-        callback()
-      },
-      logger: false
-    }
-    email = new EmailService(transport)
+      let emailService = new EmailService(config)
+      expect(emailService.mailer.options.host).to.equal('smtp.gmail.com')
+      expect(emailService.mailer).to.respondTo('sendMail')
+    })
+
+    it('should init a sender address if explicitly passed in', () => {
+      let sender = 'Solid Server <solid@databox.me>'
+      let config = { host: 'smtp.gmail.com', auth: {}, sender }
+
+      let emailService = new EmailService(config)
+      expect(emailService.sender).to.equal(sender)
+    })
+
+    it('should construct a default sender if not passed in', () => {
+      let config = { host: 'databox.me', auth: {} }
+
+      let emailService = new EmailService(config)
+
+      expect(emailService.sender).to.equal('no-reply@databox.me')
+    })
   })
 
-  it('should send emails', (done) => {
-    sinon.stub(transport, 'send').yields(null, 'bep bop')
+  describe('sendMail()', () => {
+    it('passes through the sendMail call to the initialized mailer', () => {
+      let sendMail = sinon.stub().returns(Promise.resolve())
+      let config = { host: 'databox.me', auth: {} }
+      let emailService = new EmailService(config)
 
-    email.sendMail({
-      subject: 'test'
-    }, function (err, info) {
-      expect(err).to.not.exist
-      expect(info).to.equal('bep bop')
-      done()
+      emailService.mailer.sendMail = sendMail
+
+      let email = { subject: 'Test' }
+
+      return emailService.sendMail(email)
+        .then(() => {
+          expect(sendMail).to.have.been.calledWith(email)
+        })
     })
   })
 })
