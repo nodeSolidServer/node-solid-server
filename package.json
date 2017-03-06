@@ -54,7 +54,7 @@
     "moment": "^2.13.0",
     "negotiator": "^0.6.0",
     "node-forge": "^0.6.38",
-    "nodemailer": "^2.3.2",
+    "nodemailer": "^3.1.4",
     "nomnom": "^1.8.1",
     "rdflib": "^0.12.3",
     "recursive-readdir": "^2.1.0",
