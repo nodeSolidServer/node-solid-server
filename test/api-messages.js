@@ -5,7 +5,7 @@ const hippie = require('hippie')
 const fs = require('fs')
 // In this test we always assume that we are Alice
 
-describe('Messages API', () => {
+describe.skip('Messages API', () => {
   let aliceServer
 
   const bobCert = {
