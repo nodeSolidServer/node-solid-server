@@ -1,9 +1,7 @@
 # solid-server in Node
 
 [![](https://img.shields.io/badge/project-Solid-7C4DFF.svg?style=flat-square)](https://github.com/solid/solid)
-[![Build Status](https://travis-ci.org/solid/node-solid-server.svg?branch=master&style=flat-square)](https://travis-ci.org/solid/node-solid-server)
-[![NPM Version](https://img.shields.io/npm/v/solid-server.svg?style=flat-square)](https://npm.im/solid-server)
-[![Gitter chat](https://img.shields.io/badge/gitter-join%20chat%20%E2%86%92-brightgreen.svg?style=flat-square)](http://gitter.im/solid/node-solid-server)
+[![Build Status](https://travis-ci.org/dmitrizagidulin/solid-server-unstable.svg?branch=master&style=flat-square)](https://travis-ci.org/dmitrizagidulin/solid-server-unstable)
 
 > [Solid](https://github.com/solid) server in [NodeJS](https://nodejs.org/)
 
