@@ -1,13 +1,31 @@
 # solid-server in Node
 
 [![](https://img.shields.io/badge/project-Solid-7C4DFF.svg?style=flat-square)](https://github.com/solid/solid)
-[![Build Status](https://travis-ci.org/solid/node-solid-server.svg?branch=master&style=flat-square)](https://travis-ci.org/solid/node-solid-server)
-[![NPM Version](https://img.shields.io/npm/v/solid-server.svg?style=flat-square)](https://npm.im/solid-server)
-[![Gitter chat](https://img.shields.io/badge/gitter-join%20chat%20%E2%86%92-brightgreen.svg?style=flat-square)](http://gitter.im/solid/node-solid-server)
+[![Build Status](https://travis-ci.org/dmitrizagidulin/solid-server-unstable.svg?branch=master&style=flat-square)](https://travis-ci.org/dmitrizagidulin/solid-server-unstable)
 
 > [Solid](https://github.com/solid) server in [NodeJS](https://nodejs.org/)
 
 `solid-server` lets you run a Solid server on top of the file-system. You can use it as a [command-line tool](https://github.com/solid/node-solid-server/blob/master/README.md#command-line-usage) (easy) or as a [library](https://github.com/solid/node-solid-server/blob/master/README.md#library-usage) (advanced).
+
+## About Solid Server Unstable
+
+`solid-server-unstable` is meant as a personal sandbox to test out in-progress
+unstable features that are awaiting code review and PR merging in the upstream
+repo ([`node-solid-server`](https://github.com/solid/node-solid-server)).
+
+Think of it as Firefox Nightly builds or Debian Sid.
+
+### Differences from Solid Stable / Upstream
+
+- [x] Account Management Refactor branch
+  ([PR #482](https://github.com/solid/node-solid-server/pull/492)) is merged
+  into master.
+- [x] The OpenID Connect Authentication branch
+  ([PR #330](https://github.com/solid/node-solid-server/pull/330)) is
+  merged into master.
+- [ ] LDP Refactor to use custom Backend/Stores branch
+  ([PR #484](https://github.com/solid/node-solid-server/pull/484)) is in
+  progress.
 
 ## Solid Features supported
 - [x] [Linked Data Platform](http://www.w3.org/TR/ldp/)
@@ -145,6 +163,7 @@ $ solid start --help
     -h, --help              output usage information
     --root [value]          Root folder to serve (defaut: './')
     --port [value]          Port to use (default: '8443')
+    --serverUri [value]     Solid server uri (default: 'https://localhost:8443')
     --webid                 Enable WebID authentication and access control (uses HTTPS. default: true)
     --owner [value]         Set the owner of the storage (overwrites the root ACL file)
     --ssl-key [value]       Path to the SSL private key in PEM format

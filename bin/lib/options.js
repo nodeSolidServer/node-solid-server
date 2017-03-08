@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+const validUrl = require('valid-url')
 
 module.exports = [
   // {
@@ -23,6 +24,14 @@ module.exports = [
     prompt: true
   },
   {
+    name: 'serverUri',
+    question: 'Solid server uri (with protocol, hostname and port)',
+    help: "Solid server uri (default: 'https://localhost:8443')",
+    default: 'https://localhost:8443',
+    validate: validUri,
+    prompt: true
+  },
+  {
     name: 'webid',
     help: 'Enable WebID authentication and access control (uses HTTPS)',
     flag: true,
@@ -43,14 +52,13 @@ module.exports = [
     question: 'Select authentication strategy',
     type: 'list',
     choices: [
-      'WebID-TLS',
-      'WebID-OpenID Connect'
+      'WebID-OpenID Connect',
+      'WebID-TLS'
     ],
     prompt: true,
-    default: 'WebID-TLS',
+    default: 'WebID-OpenID Connect',
     filter: (value) => {
       if (value === 'WebID-TLS') return 'tls'
-      if (value === 'WebID-OpenID Connect') return 'oidc'
     },
     when: (answers) => {
       return answers.webid
@@ -67,6 +75,7 @@ module.exports = [
     name: 'owner',
     help: 'Set the owner of the storage (overwrites the root ACL file)',
     question: 'Your webid (to overwrite the root ACL with)',
+    prompt: false,
     validate: function (value) {
       if (value === '' || !value.startsWith('http')) {
         return 'Enter a valid Webid'
@@ -283,4 +292,11 @@ function validPath (value) {
       return resolve(true)
     })
   })
+}
+
+function validUri (value) {
+  if (!validUrl.isUri(value)) {
+    return 'Enter a valid uri (with protocol)'
+  }
+  return true
 }

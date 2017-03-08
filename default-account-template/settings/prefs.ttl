@@ -1,0 +1,9 @@
+@prefix dct: <http://purl.org/dc/terms/>.
+@prefix pim: <http://www.w3.org/ns/pim/space#>.
+
+<>
+  a pim:ConfigurationFile;
+
+  dct:title "Preferences file" .
+
+{{#if email}}<{{webId}}> foaf:mbox <mailto:{{{email}}}> .{{/if}}
