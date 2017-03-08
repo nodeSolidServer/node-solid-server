@@ -9,9 +9,7 @@ chai.should()
 const HttpMocks = require('node-mocks-http')
 const url = require('url')
 
-// const defaults = require('../../config/defaults')
 const {
-  // LoginRequest,
   LoginByPasswordRequest
 } = require('../../lib/requests/login-request')
 
