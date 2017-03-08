@@ -9,6 +9,26 @@
 
 `solid-server` lets you run a Solid server on top of the file-system. You can use it as a [command-line tool](https://github.com/solid/node-solid-server/blob/master/README.md#command-line-usage) (easy) or as a [library](https://github.com/solid/node-solid-server/blob/master/README.md#library-usage) (advanced).
 
+## About Solid Server Unstable
+
+`solid-server-unstable` is meant as a personal sandbox to test out in-progress
+unstable features that are awaiting code review and PR merging in the upstream
+repo ([`node-solid-server`](https://github.com/solid/node-solid-server)).
+
+Think of it as Firefox Nightly builds or Debian Sid.
+
+### Differences from Solid Stable / Upstream
+
+- [x] Account Management Refactor branch
+  ([PR #482](https://github.com/solid/node-solid-server/pull/492)) is merged
+  into master.
+- [x] The OpenID Connect Authentication branch
+  ([PR #330](https://github.com/solid/node-solid-server/pull/330)) is
+  merged into master.
+- [ ] LDP Refactor to use custom Backend/Stores branch
+  ([PR #484](https://github.com/solid/node-solid-server/pull/484)) is in
+  progress.
+
 ## Solid Features supported
 - [x] [Linked Data Platform](http://www.w3.org/TR/ldp/)
 - [x] [Web Access Control](http://www.w3.org/wiki/WebAccessControl)
