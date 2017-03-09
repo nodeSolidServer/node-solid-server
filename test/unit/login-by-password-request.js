@@ -142,18 +142,18 @@ describe('LoginByPasswordRequest', () => {
         })
     })
 
-    it('should call redirectToAuthorize()', () => {
+    it('should call redirectPostLogin()', () => {
       let validUser = {}
       let request = new LoginByPasswordRequest({ userStore, accountManager, response })
 
       request.validate = sinon.stub()
       request.findValidUser = sinon.stub().returns(Promise.resolve(validUser))
 
-      let redirectToAuthorize = sinon.spy(request, 'redirectToAuthorize')
+      let redirectPostLogin = sinon.spy(request, 'redirectPostLogin')
 
       return LoginByPasswordRequest.login(request)
         .then(() => {
-          expect(redirectToAuthorize).to.have.been.called
+          expect(redirectPostLogin).to.have.been.calledWith(validUser)
         })
     })
   })
@@ -391,19 +391,65 @@ describe('LoginByPasswordRequest', () => {
     })
   })
 
-  describe('redirectToAuthorize()', () => {
-    it('should redirect to the /authorize url', () => {
+  describe('redirectPostLogin()', () => {
+    it('should redirect to the /authorize url if redirect_uri is present', () => {
       let res = HttpMocks.createResponse()
       let authUrl = 'https://localhost/authorize?client_id=123'
+      let validUser = accountManager.userAccountFrom({ username: 'alice' })
 
-      let request = new LoginByPasswordRequest({ accountManager, response: res })
+      let authQueryParams = {
+        redirect_uri: 'https://app.example.com/callback'
+      }
+
+      let options = { accountManager, authQueryParams, response: res }
+      let request = new LoginByPasswordRequest(options)
 
       request.authorizeUrl = sinon.stub().returns(authUrl)
 
-      request.redirectToAuthorize()
+      request.redirectPostLogin(validUser)
 
       expect(res.statusCode).to.equal(302)
       expect(res._getRedirectUrl()).to.equal(authUrl)
     })
+  })
+
+  it('should redirect to account uri if no redirect_uri present', () => {
+    let res = HttpMocks.createResponse()
+    let authUrl = 'https://localhost/authorize?client_id=123'
+    let validUser = accountManager.userAccountFrom({ username: 'alice' })
+
+    let authQueryParams = {}
+
+    let options = { accountManager, authQueryParams, response: res }
+    let request = new LoginByPasswordRequest(options)
+
+    request.authorizeUrl = sinon.stub().returns(authUrl)
+
+    request.redirectPostLogin(validUser)
+
+    let expectedUri = accountManager.accountUriFor('alice')
+    expect(res.statusCode).to.equal(302)
+    expect(res._getRedirectUrl()).to.equal(expectedUri)
+  })
+
+  it('should redirect to account uri if redirect_uri is string "undefined', () => {
+    let res = HttpMocks.createResponse()
+    let authUrl = 'https://localhost/authorize?client_id=123'
+    let validUser = accountManager.userAccountFrom({ username: 'alice' })
+
+    let body = { redirect_uri: 'undefined' }
+
+    let options = { accountManager, response: res }
+    let request = new LoginByPasswordRequest(options)
+    request.authQueryParams = LoginByPasswordRequest.extractQueryParams(body)
+
+    request.authorizeUrl = sinon.stub().returns(authUrl)
+
+    request.redirectPostLogin(validUser)
+
+    let expectedUri = accountManager.accountUriFor('alice')
+
+    expect(res.statusCode).to.equal(302)
+    expect(res._getRedirectUrl()).to.equal(expectedUri)
   })
 })
