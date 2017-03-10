@@ -14,7 +14,7 @@
  */
 function render (data) {
   return {
-    subject: `Welcome to Solid`,
+    subject: 'Welcome to Solid',
 
     /**
      * Text version of the Welcome email
