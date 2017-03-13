@@ -1,5 +1,15 @@
 # History
 
+## 3.5.0
+
+- Major refactoring of Account Creation classes (new account resources are now
+  initialized from a customizable account directory template)
+- Disable crashing `verifyDelegator()` code in `allow()` handler
+- Add support for HTTP COPY of external resources
+- Fix URI encoding in file listing and decoding to get file names
+- Fix issue where requesting a different format (e.g. `text/turtle`) of a
+  JSON-LD resource crashed the server
+
 ## 3.4.0
 
 - Fix handling/url-encoding of container names
