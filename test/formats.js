@@ -1,6 +1,7 @@
 var supertest = require('supertest')
 var ldnode = require('../index')
 var path = require('path')
+var assert = require('chai').assert
 
 describe('formats', function () {
   var ldp = ldnode.createServer({
@@ -23,6 +24,15 @@ describe('formats', function () {
       // This would throw an error
       JSON.parse(res.text)
     }
+
+    var isCorrectSubject = function (idFragment) {
+      return function (res) {
+        var payload = JSON.parse(res.text)
+        var id = payload[0]['@id']
+        assert(id.endsWith(idFragment), 'The subject of the JSON-LD graph is correct')
+      }
+    }
+
     it('should return JSON-LD document if Accept is set to only application/ld+json', function (done) {
       server.get('/patch-5-initial.ttl')
         .set('accept', 'application/ld+json')
@@ -47,6 +57,7 @@ describe('formats', function () {
       server.get('/patch-5-initial.ttl')
         .set('accept', 'application/ld+json;q=0.9,application/rdf+xml;q=0.7')
         .expect('content-type', /application\/ld\+json/)
+        .expect(isCorrectSubject('/patch-5-initial.ttl#Iss1408851516666'))
         .expect(200, done)
     })
     it('should return valid JSON if Accept is set to JSON-LD', function (done) {
