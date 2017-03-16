@@ -11,9 +11,7 @@ const SolidHost = require('../../lib/models/solid-host')
 const AccountManager = require('../../lib/models/account-manager')
 
 const testAccountsDir = path.join(__dirname, '../resources/accounts')
-const accountTemplatePath = path.join(__dirname, '../../default-account-template')
-
-console.log('accountTemplatePath: ', accountTemplatePath)
+const accountTemplatePath = path.join(__dirname, '../../default-templates/new-account')
 
 var host
 
