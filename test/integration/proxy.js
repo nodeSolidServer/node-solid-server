@@ -9,7 +9,8 @@ var ldnode = require('../../index')
 describe('proxy', () => {
   var ldp = ldnode({
     root: path.join(__dirname, '../resources'),
-    proxy: '/proxy'
+    proxy: '/proxy',
+    webid: false
   })
   var server = supertest(ldp)
 

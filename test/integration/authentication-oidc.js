@@ -67,8 +67,8 @@ describe('Authentication API (OIDC)', () => {
   after(() => {
     if (aliceServer) aliceServer.close()
     if (bobServer) bobServer.close()
-    fs.removeSync(aliceDbPath)
-    fs.removeSync(bobDbPath)
+    // fs.removeSync(aliceDbPath)
+    // fs.removeSync(bobDbPath)
   })
 
   describe('Provider Discovery (POST /api/auth/discover)', () => {

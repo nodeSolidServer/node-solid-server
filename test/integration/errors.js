@@ -13,14 +13,16 @@ describe('Error pages', function () {
   // LDP with error pages
   var errorLdp = ldnode({
     root: path.join(__dirname, '../resources'),
-    errorPages: path.join(__dirname, '../resources/errorPages')
+    errorPages: path.join(__dirname, '../resources/errorPages'),
+    webid: false
   })
   var errorServer = supertest(errorLdp)
 
   // LDP with no error pages
   var noErrorLdp = ldnode({
     root: path.join(__dirname, '../resources'),
-    noErrorPages: true
+    noErrorPages: true,
+    webid: false
   })
   var noErrorServer = supertest(noErrorLdp)
 

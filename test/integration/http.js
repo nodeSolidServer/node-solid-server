@@ -12,7 +12,8 @@ var ldpServer = ldnode.createServer({
   live: true,
   dataBrowserPath: 'default',
   root: path.join(__dirname, '../resources'),
-  auth: 'oidc'
+  auth: 'oidc',
+  webid: false
 })
 var server = supertest(ldpServer)
 var assert = require('chai').assert

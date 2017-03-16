@@ -13,7 +13,8 @@ describe('PATCH', function () {
   // Starting LDP
   var ldp = ldnode({
     root: path.join(__dirname, '../resources/sampleContainer'),
-    mount: '/test'
+    mount: '/test',
+    webid: false
   })
   var server = supertest(ldp)
 

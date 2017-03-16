@@ -63,7 +63,7 @@ describe('CreateAccountRequest', () => {
 
   describe('createAccount()', () => {
     it('should return a 400 error if account already exists', done => {
-      let locals = { authMethod: defaults.AUTH_METHOD }
+      let locals = { authMethod: defaults.auth }
       let aliceData = { username: 'alice' }
       let req = { app: { locals }, body: aliceData }
       let accountManager = AccountManager.from({ host })
