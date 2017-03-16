@@ -274,7 +274,7 @@ describe('AccountManager', () => {
 
     it('should create an account directory', () => {
       let multiUser = true
-      let accountTemplatePath = path.join(__dirname, '../../default-account-template')
+      let accountTemplatePath = path.join(__dirname, '../../default-templates/new-account')
       let store = new LDP({ root: testAccountsDir, idp: multiUser })
       let options = { host, multiUser, store, accountTemplatePath }
       let accountManager = AccountManager.from(options)
