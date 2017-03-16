@@ -30,7 +30,7 @@ describe('LDNODE params', function () {
 
   describe('root', function () {
     describe('not passed', function () {
-      var ldp = ldnode()
+      var ldp = ldnode({ webid: false })
       var server = supertest(ldp)
 
       it('should fallback on current working directory', function () {
@@ -55,7 +55,7 @@ describe('LDNODE params', function () {
     })
 
     describe('passed', function () {
-      var ldp = ldnode({root: './test/resources/'})
+      var ldp = ldnode({root: './test/resources/', webid: false})
       var server = supertest(ldp)
 
       it('should fallback on current working directory', function () {

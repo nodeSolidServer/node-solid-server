@@ -1,7 +1,9 @@
 'use strict'
 
 module.exports = {
-  'AUTH_METHOD': 'tls',
-  'DEFAULT_PORT': 8443,
-  'DEFAULT_URI': 'https://localhost:8443'  // default serverUri
+  'auth': 'tls',
+  'dbPath': './.db',
+  'port': 8443,
+  'serverUri': 'https://localhost:8443',
+  'webid': true
 }

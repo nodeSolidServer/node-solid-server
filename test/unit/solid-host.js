@@ -21,8 +21,8 @@ describe('SolidHost', () => {
 
     it('should init to default port and serverUri values', () => {
       let host = SolidHost.from({})
-      expect(host.port).to.equal(defaults.DEFAULT_PORT)
-      expect(host.serverUri).to.equal(defaults.DEFAULT_URI)
+      expect(host.port).to.equal(defaults.port)
+      expect(host.serverUri).to.equal(defaults.serverUri)
     })
   })
 

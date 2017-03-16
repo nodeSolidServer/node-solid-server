@@ -5,6 +5,7 @@ const $rdf = require('rdflib')
 const { rm, read } = require('../test-utils')
 const ldnode = require('../../index')
 const path = require('path')
+const fs = require('fs-extra')
 
 describe('AccountManager (OIDC account creation tests)', function () {
   this.timeout(10000)
@@ -13,6 +14,8 @@ describe('AccountManager (OIDC account creation tests)', function () {
   var serverUri = 'https://localhost:3457'
   var host = 'localhost:3457'
   var ldpHttpsServer
+  let dbPath = path.join(__dirname, '../resources/.db')
+
   var ldp = ldnode.createServer({
     root: path.join(__dirname, '../resources/accounts/'),
     sslKey: path.join(__dirname, '../keys/key.pem'),
@@ -21,7 +24,7 @@ describe('AccountManager (OIDC account creation tests)', function () {
     webid: true,
     idp: true,
     strictOrigin: true,
-    dbPath: path.join(__dirname, '../resources/db/oidc'),
+    dbPath,
     serverUri
   })
 
@@ -31,6 +34,7 @@ describe('AccountManager (OIDC account creation tests)', function () {
 
   after(function () {
     if (ldpHttpsServer) ldpHttpsServer.close()
+    fs.removeSync(dbPath)
   })
 
   var server = supertest(serverUri)

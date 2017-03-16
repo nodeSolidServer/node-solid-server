@@ -14,7 +14,8 @@ var fs = require('fs')
 
 describe('LDP', function () {
   var ldp = new LDP({
-    root: path.join(__dirname, '..')
+    root: path.join(__dirname, '..'),
+    webid: false
   })
 
   describe('readFile', function () {
