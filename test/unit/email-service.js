@@ -7,7 +7,7 @@ const sinonChai = require('sinon-chai')
 chai.use(sinonChai)
 chai.should()
 
-const templatePath = path.join(__dirname, '../../default-email-templates')
+const templatePath = path.join(__dirname, '../../default-templates/emails')
 
 describe('Email Service', function () {
   describe('EmailService constructor', () => {
