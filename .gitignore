@@ -11,6 +11,6 @@ inbox
 .acl
 config.json
 settings
-db/
+.db/
 .nyc_output
 coverage

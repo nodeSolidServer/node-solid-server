@@ -47,6 +47,12 @@ module.exports = [
     prompt: true
   },
   {
+    name: 'db-path',
+    question: 'Path to the server metadata db directory (for users/apps etc)',
+    default: './.db',
+    prompt: true
+  },
+  {
     name: 'auth',
     help: 'Pick an authentication strategy for WebID: `tls` or `oidc`',
     question: 'Select authentication strategy',
@@ -59,6 +65,7 @@ module.exports = [
     default: 'WebID-OpenID Connect',
     filter: (value) => {
       if (value === 'WebID-TLS') return 'tls'
+      if (value === 'WebID-OpenID Connect') return 'oidc'
     },
     when: (answers) => {
       return answers.webid
@@ -133,7 +140,6 @@ module.exports = [
     default: '/proxy',
     prompt: true
   },
-
   {
     name: 'file-browser',
     help: 'Type the URL of default app to use for browsing files (or use default)',
