@@ -8,13 +8,12 @@ const path = require('path')
 const fs = require('fs-extra')
 
 describe('AccountManager (OIDC account creation tests)', function () {
-  this.timeout(10000)
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
   var serverUri = 'https://localhost:3457'
   var host = 'localhost:3457'
   var ldpHttpsServer
-  let dbPath = path.join(__dirname, '../resources/.db')
+  let dbPath = path.join(__dirname, '../resources/accounts/db')
 
   var ldp = ldnode.createServer({
     root: path.join(__dirname, '../resources/accounts/'),
@@ -34,7 +33,7 @@ describe('AccountManager (OIDC account creation tests)', function () {
 
   after(function () {
     if (ldpHttpsServer) ldpHttpsServer.close()
-    fs.removeSync(dbPath)
+    fs.removeSync(path.join(dbPath, 'oidc/users/users'))
   })
 
   var server = supertest(serverUri)
