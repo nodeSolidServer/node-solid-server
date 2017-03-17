@@ -11,7 +11,7 @@ inbox
 .acl
 config.json
 config/templates
-config/apps
+config/views
 settings
 .db/
 .nyc_output
