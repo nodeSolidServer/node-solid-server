@@ -47,6 +47,12 @@ module.exports = [
     prompt: true
   },
   {
+    name: 'config-path',
+    question: 'Path to the config directory (for example: /etc/solid-server)',
+    default: './config',
+    prompt: true
+  },
+  {
     name: 'db-path',
     question: 'Path to the server metadata db directory (for users/apps etc)',
     default: './.db',
