@@ -5,24 +5,44 @@ const expect = require('chai').expect
 // In this test we always assume that we are Alice
 
 describe('API', () => {
-  let aliceServer
-  let alice
-  let serverUri = 'https://localhost:5000'
+  let alice, aliceServer
 
-  const alicePod = Solid.createServer({
-    root: path.join(__dirname, '../resources/accounts-scenario/alice'),
+  let aliceServerUri = 'https://localhost:5000'
+  let configPath = path.join(__dirname, '../../config')
+  let aliceDbPath = path.join(__dirname,
+    '../resources/accounts-scenario/alice/db')
+
+  const serverConfig = {
     sslKey: path.join(__dirname, '../keys/key.pem'),
     sslCert: path.join(__dirname, '../keys/cert.pem'),
     auth: 'oidc',
-    serverUri,
     dataBrowser: false,
     fileBrowser: false,
-    webid: true
-  })
+    webid: true,
+    idp: false,
+    configPath
+  }
 
-  before((done) => {
-    aliceServer = alicePod.listen(5000, done)
-    alice = supertest(serverUri)
+  const alicePod = Solid.createServer(
+    Object.assign({
+      root: path.join(__dirname, '../resources/accounts-scenario/alice'),
+      serverUri: aliceServerUri,
+      dbPath: aliceDbPath
+    }, serverConfig)
+  )
+
+  function startServer (pod, port) {
+    return new Promise((resolve) => {
+      pod.listen(port, () => { resolve() })
+    })
+  }
+
+  before(() => {
+    return Promise.all([
+      startServer(alicePod, 5000)
+    ]).then(() => {
+      alice = supertest(aliceServerUri)
+    })
   })
 
   after(() => {

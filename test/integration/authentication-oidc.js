@@ -17,14 +17,14 @@ describe('Authentication API (OIDC)', () => {
   let aliceWebId = 'https://localhost:7000/profile/card#me'
   let configPath = path.join(__dirname, '../../config')
   let aliceDbPath = path.join(__dirname,
-    '../resources/accounts-scenario/alice/db/oidc')
-  let userStorePath = path.join(aliceDbPath, 'users')
+    '../resources/accounts-scenario/alice/db')
+  let userStorePath = path.join(aliceDbPath, 'oidc/users')
   let aliceUserStore = UserStore.from({ path: userStorePath, saltRounds: 1 })
   aliceUserStore.initCollections()
 
   let bobServerUri = 'https://localhost:7001'
   let bobDbPath = path.join(__dirname,
-    '../resources/accounts-scenario/bob/db/oidc')
+    '../resources/accounts-scenario/bob/db')
 
   const serverConfig = {
     sslKey: path.join(__dirname, '../keys/key.pem'),
@@ -71,6 +71,7 @@ describe('Authentication API (OIDC)', () => {
   after(() => {
     if (aliceServer) aliceServer.close()
     if (bobServer) bobServer.close()
+    fs.removeSync(path.join(aliceDbPath, 'oidc/users'))
   })
 
   describe('Provider Discovery (POST /api/auth/select-provider)', () => {
@@ -128,7 +129,7 @@ describe('Authentication API (OIDC)', () => {
     })
 
     afterEach(() => {
-      fs.removeSync(path.join(aliceDbPath, 'users/*'))
+      fs.removeSync(path.join(aliceDbPath, 'users/users'))
     })
 
     it('should login and be redirected to /authorize', (done) => {
