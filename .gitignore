@@ -10,6 +10,8 @@ profile
 inbox
 .acl
 config.json
+config/templates
+config/apps
 settings
 .db/
 .nyc_output
