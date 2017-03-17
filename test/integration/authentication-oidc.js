@@ -15,13 +15,16 @@ describe('Authentication API (OIDC)', () => {
 
   let aliceServerUri = 'https://localhost:7000'
   let aliceWebId = 'https://localhost:7000/profile/card#me'
-  let aliceDbPath = path.join(__dirname, '../resources/db/alice')
+  let configPath = path.join(__dirname, '../../config')
+  let aliceDbPath = path.join(__dirname,
+    '../resources/accounts-scenario/alice/db/oidc')
   let userStorePath = path.join(aliceDbPath, 'users')
   let aliceUserStore = UserStore.from({ path: userStorePath, saltRounds: 1 })
   aliceUserStore.initCollections()
 
   let bobServerUri = 'https://localhost:7001'
-  let bobDbPath = path.join(__dirname, '../resources/db/bob')
+  let bobDbPath = path.join(__dirname,
+    '../resources/accounts-scenario/bob/db/oidc')
 
   const serverConfig = {
     sslKey: path.join(__dirname, '../keys/key.pem'),
@@ -30,7 +33,8 @@ describe('Authentication API (OIDC)', () => {
     dataBrowser: false,
     fileBrowser: false,
     webid: true,
-    idp: false
+    idp: false,
+    configPath
   }
 
   const alicePod = Solid.createServer(
@@ -67,25 +71,23 @@ describe('Authentication API (OIDC)', () => {
   after(() => {
     if (aliceServer) aliceServer.close()
     if (bobServer) bobServer.close()
-    // fs.removeSync(aliceDbPath)
-    // fs.removeSync(bobDbPath)
   })
 
-  describe('Provider Discovery (POST /api/auth/discover)', () => {
+  describe('Provider Discovery (POST /api/auth/select-provider)', () => {
     it('form should load on a get', done => {
-      alice.get('/api/auth/discover')
+      alice.get('/api/auth/select-provider')
         .expect(200)
         .expect((res) => { res.text.match(/Provider Discovery/) })
         .end(done)
     })
 
     it('should complain if WebID URI is missing', (done) => {
-      alice.post('/api/auth/discover')
+      alice.post('/api/auth/select-provider')
         .expect(400, done)
     })
 
     it('should prepend https:// to webid, if necessary', (done) => {
-      alice.post('/api/auth/discover')
+      alice.post('/api/auth/select-provider')
         .type('form')
         .send({ webid: 'localhost:7000' })
         .expect(302, done)
@@ -95,14 +97,14 @@ describe('Authentication API (OIDC)', () => {
       // Fake provider, replies with 200 and no Link headers
       nock('https://amazingwebsite.tld').intercept('/', 'OPTIONS').reply(204)
 
-      alice.post('/api/auth/discover')
+      alice.post('/api/auth/select-provider')
         .send('webid=https://amazingwebsite.tld/')
         .expect(400)
         .end(done)
     })
 
     it('should redirect user to discovered provider if valid uri', (done) => {
-      bob.post('/api/auth/discover')
+      bob.post('/api/auth/select-provider')
         .send('webid=' + aliceServerUri)
         .expect(302)
         .end((err, res) => {
@@ -126,7 +128,7 @@ describe('Authentication API (OIDC)', () => {
     })
 
     afterEach(() => {
-      fs.removeSync(aliceDbPath)
+      fs.removeSync(path.join(aliceDbPath, 'users/*'))
     })
 
     it('should login and be redirected to /authorize', (done) => {
@@ -175,7 +177,7 @@ describe('Authentication API (OIDC)', () => {
         .end((err, res) => {
           if (err) return done(err)
           let redirectString = 'http-equiv="refresh" ' +
-            `content="0; url=${bobServerUri}/api/auth/discover`
+            `content="0; url=${bobServerUri}/api/auth/select-provider`
           expect(res.text).to.match(new RegExp(redirectString))
           done()
         })
@@ -183,7 +185,7 @@ describe('Authentication API (OIDC)', () => {
 
     // Step 2: Alice enters her WebID URI to the Provider Discovery endpoint
     it('Enter webId -> redirect to provider login', (done) => {
-      bob.post('/api/auth/discover')
+      bob.post('/api/auth/select-provider')
         .send('webid=' + aliceServerUri)
         .expect(302)
         .end((err, res) => {

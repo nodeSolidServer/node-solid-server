@@ -4,22 +4,22 @@ const chai = require('chai')
 const expect = chai.expect
 const HttpMocks = require('node-mocks-http')
 
-const DiscoverProviderRequest = require('../../lib/requests/discover-provider-request')
+const SelectProviderRequest = require('../../lib/requests/select-provider-request')
 
-describe('DiscoverProviderRequest', () => {
+describe('SelectProviderRequest', () => {
   describe('normalizeWebId()', () => {
     it('should prepend https:// if one is missing', () => {
-      let result = DiscoverProviderRequest.normalizeUri('localhost:8443')
+      let result = SelectProviderRequest.normalizeUri('localhost:8443')
       expect(result).to.equal('https://localhost:8443')
     })
 
     it('should return null if given a null uri', () => {
-      let result = DiscoverProviderRequest.normalizeUri(null)
+      let result = SelectProviderRequest.normalizeUri(null)
       expect(result).to.be.null
     })
 
     it('should return a valid uri unchanged', () => {
-      let result = DiscoverProviderRequest.normalizeUri('https://alice.example.com')
+      let result = SelectProviderRequest.normalizeUri('https://alice.example.com')
       expect(result).to.equal('https://alice.example.com')
     })
   })
@@ -27,7 +27,7 @@ describe('DiscoverProviderRequest', () => {
   describe('fromParams()', () => {
     let res = HttpMocks.createResponse()
 
-    it('should initialize a DiscoverProviderRequest instance', () => {
+    it('should initialize a SelectProviderRequest instance', () => {
       let aliceWebId = 'https://alice.example.com'
       let oidcManager = {}
       let session = {}
@@ -37,7 +37,7 @@ describe('DiscoverProviderRequest', () => {
         app: { locals: { oidc: oidcManager } }
       }
 
-      let request = DiscoverProviderRequest.fromParams(req, res)
+      let request = SelectProviderRequest.fromParams(req, res)
       expect(request.webId).to.equal(aliceWebId)
       expect(request.response).to.equal(res)
       expect(request.oidcManager).to.equal(oidcManager)
@@ -52,7 +52,7 @@ describe('DiscoverProviderRequest', () => {
       }
 
       try {
-        DiscoverProviderRequest.fromParams(req, res)
+        SelectProviderRequest.fromParams(req, res)
       } catch (error) {
         expect(error.statusCode).to.equal(500)
         done()
@@ -63,7 +63,7 @@ describe('DiscoverProviderRequest', () => {
       let req = {}
 
       try {
-        DiscoverProviderRequest.fromParams(req, res)
+        SelectProviderRequest.fromParams(req, res)
       } catch (error) {
         expect(error.statusCode).to.equal(400)
         done()
@@ -79,7 +79,7 @@ describe('DiscoverProviderRequest', () => {
         app: { locals: { oidc: oidcManager } }
       }
 
-      let request = DiscoverProviderRequest.fromParams(req, res)
+      let request = SelectProviderRequest.fromParams(req, res)
       expect(request.webId).to.equal('https://alice.example.com')
     })
   })
