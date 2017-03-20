@@ -13,6 +13,13 @@
 <div class="container">
   <form method="post" action="/login">
     <div class="form-group">
+      {{#if error}}
+        <div class="row">
+          <div class="col-md-12">
+            <p class="text-danger"><strong>{{error}}</strong></p>
+          </div>
+        </div>
+      {{/if}}
       <div class="row">
         <div class="col-md-12">
           <label for="username">Username:</label>
