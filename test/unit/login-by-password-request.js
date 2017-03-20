@@ -27,7 +27,7 @@ const host = SolidHost.from({ serverUri: 'https://localhost:8443' })
 const accountManager = AccountManager.from({ host, authMethod })
 
 describe('LoginByPasswordRequest', () => {
-  describe('handle()', () => {
+  describe('post()', () => {
     let res, req
 
     beforeEach(() => {
@@ -43,7 +43,7 @@ describe('LoginByPasswordRequest', () => {
       let loginStub = sinon.stub(LoginByPasswordRequest, 'login')
         .returns(Promise.resolve())
 
-      return LoginByPasswordRequest.handle(req, res)
+      return LoginByPasswordRequest.post(req, res)
         .then(() => {
           expect(fromParams).to.have.been.calledWith(req, res)
           fromParams.reset()
@@ -59,7 +59,7 @@ describe('LoginByPasswordRequest', () => {
     it('should invoke login()', () => {
       let login = sinon.spy(LoginByPasswordRequest, 'login')
 
-      return LoginByPasswordRequest.handle(req, res)
+      return LoginByPasswordRequest.post(req, res)
         .then(() => {
           expect(login).to.have.been.called
           login.reset()
@@ -89,10 +89,10 @@ describe('LoginByPasswordRequest', () => {
     })
 
     it('should initialize the query params', () => {
-      let extractQueryParams = sinon.spy(LoginByPasswordRequest, 'extractQueryParams')
+      let extractParams = sinon.spy(LoginByPasswordRequest, 'extractParams')
       LoginByPasswordRequest.fromParams(req, res)
 
-      expect(extractQueryParams).to.be.calledWith(req.body)
+      expect(extractParams).to.be.calledWith(req)
     })
   })
 
@@ -349,12 +349,13 @@ describe('LoginByPasswordRequest', () => {
     return body
   }
 
-  describe('extractQueryParams()', () => {
+  describe('extractParams()', () => {
     let body = testAuthQueryParams()
     body['other_key'] = 'whatever'
+    let req = { body, method: 'POST' }
 
     it('should initialize the auth url query object from params', () => {
-      let extracted = LoginByPasswordRequest.extractQueryParams(body)
+      let extracted = LoginByPasswordRequest.extractParams(req)
 
       for (let param of LoginByPasswordRequest.AUTH_QUERY_PARAMS) {
         expect(extracted[param]).to.equal(body[param])
@@ -376,9 +377,10 @@ describe('LoginByPasswordRequest', () => {
 
     it('should pass through relevant auth query params from request body', () => {
       let body = testAuthQueryParams()
+      let req = { body, method: 'POST' }
 
       let request = new LoginByPasswordRequest({ accountManager })
-      request.authQueryParams = LoginByPasswordRequest.extractQueryParams(body)
+      request.authQueryParams = LoginByPasswordRequest.extractParams(req)
 
       let authUrl = request.authorizeUrl()
 
@@ -441,7 +443,7 @@ describe('LoginByPasswordRequest', () => {
 
     let options = { accountManager, response: res }
     let request = new LoginByPasswordRequest(options)
-    request.authQueryParams = LoginByPasswordRequest.extractQueryParams(body)
+    request.authQueryParams = LoginByPasswordRequest.extractParams(body)
 
     request.authorizeUrl = sinon.stub().returns(authUrl)
 
