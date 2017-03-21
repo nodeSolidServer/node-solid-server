@@ -90,7 +90,7 @@ describe('AccountManager (OIDC account creation tests)', function () {
       var subdomain = supertest('https://nicola.' + host)
       subdomain.post('/api/accounts/new')
         .send('username=nicola&password=12345')
-        .expect(201)
+        .expect(302)
         .end((err, res) => {
           if (err) {
             return done(err)
@@ -102,13 +102,13 @@ describe('AccountManager (OIDC account creation tests)', function () {
               done(err)
             })
         })
-    }).timeout(20000)
+    })
 
     it('should create the default folders', function (done) {
       var subdomain = supertest('https://nicola.' + host)
       subdomain.post('/api/accounts/new')
         .send('username=nicola&password=12345')
-        .expect(201)
+        .expect(302)
         .end(function (err) {
           if (err) {
             return done(err)
@@ -139,7 +139,7 @@ describe('AccountManager (OIDC account creation tests)', function () {
       var subdomain = supertest('https://nicola.' + host)
       subdomain.post('/api/accounts/new')
         .send('username=nicola&password=12345')
-        .expect(201)
+        .expect(302)
         .end(function (err) {
           if (err) {
             return done(err)

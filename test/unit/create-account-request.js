@@ -47,14 +47,18 @@ describe('CreateAccountRequest', () => {
       let request, aliceData, req
 
       aliceData = { username: 'alice' }
-      req = { app: { locals: {} }, body: aliceData, session }
+      req = HttpMocks.createRequest({
+        app: { locals: { accountManager } }, body: aliceData, session
+      })
       req.app.locals.authMethod = 'tls'
 
       request = CreateAccountRequest.fromParams(req, res, accountManager)
       expect(request).to.respondTo('generateTlsCertificate')
 
       aliceData = { username: 'alice', password: '12345' }
-      req = { app: { locals: { oidc: {} } }, body: aliceData, session }
+      req = HttpMocks.createRequest({
+        app: { locals: { accountManager, oidc: {} } }, body: aliceData, session
+      })
       req.app.locals.authMethod = 'oidc'
       request = CreateAccountRequest.fromParams(req, res, accountManager)
       expect(request).to.not.respondTo('generateTlsCertificate')
@@ -63,12 +67,12 @@ describe('CreateAccountRequest', () => {
 
   describe('createAccount()', () => {
     it('should return a 400 error if account already exists', done => {
-      let locals = { authMethod: defaults.auth }
-      let aliceData = { username: 'alice' }
-      let req = { app: { locals }, body: aliceData }
       let accountManager = AccountManager.from({ host })
+      let locals = { authMethod: defaults.auth, accountManager }
+      let aliceData = { username: 'alice' }
+      let req = HttpMocks.createRequest({ app: { locals }, body: aliceData })
 
-      let request = CreateAccountRequest.fromParams(req, res, accountManager)
+      let request = CreateAccountRequest.fromParams(req, res)
 
       accountManager.accountExists = sinon.stub().returns(Promise.resolve(true))
 
@@ -95,19 +99,19 @@ describe('CreateOidcAccountRequest', () => {
 
   describe('fromParams()', () => {
     it('should create an instance with the given config', () => {
+      let accountManager = AccountManager.from({ host, store })
       let aliceData = { username: 'alice', password: '123' }
 
       let userStore = {}
-      let req = {
+      let req = HttpMocks.createRequest({
         app: {
-          locals: { authMethod, oidc: { users: userStore } }
+          locals: { authMethod, oidc: { users: userStore }, accountManager }
         },
         body: aliceData,
         session
-      }
+      })
 
-      let accountManager = AccountManager.from({ host, store })
-      let request = CreateAccountRequest.fromParams(req, res, accountManager)
+      let request = CreateAccountRequest.fromParams(req, res)
 
       expect(request.accountManager).to.equal(accountManager)
       expect(request.userAccount.username).to.equal('alice')
@@ -118,35 +122,35 @@ describe('CreateOidcAccountRequest', () => {
     })
 
     it('should throw an error if no password was given', () => {
+      let accountManager = AccountManager.from({ host, store })
       let aliceData = { username: 'alice', password: null }
-      let req = {
-        app: { locals: { authMethod, oidc: {} } },
+      let req = HttpMocks.createRequest({
+        app: { locals: { authMethod, oidc: {}, accountManager } },
         body: aliceData,
         session
-      }
-      let accountManager = AccountManager.from({ host, store })
+      })
 
-      expect(() => { CreateAccountRequest.fromParams(req, res, accountManager) })
+      expect(() => { CreateAccountRequest.fromParams(req, res) })
         .to.throw(/Password required/)
     })
   })
 
   describe('saveCredentialsFor()', () => {
     it('should create a new user in the user store', () => {
+      let accountManager = AccountManager.from({ host, store })
       let password = '12345'
       let aliceData = { username: 'alice', password }
       let userStore = {
         createUser: (userAccount, password) => { return Promise.resolve() }
       }
       let createUserSpy = sinon.spy(userStore, 'createUser')
-      let req = {
-        app: { locals: { authMethod, oidc: { users: userStore } } },
+      let req = HttpMocks.createRequest({
+        app: { locals: { authMethod, oidc: { users: userStore }, accountManager } },
         body: aliceData,
         session
-      }
-      let accountManager = AccountManager.from({ host, store })
+      })
 
-      let request = CreateAccountRequest.fromParams(req, res, accountManager)
+      let request = CreateAccountRequest.fromParams(req, res)
       let userAccount = request.userAccount
 
       return request.saveCredentialsFor(userAccount)
@@ -157,20 +161,20 @@ describe('CreateOidcAccountRequest', () => {
   })
 
   describe('sendResponse()', () => {
-    it('should respond with a 201 Created', () => {
+    it('should respond with a 302 Redirect', () => {
+      let accountManager = AccountManager.from({ host, store })
       let aliceData = { username: 'alice', password: '12345' }
-      let req = {
-        app: { locals: { authMethod, oidc: {} } },
+      let req = HttpMocks.createRequest({
+        app: { locals: { authMethod, oidc: {}, accountManager } },
         body: aliceData,
         session
-      }
-      let accountManager = AccountManager.from({ host, store })
+      })
+      let alice = accountManager.userAccountFrom(aliceData)
 
-      let request = CreateAccountRequest.fromParams(req, res, accountManager)
-      let userAccount = request.userAccount
+      let request = CreateAccountRequest.fromParams(req, res)
 
-      request.sendResponse(userAccount)
-      expect(request.response.statusCode).to.equal(201)
+      request.sendResponse(alice)
+      expect(request.response.statusCode).to.equal(302)
     })
   })
 })
@@ -189,11 +193,13 @@ describe('CreateTlsAccountRequest', () => {
 
   describe('fromParams()', () => {
     it('should create an instance with the given config', () => {
-      let aliceData = { username: 'alice' }
-      let req = { app: { locals: { authMethod } }, body: aliceData, session }
-
       let accountManager = AccountManager.from({ host, store })
-      let request = CreateAccountRequest.fromParams(req, res, accountManager)
+      let aliceData = { username: 'alice' }
+      let req = HttpMocks.createRequest({
+        app: { locals: { authMethod, accountManager } }, body: aliceData, session
+      })
+
+      let request = CreateAccountRequest.fromParams(req, res)
 
       expect(request.accountManager).to.equal(accountManager)
       expect(request.userAccount.username).to.equal('alice')
@@ -205,11 +211,13 @@ describe('CreateTlsAccountRequest', () => {
 
   describe('saveCredentialsFor()', () => {
     it('should call generateTlsCertificate()', () => {
-      let aliceData = { username: 'alice' }
-      let req = { app: { locals: { authMethod } }, body: aliceData, session }
-
       let accountManager = AccountManager.from({ host, store })
-      let request = CreateAccountRequest.fromParams(req, res, accountManager)
+      let aliceData = { username: 'alice' }
+      let req = HttpMocks.createRequest({
+        app: { locals: { authMethod, accountManager } }, body: aliceData, session
+      })
+
+      let request = CreateAccountRequest.fromParams(req, res)
       let userAccount = accountManager.userAccountFrom(aliceData)
 
       let generateTlsCertificate = sinon.spy(request, 'generateTlsCertificate')
