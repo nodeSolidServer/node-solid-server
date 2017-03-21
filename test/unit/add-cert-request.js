@@ -111,7 +111,7 @@ describe('AddCertificateRequest', () => {
           expect(graph.anyStatementMatching(key, ns.cert('exponent')))
             .to.exist
         })
-    })
+    }).timeout(3000)
   })
 })
 
