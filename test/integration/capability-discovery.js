@@ -1,5 +1,6 @@
 const Solid = require('../../index')
 const path = require('path')
+const fs = require('fs-extra')
 const supertest = require('supertest')
 const expect = require('chai').expect
 // In this test we always assume that we are Alice
@@ -11,6 +12,7 @@ describe('API', () => {
   let configPath = path.join(__dirname, '../../config')
   let aliceDbPath = path.join(__dirname,
     '../resources/accounts-scenario/alice/db')
+  let aliceRootPath = path.join(__dirname, '../resources/accounts-scenario/alice')
 
   const serverConfig = {
     sslKey: path.join(__dirname, '../keys/key.pem'),
@@ -25,7 +27,7 @@ describe('API', () => {
 
   const alicePod = Solid.createServer(
     Object.assign({
-      root: path.join(__dirname, '../resources/accounts-scenario/alice'),
+      root: aliceRootPath,
       serverUri: aliceServerUri,
       dbPath: aliceDbPath
     }, serverConfig)
@@ -47,6 +49,8 @@ describe('API', () => {
 
   after(() => {
     if (aliceServer) aliceServer.close()
+    fs.removeSync(path.join(aliceRootPath, 'index.html'))
+    fs.removeSync(path.join(aliceRootPath, 'index.html.acl'))
   })
 
   describe('Capability Discovery', () => {
@@ -88,13 +92,6 @@ describe('API', () => {
       it('should return the service Link header', (done) => {
         alice.options('/')
           .expect('Link', /<.*\.well-known\/solid>; rel="service"/)
-          .expect(204, done)
-      })
-
-      it('should still have previous link headers', (done) => {
-        alice.options('/')
-          .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#BasicContainer>; rel="type"/)
-          .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Container>; rel="type"/)
           .expect(204, done)
       })
 

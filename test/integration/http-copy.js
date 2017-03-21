@@ -17,7 +17,8 @@ describe('HTTP COPY API', function () {
   var ldp = solidServer.createServer({
     root: path.join(__dirname, '../resources/accounts/localhost/'),
     sslKey: path.join(__dirname, '../keys/key.pem'),
-    sslCert: path.join(__dirname, '../keys/cert.pem')
+    sslCert: path.join(__dirname, '../keys/cert.pem'),
+    webid: false
   })
 
   before(function (done) {
