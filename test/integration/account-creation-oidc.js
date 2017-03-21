@@ -13,10 +13,11 @@ describe('AccountManager (OIDC account creation tests)', function () {
   var serverUri = 'https://localhost:3457'
   var host = 'localhost:3457'
   var ldpHttpsServer
+  let rootPath = path.join(__dirname, '../resources/accounts/')
   let dbPath = path.join(__dirname, '../resources/accounts/db')
 
   var ldp = ldnode.createServer({
-    root: path.join(__dirname, '../resources/accounts/'),
+    root: rootPath,
     sslKey: path.join(__dirname, '../keys/key.pem'),
     sslCert: path.join(__dirname, '../keys/cert.pem'),
     auth: 'oidc',
@@ -34,6 +35,8 @@ describe('AccountManager (OIDC account creation tests)', function () {
   after(function () {
     if (ldpHttpsServer) ldpHttpsServer.close()
     fs.removeSync(path.join(dbPath, 'oidc/users/users'))
+    fs.removeSync(path.join(rootPath, 'localhost/index.html'))
+    fs.removeSync(path.join(rootPath, 'localhost/index.html.acl'))
   })
 
   var server = supertest(serverUri)

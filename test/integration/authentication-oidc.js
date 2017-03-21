@@ -37,16 +37,18 @@ describe('Authentication API (OIDC)', () => {
     configPath
   }
 
+  const aliceRootPath = path.join(__dirname, '../resources/accounts-scenario/alice')
   const alicePod = Solid.createServer(
     Object.assign({
-      root: path.join(__dirname, '../resources/accounts-scenario/alice'),
+      root: aliceRootPath,
       serverUri: aliceServerUri,
       dbPath: aliceDbPath
     }, serverConfig)
   )
+  const bobRootPath = path.join(__dirname, '../resources/accounts-scenario/bob')
   const bobPod = Solid.createServer(
     Object.assign({
-      root: path.join(__dirname, '../resources/accounts-scenario/bob'),
+      root: bobRootPath,
       serverUri: bobServerUri,
       dbPath: bobDbPath
     }, serverConfig)
@@ -72,6 +74,10 @@ describe('Authentication API (OIDC)', () => {
     if (aliceServer) aliceServer.close()
     if (bobServer) bobServer.close()
     fs.removeSync(path.join(aliceDbPath, 'oidc/users'))
+    fs.removeSync(path.join(aliceRootPath, 'index.html'))
+    fs.removeSync(path.join(aliceRootPath, 'index.html.acl'))
+    fs.removeSync(path.join(bobRootPath, 'index.html'))
+    fs.removeSync(path.join(bobRootPath, 'index.html.acl'))
   })
 
   describe('Provider Discovery (POST /api/auth/select-provider)', () => {

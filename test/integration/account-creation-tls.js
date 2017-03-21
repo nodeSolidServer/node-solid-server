@@ -4,6 +4,7 @@ const $rdf = require('rdflib')
 
 const { rm, read } = require('../test-utils')
 const ldnode = require('../../index')
+const fs = require('fs-extra')
 const path = require('path')
 
 describe('AccountManager (account creation tests)', function () {
@@ -13,8 +14,9 @@ describe('AccountManager (account creation tests)', function () {
   var address = 'https://localhost:3457'
   var host = 'localhost:3457'
   var ldpHttpsServer
+  let rootPath = path.join(__dirname, '../resources/accounts/')
   var ldp = ldnode.createServer({
-    root: path.join(__dirname, '../resources/accounts/'),
+    root: rootPath,
     sslKey: path.join(__dirname, '../keys/key.pem'),
     sslCert: path.join(__dirname, '../keys/cert.pem'),
     auth: 'tls',
@@ -29,6 +31,8 @@ describe('AccountManager (account creation tests)', function () {
 
   after(function () {
     if (ldpHttpsServer) ldpHttpsServer.close()
+    fs.removeSync(path.join(rootPath, 'localhost/index.html'))
+    fs.removeSync(path.join(rootPath, 'localhost/index.html.acl'))
   })
 
   var server = supertest(address)

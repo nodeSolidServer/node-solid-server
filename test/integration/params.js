@@ -1,6 +1,7 @@
 var assert = require('chai').assert
 var supertest = require('supertest')
 var path = require('path')
+const fs = require('fs-extra')
 // Helper functions for the FS
 var rm = require('../test-utils').rm
 var write = require('../test-utils').write
@@ -13,7 +14,7 @@ describe('LDNODE params', function () {
   describe('suffixMeta', function () {
     describe('not passed', function () {
       it('should fallback on .meta', function () {
-        var ldp = ldnode()
+        var ldp = ldnode({ webid: false })
         assert.equal(ldp.locals.ldp.suffixMeta, '.meta')
       })
     })
@@ -96,9 +97,10 @@ describe('LDNODE params', function () {
 
   describe('forcedUser', function () {
     var ldpHttpsServer
+    let rootPath = path.join(__dirname, '../resources/acl/fake-account')
     var ldp = ldnode.createServer({
       forceUser: 'https://fakeaccount.com/profile#me',
-      root: path.join(__dirname, '../resources/acl/fake-account'),
+      root: rootPath,
       sslKey: path.join(__dirname, '../keys/key.pem'),
       sslCert: path.join(__dirname, '../keys/cert.pem'),
       webid: true,
@@ -111,6 +113,8 @@ describe('LDNODE params', function () {
 
     after(function () {
       if (ldpHttpsServer) ldpHttpsServer.close()
+      fs.removeSync(path.join(rootPath, 'index.html'))
+      fs.removeSync(path.join(rootPath, 'index.html.acl'))
     })
 
     var server = supertest('https://localhost:3459')

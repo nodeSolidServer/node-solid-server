@@ -1,5 +1,5 @@
 var assert = require('chai').assert
-var fs = require('fs')
+var fs = require('fs-extra')
 var $rdf = require('rdflib')
 var request = require('request')
 var path = require('path')
@@ -18,11 +18,11 @@ describe('ACL HTTP', function () {
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
   var address = 'https://localhost:3456/test/'
-
+  let rootPath = path.join(__dirname, '../resources')
   var ldpHttpsServer
   var ldp = ldnode.createServer({
     mount: '/test',
-    root: path.join(__dirname, '../resources'),
+    root: rootPath,
     sslKey: path.join(__dirname, '../keys/key.pem'),
     sslCert: path.join(__dirname, '../keys/cert.pem'),
     webid: true,
@@ -35,6 +35,8 @@ describe('ACL HTTP', function () {
 
   after(function () {
     if (ldpHttpsServer) ldpHttpsServer.close()
+    fs.removeSync(path.join(rootPath, 'index.html'))
+    fs.removeSync(path.join(rootPath, 'index.html.acl'))
   })
 
   var aclExtension = '.acl'
