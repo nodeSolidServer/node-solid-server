@@ -16,7 +16,8 @@
   <form method="post" action="/api/auth/select-provider">
     <div class="form-group">
       <label for="webid">WebID or server URL:</label>
-      <input type="text" class="form-control" name="webid" id="webid" placeholder="databox.me" />
+      <input type="text" class="form-control" name="webid" id="webid"
+             value="{{serverUri}}" />
       <input type="hidden" name="returnToUrl" id="returnToUrl" value="" />
     </div>
     <button type="submit" class="btn btn-primary" id="discover">Submit</button>
