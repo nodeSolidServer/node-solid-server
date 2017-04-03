@@ -30,13 +30,6 @@ module.exports = function (program) {
 
       // Prompt to the user
       inquirer.prompt(questions)
-        // .then((answers) => {
-        //   let store = new KVPFileStore()
-        //   return store.createCollection('clients')
-        //     .then(() => {
-        //       return answers
-        //     })
-        // })
         .then((answers) => {
           // setting email
           if (answers.useEmail) {
