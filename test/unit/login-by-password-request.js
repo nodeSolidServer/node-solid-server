@@ -454,4 +454,36 @@ describe('LoginByPasswordRequest', () => {
     expect(res.statusCode).to.equal(302)
     expect(res._getRedirectUrl()).to.equal(expectedUri)
   })
+
+  describe('postRegisterUrl', () => {
+    it('should return encoded /authorize url if redirect_uri is present', () => {
+      let res = HttpMocks.createResponse()
+      let authUrl = 'https://localhost/authorize?client_id=123'
+
+      let authQueryParams = {
+        redirect_uri: 'https://app.example.com/callback'
+      }
+
+      let options = { accountManager, authQueryParams, response: res }
+      let request = new LoginByPasswordRequest(options)
+
+      request.authorizeUrl = sinon.stub().returns(authUrl)
+
+      let expectedAuthUrl = encodeURIComponent(authUrl)
+
+      expect(request.postRegisterUrl()).to.equal(expectedAuthUrl)
+    })
+
+    it('should return encoded serverUri if not part of auth workflow', () => {
+      let res = HttpMocks.createResponse()
+
+      let options = { accountManager, response: res }
+      let request = new LoginByPasswordRequest(options)
+
+      let serverUri = 'https://localhost:8443'
+      let encodedServerUri = encodeURIComponent(serverUri)
+
+      expect(request.postRegisterUrl()).to.equal(encodedServerUri)
+    })
+  })
 })

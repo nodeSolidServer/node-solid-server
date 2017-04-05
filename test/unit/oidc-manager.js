@@ -9,6 +9,10 @@ const SolidHost = require('../../lib/models/solid-host')
 
 describe('OidcManager', () => {
   describe('fromServerConfig()', () => {
+    it('should error if no serverUri is provided in argv', () => {
+
+    })
+
     it('should result in an initialized oidc object', () => {
       let serverUri = 'https://localhost:8443'
       let host = SolidHost.from({ serverUri })

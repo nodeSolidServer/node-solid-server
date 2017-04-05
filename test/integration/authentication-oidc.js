@@ -122,7 +122,14 @@ describe('Authentication API (OIDC)', () => {
     })
   })
 
-  describe('Login by Username and Password (POST /login)', done => {
+  describe('Login page (GET /login)', () => {
+    it('should load the user login form', () => {
+      return alice.get('/login')
+        .expect(200)
+    })
+  })
+
+  describe('Login by Username and Password (POST /login)', () => {
     // Logging in as alice, to alice's pod
     let aliceAccount = UserAccount.from({ webId: aliceWebId })
     let alicePassword = '12345'
@@ -203,5 +210,12 @@ describe('Authentication API (OIDC)', () => {
     })
 
     it('At /login, enter WebID & password -> redirect back to /foo')
+  })
+
+  describe('Post-logout page (GET /goodbye)', () => {
+    it('should load the post-logout page', () => {
+      return alice.get('/goodbye')
+        .expect(200)
+    })
   })
 })
