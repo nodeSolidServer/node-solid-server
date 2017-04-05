@@ -58,7 +58,7 @@
     "node-forge": "^0.6.38",
     "nodemailer": "^3.1.4",
     "nomnom": "^1.8.1",
-    "oidc-auth-manager": "^0.2.3",
+    "oidc-auth-manager": "^0.4.0",
     "oidc-op-express": "^0.0.3",
     "rdflib": "^0.15.0",
     "recursive-readdir": "^2.1.0",
