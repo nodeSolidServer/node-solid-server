@@ -23,7 +23,7 @@ describe('LDNODE params', function () {
   describe('suffixAcl', function () {
     describe('not passed', function () {
       it('should fallback on .acl', function () {
-        var ldp = ldnode()
+        var ldp = ldnode({ webid: false })
         assert.equal(ldp.locals.ldp.suffixAcl, '.acl')
       })
     })
