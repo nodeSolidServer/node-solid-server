@@ -76,7 +76,8 @@ describe('API', () => {
           apps: {
             'signin': '/signin/',
             'signup': '/signup/'
-          }
+          },
+          webid: false
         }
         const solid = Solid(config)
         let server = supertest(solid)
