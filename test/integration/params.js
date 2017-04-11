@@ -97,7 +97,7 @@ describe('LDNODE params', function () {
 
   describe('forcedUser', function () {
     var ldpHttpsServer
-    let rootPath = path.join(__dirname, '../resources/acl/fake-account')
+    let rootPath = path.join(__dirname, '../resources/acl-tls/fake-account')
     var ldp = ldnode.createServer({
       forceUser: 'https://fakeaccount.com/profile#me',
       root: rootPath,
