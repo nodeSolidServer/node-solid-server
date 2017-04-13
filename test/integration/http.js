@@ -263,7 +263,7 @@ describe('HTTP APIs', function () {
         .expect(200, done)
     })
     it('should redirect to file browser if container was requested as text/html', function (done) {
-      server.get('/')
+      server.get('/sampleContainer2/')
         .set('Accept', 'text/html')
         .expect('content-type', /text\/html/)
         .expect(303, done)
