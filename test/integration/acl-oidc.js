@@ -67,8 +67,6 @@ describe('ACL HTTP', function () {
       options.headers['Authorization'] = 'Bearer ' + accessToken
     }
 
-    // console.log('in createOptions:', options)
-
     return options
   }
 
