@@ -58,7 +58,7 @@
     "node-forge": "^0.6.38",
     "nodemailer": "^3.1.4",
     "nomnom": "^1.8.1",
-    "oidc-auth-manager": "^0.4.1",
+    "oidc-auth-manager": "^0.5.0",
     "oidc-op-express": "^0.0.3",
     "rdflib": "^0.15.0",
     "recursive-readdir": "^2.1.0",
@@ -77,6 +77,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "dirty-chai": "^1.2.2",
     "hippie": "^0.5.0",
     "mocha": "^3.2.0",
     "nock": "^9.0.2",
