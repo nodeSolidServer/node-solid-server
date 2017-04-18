@@ -208,8 +208,6 @@ describe('Authentication API (OIDC)', () => {
           done(err)
         })
     })
-
-    it('At /login, enter WebID & password -> redirect back to /foo')
   })
 
   describe('Post-logout page (GET /goodbye)', () => {
