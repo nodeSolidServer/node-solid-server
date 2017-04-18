@@ -1,0 +1,14 @@
+# ACL resource for the static resources
+
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+
+# Public-readable
+<#public>
+    a acl:Authorization;
+
+    acl:agentClass foaf:Agent;  # everyone
+
+    acl:accessTo <./signup.html>;
+
+    acl:mode acl:Read.
