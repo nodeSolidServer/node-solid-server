@@ -9,10 +9,12 @@ chai.use(sinonChai)
 chai.should()
 
 const rdf = require('rdflib')
+const ns = require('solid-namespace')(rdf)
 const LDP = require('../../lib/ldp')
 const SolidHost = require('../../lib/models/solid-host')
 const AccountManager = require('../../lib/models/account-manager')
 const UserAccount = require('../../lib/models/user-account')
+const TokenService = require('../../lib/models/token-service')
 const WebIdTlsCertificate = require('../../lib/models/webid-tls-certificate')
 
 const testAccountsDir = path.join(__dirname, '../resources/accounts')
@@ -31,7 +33,8 @@ describe('AccountManager', () => {
         authMethod: 'tls',
         multiUser: true,
         store: {},
-        emailService: {}
+        emailService: {},
+        tokenService: {}
       }
 
       let mgr = AccountManager.from(config)
@@ -40,6 +43,7 @@ describe('AccountManager', () => {
       expect(mgr.multiUser).to.equal(config.multiUser)
       expect(mgr.store).to.equal(config.store)
       expect(mgr.emailService).to.equal(config.emailService)
+      expect(mgr.tokenService).to.equal(config.tokenService)
     })
 
     it('should error if no host param is passed in', () => {
@@ -262,6 +266,191 @@ describe('AccountManager', () => {
       return accountManager.saveProfileGraph(profileGraph, userAccount)
         .then(() => {
           expect(store.putGraph).to.have.been.calledWith(profileGraph, profileHostUri)
+        })
+    })
+  })
+
+  describe('rootAclFor()', () => {
+    it('should return the server root .acl in single user mode', () => {
+      let store = new LDP({ suffixAcl: '.acl', idp: false })
+      let options = { host, multiUser: false, store }
+      let accountManager = AccountManager.from(options)
+
+      let userAccount = UserAccount.from({ username: 'alice' })
+
+      let rootAclUri = accountManager.rootAclFor(userAccount)
+
+      expect(rootAclUri).to.equal('https://example.com/.acl')
+    })
+
+    it('should return the profile root .acl in multi user mode', () => {
+      let store = new LDP({ suffixAcl: '.acl', idp: true })
+      let options = { host, multiUser: true, store }
+      let accountManager = AccountManager.from(options)
+
+      let userAccount = UserAccount.from({ username: 'alice' })
+
+      let rootAclUri = accountManager.rootAclFor(userAccount)
+
+      expect(rootAclUri).to.equal('https://alice.example.com/.acl')
+    })
+  })
+
+  describe('loadAccountRecoveryEmail()', () => {
+    it('parses and returns the agent mailto from the root acl', () => {
+      let userAccount = UserAccount.from({ username: 'alice' })
+
+      let rootAclGraph = rdf.graph()
+      rootAclGraph.add(
+        rdf.namedNode('https://alice.example.com/.acl#owner'),
+        ns.acl('agent'),
+        rdf.namedNode('mailto:alice@example.com')
+      )
+
+      let store = {
+        suffixAcl: '.acl',
+        getGraph: sinon.stub().resolves(rootAclGraph)
+      }
+
+      let options = { host, multiUser: true, store }
+      let accountManager = AccountManager.from(options)
+
+      return accountManager.loadAccountRecoveryEmail(userAccount)
+        .then(recoveryEmail => {
+          expect(recoveryEmail).to.equal('alice@example.com')
+        })
+    })
+
+    it('should return undefined when agent mailto is missing', () => {
+      let userAccount = UserAccount.from({ username: 'alice' })
+
+      let emptyGraph = rdf.graph()
+
+      let store = {
+        suffixAcl: '.acl',
+        getGraph: sinon.stub().resolves(emptyGraph)
+      }
+
+      let options = { host, multiUser: true, store }
+      let accountManager = AccountManager.from(options)
+
+      return accountManager.loadAccountRecoveryEmail(userAccount)
+        .then(recoveryEmail => {
+          expect(recoveryEmail).to.be.undefined()
+        })
+    })
+  })
+
+  describe('passwordResetUrl()', () => {
+    it('should return a token reset validation url', () => {
+      let tokenService = new TokenService()
+      let options = { host, multiUser: true, tokenService }
+
+      let accountManager = AccountManager.from(options)
+
+      let returnToUrl = 'https://example.com/resource'
+      let token = '123'
+
+      let resetUrl = accountManager.passwordResetUrl(token, returnToUrl)
+
+      let expectedUri = 'https://example.com/api/password/validateReset?' +
+        'token=123&returnToUrl=' + encodeURIComponent(returnToUrl)
+
+      expect(resetUrl).to.equal(expectedUri)
+    })
+  })
+
+  describe('generateResetToken()', () => {
+    it('should generate and store an expiring reset token', () => {
+      let tokenService = new TokenService()
+      let options = { host, tokenService }
+
+      let accountManager = AccountManager.from(options)
+
+      let aliceWebId = 'https://alice.example.com/#me'
+      let userAccount = {
+        webId: aliceWebId
+      }
+
+      let token = accountManager.generateResetToken(userAccount)
+
+      let tokenValue = accountManager.tokenService.verify(token)
+
+      expect(tokenValue.webId).to.equal(aliceWebId)
+      expect(tokenValue).to.have.property('exp')
+    })
+  })
+
+  describe('sendPasswordResetEmail()', () => {
+    it('should compose and send a password reset email', () => {
+      let resetToken = '1234'
+      let tokenService = {
+        generate: sinon.stub().returns(resetToken)
+      }
+
+      let emailService = {
+        sendWithTemplate: sinon.stub().resolves()
+      }
+
+      let aliceWebId = 'https://alice.example.com/#me'
+      let userAccount = {
+        webId: aliceWebId,
+        email: 'alice@example.com'
+      }
+      let returnToUrl = 'https://example.com/resource'
+
+      let options = { host, tokenService, emailService }
+      let accountManager = AccountManager.from(options)
+
+      accountManager.passwordResetUrl = sinon.stub().returns('reset url')
+
+      let expectedEmailData = {
+        to: 'alice@example.com',
+        webId: aliceWebId,
+        resetUrl: 'reset url'
+      }
+
+      return accountManager.sendPasswordResetEmail(userAccount, returnToUrl)
+        .then(() => {
+          expect(accountManager.passwordResetUrl)
+            .to.have.been.calledWith(resetToken, returnToUrl)
+          expect(emailService.sendWithTemplate)
+            .to.have.been.calledWith('reset-password', expectedEmailData)
+        })
+    })
+
+    it('should reject if no email service is set up', done => {
+      let aliceWebId = 'https://alice.example.com/#me'
+      let userAccount = {
+        webId: aliceWebId,
+        email: 'alice@example.com'
+      }
+      let returnToUrl = 'https://example.com/resource'
+      let options = { host }
+      let accountManager = AccountManager.from(options)
+
+      accountManager.sendPasswordResetEmail(userAccount, returnToUrl)
+        .catch(error => {
+          expect(error.message).to.equal('Email service is not set up')
+          done()
+        })
+    })
+
+    it('should reject if no user email is provided', done => {
+      let aliceWebId = 'https://alice.example.com/#me'
+      let userAccount = {
+        webId: aliceWebId
+      }
+      let returnToUrl = 'https://example.com/resource'
+      let emailService = {}
+      let options = { host, emailService }
+
+      let accountManager = AccountManager.from(options)
+
+      accountManager.sendPasswordResetEmail(userAccount, returnToUrl)
+        .catch(error => {
+          expect(error.message).to.equal('Account recovery email has not been provided')
+          done()
         })
     })
   })
