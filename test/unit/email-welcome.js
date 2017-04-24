@@ -8,11 +8,11 @@ const sinonChai = require('sinon-chai')
 chai.use(sinonChai)
 chai.should()
 
-const SolidHost = require('../lib/models/solid-host')
-const AccountManager = require('../lib/models/account-manager')
-const EmailService = require('../lib/models/email-service')
+const SolidHost = require('../../lib/models/solid-host')
+const AccountManager = require('../../lib/models/account-manager')
+const EmailService = require('../../lib/models/email-service')
 
-const templatePath = path.join(__dirname, '../default-templates/emails')
+const templatePath = path.join(__dirname, '../../default-templates/emails')
 
 var host, accountManager, emailService
 
