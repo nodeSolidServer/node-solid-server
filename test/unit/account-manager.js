@@ -353,8 +353,8 @@ describe('AccountManager', () => {
 
       let resetUrl = accountManager.passwordResetUrl(token, returnToUrl)
 
-      let expectedUri = 'https://example.com/api/password/validateReset?' +
-        'token=123&returnToUrl=' + encodeURIComponent(returnToUrl)
+      let expectedUri = 'https://example.com/account/password/change?' +
+        'token=123&returnToUrl=' + returnToUrl
 
       expect(resetUrl).to.equal(expectedUri)
     })
