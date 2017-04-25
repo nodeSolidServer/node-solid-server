@@ -39,7 +39,7 @@ If you did not mean to reset your password, ignore this email, your password wil
 
 <p>To reset your password, click on the following link:</p>
 
-<p>${data.resetUrl}</p>
+<p><a href="${data.resetUrl}">${data.resetUrl}</a></p>
 
 <p>If you did not mean to reset your password, ignore this email, your password will not change.</p>
 `
