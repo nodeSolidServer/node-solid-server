@@ -37,18 +37,24 @@
     <div class="form-group">
       <div class="row">
         <div class="col-md-2">
-          <button type="submit" class="btn btn-primary" id="login">Login</button>
+          <button type="submit" class="btn btn-primary" id="login">Log In</button>
         </div>
 
         <div class="col-md-4">
           <div>Don't have an account?
-            <a href="/register?returnToUrl={{{postRegisterUrl}}}">Register</a>
+            <a class="btn btn-xs btn-default"
+               href="/register{{#if returnToUrl}}?returnToUrl={{{returnToUrl}}}{{/if}}">
+              Register
+            </a>
           </div>
         </div>
 
         <div class="col-md-6">
           <div>Forgot password?
-            <a href="/account/password/reset?returnToUrl={{{postRegisterUrl}}}">Reset password</a>
+            <a class="btn btn-xs btn-default"
+               href="/account/password/reset{{#if returnToUrl}}?returnToUrl={{{returnToUrl}}}{{/if}}">
+              Reset password
+            </a>
           </div>
         </div>
       </div>
