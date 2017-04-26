@@ -55,7 +55,10 @@
 
         <div class="col-md-10">
           <div>Already have an account?
-            <a href="/login?returnToUrl={{{returnToUrl}}}">Log In</a>
+            <a class="btn btn-xs btn-default"
+               href="/login{{#if returnToUrl}}?returnToUrl={{{returnToUrl}}}{{/if}}">
+              Log In
+            </a>
           </div>
         </div>
       </div>

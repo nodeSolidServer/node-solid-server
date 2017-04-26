@@ -213,7 +213,7 @@ describe('LoginByPasswordRequest', () => {
       request.findValidUser()
         .catch(error => {
           expect(error.statusCode).to.equal(400)
-          expect(error.message).to.equal('User found but no password found')
+          expect(error.message).to.equal('User found but no password match')
           done()
         })
     })
@@ -242,8 +242,10 @@ describe('LoginByPasswordRequest', () => {
       let mockUserStore
 
       beforeEach(() => {
+        let aliceRecord = { webId: 'https://alice.example.com/profile/card#me' }
+
         mockUserStore = {
-          findUser: () => { return Promise.resolve(true) },
+          findUser: sinon.stub().resolves(aliceRecord),
           matchPassword: (user, password) => { return Promise.resolve(user) }
         }
       })
@@ -252,12 +254,11 @@ describe('LoginByPasswordRequest', () => {
         let options = { username: 'alice', userStore: mockUserStore, accountManager }
         let request = new LoginByPasswordRequest(options)
 
-        let storeFindUser = sinon.spy(request.userStore, 'findUser')
         let userStoreKey = 'alice.example.com/profile/card#me'
 
         return request.findValidUser()
           .then(() => {
-            expect(storeFindUser).to.be.calledWith(userStoreKey)
+            expect(mockUserStore.findUser).to.be.calledWith(userStoreKey)
           })
       })
 
@@ -266,12 +267,11 @@ describe('LoginByPasswordRequest', () => {
         let options = { username: webId, userStore: mockUserStore, accountManager }
         let request = new LoginByPasswordRequest(options)
 
-        let storeFindUser = sinon.spy(request.userStore, 'findUser')
         let userStoreKey = 'alice.example.com/profile/card#me'
 
         return request.findValidUser()
           .then(() => {
-            expect(storeFindUser).to.be.calledWith(userStoreKey)
+            expect(mockUserStore.findUser).to.be.calledWith(userStoreKey)
           })
       })
     })
