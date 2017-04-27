@@ -68,8 +68,10 @@ describe('CreateAccountRequest', () => {
   describe('createAccount()', () => {
     it('should return a 400 error if account already exists', done => {
       let accountManager = AccountManager.from({ host })
-      let locals = { authMethod: defaults.auth, accountManager }
-      let aliceData = { username: 'alice' }
+      let locals = { authMethod: defaults.auth, accountManager, oidc: { users: {} } }
+      let aliceData = {
+        username: 'alice', password: '1234'
+      }
       let req = HttpMocks.createRequest({ app: { locals }, body: aliceData })
 
       let request = CreateAccountRequest.fromParams(req, res)
