@@ -175,8 +175,9 @@ describe('CreateOidcAccountRequest', () => {
 
       let request = CreateAccountRequest.fromParams(req, res)
 
-      request.sendResponse(alice)
+      let result = request.sendResponse(alice)
       expect(request.response.statusCode).to.equal(302)
+      expect(result.username).to.equal('alice')
     })
   })
 })
