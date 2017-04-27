@@ -1,7 +1,7 @@
 'use strict'
 
 module.exports = {
-  'auth': 'tls',
+  'auth': 'oidc',
   'configPath': './config',
   'dbPath': './.db',
   'port': 8443,
