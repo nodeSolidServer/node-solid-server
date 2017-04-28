@@ -30,7 +30,7 @@ describe('AccountManager', () => {
     it('should init with passed in options', () => {
       let config = {
         host,
-        authMethod: 'tls',
+        authMethod: 'oidc',
         multiUser: true,
         store: {},
         emailService: {},
