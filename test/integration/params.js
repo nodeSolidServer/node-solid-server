@@ -82,9 +82,11 @@ describe('LDNODE params', function () {
   })
 
   describe('ui-path', function () {
+    let rootPath = './test/resources/'
     var ldp = ldnode({
-      root: './test/resources/',
-      apiApps: path.join(__dirname, '../resources/sampleContainer')
+      root: rootPath,
+      apiApps: path.join(__dirname, '../resources/sampleContainer'),
+      webid: false
     })
     var server = supertest(ldp)
 
@@ -97,9 +99,19 @@ describe('LDNODE params', function () {
 
   describe('forcedUser', function () {
     var ldpHttpsServer
-    let rootPath = path.join(__dirname, '../resources/acl-tls/fake-account')
+
+    const port = 7777
+    const serverUri = `https://localhost:7777`
+    const rootPath = path.join(__dirname, '../resources/accounts-acl')
+    const dbPath = path.join(rootPath, 'db')
+    const configPath = path.join(rootPath, 'config')
+
     var ldp = ldnode.createServer({
       forceUser: 'https://fakeaccount.com/profile#me',
+      dbPath,
+      configPath,
+      serverUri,
+      port,
       root: rootPath,
       sslKey: path.join(__dirname, '../keys/key.pem'),
       sslCert: path.join(__dirname, '../keys/cert.pem'),
@@ -108,7 +120,7 @@ describe('LDNODE params', function () {
     })
 
     before(function (done) {
-      ldpHttpsServer = ldp.listen(3459, done)
+      ldpHttpsServer = ldp.listen(port, done)
     })
 
     after(function () {
@@ -117,7 +129,7 @@ describe('LDNODE params', function () {
       fs.removeSync(path.join(rootPath, 'index.html.acl'))
     })
 
-    var server = supertest('https://localhost:3459')
+    var server = supertest(serverUri)
 
     it('should find resource in correct path', function (done) {
       server.get('/hello.html')
