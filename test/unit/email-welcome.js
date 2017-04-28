@@ -25,7 +25,7 @@ beforeEach(() => {
   let mgrConfig = {
     host,
     emailService,
-    authMethod: 'tls',
+    authMethod: 'oidc',
     multiUser: true
   }
   accountManager = AccountManager.from(mgrConfig)

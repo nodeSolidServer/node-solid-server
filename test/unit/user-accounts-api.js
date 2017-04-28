@@ -29,7 +29,7 @@ describe('api/accounts/user-accounts', () => {
       let store = new LDP({ root: testAccountsDir, idp: multiUser })
 
       it('should throw a 400 error if spkac param is missing', done => {
-        let options = { host, store, multiUser, authMethod: 'tls' }
+        let options = { host, store, multiUser, authMethod: 'oidc' }
         let accountManager = AccountManager.from(options)
 
         let req = {

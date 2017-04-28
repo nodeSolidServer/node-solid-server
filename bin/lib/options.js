@@ -64,13 +64,11 @@ module.exports = [
     question: 'Select authentication strategy',
     type: 'list',
     choices: [
-      'WebID-OpenID Connect',
-      'WebID-TLS'
+      'WebID-OpenID Connect'
     ],
-    prompt: true,
+    prompt: false,
     default: 'WebID-OpenID Connect',
     filter: (value) => {
-      if (value === 'WebID-TLS') return 'tls'
       if (value === 'WebID-OpenID Connect') return 'oidc'
     },
     when: (answers) => {
