@@ -49,4 +49,18 @@ describe('Utility functions', function () {
       assert.equal(utils.stripLineEndings(str), '123456')
     })
   })
+
+  describe('fullUrlForReq()', () => {
+    it('should extract a fully-qualified url from an Express request', () => {
+      let req = {
+        protocol: 'https:',
+        get: (host) => 'example.com',
+        baseUrl: '/',
+        path: '/resource1',
+        query: { sort: 'desc' }
+      }
+
+      assert.equal(utils.fullUrlForReq(req), 'https://example.com/resource1?sort=desc')
+    })
+  })
 })
