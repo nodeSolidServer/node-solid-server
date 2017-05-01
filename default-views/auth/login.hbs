@@ -11,63 +11,45 @@
   <h4>Login</h4>
 </div>
 <div class="container">
-  <form method="post" action="/login">
-    <div class="form-group">
-      {{#if error}}
-        <div class="row">
-          <div class="col-md-12">
-            <p class="text-danger"><strong>{{error}}</strong></p>
-          </div>
-        </div>
-      {{/if}}
-      <div class="row">
-        <div class="col-md-12">
-          <label for="username">Username:</label>
-          <input type="text" class="form-control" name="username" id="username" placeholder="alice" />
-        </div>
+  {{#if error}}
+    <div class="row">
+      <div class="col-md-12">
+        <p class="text-danger"><strong>{{error}}</strong></p>
       </div>
-      <div class="row">
-        <div class="col-md-12">
-          <label for="password">Password:</label>
-          <input type="password" class="form-control" name="password" id="password" />
-        </div>
+    </div>
+  {{/if}}
+  <div class="row">
+    <div class="col-md-5">
+      {{> auth/username-password}}
+    </div>
+    <div class="col-md-1"><br /></div>
+    <div class="col-md-6">
+      <a href="/login/tls" class="btn btn-primary">With Certificate (WebId-TLS)</a>
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-4">
+      <div>Don't have an account?
+        <a class="btn btn-xs btn-default"
+           href="/register{{#if returnToUrl}}?returnToUrl={{{returnToUrl}}}{{/if}}">
+          Register
+        </a>
       </div>
     </div>
 
-    <div class="form-group">
-      <div class="row">
-        <div class="col-md-2">
-          <button type="submit" class="btn btn-primary" id="login">Log In</button>
-        </div>
-
-        <div class="col-md-4">
-          <div>Don't have an account?
-            <a class="btn btn-xs btn-default"
-               href="/register{{#if returnToUrl}}?returnToUrl={{{returnToUrl}}}{{/if}}">
-              Register
-            </a>
-          </div>
-        </div>
-
-        <div class="col-md-6">
-          <div>Forgot password?
-            <a class="btn btn-xs btn-default"
-               href="/account/password/reset{{#if returnToUrl}}?returnToUrl={{{returnToUrl}}}{{/if}}">
-              Reset password
-            </a>
-          </div>
-        </div>
+    <div class="col-md-6">
+      <div>Forgot password?
+        <a class="btn btn-xs btn-default"
+           href="/account/password/reset{{#if returnToUrl}}?returnToUrl={{{returnToUrl}}}{{/if}}">
+          Reset password
+        </a>
       </div>
-
-      <input type="hidden" name="response_type" id="response_type" value="{{response_type}}" />
-      <input type="hidden" name="display" id="display" value="{{display}}" />
-      <input type="hidden" name="scope" id="scope" value="{{scope}}" />
-      <input type="hidden" name="client_id" id="client_id" value="{{client_id}}" />
-      <input type="hidden" name="redirect_uri" id="redirect_uri" value="{{redirect_uri}}" />
-      <input type="hidden" name="state" id="state" value="{{state}}" />
-      <input type="hidden" name="nonce" id="nonce" value="{{nonce}}" />
+      <div>{{> auth/test}}</div>
     </div>
-  </form>
+  </div>
 </div>
 </body>
 </html>
