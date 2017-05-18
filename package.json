@@ -64,6 +64,7 @@
     "solid-namespace": "^0.1.0",
     "solid-permissions": "^0.5.1",
     "solid-ws": "^0.2.3",
+    "spdy": "^3.4.4",
     "string": "^3.3.0",
     "uid-safe": "^2.1.1",
     "uuid": "^3.0.0",
