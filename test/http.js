@@ -286,9 +286,33 @@ describe('HTTP APIs', function () {
         .expect(200, done)
     })
     it('should have glob support', function (done) {
+      let expectedValue = `@prefix : <#>.
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
+@prefix n0: <http://example.org/stuff/1.0/>.
+@prefix TR: <http://www.w3.org/TR/>.
+@prefix d: <http://purl.org/net/dajobe/>.
+@prefix n1: <http://purl.org/dc/elements/1.1/>.
+
+n0:a
+    n0:b
+        """The first line
+The second line
+  more""",
+            [
+                rdf:first "apple";
+                rdf:rest [ rdf:first "banana"; rdf:rest rdf:nil ]
+            ].
+TR:rdf-syntax-grammar
+    n0:editor [ n0:fullname "Dave Beckett"; n0:homePage d: ];
+    n1:title "RDF/XML Syntax Specification (Revised)".
+`
       server.get('/sampleContainer/example*')
         .expect('content-type', /text\/turtle/)
-        .expect(200, done)
+        .expect(200)
+        .expect((res) => {
+          assert.equal(res.text, expectedValue)
+        })
+        .end(done)
     })
     it('should have set acl and describedBy Links for container',
       function (done) {
