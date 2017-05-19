@@ -19,7 +19,6 @@ describe('PATCH', function () {
 
   it('should create a new file if file does not exist', function (done) {
     rm('sampleContainer/notExisting.ttl')
-    let expectedValue = '@prefix : </notExisting.ttl#>.\n\n:test :hello 456 .\n\n'
 
     server.patch('/notExisting.ttl')
       .set('content-type', 'application/sparql-update')
@@ -28,7 +27,8 @@ describe('PATCH', function () {
       .end(function (err, res, body) {
         assert.equal(
           read('sampleContainer/notExisting.ttl'),
-          expectedValue)
+          '@prefix : </notExisting.ttl#>.\n\n' +
+          ':test :hello 456 .\n\n')
         rm('sampleContainer/notExisting.ttl')
         done(err)
       })
@@ -74,7 +74,10 @@ describe('PATCH', function () {
         .end(function (err, res, body) {
           assert.equal(
             read('sampleContainer/prefixSparql.ttl'),
-            '@prefix : </prefixSparql.ttl#>.\n@prefix schema: <http://schema.org/>.\n@prefix pro: <http://ogp.me/ns/profile#>.\n\n: a schema:Person; pro:first_name "Timothy".\n\n')
+            '@prefix : </prefixSparql.ttl#>.\n' +
+            '@prefix schema: <http://schema.org/>.\n' +
+            '@prefix pro: <http://ogp.me/ns/profile#>.\n\n' +
+            ': a schema:Person; pro:first_name "Timothy".\n\n')
           rm('sampleContainer/prefixSparql.ttl')
           done(err)
         })
@@ -93,7 +96,9 @@ describe('PATCH', function () {
         .end(function (err, res, body) {
           assert.equal(
             read('sampleContainer/addingTriple.ttl'),
-            '@prefix : </addingTriple.ttl#>.\n\n:current :temp 123 .\n\n:test :hello 456 .\n\n')
+            '@prefix : </addingTriple.ttl#>.\n\n' +
+            ':current :temp 123 .\n\n' +
+            ':test :hello 456 .\n\n')
           rm('sampleContainer/addingTriple.ttl')
           done(err)
         })
@@ -110,7 +115,8 @@ describe('PATCH', function () {
         .end(function (err, res, body) {
           assert.equal(
             read('sampleContainer/addingTripleValue.ttl'),
-            '@prefix : </addingTripleValue.ttl#>.\n\n:current :temp 123, 456 .\n\n')
+            '@prefix : </addingTripleValue.ttl#>.\n\n' +
+            ':current :temp 123, 456 .\n\n')
           rm('sampleContainer/addingTripleValue.ttl')
           done(err)
         })
@@ -127,7 +133,8 @@ describe('PATCH', function () {
         .end(function (err, res, body) {
           assert.equal(
             read('sampleContainer/addingTripleSubj.ttl'),
-            '@prefix : </addingTripleSubj.ttl#>.\n\n:current :temp 123; :temp2 456 .\n\n')
+            '@prefix : </addingTripleSubj.ttl#>.\n\n' +
+            ':current :temp 123; :temp2 456 .\n\n')
           rm('sampleContainer/addingTripleSubj.ttl')
           done(err)
         })
@@ -145,7 +152,8 @@ describe('PATCH', function () {
       .end(function (err, res, body) {
         assert.equal(
           read('sampleContainer/emptyExample.ttl'),
-          '@prefix : </emptyExample.ttl#>.\n\n:current :temp 123 .\n\n')
+          '@prefix : </emptyExample.ttl#>.\n\n' +
+          ':current :temp 123 .\n\n')
         rm('sampleContainer/emptyExample.ttl')
         done(err)
       })

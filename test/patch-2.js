@@ -133,7 +133,10 @@ ind:this flow:participation :id1477522707481; mee:sharedNotes :this.\n\n`
         .end(function (err, res, body) {
           assert.equal(
             read('sampleContainer/prefixSparql.ttl'),
-            '@prefix : </prefixSparql.ttl#>.\n@prefix schema: <http://schema.org/>.\n@prefix pro: <http://ogp.me/ns/profile#>.\n\n: a schema:Person; pro:first_name "Timothy".\n\n')
+            '@prefix : </prefixSparql.ttl#>.\n' +
+            '@prefix schema: <http://schema.org/>.\n' +
+            '@prefix pro: <http://ogp.me/ns/profile#>.\n\n' +
+            ': a schema:Person; pro:first_name "Timothy".\n\n')
           rm('sampleContainer/prefixSparql.ttl')
           done(err)
         })
@@ -142,8 +145,6 @@ ind:this flow:participation :id1477522707481; mee:sharedNotes :this.\n\n`
 
   describe('INSERT', function () {
     it('should add a new triple', function (done) {
-      let expectedValue = `@prefix : </addingTriple.ttl#>.\n\n:current :temp 123 .\n\n:test :hello 456 .\n\n`
-
       write(
         '<#current> <#temp> 123 .',
         'sampleContainer/addingTriple.ttl')
@@ -154,7 +155,9 @@ ind:this flow:participation :id1477522707481; mee:sharedNotes :this.\n\n`
         .end(function (err, res, body) {
           assert.equal(
             read('sampleContainer/addingTriple.ttl'),
-            expectedValue)
+            '@prefix : </addingTriple.ttl#>.\n\n' +
+            ':current :temp 123 .\n\n' +
+            ':test :hello 456 .\n\n')
           rm('sampleContainer/addingTriple.ttl')
           done(err)
         })
@@ -171,7 +174,8 @@ ind:this flow:participation :id1477522707481; mee:sharedNotes :this.\n\n`
         .end(function (err, res, body) {
           assert.equal(
             read('sampleContainer/addingTripleValue.ttl'),
-            '@prefix : </addingTripleValue.ttl#>.\n\n:current :temp 123, 456 .\n\n')
+            '@prefix : </addingTripleValue.ttl#>.\n\n' +
+            ':current :temp 123, 456 .\n\n')
           rm('sampleContainer/addingTripleValue.ttl')
           done(err)
         })
@@ -188,7 +192,8 @@ ind:this flow:participation :id1477522707481; mee:sharedNotes :this.\n\n`
         .end(function (err, res, body) {
           assert.equal(
             read('sampleContainer/addingTripleSubj.ttl'),
-            '@prefix : </addingTripleSubj.ttl#>.\n\n:current :temp 123; :temp2 456 .\n\n')
+            '@prefix : </addingTripleSubj.ttl#>.\n\n' +
+            ':current :temp 123; :temp2 456 .\n\n')
           rm('sampleContainer/addingTripleSubj.ttl')
           done(err)
         })
@@ -206,7 +211,8 @@ ind:this flow:participation :id1477522707481; mee:sharedNotes :this.\n\n`
       .end(function (err, res, body) {
         assert.equal(
           read('sampleContainer/emptyExample.ttl'),
-          '@prefix : </emptyExample.ttl#>.\n\n:current :temp 123 .\n\n')
+          '@prefix : </emptyExample.ttl#>.\n\n' +
+          ':current :temp 123 .\n\n')
         rm('sampleContainer/emptyExample.ttl')
         done(err)
       })
