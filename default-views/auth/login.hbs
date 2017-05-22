@@ -20,11 +20,15 @@
   {{/if}}
   <div class="row">
     <div class="col-md-5">
-      {{> auth/username-password}}
+      {{#if enablePassword}}
+        {{> auth/login-username-password}}
+      {{/if}}
     </div>
     <div class="col-md-1"><br /></div>
     <div class="col-md-6">
-      <a href="/login/tls" class="btn btn-primary">With Certificate (WebId-TLS)</a>
+      {{#if enableTls}}
+        {{> auth/login-tls}}
+      {{/if}}
     </div>
   </div>
 </div>
@@ -34,7 +38,7 @@
     <div class="col-md-4">
       <div>Don't have an account?
         <a class="btn btn-xs btn-default"
-           href="/register{{#if returnToUrl}}?returnToUrl={{{returnToUrl}}}{{/if}}">
+           href="{{{registerUrl}}}">
           Register
         </a>
       </div>
@@ -47,7 +51,6 @@
           Reset password
         </a>
       </div>
-      <div>{{> auth/test}}</div>
     </div>
   </div>
 </div>

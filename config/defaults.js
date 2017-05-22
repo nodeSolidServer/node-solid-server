@@ -2,6 +2,10 @@
 
 module.exports = {
   'auth': 'oidc',
+  'localAuth': {
+    'tls': true,
+    'password': true
+  },
   'configPath': './config',
   'dbPath': './.db',
   'port': 8443,

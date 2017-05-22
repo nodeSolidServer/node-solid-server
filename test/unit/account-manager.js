@@ -6,6 +6,7 @@ const expect = chai.expect
 const sinon = require('sinon')
 const sinonChai = require('sinon-chai')
 chai.use(sinonChai)
+chai.use(require('dirty-chai'))
 chai.should()
 
 const rdf = require('rdflib')
@@ -452,6 +453,28 @@ describe('AccountManager', () => {
           expect(error.message).to.equal('Account recovery email has not been provided')
           done()
         })
+    })
+  })
+
+  describe('externalAccount()', () => {
+    it('should return true if account is a subdomain of the local server url', () => {
+      let options = { host }
+
+      let accountManager = AccountManager.from(options)
+
+      let webId = 'https://alice.example.com/#me'
+
+      expect(accountManager.externalAccount(webId)).to.be.false()
+    })
+
+    it('should return false if account does not match the local server url', () => {
+      let options = { host }
+
+      let accountManager = AccountManager.from(options)
+
+      let webId = 'https://alice.databox.me/#me'
+
+      expect(accountManager.externalAccount(webId)).to.be.true()
     })
   })
 })

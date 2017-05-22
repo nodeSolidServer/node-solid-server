@@ -255,7 +255,6 @@ describe('PasswordChangeRequest', () => {
 
       expect(response.render).to.have.been.calledWith('auth/change-password',
         { validToken: false, token, returnToUrl, error: 'error message' })
-      expect(response.statusCode).to.equal(400)
     })
   })
 })
