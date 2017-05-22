@@ -129,7 +129,7 @@ describe('Authentication API (OIDC)', () => {
     })
   })
 
-  describe('Login by Username and Password (POST /login)', () => {
+  describe('Login by Username and Password (POST /login/password)', () => {
     // Logging in as alice, to alice's pod
     let aliceAccount = UserAccount.from({ webId: aliceWebId })
     let alicePassword = '12345'
@@ -146,7 +146,7 @@ describe('Authentication API (OIDC)', () => {
     })
 
     it('should login and be redirected to /authorize', (done) => {
-      alice.post('/login')
+      alice.post('/login/password')
         .type('form')
         .send({ username: 'alice' })
         .send({ password: alicePassword })
@@ -160,21 +160,21 @@ describe('Authentication API (OIDC)', () => {
     })
 
     it('should throw a 400 if no username is provided', (done) => {
-      alice.post('/login')
+      alice.post('/login/password')
         .type('form')
         .send({ password: alicePassword })
         .expect(400, done)
     })
 
     it('should throw a 400 if no password is provided', (done) => {
-      alice.post('/login')
+      alice.post('/login/password')
         .type('form')
         .send({ username: 'alice' })
         .expect(400, done)
     })
 
     it('should throw a 400 if user is found but no password match', (done) => {
-      alice.post('/login')
+      alice.post('/login/password')
         .type('form')
         .send({ username: 'alice' })
         .send({ password: 'wrongpassword' })

@@ -122,19 +122,6 @@ describe('CreateOidcAccountRequest', () => {
       expect(request.password).to.equal(aliceData.password)
       expect(request.userStore).to.equal(userStore)
     })
-
-    it('should throw an error if no password was given', () => {
-      let accountManager = AccountManager.from({ host, store })
-      let aliceData = { username: 'alice', password: null }
-      let req = HttpMocks.createRequest({
-        app: { locals: { authMethod, oidc: {}, accountManager } },
-        body: aliceData,
-        session
-      })
-
-      expect(() => { CreateAccountRequest.fromParams(req, res) })
-        .to.throw(/Password required/)
-    })
   })
 
   describe('saveCredentialsFor()', () => {
