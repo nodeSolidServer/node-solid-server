@@ -3,6 +3,7 @@ const fs = require('fs-extra')
 const request = require('request')
 const path = require('path')
 const rm = require('../utils').rm
+const nock = require('nock')
 
 const ldnode = require('../../index')
 
