@@ -56,7 +56,7 @@ function createTestResource (resourceName) {
 
 describe('HTTP APIs', function () {
   var emptyResponse = function (res) {
-    if (res.text.length !== 0) {
+    if (res.text) {
       console.log('Not empty response')
     }
   }
