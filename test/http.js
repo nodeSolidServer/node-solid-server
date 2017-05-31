@@ -286,28 +286,23 @@ describe('HTTP APIs', function () {
         .expect(200, done)
     })
     it('should have glob support', function (done) {
-      let expectedValue = `@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>.
-@prefix dc: <http://purl.org/dc/elements/1.1/>.
-@prefix ex: <http://example.org/stuff/1.0/>.
-@prefix e: <example1.ttl#>.
+      let expectedValue = `@prefix : <#>.
+@prefix ex: <example1.ttl#>.
+@prefix n0: <http://example.org/stuff/1.0/>.
 @prefix TR: <http://www.w3.org/TR/>.
 @prefix d: <http://purl.org/net/dajobe/>.
+@prefix n1: <http://purl.org/dc/elements/1.1/>.
 
-   <> a e:glob .
-TR:rdf-syntax-grammar
-    ex:editor
-       [ ex:fullname "Dave Beckett"; ex:homePage d: ];
-    dc:title
-       "RDF/XML Syntax Specification (Revised)".
-ex:a
-    ex:b
+<> a ex:glob.
+
+n0:a
+    n0:b
         """The first line
 The second line
-  more""",
-            [ rdf:first
-               "apple";
-            rdf:rest
-               [ rdf:first "banana"; rdf:rest rdf:nil ] ].
+  more""", ( "apple" "banana" ).
+TR:rdf-syntax-grammar
+    n0:editor [ n0:fullname "Dave Beckett"; n0:homePage d: ];
+    n1:title "RDF/XML Syntax Specification (Revised)".
 `
       server.get('/sampleContainer/example*')
         .expect('content-type', /text\/turtle/)
