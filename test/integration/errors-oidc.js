@@ -83,39 +83,29 @@ describe('OIDC error handling', function () {
     describe('with an empty bearer token', () => {
       it('should return a 401 error', done => {
         server.get('/profile/')
-          .set('Accept', 'application/json')
           .set('Authorization', 'Bearer ')
           .expect('WWW-Authenticate', 'Bearer realm="https://localhost:3457", scope="openid"')
-          .expect(401)
-          .expect('Content-Type', 'application/json; charset=utf-8')
-          .expect(res => {
-            let json = JSON.parse(res.text)
-            expect(json).to.eql({
-              realm: 'https://localhost:3457', scope: 'openid'
-            })
-          })
-          .end(done)
+          .expect(401, done)
       })
     })
 
     describe('with an invalid bearer token', () => {
       it('should return a 401 error', done => {
         server.get('/profile/')
-          .set('Accept', 'application/json')
           .set('Authorization', 'Bearer abcd123')
           .expect('WWW-Authenticate', 'Bearer realm="https://localhost:3457", scope="openid", error="invalid_token", error_description="Access token is not a JWT"')
-          .expect(401)
-          .expect('Content-Type', 'application/json; charset=utf-8')
-          .expect(res => {
-            let json = JSON.parse(res.text)
-            expect(json).to.eql({
-              realm: 'https://localhost:3457',
-              scope: 'openid',
-              error: 'invalid_token',
-              error_description: 'Access token is not a JWT'
-            })
-          })
-          .end(done)
+          .expect(401, done)
+      })
+    })
+
+    describe('with an expired bearer token', () => {
+      const expiredToken = 'eyJhbGciOiJSUzI1NiIsImtpZCI6ImxOWk9CLURQRTFrIn0.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDozNDU3Iiwic3ViIjoiaHR0cHM6Ly9sb2NhbGhvc3Q6MzQ1Ny9wcm9maWxlL2NhcmQjbWUiLCJhdWQiOiJodHRwczovL2xvY2FsaG9zdDozNDU3IiwiZXhwIjoxNDk2MjM5ODY1LCJpYXQiOjE0OTYyMzk4NjUsImp0aSI6IjliN2MwNGQyNDY3MjQ1ZWEiLCJub25jZSI6IklXaUpMVFNZUmktVklSSlhjejVGdU9CQTFZR1lZNjFnRGRlX2JnTEVPMDAiLCJhdF9oYXNoIjoiRFpES3I0RU1xTGE1Q0x1elV1WW9pdyJ9.uBTLy_wG5rr4kxM0hjXwIC-NwGYrGiiiY9IdOk5hEjLj2ECc767RU7iZ5vZa0pSrGy0V2Y3BiZ7lnYIA7N4YUAuS077g_4zavoFWyu9xeq6h70R8yfgFUNPo91PGpODC9hgiNbEv2dPBzTYYHqf7D6_-3HGnnDwiX7TjWLTkPLRvPLTcsCUl7G7y-EedjcVRk3Jyv8TNSoBMeTwOR3ewuzNostmCjUuLsr73YpVid6HE55BBqgSCDCNtS-I7nYmO_lRqIWJCydjdStSMJgxzSpASvoeCJ_lwZF6FXmZOQNNhmstw69fU85J1_QsS78cRa76-SnJJp6JCWHFBUAolPQ'
+
+      it('should return a 401 error', done => {
+        server.get('/profile/')
+          .set('Authorization', 'Bearer ' + expiredToken)
+          .expect('WWW-Authenticate', 'Bearer realm="https://localhost:3457", scope="openid", error="invalid_token", error_description="Access token is expired."')
+          .expect(401, done)
       })
     })
   })
