@@ -4,6 +4,7 @@ var li = require('li')
 var ldnode = require('../index')
 var rm = require('./test-utils').rm
 var path = require('path')
+const rdf = require('rdflib')
 
 var suffixAcl = '.acl'
 var suffixMeta = '.meta'
@@ -286,30 +287,30 @@ describe('HTTP APIs', function () {
         .expect(200, done)
     })
     it('should have glob support', function (done) {
-      let expectedValue = `@prefix dc: <http://purl.org/dc/elements/1.1/>.
-@prefix ex: <http://example.org/stuff/1.0/>.
-@prefix e: <example1.ttl#>.
-@prefix TR: <http://www.w3.org/TR/>.
-@prefix d: <http://purl.org/net/dajobe/>.
-
-   e:this dc:title "Test title" .
-TR:rdf-syntax-grammar
-    ex:editor
-       [ ex:fullname "Dave Beckett"; ex:homePage d: ];
-    dc:title
-       "RDF/XML Syntax Specification (Revised)".
-ex:a
-    ex:b
-        """The first line
-The second line
-  more""",
-           ( "apple" "banana" ).
-`
       server.get('/sampleContainer/example*')
         .expect('content-type', /text\/turtle/)
         .expect(200)
         .expect((res) => {
-          assert.equal(res.text, expectedValue)
+          let kb = rdf.graph()
+          rdf.parse(res.text, kb, 'https://localhost/', 'text/turtle')
+
+          assert(kb.match(
+            rdf.namedNode('https://localhost/example1.ttl#this'),
+            rdf.namedNode('http://purl.org/dc/elements/1.1/title'),
+            rdf.literal('Test title')
+          ).length, 'Must contain a triple from example1.ttl')
+
+          assert(kb.match(
+            rdf.namedNode('http://example.org/stuff/1.0/a'),
+            rdf.namedNode('http://example.org/stuff/1.0/b'),
+            rdf.literal('apple')
+          ).length, 'Must contain a triple from example2.ttl')
+
+          assert(kb.match(
+            rdf.namedNode('http://example.org/stuff/1.0/a'),
+            rdf.namedNode('http://example.org/stuff/1.0/b'),
+            rdf.literal('The first line\nThe second line\n  more')
+          ).length, 'Must contain a triple from example3.ttl')
         })
         .end(done)
     })
