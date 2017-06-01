@@ -37,27 +37,6 @@ describe('OIDC error handling', function () {
   const server = supertest(serverUri)
 
   describe('Unauthenticated requests to protected resources', () => {
-    describe('accepting json only', () => {
-      it('should return 401 Unauthorized with www-auth header', () => {
-        return server.get('/profile/')
-          .set('Accept', 'application/json')
-          .expect('WWW-Authenticate', 'Bearer realm="https://localhost:3457", scope="openid"')
-          .expect(401)
-      })
-
-      it('should return json body', () => {
-        return server.get('/profile/')
-          .set('Accept', 'application/json')
-          .expect('Content-Type', 'application/json; charset=utf-8')
-          .then(res => {
-            let json = JSON.parse(res.text)
-            expect(json).to.eql({
-              realm: 'https://localhost:3457', scope: 'openid'
-            })
-          })
-      })
-    })
-
     describe('accepting text/html', () => {
       it('should return 401 Unauthorized with www-auth header', () => {
         return server.get('/profile/')
@@ -73,6 +52,15 @@ describe('OIDC error handling', function () {
           .then(res => {
             expect(res.text).to.match(/<meta http-equiv="refresh" content="0; url=https:\/\/localhost:3457\/api\/auth\/select-provider/)
           })
+      })
+    })
+
+    describe('not accepting html', () => {
+      it('should return 401 Unauthorized with www-auth header', () => {
+        return server.get('/profile/')
+          .set('Accept', 'text/plain')
+          .expect('WWW-Authenticate', 'Bearer realm="https://localhost:3457", scope="openid"')
+          .expect(401)
       })
     })
   })
