@@ -38,7 +38,31 @@ describe('PATCH', function () {
 
   describe('DELETE', function () {
     it('reproduce index 1 bug from pad', function (done) {
-      var expected = '@prefix dc: <http://purl.org/dc/elements/1.1/>.\n@prefix meeting: <http://www.w3.org/ns/pim/meeting#>.\n@prefix card: <https://www.w3.org/People/Berners-Lee/card#>.\n@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.\n@prefix p: <http://www.w3.org/ns/pim/pad#>.\n@prefix in: </parent/index.ttl#>.\n@prefix n: <http://rdfs.org/sioc/ns#>.\n@prefix flow: <http://www.w3.org/2005/01/wf/flow#>.\n@prefix ic: <http://www.w3.org/2002/12/cal/ical#>.\n@prefix ui: <http://www.w3.org/ns/ui#>.\n\n<#this>\n    dc:author\n       card:i;\n    dc:created\n       "2016-10-25T15:44:42Z"^^xsd:dateTime;\n    dc:title\n       "Shared Notes";\n    a    p:Notepad;\n    p:next\n       <#id1477502276660>.\n   in:this flow:participation <#id1477522707481>; meeting:sharedNotes <#this> .\n   <#id1477502276660> dc:author card:i; n:content ""; p:next <#this> .\n<#id1477522707481>\n    ic:dtstart\n       "2016-10-26T22:58:27Z"^^xsd:dateTime;\n    flow:participant\n       card:i;\n    ui:backgroundColor\n       "#c1d0c8".\n'
+      var expected = `@prefix : </existingTriple.ttl#>.
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix c: <https://www.w3.org/People/Berners-Lee/card#>.
+@prefix n: <http://rdfs.org/sioc/ns#>.
+@prefix p: <http://www.w3.org/ns/pim/pad#>.
+@prefix ic: <http://www.w3.org/2002/12/cal/ical#>.
+@prefix XML: <http://www.w3.org/2001/XMLSchema#>.
+@prefix flow: <http://www.w3.org/2005/01/wf/flow#>.
+@prefix ui: <http://www.w3.org/ns/ui#>.
+@prefix ind: </parent/index.ttl#>.
+@prefix mee: <http://www.w3.org/ns/pim/meeting#>.
+
+:id1477502276660 dc:author c:i; n:content ""; p:next :this.
+
+:id1477522707481
+    ic:dtstart "2016-10-26T22:58:27Z"^^XML:dateTime;
+    flow:participant c:i;
+    ui:backgroundColor "#c1d0c8".
+:this
+    a p:Notepad;
+    dc:author c:i;
+    dc:created "2016-10-25T15:44:42Z"^^XML:dateTime;
+    dc:title "Shared Notes";
+    p:next :id1477502276660.
+ind:this flow:participation :id1477522707481; mee:sharedNotes :this.\n\n`
 
       write(`\n\
 
@@ -109,10 +133,10 @@ describe('PATCH', function () {
         .end(function (err, res, body) {
           assert.equal(
             read('sampleContainer/prefixSparql.ttl'),
+            '@prefix : </prefixSparql.ttl#>.\n' +
             '@prefix schema: <http://schema.org/>.\n' +
-            '@prefix profile: <http://ogp.me/ns/profile#>.\n' +
-            '\n' +
-            '   <#> profile:first_name "Timothy"; a schema:Person .\n')
+            '@prefix pro: <http://ogp.me/ns/profile#>.\n\n' +
+            ': a schema:Person; pro:first_name "Timothy".\n\n')
           rm('sampleContainer/prefixSparql.ttl')
           done(err)
         })
@@ -131,9 +155,9 @@ describe('PATCH', function () {
         .end(function (err, res, body) {
           assert.equal(
             read('sampleContainer/addingTriple.ttl'),
-            '\n' +
-            '   <#current> <#temp> 123 .\n' +
-            '   <#test> <#hello> 456 .\n')
+            '@prefix : </addingTriple.ttl#>.\n\n' +
+            ':current :temp 123 .\n\n' +
+            ':test :hello 456 .\n\n')
           rm('sampleContainer/addingTriple.ttl')
           done(err)
         })
@@ -150,8 +174,8 @@ describe('PATCH', function () {
         .end(function (err, res, body) {
           assert.equal(
             read('sampleContainer/addingTripleValue.ttl'),
-            '\n' +
-            '   <#current> <#temp> 123, 456 .\n')
+            '@prefix : </addingTripleValue.ttl#>.\n\n' +
+            ':current :temp 123, 456 .\n\n')
           rm('sampleContainer/addingTripleValue.ttl')
           done(err)
         })
@@ -168,8 +192,8 @@ describe('PATCH', function () {
         .end(function (err, res, body) {
           assert.equal(
             read('sampleContainer/addingTripleSubj.ttl'),
-            '\n' +
-            '   <#current> <#temp2> 456; <#temp> 123 .\n')
+            '@prefix : </addingTripleSubj.ttl#>.\n\n' +
+            ':current :temp 123; :temp2 456 .\n\n')
           rm('sampleContainer/addingTripleSubj.ttl')
           done(err)
         })
@@ -187,8 +211,8 @@ describe('PATCH', function () {
       .end(function (err, res, body) {
         assert.equal(
           read('sampleContainer/emptyExample.ttl'),
-          '\n' +
-          '   <#current> <#temp> 123 .\n')
+          '@prefix : </emptyExample.ttl#>.\n\n' +
+          ':current :temp 123 .\n\n')
         rm('sampleContainer/emptyExample.ttl')
         done(err)
       })
