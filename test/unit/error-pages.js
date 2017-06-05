@@ -93,14 +93,15 @@ describe('handlers/error-pages', () => {
 
   describe('setAuthenticateHeader()', () => {
     it('should do nothing for a non-implemented auth method', () => {
-      let authMethod = null
       let err = {}
-      let locals = {}
+      let req = {
+        app: { locals: { authMethod: null } }
+      }
       let res = {
         set: sinon.stub()
       }
 
-      errorPages.setAuthenticateHeader(authMethod, err, locals, res)
+      errorPages.setAuthenticateHeader(req, res, err)
 
       expect(res.set).to.not.have.been.called()
     })
