@@ -67,11 +67,10 @@ describe('OIDC error handling', function () {
 
   describe('Authenticated responses to protected resources', () => {
     describe('with an empty bearer token', () => {
-      it('should return a 401 invalid_token error', () => {
+      it('should return a 400 error', () => {
         return server.get('/profile/')
           .set('Authorization', 'Bearer ')
-          .expect('WWW-Authenticate', 'Bearer realm="https://localhost:3457", scope="openid", error="invalid_token", error_description="Empty access token"')
-          .expect(401)
+          .expect(400)
       })
     })
 
