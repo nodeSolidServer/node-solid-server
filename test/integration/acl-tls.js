@@ -97,11 +97,29 @@ describe('ACL HTTP', function () {
         done()
       })
     })
+
     it('should have `User` set in the Response Header', function (done) {
       var options = createOptions('/acl-tls/no-acl/', 'user1')
       request(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 403)
+        assert.equal(response.headers['user'],
+          'https://user1.databox.me/profile/card#me')
+        done()
+      })
+    })
+
+    it('should return a 401 and WWW-Authenticate header without credentials', (done) => {
+      let options = {
+        url: address + '/acl-tls/no-acl/',
+        headers: { accept: 'text/turtle' }
+      }
+
+      request(options, (error, response, body) => {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 401)
+        assert.equal(response.headers['www-authenticate'],
+          'WebID-TLS realm="https://localhost:8443"')
         done()
       })
     })
