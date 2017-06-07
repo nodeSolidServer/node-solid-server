@@ -3,6 +3,7 @@ const fs = require('fs-extra')
 const request = require('request')
 const path = require('path')
 const rm = require('../test-utils').rm
+const nock = require('nock')
 
 const ldnode = require('../../index')
 
@@ -302,6 +303,35 @@ describe('ACL HTTP', function () {
 
     after(function () {
       rm('/accounts-acl/tim.localhost/origin/test-folder/.acl')
+    })
+  })
+
+  describe('External-server', () => {
+    // issuer: https://example.com, web id: https://alice.example.com/profile/card#me
+    let idToken = 'eyJhbGciOiJSUzI1NiIsImtpZCI6IjJrb0RBNlFqaFhVIn0.eyJpc3MiOiJodHRwczovL2V4YW1wbGUuY29tIiwic3ViIjoiaHR0cHM6Ly9hbGljZS5leGFtcGxlLmNvbS9wcm9maWxlL2NhcmQjbWUiLCJhdWQiOiI1YTY1MWM4NWI2MDVkMTkxOWZiMTc0NzU2YTI2ZDk1OSIsImV4cCI6MTc5NTgzMjA5OCwiaWF0IjoxNDk1ODI4NDk4LCJqdGkiOiI2ZGY1NzJlZDNkZGIxZTQxIiwibm9uY2UiOiIxTW1DM3FtTGNDaUhadEZraTZ6M1BuTU9zRFRpZ2k2ZjY4ZTFSX0VmOXJrIiwiYXRfaGFzaCI6IkdQU2FQaFR2ZnF3ZVBMa0VJNnhQcUEifQ.gwqqvlU_l1xiq1NvRd26p6uaa9xna7txFzgpLXg_z451We6XGY9MVRaN2zKJdauy5jGdBNHfB_JTuv85I0KTXhk_LYrXZ5begLGTkHwfcdqY7m8qYilPKc8e6eX4-XCtQZ8jIC_cWhGtO0H0WB1_mITz9jXTGlfP-YfzYfDT3dEhxJrUHgNmWWVLb6T1gudM4Z_HaFfiRW4Kd8f2iZumsM0AdCtCE8sWk7aCXsycoMbsndDbPpGZ2AmHoSkotfWyk62NQjmc8RAsYJAFFqtAHT4Gg8dsuMuCUoC-RVoPfnXAlQkmCGj-3jOwOjR9L6Jhlucj3Aejf05_Eqbb7ipXRg'
+
+    const externalServer = path.join(__dirname,
+      '../resources/external-servers/example.com')
+    let testConfig = require(path.join(externalServer, 'openid-configuration.json'))
+    let testJwks = require(path.join(externalServer, 'jwks.json'))
+
+    nock('https://example.com').get('/jwks').reply(200, testJwks)
+    nock('https://example.com').get('/.well-known/openid-configuration').reply(200, testConfig)
+
+    it('should recognize an external server id token', (done) => {
+      let options = {
+        url: timAccountUri + '/multi-server/protected.txt',
+        headers: {
+          authorization: 'Bearer ' + idToken
+        }
+      }
+
+      request.get(options, (error, response, body) => {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 200)
+        assert.equal(response.body, 'protected resource\n')
+        done()
+      })
     })
   })
 
