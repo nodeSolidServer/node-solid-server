@@ -88,7 +88,7 @@
     "sinon": "^2.1.0",
     "sinon-chai": "^2.8.0",
     "standard": "^8.6.0",
-    "supertest": "^1.2.0"
+    "supertest": "^3.0.0"
   },
   "main": "index.js",
   "scripts": {
