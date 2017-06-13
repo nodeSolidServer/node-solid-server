@@ -5,10 +5,12 @@ var $rdf = require('rdflib')
 var read = require('./test-utils').read
 var ldnode = require('../index')
 var path = require('path')
+const fs = require('fs-extra')
+
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
 describe('AccountManager (account creation tests)', function () {
   this.timeout(10000)
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
   var address = 'https://localhost:3457'
   var host = 'localhost:3457'
@@ -218,5 +220,53 @@ describe('AccountManager (account creation tests)', function () {
           done(err)
         })
     })
+  })
+})
+
+describe('Single User signup page', () => {
+  const serverUri = 'https://localhost:7457'
+  const port = 7457
+  var ldpHttpsServer
+  const rootDir = path.join(__dirname, '/resources/accounts/single-user/')
+  const ldp = ldnode.createServer({
+    port,
+    root: rootDir,
+    sslKey: path.join(__dirname, '/keys/key.pem'),
+    sslCert: path.join(__dirname, '/keys/cert.pem'),
+    webid: true,
+    idp: false,
+    strictOrigin: true
+  })
+  const server = supertest(serverUri)
+
+  before(function (done) {
+    ldpHttpsServer = ldp.listen(port, done)
+  })
+
+  after(function () {
+    if (ldpHttpsServer) ldpHttpsServer.close()
+    fs.removeSync(path.join(rootDir))
+  })
+
+  it('should return a 401 unauthorized without accept text/html', done => {
+    server.get('/')
+      .set('accept', 'text/plain')
+      .expect(401)
+      .end(done)
+  })
+
+  it('should redirect to signup with accept text/html', done => {
+    server.get('/')
+      .set('accept', 'text/html')
+      .expect(302)
+      .expect('location', '/signup.html')
+      .end(done)
+  })
+
+  it('it should serve the signup page', done => {
+    server.get('/signup.html')
+      .expect(200)
+      .expect(/<title>Admin Signup<\/title>/)
+      .end(done)
   })
 })
