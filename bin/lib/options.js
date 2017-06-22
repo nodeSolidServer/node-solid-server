@@ -10,9 +10,9 @@ module.exports = [
   // },
   {
     name: 'root',
-    help: "Root folder to serve (defaut: './')",
+    help: "Root folder to serve (default: './data')",
     question: 'Path to the folder you want to serve. Default is',
-    default: './',
+    default: './data',
     prompt: true,
     filter: (value) => path.resolve(value)
   },
