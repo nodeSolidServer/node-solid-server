@@ -16,5 +16,4 @@ npm-debug.log
 /.db
 .nyc_output
 coverage
-/index.html
-/index.html.acl
+/data
