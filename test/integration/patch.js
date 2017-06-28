@@ -1,4 +1,4 @@
-// Integration tests for PATCH
+// Integration tests for PATCH with text/n3
 const assert = require('chai').assert
 const ldnode = require('../../index')
 const path = require('path')
@@ -40,6 +40,62 @@ describe('PATCH', () => {
         .expect(403)
         .then(response => {
           assert.include(response.text, 'Access denied')
+        })
+    )
+  })
+
+  describe('with an unsupported request content type', () => {
+    it('returns a 415', () =>
+      request.patch(`/read-write.ttl`)
+        .set('Authorization', `Bearer ${userCredentials}`)
+        .set('Content-Type', 'text/other')
+        .send('other content type')
+        .expect(415)
+        .then(response => {
+          assert.include(response.text, 'Unsupported patch content type: text/other')
+        })
+    )
+  })
+
+  describe('with a patch document containing invalid syntax', () => {
+    it('returns a 400', () =>
+      request.patch(`/read-write.ttl`)
+        .set('Authorization', `Bearer ${userCredentials}`)
+        .set('Content-Type', 'text/n3')
+        .send('invalid')
+        .expect(400)
+        .then(response => {
+          assert.include(response.text, 'Invalid patch document')
+        })
+    )
+  })
+
+  describe('with a patch document without relevant patch element', () => {
+    it('returns a 400', () =>
+      request.patch(`/read-write.ttl`)
+        .set('Authorization', `Bearer ${userCredentials}`)
+        .set('Content-Type', 'text/n3')
+        .send(n3Patch(`
+          <> a p:Patch.`
+        ))
+        .expect(400)
+        .then(response => {
+          assert.include(response.text, 'No patch for https://tim.localhost:7777/read-write.ttl found')
+        })
+    )
+  })
+
+  describe('with a patch document without insert and without deletes', () => {
+    it('returns a 400', () =>
+      request.patch(`/read-write.ttl`)
+        .set('Authorization', `Bearer ${userCredentials}`)
+        .set('Content-Type', 'text/n3')
+        .send(n3Patch(`
+          <> p:patches <https://tim.localhost:7777/read-write.ttl>.`
+        ))
+        .expect(400)
+        .then(response => {
+          assert.include(response.text, 'Patch should at least contain inserts or deletes')
         })
     )
   })
