@@ -1,13 +1,15 @@
 // Integration tests for PATCH with text/n3
-const assert = require('chai').assert
+const { assert } = require('chai')
 const ldnode = require('../../index')
 const path = require('path')
 const supertest = require('supertest')
+const { read, rm, backup, restore } = require('../test-utils')
 
 // Server settings
 const port = 7777
 const serverUri = `https://tim.localhost:${port}`
 const root = path.join(__dirname, '../resources/patch')
+const filePath = 'patch/tim.localhost'
 const serverOptions = {
   serverUri,
   root,
@@ -26,22 +28,6 @@ describe('PATCH', () => {
     const server = ldnode.createServer(serverOptions)
     server.listen(port, done)
     request = supertest(serverUri)
-  })
-
-  describe('on a resource to which the user has read-only access', () => {
-    it('returns a 403', () =>
-      request.patch(`/read-only.ttl`)
-        .set('Authorization', `Bearer ${userCredentials}`)
-        .set('Content-Type', 'text/n3')
-        .send(n3Patch(`
-          <> a p:Patch;
-             p:insert { <a> <b> <c>. }.`
-        ))
-        .expect(403)
-        .then(response => {
-          assert.include(response.text, 'Access denied')
-        })
-    )
   })
 
   describe('with an unsupported request content type', () => {
@@ -98,6 +84,100 @@ describe('PATCH', () => {
           assert.include(response.text, 'Patch should at least contain inserts or deletes')
         })
     )
+  })
+
+  describe('appending', () => {
+    describe('to a resource with read-only access', () => {
+      it('returns a 403', () =>
+        request.patch(`/read-only.ttl`)
+          .set('Authorization', `Bearer ${userCredentials}`)
+          .set('Content-Type', 'text/n3')
+          .send(n3Patch(`
+            <> p:patches <https://tim.localhost:7777/read-only.ttl>;
+               p:insert { <d> <e> <f>. }.`
+          ))
+          .expect(403)
+          .then(response => {
+            assert.include(response.text, 'Access denied')
+          })
+      )
+
+      it('does not modify the file', () => {
+        assert.equal(read(`${filePath}/read-only.ttl`),
+          '<a> <b> <c>.\n')
+      })
+    })
+
+    describe('to a non-existing file', () => {
+      after(() => rm(`${filePath}/new.ttl`))
+
+      it('returns a 200', () =>
+        request.patch(`/new.ttl`)
+          .set('Authorization', `Bearer ${userCredentials}`)
+          .set('Content-Type', 'text/n3')
+          .send(n3Patch(`
+            <> p:patches <https://tim.localhost:7777/new.ttl>;
+               p:insert { <d> <e> <f>. }.`
+          ))
+          .expect(200)
+          .then(response => {
+            assert.include(response.text, 'Patch applied successfully')
+          })
+      )
+
+      it('creates the file', () => {
+        assert.equal(read(`${filePath}/new.ttl`),
+          '@prefix : </new.ttl#>.\n@prefix tim: </>.\n\ntim:d tim:e tim:f.\n\n')
+      })
+    })
+
+    describe('to a resource with append access', () => {
+      before(() => backup(`${filePath}/append-only.ttl`))
+      after(() => restore(`${filePath}/append-only.ttl`))
+
+      it('returns a 200', () =>
+        request.patch(`/append-only.ttl`)
+          .set('Authorization', `Bearer ${userCredentials}`)
+          .set('Content-Type', 'text/n3')
+          .send(n3Patch(`
+            <> p:patches <https://tim.localhost:7777/append-only.ttl>;
+               p:insert { <d> <e> <f>. }.`
+          ))
+          .expect(200)
+          .then(response => {
+            assert.include(response.text, 'Patch applied successfully')
+          })
+      )
+
+      it('patches the file', () => {
+        assert.equal(read(`${filePath}/append-only.ttl`),
+          '@prefix : </append-only.ttl#>.\n@prefix tim: </>.\n\ntim:a tim:b tim:c.\n\ntim:d tim:e tim:f.\n\n')
+      })
+    })
+
+    describe('to a resource with write access', () => {
+      before(() => backup(`${filePath}/write-only.ttl`))
+      after(() => restore(`${filePath}/write-only.ttl`))
+
+      it('returns a 200', () =>
+        request.patch(`/write-only.ttl`)
+          .set('Authorization', `Bearer ${userCredentials}`)
+          .set('Content-Type', 'text/n3')
+          .send(n3Patch(`
+            <> p:patches <https://tim.localhost:7777/write-only.ttl>;
+               p:insert { <d> <e> <f>. }.`
+          ))
+          .expect(200)
+          .then(response => {
+            assert.include(response.text, 'Patch applied successfully')
+          })
+      )
+
+      it('patches the file', () => {
+        assert.equal(read(`${filePath}/write-only.ttl`),
+          '@prefix : </write-only.ttl#>.\n@prefix tim: </>.\n\ntim:a tim:b tim:c.\n\ntim:d tim:e tim:f.\n\n')
+      })
+    })
   })
 })
 
