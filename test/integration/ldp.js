@@ -93,6 +93,14 @@ describe('LDP', function () {
   })
 
   describe('putGraph', () => {
+    before(() => {
+      rm('sampleContainer/example1-copy.ttl')
+    })
+
+    after(() => {
+      rm('sampleContainer/example1-copy.ttl')
+    })
+
     it('should serialize and write a graph to a file', () => {
       let originalResource = '/resources/sampleContainer/example1.ttl'
       let newResource = '/resources/sampleContainer/example1-copy.ttl'
@@ -108,13 +116,19 @@ describe('LDP', function () {
           let written = read('sampleContainer/example1-copy.ttl')
           assert.ok(written)
         })
-        // cleanup
-        .then(() => { rm('sampleContainer/example1-copy.ttl') })
-        .catch(() => { rm('sampleContainer/example1-copy.ttl') })
     })
   })
 
   describe('put', function () {
+    before(() => {
+      rm('testPut.txt')
+      rm('new-container/')
+    })
+
+    after(() => {
+      rm('new-container/')
+    })
+
     it('should write a file in an existing dir', function (done) {
       var stream = stringToStream('hello world')
       ldp.put('localhost', '/resources/testPut.txt', stream, function (err) {
@@ -126,10 +140,34 @@ describe('LDP', function () {
       })
     })
 
-    it('should fail if a trailing `/` is passed', function (done) {
-      var stream = stringToStream('hello world')
-      ldp.put('localhost', '/resources/', stream, function (err) {
-        assert.equal(err.status, 409)
+    it('should create a new container', done => {
+      const containerMeta = '<> dcterms:title "Home loans".'
+      const stream = stringToStream(containerMeta)
+
+      ldp.put('localhost', '/resources/new-container/', stream, (err, status) => {
+        if (err) { return done(err) }
+
+        assert.equal(status, 201)
+
+        let written = read('new-container/.meta')
+        assert.equal(written, containerMeta)
+
+        done()
+      })
+    })
+
+    it('should update existing container meta', done => {
+      const newMeta = '<> dcterms:title "Car loans".'
+      const stream = stringToStream(newMeta)
+
+      ldp.put('localhost', '/resources/new-container/', stream, (err, status) => {
+        if (err) { return done(err) }
+
+        assert.equal(status, 204)
+
+        let written = read('new-container/.meta')
+        assert.equal(written, newMeta)
+
         done()
       })
     })

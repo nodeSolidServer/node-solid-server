@@ -393,15 +393,79 @@ describe('HTTP APIs', function () {
         .expect(hasHeader('acl', 'baz.ttl' + suffixAcl))
         .expect(201, done)
     })
-    it('should return 409 code when trying to put to a container',
-      function (done) {
-        server.put('/')
-          .expect(409, done)
-      }
-    )
-    // Cleanup
-    after(function () {
-      rm('/foo/')
+
+    describe('PUT and containers', () => {
+      const containerMeta = fs.readFileSync(path.join(__dirname,
+        '../resources/sampleContainer/post2.ttl'),
+        { 'encoding': 'utf8' })
+
+      before(() => {
+        rm('/foo/')
+      })
+
+      after(() => {
+        rm('/foo/')
+      })
+
+      it('should create a container (implicit from url)', () => {
+        return server.put('/foo/two/')
+          .expect(201)
+          .then(() => {
+            let stats = fs.statSync(path.join(__dirname, '../resources/foo/two/'))
+
+            if (!stats.isDirectory()) {
+              throw new Error('Cannot read container just created')
+            }
+          })
+      })
+
+      it('should create a container (explicit from link header)', () => {
+        return server.put('/foo/three')
+          .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
+          .expect(201)
+          .then(() => {
+            let stats = fs.statSync(path.join(__dirname, '../resources/foo/three/'))
+
+            if (!stats.isDirectory()) {
+              throw new Error('Cannot read container just created')
+            }
+          })
+      })
+
+      it('should write the request body to the container .meta', () => {
+        return server.put('/foo/four/')
+          .set('content-type', 'text/turtle')
+          .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
+          .send(containerMeta)
+          .expect(201)
+          .then(() => {
+            let metaFilePath = path.join(__dirname, '../resources/foo/four/.meta')
+            let meta = fs.readFileSync(metaFilePath, 'utf8')
+
+            assert.equal(meta, containerMeta)
+          })
+      })
+
+      it('should update existing container .meta', () => {
+        let newMeta = '<> dcterms:title "Home loans".'
+
+        return server.put('/foo/five/')
+          .set('content-type', 'text/turtle')
+          .send(containerMeta)
+          .expect(201)
+          .then(() => {
+            return server.put('/foo/five/')
+              .set('content-type', 'text/turtle')
+              .send(newMeta)
+              .expect(204)
+          })
+          .then(() => {
+            let metaFilePath = path.join(__dirname, '../resources/foo/five/.meta')
+            let meta = fs.readFileSync(metaFilePath, 'utf8')
+
+            assert.equal(meta, newMeta)
+          })
+      })
     })
   })
 
