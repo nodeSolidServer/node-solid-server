@@ -126,6 +126,7 @@ describe('LDP', function () {
 
     after(() => {
       rm('new-container/')
+      rm('new-container2/')
     })
 
     it('should write a file in an existing dir', function (done) {
@@ -156,18 +157,28 @@ describe('LDP', function () {
     })
 
     it('should update existing container meta', done => {
+      const containerMeta = '<> dcterms:title "Home loans".'
       const newMeta = '<> dcterms:title "Car loans".'
-      const stream = stringToStream(newMeta)
 
-      ldp.put('localhost', '/resources/new-container/', stream, (err, status) => {
+      let stream = stringToStream(containerMeta)
+
+      ldp.put('localhost', '/resources/new-container2/', stream, (err, status) => {
         if (err) { return done(err) }
 
-        assert.equal(status, 204)
+        assert.equal(status, 201)
 
-        let written = read('new-container/.meta')
-        assert.equal(written, newMeta)
+        stream = stringToStream(newMeta)
 
-        done()
+        ldp.put('localhost', '/resources/new-container2/', stream, (err, status) => {
+          if (err) { return done(err) }
+
+          assert.equal(status, 204)
+
+          let written = read('new-container2/.meta')
+          assert.equal(written, newMeta)
+
+          done()
+        })
       })
     })
   })
