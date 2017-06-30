@@ -119,20 +119,26 @@ describe('ACL HTTP', function () {
       })
     })
     describe('with defaultForNew in parent path', function () {
-      before(function () {
+      before(() => {
         rm('/accounts-acl/tim.localhost/write-acl/empty-acl/another-empty-folder/test-file.acl')
         rm('/accounts-acl/tim.localhost/write-acl/empty-acl/test-folder/test-file')
         rm('/accounts-acl/tim.localhost/write-acl/empty-acl/test-file')
         rm('/accounts-acl/tim.localhost/write-acl/test-file')
         rm('/accounts-acl/tim.localhost/write-acl/test-file.acl')
+        rm('/accounts-acl/tim.localhost/write-acl/empty-acl/test-folder2/')
       })
 
-      it('should fail to create a container', function (done) {
-        var options = createOptions('/write-acl/empty-acl/test-folder/', 'user1')
+      after(() => {
+        rm('/accounts-acl/tim.localhost/write-acl/empty-acl/test-folder/')
+        rm('/accounts-acl/tim.localhost/write-acl/empty-acl/test-folder2/')
+      })
+
+      it('should allow creation of a container', function (done) {
+        var options = createOptions('/write-acl/empty-acl/test-folder2/', 'user1')
         options.body = ''
         request.put(options, function (error, response, body) {
           assert.equal(error, null)
-          assert.equal(response.statusCode, 409)
+          assert.equal(response.statusCode, 201)
           done()
         })
       })
@@ -328,7 +334,7 @@ describe('ACL HTTP', function () {
       options.body = body
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
-        assert.equal(response.statusCode, 201)
+        assert.equal(response.statusCode, 204)
         done()
       })
     })
@@ -410,7 +416,7 @@ describe('ACL HTTP', function () {
       options.body = '<a> <b> <c> .\n'
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
-        assert.equal(response.statusCode, 201)
+        assert.equal(response.statusCode, 204)
         done()
       })
     })
@@ -475,7 +481,7 @@ describe('ACL HTTP', function () {
       options.body = body
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
-        assert.equal(response.statusCode, 201)
+        assert.equal(response.statusCode, 204)
         done()
       })
     })
@@ -500,7 +506,7 @@ describe('ACL HTTP', function () {
       options.body = '<a> <b> <c> .\n'
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
-        assert.equal(response.statusCode, 201)
+        assert.equal(response.statusCode, 204)
         done()
       })
     })
@@ -525,7 +531,7 @@ describe('ACL HTTP', function () {
       options.body = '<d> <e> <f> .\n'
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
-        assert.equal(response.statusCode, 201)
+        assert.equal(response.statusCode, 204)
         done()
       })
     })

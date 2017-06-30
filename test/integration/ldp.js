@@ -12,8 +12,11 @@ var write = require('./../test-utils').write
 var read = require('./../test-utils').read
 var fs = require('fs')
 
+const suffixMeta = '.meta'
+
 describe('LDP', function () {
   var ldp = new LDP({
+    suffixMeta,
     root: path.join(__dirname, '..'),
     webid: false
   })
@@ -93,6 +96,10 @@ describe('LDP', function () {
   })
 
   describe('putGraph', () => {
+    after(() => {
+      rm('sampleContainer/example1-copy.ttl')
+    })
+
     it('should serialize and write a graph to a file', () => {
       let originalResource = '/resources/sampleContainer/example1.ttl'
       let newResource = '/resources/sampleContainer/example1-copy.ttl'
@@ -108,13 +115,19 @@ describe('LDP', function () {
           let written = read('sampleContainer/example1-copy.ttl')
           assert.ok(written)
         })
-        // cleanup
-        .then(() => { rm('sampleContainer/example1-copy.ttl') })
-        .catch(() => { rm('sampleContainer/example1-copy.ttl') })
     })
   })
 
   describe('put', function () {
+    before(() => {
+      rm('testPut.txt')
+    })
+
+    after(() => {
+      rm('new-container/')
+      rm('new-container2/')
+    })
+
     it('should write a file in an existing dir', function (done) {
       var stream = stringToStream('hello world')
       ldp.put('localhost', '/resources/testPut.txt', stream, function (err) {
@@ -126,11 +139,45 @@ describe('LDP', function () {
       })
     })
 
-    it('should fail if a trailing `/` is passed', function (done) {
-      var stream = stringToStream('hello world')
-      ldp.put('localhost', '/resources/', stream, function (err) {
-        assert.equal(err.status, 409)
+    it('should create a new container', done => {
+      const containerMeta = '<> dcterms:title "Home loans".'
+      const stream = stringToStream(containerMeta)
+
+      ldp.put('localhost', '/resources/new-container/', stream, (err, status) => {
+        if (err) { return done(err) }
+
+        assert.equal(status, 201)
+
+        let written = read('new-container/' + suffixMeta)
+        assert.equal(written, containerMeta)
+
         done()
+      })
+    })
+
+    it('should update existing container meta', done => {
+      const containerMeta = '<> dcterms:title "Home loans".'
+      const newMeta = '<> dcterms:title "Car loans".'
+
+      let stream = stringToStream(containerMeta)
+
+      ldp.put('localhost', '/resources/new-container2/', stream, (err, status) => {
+        if (err) { return done(err) }
+
+        assert.equal(status, 201)
+
+        stream = stringToStream(newMeta)
+
+        ldp.put('localhost', '/resources/new-container2/', stream, (err, status) => {
+          if (err) { return done(err) }
+
+          assert.equal(status, 204)
+
+          let written = read('new-container2/' + suffixMeta)
+          assert.equal(written, newMeta)
+
+          done()
+        })
       })
     })
   })
