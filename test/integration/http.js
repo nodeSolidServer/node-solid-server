@@ -413,9 +413,7 @@ describe('HTTP APIs', function () {
           .then(() => {
             let stats = fs.statSync(path.join(__dirname, '../resources/foo/two/'))
 
-            if (!stats.isDirectory()) {
-              throw new Error('Cannot read container just created')
-            }
+            assert(stats.isDirectory(), 'Cannot read container just created')
           })
       })
 
@@ -426,9 +424,7 @@ describe('HTTP APIs', function () {
           .then(() => {
             let stats = fs.statSync(path.join(__dirname, '../resources/foo/three/'))
 
-            if (!stats.isDirectory()) {
-              throw new Error('Cannot read container just created')
-            }
+            assert(stats.isDirectory(), 'Cannot read container just created')
           })
       })
 
