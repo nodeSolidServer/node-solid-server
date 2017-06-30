@@ -10,6 +10,25 @@
 - Fix issue where requesting a different format (e.g. `text/turtle`) of a
   JSON-LD resource crashed the server
 
+#### 3.5.0 Upgrade Notes
+
+- New config parameter: `serverUri` - Solid server uri (with protocol,
+  hostname and port), defaults to `https://localhost:8443`. In multi-user
+  (`"idp": true`) mode, new account directories are now created based on this
+  `serverUri` parameter. For example, if the `config.json` contains the entry
+  `"serverUri": "https://example.com"`, a new account for `alice` will create
+  a subdirectory `alice.example.com` in the directory specified by the `root`
+  config parameter.
+- New account template system. On first server startup, the contents of the
+  `default-account-template` source folder get copied to `config/account-template`.
+  When a new account is created, a copy is made of that new account template
+  directory for the user. Server operators can customize the contents of this
+  new account template for their server installation.
+- Email template system. Similarly to the new account template, the Welcome
+  email that gets sent out on new user registration is generated from the
+  customizable local `config/email-templates/welcome.js` template file, which
+  gets copied from `default-email-templates` source folder on first startup.
+
 ## 3.4.0
 
 - Fix handling/url-encoding of container names
