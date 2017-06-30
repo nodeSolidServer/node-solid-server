@@ -122,7 +122,6 @@ describe('LDP', function () {
   describe('put', function () {
     before(() => {
       rm('testPut.txt')
-      rm('new-container/')
     })
 
     after(() => {

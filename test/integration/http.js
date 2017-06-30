@@ -399,10 +399,6 @@ describe('HTTP APIs', function () {
         '../resources/sampleContainer/post2.ttl'),
         { 'encoding': 'utf8' })
 
-      before(() => {
-        rm('/foo/')
-      })
-
       after(() => {
         rm('/foo/')
       })
