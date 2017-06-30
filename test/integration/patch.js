@@ -9,7 +9,6 @@ const { read, rm, backup, restore } = require('../test-utils')
 const port = 7777
 const serverUri = `https://tim.localhost:${port}`
 const root = path.join(__dirname, '../resources/patch')
-const filePath = 'patch/tim.localhost'
 const serverOptions = {
   serverUri,
   root,
@@ -17,7 +16,7 @@ const serverOptions = {
   sslKey: path.join(__dirname, '../keys/key.pem'),
   sslCert: path.join(__dirname, '../keys/cert.pem'),
   webid: true,
-  idp: true
+  idp: false
 }
 const userCredentials = 'eyJhbGciOiJSUzI1NiIsImtpZCI6IkFWUzVlZk5pRUVNIn0.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3Nzc3Iiwic3ViIjoiaHR0cHM6Ly90aW0ubG9jYWxob3N0Ojc3NzcvcHJvZmlsZS9jYXJkI21lIiwiYXVkIjoiN2YxYmU5YWE0N2JiMTM3MmIzYmM3NWU5MWRhMzUyYjQiLCJleHAiOjc3OTkyMjkwMDksImlhdCI6MTQ5MjAyOTAwOSwianRpIjoiZWY3OGQwYjY3ZWRjNzJhMSIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUifQ.H9lxCbNc47SfIq3hhHnj48BE-YFnvhCfDH9Jc4PptApTEip8sVj0E_u704K_huhNuWBvuv3cDRDGYZM7CuLnzgJG1BI75nXR9PYAJPK9Ketua2KzIrftNoyKNamGqkoCKFafF4z_rsmtXQ5u1_60SgWRcouXMpcHnnDqINF1JpvS21xjE_LbJ6qgPEhu3rRKcv1hpRdW9dRvjtWb9xu84bAjlRuT02lyDBHgj2utxpE_uqCbj48qlee3GoqWpGkSS-vJ6JA0aWYgnyv8fQsxf9rpdFNzKRoQO6XYMy6niEKj8aKgxjaUlpoGGJ5XtVLHH8AGwjYXR8iznYzJvEcB7Q'
 
@@ -32,7 +31,7 @@ describe('PATCH', () => {
 
   describe('with an unsupported request content type', () => {
     it('returns a 415', () =>
-      request.patch(`/read-write.ttl`)
+      request.patch('/read-write.ttl')
         .set('Authorization', `Bearer ${userCredentials}`)
         .set('Content-Type', 'text/other')
         .send('other content type')
@@ -45,7 +44,7 @@ describe('PATCH', () => {
 
   describe('with a patch document containing invalid syntax', () => {
     it('returns a 400', () =>
-      request.patch(`/read-write.ttl`)
+      request.patch('/read-write.ttl')
         .set('Authorization', `Bearer ${userCredentials}`)
         .set('Content-Type', 'text/n3')
         .send('invalid')
@@ -58,7 +57,7 @@ describe('PATCH', () => {
 
   describe('with a patch document without relevant patch element', () => {
     it('returns a 400', () =>
-      request.patch(`/read-write.ttl`)
+      request.patch('/read-write.ttl')
         .set('Authorization', `Bearer ${userCredentials}`)
         .set('Content-Type', 'text/n3')
         .send(n3Patch(`
@@ -73,7 +72,7 @@ describe('PATCH', () => {
 
   describe('with a patch document without insert and without deletes', () => {
     it('returns a 400', () =>
-      request.patch(`/read-write.ttl`)
+      request.patch('/read-write.ttl')
         .set('Authorization', `Bearer ${userCredentials}`)
         .set('Content-Type', 'text/n3')
         .send(n3Patch(`
@@ -89,7 +88,7 @@ describe('PATCH', () => {
   describe('appending', () => {
     describe('to a resource with read-only access', () => {
       it('returns a 403', () =>
-        request.patch(`/read-only.ttl`)
+        request.patch('/read-only.ttl')
           .set('Authorization', `Bearer ${userCredentials}`)
           .set('Content-Type', 'text/n3')
           .send(n3Patch(`
@@ -103,16 +102,16 @@ describe('PATCH', () => {
       )
 
       it('does not modify the file', () => {
-        assert.equal(read(`${filePath}/read-only.ttl`),
+        assert.equal(read('patch/read-only.ttl'),
           '<a> <b> <c>.\n')
       })
     })
 
     describe('to a non-existing file', () => {
-      after(() => rm(`${filePath}/new.ttl`))
+      after(() => rm('patch/new.ttl'))
 
       it('returns a 200', () =>
-        request.patch(`/new.ttl`)
+        request.patch('/new.ttl')
           .set('Authorization', `Bearer ${userCredentials}`)
           .set('Content-Type', 'text/n3')
           .send(n3Patch(`
@@ -126,17 +125,17 @@ describe('PATCH', () => {
       )
 
       it('creates the file', () => {
-        assert.equal(read(`${filePath}/new.ttl`),
+        assert.equal(read('patch/new.ttl'),
           '@prefix : </new.ttl#>.\n@prefix tim: </>.\n\ntim:d tim:e tim:f.\n\n')
       })
     })
 
     describe('to a resource with append access', () => {
-      before(() => backup(`${filePath}/append-only.ttl`))
-      after(() => restore(`${filePath}/append-only.ttl`))
+      before(() => backup('patch/append-only.ttl'))
+      after(() => restore('patch/append-only.ttl'))
 
       it('returns a 200', () =>
-        request.patch(`/append-only.ttl`)
+        request.patch('/append-only.ttl')
           .set('Authorization', `Bearer ${userCredentials}`)
           .set('Content-Type', 'text/n3')
           .send(n3Patch(`
@@ -150,17 +149,17 @@ describe('PATCH', () => {
       )
 
       it('patches the file', () => {
-        assert.equal(read(`${filePath}/append-only.ttl`),
+        assert.equal(read('patch/append-only.ttl'),
           '@prefix : </append-only.ttl#>.\n@prefix tim: </>.\n\ntim:a tim:b tim:c.\n\ntim:d tim:e tim:f.\n\n')
       })
     })
 
     describe('to a resource with write access', () => {
-      before(() => backup(`${filePath}/write-only.ttl`))
-      after(() => restore(`${filePath}/write-only.ttl`))
+      before(() => backup('patch/write-only.ttl'))
+      after(() => restore('patch/write-only.ttl'))
 
       it('returns a 200', () =>
-        request.patch(`/write-only.ttl`)
+        request.patch('/write-only.ttl')
           .set('Authorization', `Bearer ${userCredentials}`)
           .set('Content-Type', 'text/n3')
           .send(n3Patch(`
@@ -174,7 +173,7 @@ describe('PATCH', () => {
       )
 
       it('patches the file', () => {
-        assert.equal(read(`${filePath}/write-only.ttl`),
+        assert.equal(read('patch/write-only.ttl'),
           '@prefix : </write-only.ttl#>.\n@prefix tim: </>.\n\ntim:a tim:b tim:c.\n\ntim:d tim:e tim:f.\n\n')
       })
     })
