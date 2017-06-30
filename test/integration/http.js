@@ -12,7 +12,9 @@ var ldpServer = ldnode.createServer({
   dataBrowserPath: 'default',
   root: path.join(__dirname, '../resources'),
   auth: 'oidc',
-  webid: false
+  webid: false,
+  suffixAcl,
+  suffixMeta
 })
 var server = supertest(ldpServer)
 var assert = require('chai').assert
@@ -431,7 +433,7 @@ describe('HTTP APIs', function () {
           .send(containerMeta)
           .expect(201)
           .then(() => {
-            let metaFilePath = path.join(__dirname, '../resources/foo/four/.meta')
+            let metaFilePath = path.join(__dirname, '../resources/foo/four/' + suffixMeta)
             let meta = fs.readFileSync(metaFilePath, 'utf8')
 
             assert.equal(meta, containerMeta)
@@ -452,7 +454,7 @@ describe('HTTP APIs', function () {
               .expect(204)
           })
           .then(() => {
-            let metaFilePath = path.join(__dirname, '../resources/foo/five/.meta')
+            let metaFilePath = path.join(__dirname, '../resources/foo/five/' + suffixMeta)
             let meta = fs.readFileSync(metaFilePath, 'utf8')
 
             assert.equal(meta, newMeta)

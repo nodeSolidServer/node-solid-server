@@ -12,8 +12,11 @@ var write = require('./../test-utils').write
 var read = require('./../test-utils').read
 var fs = require('fs')
 
+const suffixMeta = '.meta'
+
 describe('LDP', function () {
   var ldp = new LDP({
+    suffixMeta,
     root: path.join(__dirname, '..'),
     webid: false
   })
@@ -93,10 +96,6 @@ describe('LDP', function () {
   })
 
   describe('putGraph', () => {
-    before(() => {
-      rm('sampleContainer/example1-copy.ttl')
-    })
-
     after(() => {
       rm('sampleContainer/example1-copy.ttl')
     })
@@ -149,7 +148,7 @@ describe('LDP', function () {
 
         assert.equal(status, 201)
 
-        let written = read('new-container/.meta')
+        let written = read('new-container/' + suffixMeta)
         assert.equal(written, containerMeta)
 
         done()
@@ -174,7 +173,7 @@ describe('LDP', function () {
 
           assert.equal(status, 204)
 
-          let written = read('new-container2/.meta')
+          let written = read('new-container2/' + suffixMeta)
           assert.equal(written, newMeta)
 
           done()
