@@ -51,7 +51,7 @@ describe('PATCH', () => {
         .send('invalid')
         .expect(400)
         .then(response => {
-          assert.include(response.text, 'Invalid patch document')
+          assert.include(response.text, 'Patch document syntax error')
         })
     )
   })
