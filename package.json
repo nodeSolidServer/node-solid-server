@@ -98,7 +98,7 @@
   "scripts": {
     "solid": "node ./bin/solid.js",
     "standard": "standard",
-    "mocha": "nyc mocha ./test/**/*.js",
+    "mocha": "NODE_TLS_REJECT_UNAUTHORIZED=0 nyc mocha ./test/**/*.js",
     "test": "npm run standard && npm run mocha",
     "test-integration": "mocha ./test/integration/*.js",
     "test-unit": "mocha ./test/unit/*.js",

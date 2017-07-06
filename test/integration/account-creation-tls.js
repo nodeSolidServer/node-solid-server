@@ -9,7 +9,6 @@
 //
 // describe('AccountManager (TLS account creation tests)', function () {
 //   this.timeout(10000)
-//   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 //
 //   var address = 'https://localhost:3457'
 //   var host = 'localhost:3457'
