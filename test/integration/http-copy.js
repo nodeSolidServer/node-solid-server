@@ -9,8 +9,6 @@ var solidServer = require('../../index')
 
 describe('HTTP COPY API', function () {
   this.timeout(10000)
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
-
   var address = 'https://localhost:3456'
 
   var ldpHttpsServer

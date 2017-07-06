@@ -8,7 +8,6 @@ const path = require('path')
 const fs = require('fs-extra')
 
 describe('AccountManager (OIDC account creation tests)', function () {
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
   this.timeout(10000)
 
   var serverUri = 'https://localhost:3457'

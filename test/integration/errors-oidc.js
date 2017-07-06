@@ -5,8 +5,6 @@ const fs = require('fs-extra')
 const expect = require('chai').expect
 
 describe('OIDC error handling', function () {
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
-
   const serverUri = 'https://localhost:3457'
   var ldpHttpsServer
   const rootPath = path.join(__dirname, '../resources/accounts/errortests')
