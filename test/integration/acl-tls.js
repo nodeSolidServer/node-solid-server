@@ -53,8 +53,6 @@ var userCredentials = {
 
 describe('ACL with WebID+TLS', function () {
   this.timeout(10000)
-  process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
-
   var ldpHttpsServer
   var ldp = ldnode.createServer({
     mount: '/test',
@@ -63,7 +61,8 @@ describe('ACL with WebID+TLS', function () {
     sslCert: path.join(__dirname, '../keys/cert.pem'),
     webid: true,
     strictOrigin: true,
-    auth: 'tls'
+    auth: 'tls',
+    rejectUnauthorized: false
   })
 
   before(function (done) {
