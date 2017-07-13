@@ -983,7 +983,7 @@ describe('ACL with WebID through X-SSL-Cert', function () {
       root: rootPath,
       webid: true,
       auth: 'tls',
-      acceptCertificateHeader: true
+      certificateHeader: 'X-SSL-Cert'
     })
     ldpHttpsServer = ldp.listen(3456, done)
   })
