@@ -18,12 +18,43 @@ var rm = require('../test-utils').rm
 var ldnode = require('../../index')
 var ns = require('solid-namespace')($rdf)
 
-describe('ACL HTTP', function () {
+var address = 'https://localhost:3456/test/'
+let rootPath = path.join(__dirname, '../resources')
+
+var aclExtension = '.acl'
+var metaExtension = '.meta'
+
+var testDir = 'acl-tls/testDir'
+var testDirAclFile = testDir + '/' + aclExtension
+var testDirMetaFile = testDir + '/' + metaExtension
+
+var abcFile = testDir + '/abc.ttl'
+var abcAclFile = abcFile + aclExtension
+
+var globFile = testDir + '/*'
+
+var groupFile = testDir + '/group'
+
+var origin1 = 'http://example.org/'
+var origin2 = 'http://example.com/'
+
+var user1 = 'https://user1.databox.me/profile/card#me'
+var user2 = 'https://user2.databox.me/profile/card#me'
+var userCredentials = {
+  user1: {
+    cert: fs.readFileSync(path.join(__dirname, '../keys/user1-cert.pem')),
+    key: fs.readFileSync(path.join(__dirname, '../keys/user1-key.pem'))
+  },
+  user2: {
+    cert: fs.readFileSync(path.join(__dirname, '../keys/user2-cert.pem')),
+    key: fs.readFileSync(path.join(__dirname, '../keys/user2-key.pem'))
+  }
+}
+
+describe('ACL with WebID+TLS', function () {
   this.timeout(10000)
   process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 
-  var address = 'https://localhost:3456/test/'
-  let rootPath = path.join(__dirname, '../resources')
   var ldpHttpsServer
   var ldp = ldnode.createServer({
     mount: '/test',
@@ -44,36 +75,6 @@ describe('ACL HTTP', function () {
     fs.removeSync(path.join(rootPath, 'index.html'))
     fs.removeSync(path.join(rootPath, 'index.html.acl'))
   })
-
-  var aclExtension = '.acl'
-  var metaExtension = '.meta'
-
-  var testDir = 'acl-tls/testDir'
-  var testDirAclFile = testDir + '/' + aclExtension
-  var testDirMetaFile = testDir + '/' + metaExtension
-
-  var abcFile = testDir + '/abc.ttl'
-  var abcAclFile = abcFile + aclExtension
-
-  var globFile = testDir + '/*'
-
-  var groupFile = testDir + '/group'
-
-  var origin1 = 'http://example.org/'
-  var origin2 = 'http://example.com/'
-
-  var user1 = 'https://user1.databox.me/profile/card#me'
-  var user2 = 'https://user2.databox.me/profile/card#me'
-  var userCredentials = {
-    user1: {
-      cert: fs.readFileSync(path.join(__dirname, '../keys/user1-cert.pem')),
-      key: fs.readFileSync(path.join(__dirname, '../keys/user1-key.pem'))
-    },
-    user2: {
-      cert: fs.readFileSync(path.join(__dirname, '../keys/user2-cert.pem')),
-      key: fs.readFileSync(path.join(__dirname, '../keys/user2-key.pem'))
-    }
-  }
 
   function createOptions (path, user) {
     var options = {
@@ -968,6 +969,104 @@ describe('ACL HTTP', function () {
       } catch (e) {
         done(e)
       }
+    })
+  })
+})
+
+describe('ACL with WebID through X-SSL-Cert', function () {
+  this.timeout(10000)
+
+  var ldpHttpsServer
+  before(function (done) {
+    const ldp = ldnode.createServer({
+      mount: '/test',
+      root: rootPath,
+      sslKey: path.join(__dirname, '../keys/key.pem'),
+      sslCert: path.join(__dirname, '../keys/cert.pem'),
+      webid: true,
+      strictOrigin: true,
+      auth: 'tls'
+    })
+    ldpHttpsServer = ldp.listen(3456, done)
+  })
+
+  after(function () {
+    if (ldpHttpsServer) ldpHttpsServer.close()
+    fs.removeSync(path.join(rootPath, 'index.html'))
+    fs.removeSync(path.join(rootPath, 'index.html.acl'))
+  })
+
+  function prepareRequest (certHeader, setResponse) {
+    return done => {
+      const options = {
+        url: address + '/acl-tls/write-acl/.acl',
+        headers: { 'X-SSL-Cert': certHeader }
+      }
+      request(options, function (error, response) {
+        setResponse(response)
+        done(error)
+      })
+    }
+  }
+
+  describe('without certificate', function () {
+    var response
+    before(prepareRequest('', res => { response = res }))
+
+    it('should return 401', function () {
+      assert.propertyVal(response, 'statusCode', 401)
+    })
+  })
+
+  describe('with a valid certificate', function () {
+    // Escape certificate for usage in HTTP header
+    const escapedCert = userCredentials.user1.cert.toString()
+                        .replace(/\n/g, '\t')
+
+    var response
+    before(prepareRequest(escapedCert, res => { response = res }))
+
+    it('should return 200', function () {
+      assert.propertyVal(response, 'statusCode', 200)
+    })
+
+    it('should set the User header', function () {
+      assert.propertyVal(response.headers, 'user', 'https://user1.databox.me/profile/card#me')
+    })
+  })
+
+  describe('with a local filename as certificate', function () {
+    const certFile = path.join(__dirname, '../keys/user1-cert.pem')
+
+    var response
+    before(prepareRequest(certFile, res => { response = res }))
+
+    it('should return 401', function () {
+      assert.propertyVal(response, 'statusCode', 401)
+    })
+  })
+
+  describe('with an invalid certificate value', function () {
+    var response
+    before(prepareRequest('xyz', res => { response = res }))
+
+    it('should return 401', function () {
+      assert.propertyVal(response, 'statusCode', 401)
+    })
+  })
+
+  describe('with an invalid certificate', function () {
+    const invalidCert =
+`-----BEGIN CERTIFICATE-----
+ABCDEF
+-----END CERTIFICATE-----`
+    .replace(/\n/g, '\t')
+
+    var response
+    before(prepareRequest(invalidCert, res => { response = res }))
+
+    it('should return 401', function () {
+      assert.propertyVal(response, 'statusCode', 401)
     })
   })
 })
