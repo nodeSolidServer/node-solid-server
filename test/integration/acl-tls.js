@@ -985,7 +985,8 @@ describe('ACL with WebID through X-SSL-Cert', function () {
       sslCert: path.join(__dirname, '../keys/cert.pem'),
       webid: true,
       strictOrigin: true,
-      auth: 'tls'
+      auth: 'tls',
+      acceptCertificateHeader: true
     })
     ldpHttpsServer = ldp.listen(3456, done)
   })
