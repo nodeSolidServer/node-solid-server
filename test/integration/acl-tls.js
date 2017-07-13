@@ -981,10 +981,7 @@ describe('ACL with WebID through X-SSL-Cert', function () {
     const ldp = ldnode.createServer({
       mount: '/test',
       root: rootPath,
-      sslKey: path.join(__dirname, '../keys/key.pem'),
-      sslCert: path.join(__dirname, '../keys/cert.pem'),
       webid: true,
-      strictOrigin: true,
       auth: 'tls',
       acceptCertificateHeader: true
     })
@@ -1000,7 +997,7 @@ describe('ACL with WebID through X-SSL-Cert', function () {
   function prepareRequest (certHeader, setResponse) {
     return done => {
       const options = {
-        url: address + '/acl-tls/write-acl/.acl',
+        url: address.replace('https', 'http') + '/acl-tls/write-acl/.acl',
         headers: { 'X-SSL-Cert': certHeader }
       }
       request(options, function (error, response) {
