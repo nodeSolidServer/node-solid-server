@@ -145,18 +145,106 @@ describe('Authentication API (OIDC)', () => {
       fs.removeSync(path.join(aliceDbPath, 'users/users'))
     })
 
-    it('should login and be redirected to /authorize', (done) => {
-      alice.post('/login/password')
-        .type('form')
-        .send({ username: 'alice' })
-        .send({ password: alicePassword })
-        .expect(302)
-        .expect('set-cookie', /connect.sid/)
-        .end((err, res) => {
-          let loginUri = res.header.location
-          expect(loginUri.startsWith(aliceServerUri + '/authorize'))
-          done(err)
+    describe('after performing a correct login', () => {
+      let response, cookie
+      before(done => {
+        aliceUserStore.initCollections()
+        aliceUserStore.createUser(aliceAccount, alicePassword)
+        alice.post('/login/password')
+          .type('form')
+          .send({ username: 'alice' })
+          .send({ password: alicePassword })
+          .end((err, res) => {
+            response = res
+            cookie = response.headers['set-cookie'][0]
+            done(err)
+          })
+      })
+
+      it('should redirect to /authorize', () => {
+        const loginUri = response.headers.location
+        expect(response).to.have.property('status', 302)
+        expect(loginUri.startsWith(aliceServerUri + '/authorize'))
+      })
+
+      it('should set the cookie', () => {
+        expect(cookie).to.match(/connect.sid=/)
+      })
+
+      it('should set the cookie with HttpOnly', () => {
+        expect(cookie).to.match(/HttpOnly/)
+      })
+
+      it('should set the cookie with Secure', () => {
+        expect(cookie).to.match(/Secure/)
+      })
+
+      describe('and performing a subsequent request', () => {
+        describe('without that cookie', () => {
+          let response
+          before(done => {
+            alice.get('/')
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 401', () => {
+            expect(response).to.have.property('status', 401)
+          })
         })
+
+        describe('with that cookie and a non-matching origin', () => {
+          let response
+          before(done => {
+            alice.get('/')
+              .set('Cookie', cookie)
+              .set('Origin', bobServerUri)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 401', () => {
+            expect(response).to.have.property('status', 401)
+          })
+        })
+
+        describe('with that cookie but without origin', () => {
+          let response
+          before(done => {
+            alice.get('/')
+              .set('Cookie', cookie)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 200', () => {
+            expect(response).to.have.property('status', 200)
+          })
+        })
+
+        describe('with that cookie and a matching origin', () => {
+          let response
+          before(done => {
+            alice.get('/')
+              .set('Cookie', cookie)
+              .set('Origin', aliceServerUri)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 200', () => {
+            expect(response).to.have.property('status', 200)
+          })
+        })
+      })
     })
 
     it('should throw a 400 if no username is provided', (done) => {
