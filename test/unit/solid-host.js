@@ -26,7 +26,7 @@ describe('SolidHost', () => {
     })
   })
 
-  describe('uriForAccount()', () => {
+  describe('accountUriFor()', () => {
     it('should compose an account uri for an account name', () => {
       let config = {
         serverUri: 'https://test.local'
@@ -39,6 +39,39 @@ describe('SolidHost', () => {
     it('should throw an error if no account name is passed in', () => {
       let host = SolidHost.from()
       expect(() => { host.accountUriFor() }).to.throw(TypeError)
+    })
+  })
+
+  describe('allowsSessionFor()', () => {
+    let host
+    before(() => {
+      host = SolidHost.from({
+        serverUri: 'https://test.local'
+      })
+    })
+
+    it('should allow an empty userId and origin', () => {
+      expect(host.allowsSessionFor('', '')).to.be.true
+    })
+
+    it('should allow a userId with empty origin', () => {
+      expect(host.allowsSessionFor('https://user.test.local/profile/card#me', '')).to.be.true
+    })
+
+    it('should allow a userId with the user subdomain as origin', () => {
+      expect(host.allowsSessionFor('https://user.test.local/profile/card#me', 'https://user.test.local')).to.be.true
+    })
+
+    it('should disallow a userId with another subdomain as origin', () => {
+      expect(host.allowsSessionFor('https://user.test.local/profile/card#me', 'https://other.test.local')).to.be.false
+    })
+
+    it('should allow a userId with the server domain as origin', () => {
+      expect(host.allowsSessionFor('https://user.test.local/profile/card#me', 'https://test.local')).to.be.true
+    })
+
+    it('should disallow a userId from a different domain', () => {
+      expect(host.allowsSessionFor('https://user.test.local/profile/card#me', 'https://other.remote')).to.be.false
     })
   })
 
