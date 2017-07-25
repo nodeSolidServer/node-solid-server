@@ -79,11 +79,11 @@ describe('ACL HTTP', function () {
         done()
       })
     })
-    it('should have `User` set in the Response Header', function (done) {
+    it('should not have the `User` set in the Response Header', function (done) {
       var options = createOptions('/no-acl/', 'user1')
       request(options, function (error, response, body) {
         assert.equal(error, null)
-        assert.equal(response.statusCode, 403)
+        assert.notProperty(response.headers, 'user')
         done()
       })
     })
