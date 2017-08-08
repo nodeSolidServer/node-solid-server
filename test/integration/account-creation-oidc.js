@@ -206,12 +206,12 @@ describe('Single User signup page', () => {
   const serverUri = 'https://localhost:7457'
   const port = 7457
   var ldpHttpsServer
-  const rootDir = path.join(__dirname, '/resources/accounts/single-user/')
+  const rootDir = path.join(__dirname, '../resources/accounts/single-user/')
   const ldp = ldnode.createServer({
     port,
     root: rootDir,
-    sslKey: path.join(__dirname, '/keys/key.pem'),
-    sslCert: path.join(__dirname, '/keys/cert.pem'),
+    sslKey: path.join(__dirname, '../keys/key.pem'),
+    sslCert: path.join(__dirname, '../keys/cert.pem'),
     webid: true,
     idp: false,
     strictOrigin: true
@@ -224,28 +224,13 @@ describe('Single User signup page', () => {
 
   after(function () {
     if (ldpHttpsServer) ldpHttpsServer.close()
-    fs.removeSync(path.join(rootDir))
+    fs.removeSync(rootDir)
   })
 
   it('should return a 401 unauthorized without accept text/html', done => {
     server.get('/')
       .set('accept', 'text/plain')
       .expect(401)
-      .end(done)
-  })
-
-  it('should redirect to signup with accept text/html', done => {
-    server.get('/')
-      .set('accept', 'text/html')
-      .expect(302)
-      .expect('location', '/signup.html')
-      .end(done)
-  })
-
-  it('it should serve the signup page', done => {
-    server.get('/signup.html')
-      .expect(200)
-      .expect(/<title>Admin Signup<\/title>/)
       .end(done)
   })
 })
