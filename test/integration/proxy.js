@@ -20,20 +20,34 @@ describe('proxy', () => {
       .expect(200, done)
   })
 
-  it('should return error on local network requests', (done) => {
+  it('should return 400 when the uri parameter is missing', (done) => {
+    nock('https://192.168.0.0').get('/').reply(200)
+    server.get('/proxy')
+      .expect('Invalid URL passed: (none)')
+      .expect(400)
+      .end(done)
+  })
+
+  it('should return 400 on local network requests', (done) => {
     nock('https://192.168.0.0').get('/').reply(200)
     server.get('/proxy?uri=https://192.168.0.0/')
-      .expect(406, done)
+      .expect('Cannot proxy https://192.168.0.0/')
+      .expect(400)
+      .end(done)
   })
 
-  it('should return error on invalid uri', (done) => {
+  it('should return 400 on invalid uri', (done) => {
     server.get('/proxy?uri=HELLOWORLD')
-      .expect(406, done)
+      .expect('Invalid URL passed: HELLOWORLD')
+      .expect(400)
+      .end(done)
   })
 
-  it('should return error on relative paths', (done) => {
+  it('should return 400 on relative paths', (done) => {
     server.get('/proxy?uri=../')
-      .expect(406, done)
+      .expect('Invalid URL passed: ../')
+      .expect(400)
+      .end(done)
   })
 
   it('should return the same headers of proxied request', (done) => {
