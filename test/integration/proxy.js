@@ -20,6 +20,20 @@ describe('proxy', () => {
       .expect(200, done)
   })
 
+  it('should pass the Host header to the proxied server', (done) => {
+    let headers
+    nock('https://example.org').get('/').reply(function (uri, body) {
+      headers = this.req.headers
+      return 200
+    })
+    server.get('/proxy?uri=https://example.org/')
+      .expect(200)
+      .end(error => {
+        assert.propertyVal(headers, 'host', 'example.org')
+        done(error)
+      })
+  })
+
   it('should return 400 when the uri parameter is missing', (done) => {
     nock('https://192.168.0.0').get('/').reply(200)
     server.get('/proxy')
