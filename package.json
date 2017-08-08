@@ -85,7 +85,7 @@
     "dirty-chai": "^1.2.2",
     "hippie": "^0.5.0",
     "mocha": "^3.2.0",
-    "nock": "^9.0.2",
+    "nock": "^9.0.14",
     "node-mocks-http": "^1.5.6",
     "nyc": "^10.1.2",
     "proxyquire": "^1.7.10",
