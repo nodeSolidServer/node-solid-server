@@ -135,7 +135,7 @@ module.exports = [
   //   help: 'URI to use as a default app for resources (default: https://linkeddata.github.io/warp/#/list/)'
   // },
   {
-    name: 'useProxy',
+    name: 'useCorsProxy',
     help: 'Do you want to have a CORS proxy endpoint?',
     flag: true,
     prompt: true,
@@ -143,9 +143,14 @@ module.exports = [
   },
   {
     name: 'proxy',
-    help: 'Serve proxy on path',
+    help: 'Obsolete; use --corsProxy',
+    prompt: false
+  },
+  {
+    name: 'corsProxy',
+    help: 'Serve the CORS proxy on this path',
     when: function (answers) {
-      return answers.useProxy
+      return answers.useCorsProxy
     },
     default: '/proxy',
     prompt: true

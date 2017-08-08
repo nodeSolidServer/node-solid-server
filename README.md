@@ -15,7 +15,7 @@
 - [x] [WebID+TLS Authentication](https://www.w3.org/2005/Incubator/webid/spec/tls/)
 - [x] [Real-time live updates](https://github.com/solid/solid-spec#subscribing) (using WebSockets)
 - [x] Identity provider for WebID
-- [x] Proxy for cross-site data access
+- [x] CORS proxy for cross-site data access
 - [ ] Group members in ACL
 - [x] Email account recovery
 
@@ -154,7 +154,7 @@ $ solid start --help
     --ssl-key [value]       Path to the SSL private key in PEM format
     --ssl-cert [value]      Path to the SSL certificate key in PEM format
     --idp                   Enable multi-user mode (users can sign up for accounts)
-    --proxy [value]         Serve proxy on path (default: '/proxy')
+    --corsProxy [value]     Serve the CORS proxy on this path
     --file-browser [value]  Url to file browser app (uses Warp by default)
     --data-browser          Enable viewing RDF resources using a default data browser application (e.g. mashlib)
     --suffix-acl [value]    Suffix for acl files (default: '.acl')
@@ -198,7 +198,7 @@ default settings.
   mount: '/', // Where to mount Linked Data Platform
   webid: false, // Enable WebID+TLS authentication
   suffixAcl: '.acl', // Suffix for acl files
-  proxy: false, // Where to mount the proxy
+  corsProxy: false, // Where to mount the CORS proxy
   errorHandler: false, // function(err, req, res, next) to have a custom error handler
   errorPages: false // specify a path where the error pages are
 }

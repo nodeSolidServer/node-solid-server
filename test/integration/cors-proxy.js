@@ -6,10 +6,10 @@ var async = require('async')
 
 var ldnode = require('../../index')
 
-describe('proxy', () => {
+describe('CORS Proxy', () => {
   var ldp = ldnode({
     root: path.join(__dirname, '../resources'),
-    proxy: '/proxy',
+    corsProxy: '/proxy',
     webid: false
   })
   var server = supertest(ldp)
