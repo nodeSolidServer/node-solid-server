@@ -33,7 +33,7 @@ describe('OIDC Handler', () => {
 
       expect(res.set).to.be.calledWith(
         'WWW-Authenticate',
-        'Bearer realm="https://example.com", scope="openid", error="invalid_token", error_description="Invalid token", error_uri="https://example.com/errors/token"'
+        'Bearer realm="https://example.com", scope="openid webid", error="invalid_token", error_description="Invalid token", error_uri="https://example.com/errors/token"'
       )
     })
 
@@ -44,7 +44,7 @@ describe('OIDC Handler', () => {
 
       expect(res.set).to.be.calledWith(
         'WWW-Authenticate',
-        'Bearer realm="https://example.com", scope="openid"'
+        'Bearer realm="https://example.com", scope="openid webid"'
       )
     })
   })

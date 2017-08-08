@@ -41,7 +41,7 @@ describe('OIDC error handling', function () {
       it('should return 401 Unauthorized with www-auth header', () => {
         return server.get('/profile/')
           .set('Accept', 'text/html')
-          .expect('WWW-Authenticate', 'Bearer realm="https://localhost:3457", scope="openid"')
+          .expect('WWW-Authenticate', 'Bearer realm="https://localhost:3457", scope="openid webid"')
           .expect(401)
       })
 
@@ -59,7 +59,7 @@ describe('OIDC error handling', function () {
       it('should return 401 Unauthorized with www-auth header', () => {
         return server.get('/profile/')
           .set('Accept', 'text/plain')
-          .expect('WWW-Authenticate', 'Bearer realm="https://localhost:3457", scope="openid"')
+          .expect('WWW-Authenticate', 'Bearer realm="https://localhost:3457", scope="openid webid"')
           .expect(401)
       })
     })
@@ -78,7 +78,7 @@ describe('OIDC error handling', function () {
       it('should return a 401 error', () => {
         return server.get('/profile/')
           .set('Authorization', 'Bearer abcd123')
-          .expect('WWW-Authenticate', 'Bearer realm="https://localhost:3457", scope="openid", error="invalid_token", error_description="Access token is not a JWT"')
+          .expect('WWW-Authenticate', 'Bearer realm="https://localhost:3457", scope="openid webid", error="invalid_token", error_description="Access token is not a JWT"')
           .expect(401)
       })
     })
@@ -89,7 +89,7 @@ describe('OIDC error handling', function () {
       it('should return a 401 error', () => {
         return server.get('/profile/')
           .set('Authorization', 'Bearer ' + expiredToken)
-          .expect('WWW-Authenticate', 'Bearer realm="https://localhost:3457", scope="openid", error="invalid_token", error_description="Access token is expired."')
+          .expect('WWW-Authenticate', 'Bearer realm="https://localhost:3457", scope="openid webid", error="invalid_token", error_description="Access token is expired."')
           .expect(401)
       })
     })
