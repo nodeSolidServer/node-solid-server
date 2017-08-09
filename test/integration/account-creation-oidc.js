@@ -8,8 +8,6 @@ const path = require('path')
 const fs = require('fs-extra')
 
 describe('AccountManager (OIDC account creation tests)', function () {
-  this.timeout(10000)
-
   var serverUri = 'https://localhost:3457'
   var host = 'localhost:3457'
   var ldpHttpsServer

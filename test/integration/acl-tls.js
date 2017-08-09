@@ -52,7 +52,6 @@ var userCredentials = {
 }
 
 describe('ACL with WebID+TLS', function () {
-  this.timeout(10000)
   var ldpHttpsServer
   var ldp = ldnode.createServer({
     mount: '/test',
@@ -973,8 +972,6 @@ describe('ACL with WebID+TLS', function () {
 })
 
 describe('ACL with WebID through X-SSL-Cert', function () {
-  this.timeout(10000)
-
   var ldpHttpsServer
   before(function (done) {
     const ldp = ldnode.createServer({
