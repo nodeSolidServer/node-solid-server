@@ -8,7 +8,6 @@ var rm = require('./../test-utils').rm
 var solidServer = require('../../index')
 
 describe('HTTP COPY API', function () {
-  this.timeout(10000)
   var address = 'https://localhost:3456'
 
   var ldpHttpsServer

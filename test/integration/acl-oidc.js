@@ -37,8 +37,6 @@ const argv = {
 }
 
 describe('ACL HTTP', function () {
-  this.timeout(10000)
-
   var ldp, ldpHttpsServer
 
   before(done => {
