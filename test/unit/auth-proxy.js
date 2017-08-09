@@ -4,6 +4,7 @@ const express = require('express')
 const request = require('supertest')
 const { expect } = require('chai')
 
+const HOST = 'solid.org'
 const USER = 'https://ruben.verborgh.org/profile/#me'
 
 describe('Auth Proxy', () => {
@@ -33,6 +34,7 @@ describe('Auth Proxy', () => {
       let response
       before(() => {
         return request(app).get('/server/a')
+          .set('Host', HOST)
           .then(res => { response = res })
       })
 
@@ -47,6 +49,11 @@ describe('Auth Proxy', () => {
         expect(headers).to.have.property('user', USER)
       })
 
+      it('sets the Host header on the proxy request', () => {
+        const { headers } = response.body
+        expect(headers).to.have.property('host', 'server-a.org')
+      })
+
       it('returns status code 200', () => {
         expect(response).to.have.property('statusCode', 200)
       })
@@ -56,6 +63,7 @@ describe('Auth Proxy', () => {
       let response
       before(() => {
         return request(app).get('/server/a/my/path?query=string')
+          .set('Host', HOST)
           .then(res => { response = res })
       })
 
@@ -70,6 +78,11 @@ describe('Auth Proxy', () => {
         expect(headers).to.have.property('user', USER)
       })
 
+      it('sets the Host header on the proxy request', () => {
+        const { headers } = response.body
+        expect(headers).to.have.property('host', 'server-a.org')
+      })
+
       it('returns status code 200', () => {
         expect(response).to.have.property('statusCode', 200)
       })
@@ -79,6 +92,7 @@ describe('Auth Proxy', () => {
       let response
       before(() => {
         return request(app).get('/server/b')
+          .set('Host', HOST)
           .then(res => { response = res })
       })
 
@@ -93,6 +107,11 @@ describe('Auth Proxy', () => {
         expect(headers).to.have.property('user', USER)
       })
 
+      it('sets the Host header on the proxy request', () => {
+        const { headers } = response.body
+        expect(headers).to.have.property('host', 'server-b.org')
+      })
+
       it('returns status code 200', () => {
         expect(response).to.have.property('statusCode', 200)
       })
@@ -102,6 +121,7 @@ describe('Auth Proxy', () => {
       let response
       before(() => {
         return request(app).get('/server/b/my/path?query=string')
+          .set('Host', HOST)
           .then(res => { response = res })
       })
 
@@ -116,6 +136,11 @@ describe('Auth Proxy', () => {
         expect(headers).to.have.property('user', USER)
       })
 
+      it('sets the Host header on the proxy request', () => {
+        const { headers } = response.body
+        expect(headers).to.have.property('host', 'server-b.org')
+      })
+
       it('returns status code 200', () => {
         expect(response).to.have.property('statusCode', 200)
       })
@@ -126,6 +151,7 @@ describe('Auth Proxy', () => {
       before(() => {
         loggedIn = false
         return request(app).get('/server/a')
+          .set('Host', HOST)
           .then(res => { response = res })
       })
       after(() => {
@@ -141,6 +167,11 @@ describe('Auth Proxy', () => {
       it('does not set the User header on the proxy request', () => {
         const { headers } = response.body
         expect(headers).to.not.have.property('user')
+      })
+
+      it('sets the Host header on the proxy request', () => {
+        const { headers } = response.body
+        expect(headers).to.have.property('host', 'server-a.org')
       })
 
       it('returns status code 200', () => {
