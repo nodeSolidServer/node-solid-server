@@ -9,14 +9,17 @@ const USER = 'https://ruben.verborgh.org/profile/#me'
 
 describe('Auth Proxy', () => {
   describe('An auth proxy with 2 destinations', () => {
-    let app
     let loggedIn = true
+
+    let app
     before(() => {
+      // Set up test back-end servers
       nock('http://server-a.org').persist()
         .get(/./).reply(200, addRequestDetails('a'))
       nock('https://server-b.org').persist()
         .get(/./).reply(200, addRequestDetails('b'))
 
+      // Set up proxy server
       app = express()
       app.use((req, res, next) => {
         if (loggedIn) {
@@ -28,6 +31,11 @@ describe('Auth Proxy', () => {
         '/server/a': 'http://server-a.org',
         '/server/b': 'https://server-b.org/foo/bar'
       })
+    })
+
+    after(() => {
+      // Release back-end servers
+      nock.cleanAll()
     })
 
     describe('responding to /server/a', () => {
