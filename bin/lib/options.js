@@ -156,6 +156,13 @@ module.exports = [
     prompt: true
   },
   {
+    name: 'authProxy',
+    help: 'Object with path/server pairs to reverse proxy',
+    default: {},
+    prompt: false,
+    hide: true
+  },
+  {
     name: 'file-browser',
     help: 'Type the URL of default app to use for browsing files (or use default)',
     default: 'default',
