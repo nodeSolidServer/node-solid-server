@@ -4,9 +4,12 @@ const express = require('express')
 const request = require('supertest')
 const { expect } = require('chai')
 
+const USER = 'https://ruben.verborgh.org/profile/#me'
+
 describe('Auth Proxy', () => {
   describe('An auth proxy with 2 destinations', () => {
     let app
+    let loggedIn = true
     before(() => {
       nock('http://server-a.org').persist()
         .get(/./).reply(200, addRequestDetails('a'))
@@ -14,6 +17,12 @@ describe('Auth Proxy', () => {
         .get(/./).reply(200, addRequestDetails('b'))
 
       app = express()
+      app.use((req, res, next) => {
+        if (loggedIn) {
+          req.session = { userId: USER }
+        }
+        next()
+      })
       authProxy(app, {
         '/server/a': 'http://server-a.org',
         '/server/b': 'https://server-b.org/foo/bar'
@@ -31,6 +40,11 @@ describe('Auth Proxy', () => {
         const { server, path } = response.body
         expect(server).to.equal('a')
         expect(path).to.equal('/')
+      })
+
+      it('sets the User header on the proxy request', () => {
+        const { headers } = response.body
+        expect(headers).to.have.property('user', USER)
       })
 
       it('returns status code 200', () => {
@@ -51,6 +65,11 @@ describe('Auth Proxy', () => {
         expect(path).to.equal('/my/path?query=string')
       })
 
+      it('sets the User header on the proxy request', () => {
+        const { headers } = response.body
+        expect(headers).to.have.property('user', USER)
+      })
+
       it('returns status code 200', () => {
         expect(response).to.have.property('statusCode', 200)
       })
@@ -69,6 +88,11 @@ describe('Auth Proxy', () => {
         expect(path).to.equal('/foo/bar')
       })
 
+      it('sets the User header on the proxy request', () => {
+        const { headers } = response.body
+        expect(headers).to.have.property('user', USER)
+      })
+
       it('returns status code 200', () => {
         expect(response).to.have.property('statusCode', 200)
       })
@@ -85,6 +109,38 @@ describe('Auth Proxy', () => {
         const { server, path } = response.body
         expect(server).to.equal('b')
         expect(path).to.equal('/foo/bar/my/path?query=string')
+      })
+
+      it('sets the User header on the proxy request', () => {
+        const { headers } = response.body
+        expect(headers).to.have.property('user', USER)
+      })
+
+      it('returns status code 200', () => {
+        expect(response).to.have.property('statusCode', 200)
+      })
+    })
+
+    describe('responding to /server/a without a logged-in user', () => {
+      let response
+      before(() => {
+        loggedIn = false
+        return request(app).get('/server/a')
+          .then(res => { response = res })
+      })
+      after(() => {
+        loggedIn = true
+      })
+
+      it('proxies to http://server-a.org/', () => {
+        const { server, path } = response.body
+        expect(server).to.equal('a')
+        expect(path).to.equal('/')
+      })
+
+      it('does not set the User header on the proxy request', () => {
+        const { headers } = response.body
+        expect(headers).to.not.have.property('user')
       })
 
       it('returns status code 200', () => {
