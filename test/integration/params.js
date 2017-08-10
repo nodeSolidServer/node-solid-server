@@ -97,7 +97,7 @@ describe('LDNODE params', function () {
     })
   })
 
-  describe('forcedUser', function () {
+  describe('forceUser', function () {
     var ldpHttpsServer
 
     const port = 7777
@@ -107,6 +107,7 @@ describe('LDNODE params', function () {
     const configPath = path.join(rootPath, 'config')
 
     var ldp = ldnode.createServer({
+      auth: 'tls',
       forceUser: 'https://fakeaccount.com/profile#me',
       dbPath,
       configPath,
@@ -116,7 +117,8 @@ describe('LDNODE params', function () {
       sslKey: path.join(__dirname, '../keys/key.pem'),
       sslCert: path.join(__dirname, '../keys/cert.pem'),
       webid: true,
-      host: 'localhost:3457'
+      host: 'localhost:3457',
+      rejectUnauthorized: false
     })
 
     before(function (done) {
@@ -131,7 +133,7 @@ describe('LDNODE params', function () {
 
     var server = supertest(serverUri)
 
-    it('should find resource in correct path', function (done) {
+    it('sets the User header', function (done) {
       server.get('/hello.html')
         .expect('User', 'https://fakeaccount.com/profile#me')
         .end(done)
