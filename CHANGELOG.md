@@ -1,8 +1,17 @@
 # History
 
 ## 4.0.0
+- The `authProxy` configuration parameter has been added,
+  enabling back-end servers to serve authenticated content.
+  It accepts an object of path/server pairs
+  (such as `/my/path": "http://localhost:2345/app"`).
+  The Solid server acts as a reverse proxy for these paths, forwarding requests
+  to the back-end server along with the authenticated user (`User` header)
+  and the host through which Solid is being accessed (`Forwarded` header).
 
 #### 4.0.0 Upgrade Notes
+- The `proxy` configuration parameter has been deprecated and
+  renamed to `corsProxy` to better distinguish it from `authProxy`.
 
 ## 3.5.0
 
