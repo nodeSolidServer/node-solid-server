@@ -92,7 +92,6 @@ describe('AuthRequest', () => {
       request.initUserSession(alice)
 
       expect(request.session.userId).to.equal(webId)
-      expect(request.session.identified).to.be.true()
       let subject = request.session.subject
       expect(subject['_id']).to.equal(webId)
     })
