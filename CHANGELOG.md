@@ -1,5 +1,9 @@
 # History
 
+## 4.0.0
+
+#### 4.0.0 Upgrade Notes
+
 ## 3.5.0
 
 - Major refactoring of Account Creation classes (new account resources are now
