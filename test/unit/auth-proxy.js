@@ -54,6 +54,11 @@ describe('Auth Proxy', () => {
         expect(headers).to.have.property('host', 'server-a.org')
       })
 
+      it('sets the Forwarded header on the proxy request', () => {
+        const { headers } = response.body
+        expect(headers).to.have.property('forwarded', `host=${HOST}`)
+      })
+
       it('returns status code 200', () => {
         expect(response).to.have.property('statusCode', 200)
       })
@@ -81,6 +86,11 @@ describe('Auth Proxy', () => {
       it('sets the Host header on the proxy request', () => {
         const { headers } = response.body
         expect(headers).to.have.property('host', 'server-a.org')
+      })
+
+      it('sets the Forwarded header on the proxy request', () => {
+        const { headers } = response.body
+        expect(headers).to.have.property('forwarded', `host=${HOST}`)
       })
 
       it('returns status code 200', () => {
@@ -112,6 +122,11 @@ describe('Auth Proxy', () => {
         expect(headers).to.have.property('host', 'server-b.org')
       })
 
+      it('sets the Forwarded header on the proxy request', () => {
+        const { headers } = response.body
+        expect(headers).to.have.property('forwarded', `host=${HOST}`)
+      })
+
       it('returns status code 200', () => {
         expect(response).to.have.property('statusCode', 200)
       })
@@ -139,6 +154,11 @@ describe('Auth Proxy', () => {
       it('sets the Host header on the proxy request', () => {
         const { headers } = response.body
         expect(headers).to.have.property('host', 'server-b.org')
+      })
+
+      it('sets the Forwarded header on the proxy request', () => {
+        const { headers } = response.body
+        expect(headers).to.have.property('forwarded', `host=${HOST}`)
       })
 
       it('returns status code 200', () => {
@@ -172,6 +192,11 @@ describe('Auth Proxy', () => {
       it('sets the Host header on the proxy request', () => {
         const { headers } = response.body
         expect(headers).to.have.property('host', 'server-a.org')
+      })
+
+      it('sets the Forwarded header on the proxy request', () => {
+        const { headers } = response.body
+        expect(headers).to.have.property('forwarded', `host=${HOST}`)
       })
 
       it('returns status code 200', () => {
