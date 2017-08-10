@@ -1,6 +1,7 @@
 # History
 
 ## 4.0.0
+- Both Node.js 6 and 8 are now supported.
 - The `authProxy` configuration parameter has been added,
   enabling back-end servers to serve authenticated content.
   It accepts an object of path/server pairs
