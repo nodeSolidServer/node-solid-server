@@ -2,7 +2,7 @@ const assert = require('chai').assert
 const fs = require('fs-extra')
 const request = require('request')
 const path = require('path')
-const rm = require('../test-utils').rm
+const rm = require('../utils').rm
 
 const ldnode = require('../../index')
 

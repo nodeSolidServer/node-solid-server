@@ -2,7 +2,7 @@ const supertest = require('supertest')
 // Helper functions for the FS
 const $rdf = require('rdflib')
 
-const { rm, read } = require('../test-utils')
+const { rm, read } = require('../utils')
 const ldnode = require('../../index')
 const path = require('path')
 const fs = require('fs-extra')

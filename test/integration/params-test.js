@@ -3,10 +3,10 @@ var supertest = require('supertest')
 var path = require('path')
 const fs = require('fs-extra')
 // Helper functions for the FS
-var rm = require('../test-utils').rm
-var write = require('../test-utils').write
-// var cp = require('./test-utils').cp
-var read = require('../test-utils').read
+var rm = require('../utils').rm
+var write = require('../utils').write
+// var cp = require('./utils').cp
+var read = require('../utils').read
 
 var ldnode = require('../../index')
 

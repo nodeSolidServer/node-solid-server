@@ -3,7 +3,7 @@ var fs = require('fs')
 var request = require('request')
 var path = require('path')
 // Helper functions for the FS
-var rm = require('./../test-utils').rm
+var rm = require('./../utils').rm
 
 var solidServer = require('../../index')
 

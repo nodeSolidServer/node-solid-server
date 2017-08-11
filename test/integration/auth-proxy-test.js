@@ -3,7 +3,7 @@ const path = require('path')
 const nock = require('nock')
 const request = require('supertest')
 const { expect } = require('chai')
-const rm = require('../test-utils').rm
+const rm = require('../utils').rm
 
 const HOST = 'solid.org'
 const USER = 'https://ruben.verborgh.org/profile/#me'
