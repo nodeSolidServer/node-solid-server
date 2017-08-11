@@ -96,7 +96,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "solid": "node ./bin/solid.js",
+    "solid": "node ./bin/solid",
     "standard": "standard",
     "mocha": "NODE_TLS_REJECT_UNAUTHORIZED=0 nyc mocha ./test/**/*.js",
     "test": "npm run standard && npm run mocha",
@@ -129,7 +129,7 @@
     ]
   },
   "bin": {
-    "solid": "./bin/solid.js"
+    "solid": "./bin/solid"
   },
   "engines": {
     "node": ">=6.0"
