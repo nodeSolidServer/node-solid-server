@@ -59,10 +59,14 @@ $ solid start --root path/to/folder --port 8443 --ssl-key path/to/ssl-key.pem --
 # Solid server (solid v0.2.24) running on https://localhost:8443/
 ```
 
-##### How do I get an SSL key and certificate?
-You need an SSL certificate you get this from your domain provider or for free from [Let's Encrypt!](https://letsencrypt.org/getting-started/).
+### Running in development environments
 
-If you don't have one yet, or you just want to test `solid`, generate a certificate (**DO NOT USE IN PRODUCTION**):
+Solid requires SSL certificates to be valid, so you cannot use self-signed certificates. To switch off this security feature in development environments, you can use the `bin/solid-test` executable, which unsets the `NODE_TLS_REJECT_UNAUTHORIZED` flag. If you want to test WebID-TLS authentication with self-signed certificates, additionally set `"rejectUnauthorized": false` in `config.json`.
+
+##### How do I get an SSL key and certificate?
+You need an SSL certificate from a _certificate authority_, such as your domain provider or [Let's Encrypt!](https://letsencrypt.org/getting-started/).
+
+For testing purposes, you can use `bin/solid-test` with a _self-signed_ certificate, generated as follows:
 ```
 $ openssl genrsa 2048 > ../localhost.key
 $ openssl req -new -x509 -nodes -sha256 -days 3650 -key ../localhost.key -subj '/CN=*.localhost' > ../localhost.cert
