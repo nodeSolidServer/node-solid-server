@@ -2,7 +2,7 @@ var supertest = require('supertest')
 var fs = require('fs')
 var li = require('li')
 var ldnode = require('../../index')
-var rm = require('./../test-utils').rm
+var rm = require('./../utils').rm
 var path = require('path')
 const rdf = require('rdflib')
 
