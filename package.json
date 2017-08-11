@@ -100,9 +100,7 @@
     "standard": "standard",
     "nyc": "NODE_TLS_REJECT_UNAUTHORIZED=0 nyc mocha",
     "mocha": "NODE_TLS_REJECT_UNAUTHORIZED=0 mocha",
-    "test": "npm run standard && npm run nyc",
-    "clean": "rm -rf config.json accounts profile inbox .acl settings .meta .meta.acl",
-    "clean-account": "rm -rf accounts profile inbox .acl .meta settings .meta.acl"
+    "test": "npm run standard && npm run nyc"
   },
   "nyc": {
     "reporter": [
