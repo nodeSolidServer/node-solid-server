@@ -2,8 +2,8 @@ const assert = require('chai').assert
 const fs = require('fs-extra')
 const request = require('request')
 const path = require('path')
-const rm = require('../utils').rm
-const nock = require('nock')
+const { loadProvider, rm } = require('../utils')
+const IDToken = require('@trust/oidc-op/src/IDToken')
 
 const ldnode = require('../../index')
 
@@ -11,15 +11,35 @@ const port = 7777
 const serverUri = `https://localhost:7777`
 const rootPath = path.join(__dirname, '../resources/accounts-acl')
 const dbPath = path.join(rootPath, 'db')
+const oidcProviderPath = path.join(dbPath, 'oidc', 'op', 'provider.json')
 const configPath = path.join(rootPath, 'config')
 
 const user1 = 'https://tim.localhost:7777/profile/card#me'
 const timAccountUri = 'https://tim.localhost:7777'
 const user2 = 'https://nicola.localhost:7777/profile/card#me'
 
-const userCredentials = {
-  user1: 'eyJhbGciOiJSUzI1NiIsImtpZCI6IkFWUzVlZk5pRUVNIn0.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3Nzc3Iiwic3ViIjoiaHR0cHM6Ly90aW0ubG9jYWxob3N0Ojc3NzcvcHJvZmlsZS9jYXJkI21lIiwiYXVkIjoiN2YxYmU5YWE0N2JiMTM3MmIzYmM3NWU5MWRhMzUyYjQiLCJleHAiOjc3OTkyMjkwMDksImlhdCI6MTQ5MjAyOTAwOSwianRpIjoiZWY3OGQwYjY3ZWRjNzJhMSIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUifQ.H9lxCbNc47SfIq3hhHnj48BE-YFnvhCfDH9Jc4PptApTEip8sVj0E_u704K_huhNuWBvuv3cDRDGYZM7CuLnzgJG1BI75nXR9PYAJPK9Ketua2KzIrftNoyKNamGqkoCKFafF4z_rsmtXQ5u1_60SgWRcouXMpcHnnDqINF1JpvS21xjE_LbJ6qgPEhu3rRKcv1hpRdW9dRvjtWb9xu84bAjlRuT02lyDBHgj2utxpE_uqCbj48qlee3GoqWpGkSS-vJ6JA0aWYgnyv8fQsxf9rpdFNzKRoQO6XYMy6niEKj8aKgxjaUlpoGGJ5XtVLHH8AGwjYXR8iznYzJvEcB7Q',
-  user2: 'eyJhbGciOiJSUzI1NiIsImtpZCI6IkFWUzVlZk5pRUVNIn0.eyJpc3MiOiJodHRwczovL2xvY2FsaG9zdDo3Nzc3Iiwic3ViIjoiaHR0cHM6Ly9uaWNvbGEubG9jYWxob3N0Ojc3NzcvcHJvZmlsZS9jYXJkI21lIiwiYXVkIjoiN2YxYmU5YWE0N2JiMTM3MmIzYmM3NWU5MWRhMzUyYjQiLCJleHAiOjc3OTkyMjkwMDksImlhdCI6MTQ5MjAyOTAwOSwianRpIjoiMmQwOTJlZGVkOWI5YTQ5ZSIsInNjb3BlIjoib3BlbmlkIHByb2ZpbGUifQ.qs-_pZPZZzaK_pIOQr-T3yMxVPo1Z5R-TwIi_a4Q4Arudu2s9VkoPmsfsCeVc22i6I1uLiaRe_9qROpXd-Oiy0dsMMEtqyQWcc0zxp3RYQs99sAi4pTPOsTjtJwsMRJp4n8nx_TWQ7mS1grZEdSLr53v-2QqTZXVW8cBu4vQ0slXWsKsuaySk-hCMnxk7vHj70uFpuKRjx4CBHkEWXooEyXgcmS8QR-d_peq8Ldkq1Bez4SAQ9sy_4UVaIWoLRqA7gr0Grh7OTHZNdYV_NJoH0mnbCuyS5N5YEI8QuUzuYlSNhgZ_cZ3j1uqw_fs8SIHFtWMghdnT2JdRKUFfn4-vA'
+let oidcProvider
+
+// To be initialized in the before() block
+let userCredentials = {
+  // idp: https://localhost:7777
+  // web id: https://tim.localhost:7777/profile/card#me
+  user1: '',
+  // web id: https://nicola.localhost:7777/profile/card#me
+  user2: ''
+}
+
+function issueIdToken (oidcProvider, webId) {
+  return Promise.resolve()
+    .then(() => {
+      let jwt = IDToken.issue(oidcProvider, {
+        sub: webId,
+        aud: [ serverUri, 'client123' ],
+        azp: 'client123'
+      })
+
+      return jwt.encode()
+    })
 }
 
 const argv = {
@@ -38,11 +58,28 @@ const argv = {
 }
 
 describe('ACL HTTP', function () {
-  var ldp, ldpHttpsServer
+  let ldp, ldpHttpsServer
 
   before(done => {
     ldp = ldnode.createServer(argv)
-    ldpHttpsServer = ldp.listen(port, done)
+
+    loadProvider(oidcProviderPath)
+      .then(provider => {
+        oidcProvider = provider
+
+        return Promise.all([
+          issueIdToken(oidcProvider, user1),
+          issueIdToken(oidcProvider, user2)
+        ])
+      })
+      .then(tokens => {
+        userCredentials.user1 = tokens[0]
+        userCredentials.user2 = tokens[1]
+      })
+      .then(() => {
+        ldpHttpsServer = ldp.listen(port, done)
+      })
+      .catch(console.error)
   })
 
   after(() => {

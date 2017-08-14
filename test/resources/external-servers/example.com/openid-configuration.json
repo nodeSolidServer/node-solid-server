@@ -43,10 +43,10 @@
   "claim_types_supported": [
     "normal"
   ],
-  "claims_supported": "",
+  "claims_supported": [],
   "claims_parameter_supported": false,
-  "request_parameter_supported": false,
-  "request_uri_parameter_supported": true,
+  "request_parameter_supported": true,
+  "request_uri_parameter_supported": false,
   "require_request_uri_registration": false,
   "check_session_iframe": "https://example.com/session",
   "end_session_endpoint": "https://example.com/logout"

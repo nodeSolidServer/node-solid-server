@@ -87,7 +87,7 @@ describe('OIDC error handling', function () {
       it('should return a 401 error', () => {
         return server.get('/profile/')
           .set('Authorization', 'Bearer ' + expiredToken)
-          .expect('WWW-Authenticate', 'Bearer realm="https://localhost:3457", scope="openid webid", error="invalid_token", error_description="Access token is expired."')
+          .expect('WWW-Authenticate', 'Bearer realm="https://localhost:3457", scope="openid webid", error="invalid_token", error_description="Access token is expired"')
           .expect(401)
       })
     })

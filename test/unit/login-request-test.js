@@ -175,13 +175,13 @@ describe('LoginRequest', () => {
   })
 
   describe('redirectPostLogin()', () => {
-    it('should redirect to the /authorize url if redirect_uri is present', () => {
+    it('should redirect to the /authorize url if client_id is present', () => {
       let res = HttpMocks.createResponse()
-      let authUrl = 'https://localhost:8443/authorize?redirect_uri=https%3A%2F%2Fapp.example.com%2Fcallback'
+      let authUrl = 'https://localhost:8443/authorize?client_id=client123'
       let validUser = accountManager.userAccountFrom({ username: 'alice' })
 
       let authQueryParams = {
-        redirect_uri: 'https://app.example.com/callback'
+        client_id: 'client123'
       }
 
       let options = { accountManager, authQueryParams, response: res }
@@ -195,9 +195,9 @@ describe('LoginRequest', () => {
       expect(res._getRedirectUrl()).to.equal(authUrl)
     })
 
-    it('should redirect to account uri if no redirect_uri present', () => {
+    it('should redirect to account uri if no client_id present', () => {
       let res = HttpMocks.createResponse()
-      let authUrl = 'https://localhost/authorize?client_id=123'
+      let authUrl = 'https://localhost/authorize?redirect_uri=https%3A%2F%2Fapp.example.com%2Fcallback'
       let validUser = accountManager.userAccountFrom({ username: 'alice' })
 
       let authQueryParams = {}
