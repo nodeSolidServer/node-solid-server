@@ -8,8 +8,9 @@ const SolidAuthOIDC = require('solid-auth-oidc')
 const fetch = require('node-fetch')
 const localStorage = require('localstorage-memory')
 const url = require('url')
-const { URL } = url
+const URL = require('whatwg-url').URL
 global.URL = URL
+global.URLSearchParams = require('whatwg-url').URLSearchParams
 
 const supertest = require('supertest')
 const nock = require('nock')
@@ -358,7 +359,7 @@ describe('Authentication API (OIDC)', () => {
           expect(res.status).to.equal(401)
 
           expect(res.headers.get('www-authenticate'))
-            .to.equal(`Bearer realm="${bobServerUri}", scope="openid"`)
+            .to.equal(`Bearer realm="${bobServerUri}", scope="openid webid"`)
         })
     })
 
@@ -401,7 +402,9 @@ describe('Authentication API (OIDC)', () => {
           authParams.forEach((value, key) => {
             let hiddenField = `<input type="hidden" name="${key}" id="${key}" value="${value}" />`
 
-            expect(pageText).to.match(new RegExp(hiddenField))
+            let fieldRegex = new RegExp(hiddenField)
+
+            expect(pageText).to.match(fieldRegex)
 
             loginFormFields += `${key}=` + encodeURIComponent(value) + '&'
           })
@@ -448,15 +451,18 @@ describe('Authentication API (OIDC)', () => {
     it('should use id token from the callback uri to access shared resource', () => {
       auth.window.location.href = callbackUri
 
+      let protectedResourcePath = bobServerUri + '/shared-with-alice.txt'
+
       return auth.initUserFromResponse(auth.currentClient)
         .then(webId => {
           expect(webId).to.equal(aliceWebId)
 
-          let idToken = auth.idToken
-
-          return fetch(bobServerUri + '/shared-with-alice.txt', {
+          return auth.issuePoPTokenFor(bobServerUri, auth.session)
+        })
+        .then(popToken => {
+          return fetch(protectedResourcePath, {
             headers: {
-              'Authorization': 'Bearer ' + idToken
+              'Authorization': 'Bearer ' + popToken
             }
           })
         })
