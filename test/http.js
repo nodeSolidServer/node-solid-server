@@ -260,6 +260,20 @@ describe('HTTP APIs', function () {
         .expect('content-type', /image\/png/)
         .expect(200, done)
     })
+
+    it('should NOT load data browser (mashlib) if a resource has an .html extension', function (done) {
+      server.get('/sampleContainer/index.html')
+        .set('Accept', 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8')
+        .expect('content-type', /text\/html/)
+        .expect(200)
+        .expect((res) => {
+          if (res.text.includes('TabulatorOutline')) {
+            throw new Error('Loaded data browser though resource has an .html extension')
+          }
+        })
+        .end(done)
+    })
+
     it('should redirect to file browser if container was requested as text/html', function (done) {
       server.get('/')
         .set('Accept', 'text/html')
