@@ -325,6 +325,7 @@ describe('Authentication API (OIDC)', () => {
     let auth
     let authorizationUri, loginUri, authParams, callbackUri
     let loginFormFields = ''
+    let bearerToken
 
     before(() => {
       auth = new SolidAuthOIDC({ store: localStorage, window: { location: {} } })
@@ -460,9 +461,11 @@ describe('Authentication API (OIDC)', () => {
           return auth.issuePoPTokenFor(bobServerUri, auth.session)
         })
         .then(popToken => {
+          bearerToken = popToken
+
           return fetch(protectedResourcePath, {
             headers: {
-              'Authorization': 'Bearer ' + popToken
+              'Authorization': 'Bearer ' + bearerToken
             }
           })
         })
@@ -473,6 +476,21 @@ describe('Authentication API (OIDC)', () => {
         })
         .then(contents => {
           expect(contents).to.equal('protected contents\n')
+        })
+    })
+
+    it('should not be able to reuse the bearer token for bob server on another server', () => {
+      let privateAliceResourcePath = aliceServerUri + '/private-for-alice.txt'
+
+      return fetch(privateAliceResourcePath, {
+        headers: {
+          // This is Alice's bearer token with her own Web ID
+          'Authorization': 'Bearer ' + bearerToken
+        }
+      })
+        .then(res => {
+          // It will get rejected; it was issued for Bob's server only
+          expect(res.status).to.equal(403)
         })
     })
   })
