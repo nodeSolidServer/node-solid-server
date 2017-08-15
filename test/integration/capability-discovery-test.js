@@ -96,9 +96,9 @@ describe('API', () => {
           .expect(204, done)
       })
 
-      it('should return the oidc.provider Link header', (done) => {
+      it('should return the http://openid.net/specs/connect/1.0/issuer Link rel header', (done) => {
         alice.options('/')
-          .expect('Link', /<https:\/\/localhost:5000>; rel="oidc.provider"/)
+          .expect('Link', /<https:\/\/localhost:5000>; rel="http:\/\/openid\.net\/specs\/connect\/1\.0\/issuer"/)
           .expect(204, done)
       })
     })
