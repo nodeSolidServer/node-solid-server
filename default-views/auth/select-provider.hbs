@@ -11,6 +11,13 @@
   <div>
     <h2>Select Provider</h2>
   </div>
+  {{#if error}}
+    <div class="row">
+      <div class="col-md-12">
+        <p class="text-danger"><strong>{{error}}</strong></p>
+      </div>
+    </div>
+  {{/if}}
 </div>
 <div class="container">
   <form method="post" action="/api/auth/select-provider">
