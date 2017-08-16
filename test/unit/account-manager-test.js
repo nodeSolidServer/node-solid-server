@@ -455,26 +455,4 @@ describe('AccountManager', () => {
         })
     })
   })
-
-  describe('externalAccount()', () => {
-    it('should return true if account is a subdomain of the local server url', () => {
-      let options = { host }
-
-      let accountManager = AccountManager.from(options)
-
-      let webId = 'https://alice.example.com/#me'
-
-      expect(accountManager.externalAccount(webId)).to.be.false()
-    })
-
-    it('should return false if account does not match the local server url', () => {
-      let options = { host }
-
-      let accountManager = AccountManager.from(options)
-
-      let webId = 'https://alice.databox.me/#me'
-
-      expect(accountManager.externalAccount(webId)).to.be.true()
-    })
-  })
 })
