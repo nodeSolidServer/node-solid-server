@@ -19,5 +19,6 @@ addons:
     - nicola.localhost
 
 cache:
+  apt: true
   directories:
     - node_modules
