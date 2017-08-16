@@ -134,13 +134,18 @@ describe('TlsAuthenticator', () => {
   })
 
   describe('ensureLocalUser()', () => {
-    it('should throw an error if the user is not local to this server', () => {
+    it('should throw an error if external user and this server not the preferred provider', done => {
       let tlsAuth = new TlsAuthenticator({ accountManager })
 
       let externalWebId = 'https://alice.someothersite.com#me'
 
-      expect(() => tlsAuth.ensureLocalUser(externalWebId))
-        .to.throw(/Cannot login: Selected Web ID is not hosted on this server/)
+      tlsAuth.discoverProviderFor = sinon.stub().resolves('https://another-provider.com')
+
+      tlsAuth.ensureLocalUser(externalWebId)
+        .catch(err => {
+          expect(err.message).to.match(/This server is not the preferred provider for Web ID https:\/\/alice.someothersite.com#me/)
+          done()
+        })
     })
 
     it('should return a user instance if the webid is local', () => {
@@ -148,10 +153,25 @@ describe('TlsAuthenticator', () => {
 
       let webId = 'https://alice.example.com/#me'
 
-      let user = tlsAuth.ensureLocalUser(webId)
+      return tlsAuth.ensureLocalUser(webId)
+        .then(user => {
+          expect(user.username).to.equal('alice')
+          expect(user.webId).to.equal(webId)
+        })
+    })
 
-      expect(user.username).to.equal('alice')
-      expect(user.webId).to.equal(webId)
+    it('should return a user instance if external user and this server is preferred provider', () => {
+      let tlsAuth = new TlsAuthenticator({ accountManager })
+
+      let externalWebId = 'https://alice.someothersite.com#me'
+
+      tlsAuth.discoverProviderFor = sinon.stub().resolves('https://example.com')
+
+      tlsAuth.ensureLocalUser(externalWebId)
+        .then(user => {
+          expect(user.username).to.equal(externalWebId)
+          expect(user.webId).to.equal(externalWebId)
+        })
     })
   })
 
