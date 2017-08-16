@@ -116,6 +116,13 @@ module.exports = [
     prompt: true
   },
   {
+    name: 'no-reject-unauthorized',
+    help: 'Accepts clients with invalid certificates (set for testing WebID-TLS)',
+    flag: true,
+    default: false,
+    prompt: false
+  },
+  {
     name: 'idp',
     help: 'Enable multi-user mode (users can sign up for accounts)',
     question: 'Enable multi-user mode (users can sign up for accounts)',
