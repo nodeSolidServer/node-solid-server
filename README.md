@@ -61,7 +61,7 @@ $ solid start --root path/to/folder --port 8443 --ssl-key path/to/ssl-key.pem --
 
 ### Running in development environments
 
-Solid requires SSL certificates to be valid, so you cannot use self-signed certificates. To switch off this security feature in development environments, you can use the `bin/solid-test` executable, which unsets the `NODE_TLS_REJECT_UNAUTHORIZED` flag. If you want to test WebID-TLS authentication with self-signed certificates, additionally set `"rejectUnauthorized": false` in `config.json`.
+Solid requires SSL certificates to be valid, so you cannot use self-signed certificates. To switch off this security feature in development environments, you can use the `bin/solid-test` executable, which unsets the `NODE_TLS_REJECT_UNAUTHORIZED` flag and sets the `rejectUnauthorized` option.
 
 ##### How do I get an SSL key and certificate?
 You need an SSL certificate from a _certificate authority_, such as your domain provider or [Let's Encrypt!](https://letsencrypt.org/getting-started/).
