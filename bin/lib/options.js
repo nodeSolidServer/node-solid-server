@@ -76,7 +76,7 @@ module.exports = [
     }
   },
   {
-    name: 'certificateHeader',
+    name: 'certificate-header',
     question: 'Accept client certificates through this HTTP header (for reverse proxies)',
     default: '',
     prompt: false
