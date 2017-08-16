@@ -134,7 +134,7 @@ describe('TlsAuthenticator', () => {
   })
 
   describe('ensureLocalUser()', () => {
-    it('should throw an error if external user and this server not the preferred provider', done => {
+    it('should throw an error if external user and this server not the authorized provider', done => {
       let tlsAuth = new TlsAuthenticator({ accountManager })
 
       let externalWebId = 'https://alice.someothersite.com#me'
@@ -143,7 +143,7 @@ describe('TlsAuthenticator', () => {
 
       tlsAuth.ensureLocalUser(externalWebId)
         .catch(err => {
-          expect(err.message).to.match(/This server is not the preferred provider for Web ID https:\/\/alice.someothersite.com#me/)
+          expect(err.message).to.match(/This server is not the authorized provider for Web ID https:\/\/alice.someothersite.com#me/)
           done()
         })
     })
@@ -160,7 +160,7 @@ describe('TlsAuthenticator', () => {
         })
     })
 
-    it('should return a user instance if external user and this server is preferred provider', () => {
+    it('should return a user instance if external user and this server is authorized provider', () => {
       let tlsAuth = new TlsAuthenticator({ accountManager })
 
       let externalWebId = 'https://alice.someothersite.com#me'
