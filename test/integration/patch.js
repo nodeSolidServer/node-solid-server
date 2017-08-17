@@ -51,7 +51,7 @@ describe('PATCH', () => {
 
     describe('without relevant patch element', describePatch({
       path: '/read-write.ttl',
-      patch: `<> a p:Patch.`
+      patch: `<> a solid:Patch.`
     }, { // expected:
       status: 400,
       text: 'No patch for https://tim.localhost:7777/read-write.ttl found'
@@ -59,7 +59,7 @@ describe('PATCH', () => {
 
     describe('with neither insert nor delete', describePatch({
       path: '/read-write.ttl',
-      patch: `<> p:patches <https://tim.localhost:7777/read-write.ttl>.`
+      patch: `<> solid:patches <https://tim.localhost:7777/read-write.ttl>.`
     }, { // expected:
       status: 400,
       text: 'Patch should at least contain inserts or deletes'
@@ -70,8 +70,8 @@ describe('PATCH', () => {
     describe('on a non-existing file', describePatch({
       path: '/new.ttl',
       exists: false,
-      patch: `<> p:patches <https://tim.localhost:7777/new.ttl>;
-                 p:insert { <x> <y> <z>. }.`
+      patch: `<> solid:patches <https://tim.localhost:7777/new.ttl>;
+                 solid:inserts { <x> <y> <z>. }.`
     }, { // expected:
       status: 200,
       text: 'Patch applied successfully',
@@ -80,8 +80,8 @@ describe('PATCH', () => {
 
     describe('on a resource with read-only access', describePatch({
       path: '/read-only.ttl',
-      patch: `<> p:patches <https://tim.localhost:7777/read-only.ttl>;
-                 p:insert { <x> <y> <z>. }.`
+      patch: `<> solid:patches <https://tim.localhost:7777/read-only.ttl>;
+                 solid:inserts { <x> <y> <z>. }.`
     }, { // expected:
       status: 403,
       text: 'Access denied'
@@ -89,8 +89,8 @@ describe('PATCH', () => {
 
     describe('on a resource with append-only access', describePatch({
       path: '/append-only.ttl',
-      patch: `<> p:patches <https://tim.localhost:7777/append-only.ttl>;
-                 p:insert { <x> <y> <z>. }.`
+      patch: `<> solid:patches <https://tim.localhost:7777/append-only.ttl>;
+                 solid:inserts { <x> <y> <z>. }.`
     }, { // expected:
       status: 200,
       text: 'Patch applied successfully',
@@ -99,8 +99,8 @@ describe('PATCH', () => {
 
     describe('on a resource with write-only access', describePatch({
       path: '/write-only.ttl',
-      patch: `<> p:patches <https://tim.localhost:7777/write-only.ttl>;
-                 p:insert { <x> <y> <z>. }.`
+      patch: `<> solid:patches <https://tim.localhost:7777/write-only.ttl>;
+                 solid:inserts { <x> <y> <z>. }.`
     }, { // expected:
       status: 200,
       text: 'Patch applied successfully',
@@ -112,9 +112,9 @@ describe('PATCH', () => {
     describe('on a non-existing file', describePatch({
       path: '/new.ttl',
       exists: false,
-      patch: `<> p:patches <https://tim.localhost:7777/new.ttl>;
-                 p:insert { ?a <y> <z>. };
-                 p:where  { ?a <b> <c>. }.`
+      patch: `<> solid:patches <https://tim.localhost:7777/new.ttl>;
+                 solid:inserts { ?a <y> <z>. };
+                 solid:where   { ?a <b> <c>. }.`
     }, { // expected:
       status: 409,
       text: 'The patch could not be applied'
@@ -122,9 +122,9 @@ describe('PATCH', () => {
 
     describe('on a resource with read-only access', describePatch({
       path: '/read-only.ttl',
-      patch: `<> p:patches <https://tim.localhost:7777/read-only.ttl>;
-                 p:insert { ?a <y> <z>. };
-                 p:where  { ?a <b> <c>. }.`
+      patch: `<> solid:patches <https://tim.localhost:7777/read-only.ttl>;
+                 solid:inserts { ?a <y> <z>. };
+                 solid:where   { ?a <b> <c>. }.`
     }, { // expected:
       status: 403,
       text: 'Access denied'
@@ -132,9 +132,9 @@ describe('PATCH', () => {
 
     describe('on a resource with append-only access', describePatch({
       path: '/append-only.ttl',
-      patch: `<> p:patches <https://tim.localhost:7777/append-only.ttl>;
-                 p:insert { ?a <y> <z>. };
-                 p:where  { ?a <b> <c>. }.`
+      patch: `<> solid:patches <https://tim.localhost:7777/append-only.ttl>;
+                 solid:inserts { ?a <y> <z>. };
+                 solid:where   { ?a <b> <c>. }.`
     }, { // expected:
       status: 403,
       text: 'Access denied'
@@ -142,9 +142,9 @@ describe('PATCH', () => {
 
     describe('on a resource with write-only access', describePatch({
       path: '/write-only.ttl',
-      patch: `<> p:patches <https://tim.localhost:7777/write-only.ttl>;
-                 p:insert { ?a <y> <z>. };
-                 p:where  { ?a <b> <c>. }.`
+      patch: `<> solid:patches <https://tim.localhost:7777/write-only.ttl>;
+                 solid:inserts { ?a <y> <z>. };
+                 solid:where   { ?a <b> <c>. }.`
     }, { // expected:
       // Allowing the insert would either return 200 or 409,
       // thereby inappropriately giving the user (guess-based) read access;
@@ -156,9 +156,9 @@ describe('PATCH', () => {
     describe('on a resource with read-append access', () => {
       describe('with a matching WHERE clause', describePatch({
         path: '/read-append.ttl',
-        patch: `<> p:patches <https://tim.localhost:7777/read-append.ttl>;
-                   p:insert { ?a <y> <z>. };
-                   p:where  { ?a <b> <c>. }.`
+        patch: `<> solid:patches <https://tim.localhost:7777/read-append.ttl>;
+                   solid:inserts { ?a <y> <z>. };
+                   solid:where   { ?a <b> <c>. }.`
       }, { // expected:
         status: 200,
         text: 'Patch applied successfully',
@@ -167,9 +167,9 @@ describe('PATCH', () => {
 
       describe('with a non-matching WHERE clause', describePatch({
         path: '/read-append.ttl',
-        patch: `<> p:patches <https://tim.localhost:7777/read-append.ttl>;
-                   p:where  { ?a <y> <z>. };
-                   p:insert { ?a <s> <t>. }.`
+        patch: `<> solid:patches <https://tim.localhost:7777/read-append.ttl>;
+                   solid:where   { ?a <y> <z>. };
+                   solid:inserts { ?a <s> <t>. }.`
       }, { // expected:
         status: 409,
         text: 'The patch could not be applied'
@@ -179,9 +179,9 @@ describe('PATCH', () => {
     describe('on a resource with read-write access', () => {
       describe('with a matching WHERE clause', describePatch({
         path: '/read-write.ttl',
-        patch: `<> p:patches <https://tim.localhost:7777/read-write.ttl>;
-                   p:insert { ?a <y> <z>. };
-                   p:where  { ?a <b> <c>. }.`
+        patch: `<> solid:patches <https://tim.localhost:7777/read-write.ttl>;
+                   solid:inserts { ?a <y> <z>. };
+                   solid:where   { ?a <b> <c>. }.`
       }, { // expected:
         status: 200,
         text: 'Patch applied successfully',
@@ -190,9 +190,9 @@ describe('PATCH', () => {
 
       describe('with a non-matching WHERE clause', describePatch({
         path: '/read-write.ttl',
-        patch: `<> p:patches <https://tim.localhost:7777/read-write.ttl>;
-                   p:where  { ?a <y> <z>. };
-                   p:insert { ?a <s> <t>. }.`
+        patch: `<> solid:patches <https://tim.localhost:7777/read-write.ttl>;
+                   solid:where   { ?a <y> <z>. };
+                   solid:inserts { ?a <s> <t>. }.`
       }, { // expected:
         status: 409,
         text: 'The patch could not be applied'
@@ -204,8 +204,8 @@ describe('PATCH', () => {
     describe('on a non-existing file', describePatch({
       path: '/new.ttl',
       exists: false,
-      patch: `<> p:patches <https://tim.localhost:7777/new.ttl>;
-                 p:delete { <a> <b> <c>. }.`
+      patch: `<> solid:patches <https://tim.localhost:7777/new.ttl>;
+                 solid:deletes { <a> <b> <c>. }.`
     }, { // expected:
       status: 409,
       text: 'The patch could not be applied'
@@ -213,8 +213,8 @@ describe('PATCH', () => {
 
     describe('on a resource with read-only access', describePatch({
       path: '/read-only.ttl',
-      patch: `<> p:patches <https://tim.localhost:7777/read-only.ttl>;
-                 p:delete { <a> <b> <c>. }.`
+      patch: `<> solid:patches <https://tim.localhost:7777/read-only.ttl>;
+                 solid:deletes { <a> <b> <c>. }.`
     }, { // expected:
       status: 403,
       text: 'Access denied'
@@ -222,8 +222,8 @@ describe('PATCH', () => {
 
     describe('on a resource with append-only access', describePatch({
       path: '/append-only.ttl',
-      patch: `<> p:patches <https://tim.localhost:7777/append-only.ttl>;
-                 p:delete { <a> <b> <c>. }.`
+      patch: `<> solid:patches <https://tim.localhost:7777/append-only.ttl>;
+                 solid:deletes { <a> <b> <c>. }.`
     }, { // expected:
       status: 403,
       text: 'Access denied'
@@ -231,8 +231,8 @@ describe('PATCH', () => {
 
     describe('on a resource with write-only access', describePatch({
       path: '/write-only.ttl',
-      patch: `<> p:patches <https://tim.localhost:7777/write-only.ttl>;
-                 p:delete { <a> <b> <c>. }.`
+      patch: `<> solid:patches <https://tim.localhost:7777/write-only.ttl>;
+                 solid:deletes { <a> <b> <c>. }.`
     }, { // expected:
       // Allowing the delete would either return 200 or 409,
       // thereby inappropriately giving the user (guess-based) read access;
@@ -243,8 +243,8 @@ describe('PATCH', () => {
 
     describe('on a resource with read-append access', describePatch({
       path: '/read-append.ttl',
-      patch: `<> p:patches <https://tim.localhost:7777/read-append.ttl>;
-                 p:delete { <a> <b> <c>. }.`
+      patch: `<> solid:patches <https://tim.localhost:7777/read-append.ttl>;
+                 solid:deletes { <a> <b> <c>. }.`
     }, { // expected:
       status: 403,
       text: 'Access denied'
@@ -253,8 +253,8 @@ describe('PATCH', () => {
     describe('on a resource with read-write access', () => {
       describe('with a patch for existing data', describePatch({
         path: '/read-write.ttl',
-        patch: `<> p:patches <https://tim.localhost:7777/read-write.ttl>;
-                   p:delete { <a> <b> <c>. }.`
+        patch: `<> solid:patches <https://tim.localhost:7777/read-write.ttl>;
+                   solid:deletes { <a> <b> <c>. }.`
       }, { // expected:
         status: 200,
         text: 'Patch applied successfully',
@@ -263,8 +263,8 @@ describe('PATCH', () => {
 
       describe('with a patch for non-existing data', describePatch({
         path: '/read-write.ttl',
-        patch: `<> p:patches <https://tim.localhost:7777/read-write.ttl>;
-                   p:delete { <x> <y> <z>. }.`
+        patch: `<> solid:patches <https://tim.localhost:7777/read-write.ttl>;
+                   solid:deletes { <x> <y> <z>. }.`
       }, { // expected:
         status: 409,
         text: 'The patch could not be applied'
@@ -272,9 +272,9 @@ describe('PATCH', () => {
 
       describe('with a matching WHERE clause', describePatch({
         path: '/read-write.ttl',
-        patch: `<> p:patches <https://tim.localhost:7777/read-write.ttl>;
-                   p:where  { ?a <b> <c>. };
-                   p:delete { ?a <b> <c>. }.`
+        patch: `<> solid:patches <https://tim.localhost:7777/read-write.ttl>;
+                   solid:where   { ?a <b> <c>. };
+                   solid:deletes { ?a <b> <c>. }.`
       }, { // expected:
         status: 200,
         text: 'Patch applied successfully',
@@ -283,9 +283,9 @@ describe('PATCH', () => {
 
       describe('with a non-matching WHERE clause', describePatch({
         path: '/read-write.ttl',
-        patch: `<> p:patches <https://tim.localhost:7777/read-write.ttl>;
-                   p:where  { ?a <y> <z>. };
-                   p:delete { ?a <b> <c>. }.`
+        patch: `<> solid:patches <https://tim.localhost:7777/read-write.ttl>;
+                   solid:where   { ?a <y> <z>. };
+                   solid:deletes { ?a <b> <c>. }.`
       }, { // expected:
         status: 409,
         text: 'The patch could not be applied'
@@ -297,9 +297,9 @@ describe('PATCH', () => {
     describe('on a non-existing file', describePatch({
       path: '/new.ttl',
       exists: false,
-      patch: `<> p:patches <https://tim.localhost:7777/new.ttl>;
-                 p:insert { <x> <y> <z>. };
-                 p:delete { <a> <b> <c>. }.`
+      patch: `<> solid:patches <https://tim.localhost:7777/new.ttl>;
+                 solid:inserts { <x> <y> <z>. };
+                 solid:deletes { <a> <b> <c>. }.`
     }, { // expected:
       status: 409,
       text: 'The patch could not be applied'
@@ -307,9 +307,9 @@ describe('PATCH', () => {
 
     describe('on a resource with read-only access', describePatch({
       path: '/read-only.ttl',
-      patch: `<> p:patches <https://tim.localhost:7777/read-only.ttl>;
-                 p:insert { <x> <y> <z>. };
-                 p:delete { <a> <b> <c>. }.`
+      patch: `<> solid:patches <https://tim.localhost:7777/read-only.ttl>;
+                 solid:inserts { <x> <y> <z>. };
+                 solid:deletes { <a> <b> <c>. }.`
     }, { // expected:
       status: 403,
       text: 'Access denied'
@@ -317,9 +317,9 @@ describe('PATCH', () => {
 
     describe('on a resource with append-only access', describePatch({
       path: '/append-only.ttl',
-      patch: `<> p:patches <https://tim.localhost:7777/append-only.ttl>;
-                 p:insert { <x> <y> <z>. };
-                 p:delete { <a> <b> <c>. }.`
+      patch: `<> solid:patches <https://tim.localhost:7777/append-only.ttl>;
+                 solid:inserts { <x> <y> <z>. };
+                 solid:deletes { <a> <b> <c>. }.`
     }, { // expected:
       status: 403,
       text: 'Access denied'
@@ -327,9 +327,9 @@ describe('PATCH', () => {
 
     describe('on a resource with write-only access', describePatch({
       path: '/write-only.ttl',
-      patch: `<> p:patches <https://tim.localhost:7777/write-only.ttl>;
-                 p:insert { <x> <y> <z>. };
-                 p:delete { <a> <b> <c>. }.`
+      patch: `<> solid:patches <https://tim.localhost:7777/write-only.ttl>;
+                 solid:inserts { <x> <y> <z>. };
+                 solid:deletes { <a> <b> <c>. }.`
     }, { // expected:
       // Allowing the delete would either return 200 or 409,
       // thereby inappropriately giving the user (guess-based) read access;
@@ -340,9 +340,9 @@ describe('PATCH', () => {
 
     describe('on a resource with read-append access', describePatch({
       path: '/read-append.ttl',
-      patch: `<> p:patches <https://tim.localhost:7777/read-append.ttl>;
-                 p:insert { <x> <y> <z>. };
-                 p:delete { <a> <b> <c>. }.`
+      patch: `<> solid:patches <https://tim.localhost:7777/read-append.ttl>;
+                 solid:inserts { <x> <y> <z>. };
+                 solid:deletes { <a> <b> <c>. }.`
     }, { // expected:
       status: 403,
       text: 'Access denied'
@@ -351,9 +351,9 @@ describe('PATCH', () => {
     describe('on a resource with read-write access', () => {
       describe('executes deletes before inserts', describePatch({
         path: '/read-write.ttl',
-        patch: `<> p:patches <https://tim.localhost:7777/read-write.ttl>;
-                   p:insert { <x> <y> <z>. };
-                   p:delete { <x> <y> <z>. }.`
+        patch: `<> solid:patches <https://tim.localhost:7777/read-write.ttl>;
+                   solid:inserts { <x> <y> <z>. };
+                   solid:deletes { <x> <y> <z>. }.`
       }, { // expected:
         status: 409,
         text: 'The patch could not be applied'
@@ -361,9 +361,9 @@ describe('PATCH', () => {
 
       describe('with a patch for existing data', describePatch({
         path: '/read-write.ttl',
-        patch: `<> p:patches <https://tim.localhost:7777/read-write.ttl>;
-                   p:insert { <x> <y> <z>. };
-                   p:delete { <a> <b> <c>. }.`
+        patch: `<> solid:patches <https://tim.localhost:7777/read-write.ttl>;
+                   solid:inserts { <x> <y> <z>. };
+                   solid:deletes { <a> <b> <c>. }.`
       }, { // expected:
         status: 200,
         text: 'Patch applied successfully',
@@ -372,9 +372,9 @@ describe('PATCH', () => {
 
       describe('with a patch for non-existing data', describePatch({
         path: '/read-write.ttl',
-        patch: `<> p:patches <https://tim.localhost:7777/read-write.ttl>;
-                   p:insert { <x> <y> <z>. };
-                   p:delete { <q> <s> <s>. }.`
+        patch: `<> solid:patches <https://tim.localhost:7777/read-write.ttl>;
+                   solid:inserts { <x> <y> <z>. };
+                   solid:deletes { <q> <s> <s>. }.`
       }, { // expected:
         status: 409,
         text: 'The patch could not be applied'
@@ -382,10 +382,10 @@ describe('PATCH', () => {
 
       describe('with a matching WHERE clause', describePatch({
         path: '/read-write.ttl',
-        patch: `<> p:patches <https://tim.localhost:7777/read-write.ttl>;
-                   p:where  { ?a <b> <c>. };
-                   p:insert { ?a <y> <z>. };
-                   p:delete { ?a <b> <c>. }.`
+        patch: `<> solid:patches <https://tim.localhost:7777/read-write.ttl>;
+                   solid:where   { ?a <b> <c>. };
+                   solid:inserts { ?a <y> <z>. };
+                   solid:deletes { ?a <b> <c>. }.`
       }, { // expected:
         status: 200,
         text: 'Patch applied successfully',
@@ -394,10 +394,10 @@ describe('PATCH', () => {
 
       describe('with a non-matching WHERE clause', describePatch({
         path: '/read-write.ttl',
-        patch: `<> p:patches <https://tim.localhost:7777/read-write.ttl>;
-                   p:where  { ?a <y> <z>. };
-                   p:insert { ?a <y> <z>. };
-                   p:delete { ?a <b> <c>. }.`
+        patch: `<> solid:patches <https://tim.localhost:7777/read-write.ttl>;
+                   solid:where   { ?a <y> <z>. };
+                   solid:inserts { ?a <y> <z>. };
+                   solid:deletes { ?a <b> <c>. }.`
       }, { // expected:
         status: 409,
         text: 'The patch could not be applied'
@@ -431,7 +431,7 @@ describe('PATCH', () => {
         request.patch(path)
                .set('Authorization', `Bearer ${userCredentials}`)
                .set('Content-Type', contentType)
-               .send(`@prefix p: <http://example.org/patch#>.\n${patch}`)
+               .send(`@prefix solid: <http://www.w3.org/ns/solid/terms#>.\n${patch}`)
                .then(res => { response = res })
                .then(done, done)
       })
