@@ -2,7 +2,7 @@ const assert = require('chai').assert
 const fs = require('fs-extra')
 const request = require('request')
 const path = require('path')
-const { loadProvider, rm } = require('../utils')
+const { loadProvider, rm, checkDnsSettings } = require('../utils')
 const IDToken = require('@trust/oidc-op/src/IDToken')
 
 const ldnode = require('../../index')
@@ -59,6 +59,8 @@ const argv = {
 
 describe('ACL HTTP', function () {
   let ldp, ldpHttpsServer
+
+  before(checkDnsSettings)
 
   before(done => {
     ldp = ldnode.createServer(argv)

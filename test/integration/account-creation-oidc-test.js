@@ -2,7 +2,7 @@ const supertest = require('supertest')
 // Helper functions for the FS
 const $rdf = require('rdflib')
 
-const { rm, read } = require('../utils')
+const { rm, read, checkDnsSettings } = require('../utils')
 const ldnode = require('../../index')
 const path = require('path')
 const fs = require('fs-extra')
@@ -25,6 +25,8 @@ describe('AccountManager (OIDC account creation tests)', function () {
     dbPath,
     serverUri
   })
+
+  before(checkDnsSettings)
 
   before(function (done) {
     ldpHttpsServer = ldp.listen(3457, done)
