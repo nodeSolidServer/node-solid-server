@@ -27,10 +27,9 @@ describe('ACLChecker unit test', () => {
       'solid-permissions': { PermissionSet: PermissionSetAlwaysGrant }
     })
     let graph = {}
-    let accessType = ''
     let user, mode, resource, aclUrl
     let acl = new ACLChecker({ debug })
-    return expect(acl.checkAccess(graph, user, mode, resource, accessType, aclUrl))
+    return expect(acl.checkAccess(graph, user, mode, resource, true, aclUrl))
     .to.eventually.be.true
   })
   it('should callback with error on grant failure', () => {
@@ -38,10 +37,9 @@ describe('ACLChecker unit test', () => {
       'solid-permissions': { PermissionSet: PermissionSetNeverGrant }
     })
     let graph = {}
-    let accessType = ''
     let user, mode, resource, aclUrl
     let acl = new ACLChecker({ debug })
-    return expect(acl.checkAccess(graph, user, mode, resource, accessType, aclUrl))
+    return expect(acl.checkAccess(graph, user, mode, resource, true, aclUrl))
     .to.be.rejectedWith('ACL file found but no matching policy found')
   })
   it('should callback with error on grant error', () => {
@@ -49,10 +47,9 @@ describe('ACLChecker unit test', () => {
       'solid-permissions': { PermissionSet: PermissionSetAlwaysError }
     })
     let graph = {}
-    let accessType = ''
     let user, mode, resource, aclUrl
     let acl = new ACLChecker({ debug })
-    return expect(acl.checkAccess(graph, user, mode, resource, accessType, aclUrl))
+    return expect(acl.checkAccess(graph, user, mode, resource, true, aclUrl))
     .to.be.rejectedWith('Error thrown during checkAccess()')
   })
 })
