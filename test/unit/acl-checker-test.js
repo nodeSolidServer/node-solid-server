@@ -1,13 +1,9 @@
 'use strict'
 const proxyquire = require('proxyquire')
-const chai = require('chai')
-const { assert } = chai
-const dirtyChai = require('dirty-chai')
-chai.use(dirtyChai)
-const sinonChai = require('sinon-chai')
-chai.use(sinonChai)
-chai.should()
 const debug = require('../../lib/debug').ACL
+const chai = require('chai')
+const { expect } = chai
+chai.use(require('chai-as-promised'))
 
 class PermissionSetAlwaysGrant {
   checkAccess () {
@@ -26,7 +22,7 @@ class PermissionSetAlwaysError {
 }
 
 describe('ACLChecker unit test', () => {
-  it('should callback with null on grant success', done => {
+  it('should callback with null on grant success', () => {
     let ACLChecker = proxyquire('../../lib/acl-checker', {
       'solid-permissions': { PermissionSet: PermissionSetAlwaysGrant }
     })
@@ -34,13 +30,10 @@ describe('ACLChecker unit test', () => {
     let accessType = ''
     let user, mode, resource, aclUrl
     let acl = new ACLChecker({ debug })
-    acl.checkAccess(graph, user, mode, resource, accessType, aclUrl, (err) => {
-      assert.isUndefined(err,
-        'Granted permission should result in an empty callback!')
-      done()
-    })
+    return expect(acl.checkAccess(graph, user, mode, resource, accessType, aclUrl))
+    .to.eventually.be.true
   })
-  it('should callback with error on grant failure', done => {
+  it('should callback with error on grant failure', () => {
     let ACLChecker = proxyquire('../../lib/acl-checker', {
       'solid-permissions': { PermissionSet: PermissionSetNeverGrant }
     })
@@ -48,13 +41,10 @@ describe('ACLChecker unit test', () => {
     let accessType = ''
     let user, mode, resource, aclUrl
     let acl = new ACLChecker({ debug })
-    acl.checkAccess(graph, user, mode, resource, accessType, aclUrl, (err) => {
-      assert.ok(err instanceof Error,
-        'Denied permission should result in an error callback!')
-      done()
-    })
+    return expect(acl.checkAccess(graph, user, mode, resource, accessType, aclUrl))
+    .to.be.rejectedWith('ACL file found but no matching policy found')
   })
-  it('should callback with error on grant error', done => {
+  it('should callback with error on grant error', () => {
     let ACLChecker = proxyquire('../../lib/acl-checker', {
       'solid-permissions': { PermissionSet: PermissionSetAlwaysError }
     })
@@ -62,10 +52,7 @@ describe('ACLChecker unit test', () => {
     let accessType = ''
     let user, mode, resource, aclUrl
     let acl = new ACLChecker({ debug })
-    acl.checkAccess(graph, user, mode, resource, accessType, aclUrl, (err) => {
-      assert.ok(err instanceof Error,
-        'Error during checkAccess should result in an error callback!')
-      done()
-    })
+    return expect(acl.checkAccess(graph, user, mode, resource, accessType, aclUrl))
+    .to.be.rejectedWith('Error thrown during checkAccess()')
   })
 })
