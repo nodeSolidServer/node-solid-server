@@ -28,9 +28,9 @@ describe('ACLChecker unit test', () => {
     })
     let graph = {}
     let user, mode, resource, aclUrl
-    let acl = new ACLChecker({ debug })
-    let acls = acl.getPermissionSet({ graph, acl: aclUrl }, resource)
-    return expect(acl.checkAccess(acls, user, mode, resource))
+    let acl = new ACLChecker(resource, { debug })
+    let acls = acl.getPermissionSet({ graph, acl: aclUrl })
+    return expect(acl.checkAccess(acls, user, mode))
     .to.eventually.be.true
   })
   it('should callback with error on grant failure', () => {
@@ -39,9 +39,9 @@ describe('ACLChecker unit test', () => {
     })
     let graph = {}
     let user, mode, resource, aclUrl
-    let acl = new ACLChecker({ debug })
-    let acls = acl.getPermissionSet({ graph, acl: aclUrl }, resource)
-    return expect(acl.checkAccess(acls, user, mode, resource))
+    let acl = new ACLChecker(resource, { debug })
+    let acls = acl.getPermissionSet({ graph, acl: aclUrl })
+    return expect(acl.checkAccess(acls, user, mode))
     .to.be.rejectedWith('ACL file found but no matching policy found')
   })
   it('should callback with error on grant error', () => {
@@ -50,9 +50,9 @@ describe('ACLChecker unit test', () => {
     })
     let graph = {}
     let user, mode, resource, aclUrl
-    let acl = new ACLChecker({ debug })
-    let acls = acl.getPermissionSet({ graph, acl: aclUrl }, resource)
-    return expect(acl.checkAccess(acls, user, mode, resource))
+    let acl = new ACLChecker(resource, { debug })
+    let acls = acl.getPermissionSet({ graph, acl: aclUrl })
+    return expect(acl.checkAccess(acls, user, mode))
     .to.be.rejectedWith('Error thrown during checkAccess()')
   })
 })
