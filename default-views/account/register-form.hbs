@@ -8,28 +8,42 @@
       </div>
     {{/if}}
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-6">
         <label for="username">Username:</label>
         <input type="text" class="form-control" name="username" id="username" placeholder="alice" />
       </div>
+      <div class="col-md-6">&nbsp;</div>
     </div>
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-6">
         <label for="password">Password:</label>
         <input type="password" class="form-control" name="password" id="password" />
       </div>
+      <div class="col-md-6">&nbsp;</div>
     </div>
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-6">
         <label for="name">Name:</label>
-        <input type="name" class="form-control" name="name" id="name" />
+        <input type="text" class="form-control" name="name" id="name" />
       </div>
+      <div class="col-md-6">&nbsp;</div>
     </div>
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-6">
         <label for="email">Email:</label>
+        <p>Your email will only used for account recovery</p>
         <input type="email" class="form-control" name="email" id="email" />
       </div>
+      <div class="col-md-6">&nbsp;</div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <label for="externalWebId">(Optional) External WebID:</label>
+        <p>We will generate a Web ID when you register, but if you
+        already have a Web ID hosted elsewhere, enter it here</p>
+        <input type="text" class="form-control" name="externalWebId" id="externalWebId" />
+      </div>
+      <div class="col-md-6">&nbsp;</div>
     </div>
     <input type="hidden" name="returnToUrl" value="{{returnToUrl}}" />
   </div>
