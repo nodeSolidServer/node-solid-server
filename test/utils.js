@@ -24,6 +24,17 @@ exports.read = function (file) {
   })
 }
 
+// Backs up the given file
+exports.backup = function (src) {
+  exports.cp(src, src + '.bak')
+}
+
+// Restores a backup of the given file
+exports.restore = function (src) {
+  exports.cp(src + '.bak', src)
+  exports.rm(src + '.bak')
+}
+
 /**
  * @param configPath {string}
  *
