@@ -61,7 +61,7 @@
     "nomnom": "^1.8.1",
     "oidc-auth-manager": "^0.11.1",
     "oidc-op-express": "^0.0.3",
-    "rdflib": "^0.15.0",
+    "rdflib": "^0.16.2",
     "recursive-readdir": "^2.1.0",
     "request": "^2.72.0",
     "rimraf": "^2.5.0",
