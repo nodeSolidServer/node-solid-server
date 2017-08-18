@@ -1,58 +1,65 @@
 'use strict'
-const proxyquire = require('proxyquire')
-const debug = require('../../lib/debug').ACL
+const ACLChecker = require('../../lib/acl-checker')
 const chai = require('chai')
 const { expect } = chai
 chai.use(require('chai-as-promised'))
 
-class PermissionSetAlwaysGrant {
-  checkAccess () {
-    return Promise.resolve(true)
-  }
-}
-class PermissionSetNeverGrant {
-  checkAccess () {
-    return Promise.resolve(false)
-  }
-}
-class PermissionSetAlwaysError {
-  checkAccess () {
-    return Promise.reject(new Error('Error thrown during checkAccess()'))
-  }
-}
-
 describe('ACLChecker unit test', () => {
-  it('should callback with null on grant success', () => {
-    let ACLChecker = proxyquire('../../lib/acl-checker', {
-      'solid-permissions': { PermissionSet: PermissionSetAlwaysGrant }
+  describe('checkAccess', () => {
+    it('should callback with null on grant success', () => {
+      let acl = new ACLChecker()
+      let acls = { checkAccess: () => Promise.resolve(true) }
+      return expect(acl.checkAccess(acls)).to.eventually.be.true
     })
-    let graph = {}
-    let user, mode, resource, aclUrl
-    let acl = new ACLChecker(resource, { debug })
-    let acls = acl.getPermissionSet({ graph, acl: aclUrl })
-    return expect(acl.checkAccess(acls, user, mode))
-    .to.eventually.be.true
+    it('should callback with error on grant failure', () => {
+      let acl = new ACLChecker()
+      let acls = { checkAccess: () => Promise.resolve(false) }
+      return expect(acl.checkAccess(acls))
+      .to.be.rejectedWith('ACL file found but no matching policy found')
+    })
+    it('should callback with error on grant error', () => {
+      let acl = new ACLChecker()
+      let acls = { checkAccess: () => Promise.reject(new Error('my error')) }
+      return expect(acl.checkAccess(acls)).to.be.rejectedWith('my error')
+    })
   })
-  it('should callback with error on grant failure', () => {
-    let ACLChecker = proxyquire('../../lib/acl-checker', {
-      'solid-permissions': { PermissionSet: PermissionSetNeverGrant }
+
+  describe('getPossibleACLs', () => {
+    it('returns all possible ACLs of the root', () => {
+      const aclChecker = new ACLChecker('http://ex.org/')
+      expect(aclChecker.getPossibleACLs()).to.deep.equal([
+        'http://ex.org/.acl'
+      ])
     })
-    let graph = {}
-    let user, mode, resource, aclUrl
-    let acl = new ACLChecker(resource, { debug })
-    let acls = acl.getPermissionSet({ graph, acl: aclUrl })
-    return expect(acl.checkAccess(acls, user, mode))
-    .to.be.rejectedWith('ACL file found but no matching policy found')
-  })
-  it('should callback with error on grant error', () => {
-    let ACLChecker = proxyquire('../../lib/acl-checker', {
-      'solid-permissions': { PermissionSet: PermissionSetAlwaysError }
+
+    it('returns all possible ACLs of a regular file', () => {
+      const aclChecker = new ACLChecker('http://ex.org/abc/def/ghi')
+      expect(aclChecker.getPossibleACLs()).to.deep.equal([
+        'http://ex.org/abc/def/ghi.acl',
+        'http://ex.org/abc/def/.acl',
+        'http://ex.org/abc/.acl',
+        'http://ex.org/.acl'
+      ])
     })
-    let graph = {}
-    let user, mode, resource, aclUrl
-    let acl = new ACLChecker(resource, { debug })
-    let acls = acl.getPermissionSet({ graph, acl: aclUrl })
-    return expect(acl.checkAccess(acls, user, mode))
-    .to.be.rejectedWith('Error thrown during checkAccess()')
+
+    it('returns all possible ACLs of an ACL file', () => {
+      const aclChecker = new ACLChecker('http://ex.org/abc/def/ghi.acl')
+      expect(aclChecker.getPossibleACLs()).to.deep.equal([
+        'http://ex.org/abc/def/ghi.acl',
+        'http://ex.org/abc/def/.acl',
+        'http://ex.org/abc/.acl',
+        'http://ex.org/.acl'
+      ])
+    })
+
+    it('returns all possible ACLs of a directory', () => {
+      const aclChecker = new ACLChecker('http://ex.org/abc/def/ghi/')
+      expect(aclChecker.getPossibleACLs()).to.deep.equal([
+        'http://ex.org/abc/def/ghi/.acl',
+        'http://ex.org/abc/def/.acl',
+        'http://ex.org/abc/.acl',
+        'http://ex.org/.acl'
+      ])
+    })
   })
 })
