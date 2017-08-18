@@ -125,33 +125,62 @@ describe('AccountManager', () => {
   describe('userAccountFrom()', () => {
     describe('in multi user mode', () => {
       let multiUser = true
+      let options, accountManager
+
+      beforeEach(() => {
+        options = { host, multiUser }
+        accountManager = AccountManager.from(options)
+      })
 
       it('should throw an error if no username is passed', () => {
-        let options = { host, multiUser }
-        let accountManager = AccountManager.from(options)
-
         expect(() => {
           accountManager.userAccountFrom({})
-        }).to.throw(Error)
+        }).to.throw(/Username or web id is required/)
       })
 
       it('should init webId from param if no username is passed', () => {
-        let options = { host, multiUser }
-        let accountManager = AccountManager.from(options)
-
-        let userData = { webid: 'https://example.com' }
+        let userData = { webId: 'https://example.com' }
         let newAccount = accountManager.userAccountFrom(userData)
-        expect(newAccount.webId).to.equal(userData.webid)
+        expect(newAccount.webId).to.equal(userData.webId)
+      })
+
+      it('should derive the local account id from username, for external webid', () => {
+        let userData = {
+          externalWebId: 'https://alice.external.com/profile#me',
+          username: 'user1'
+        }
+
+        let newAccount = accountManager.userAccountFrom(userData)
+
+        expect(newAccount.username).to.equal('user1')
+        expect(newAccount.webId).to.equal('https://alice.external.com/profile#me')
+        expect(newAccount.externalWebId).to.equal('https://alice.external.com/profile#me')
+        expect(newAccount.localAccountId).to.equal('user1.example.com/profile/card#me')
+      })
+
+      it('should use the external web id as username if no username given', () => {
+        let userData = {
+          externalWebId: 'https://alice.external.com/profile#me'
+        }
+
+        let newAccount = accountManager.userAccountFrom(userData)
+
+        expect(newAccount.username).to.equal('https://alice.external.com/profile#me')
+        expect(newAccount.webId).to.equal('https://alice.external.com/profile#me')
+        expect(newAccount.externalWebId).to.equal('https://alice.external.com/profile#me')
       })
     })
 
     describe('in single user mode', () => {
       let multiUser = false
+      let options, accountManager
+
+      beforeEach(() => {
+        options = { host, multiUser }
+        accountManager = AccountManager.from(options)
+      })
 
       it('should not throw an error if no username is passed', () => {
-        let options = { host, multiUser }
-        let accountManager = AccountManager.from(options)
-
         expect(() => {
           accountManager.userAccountFrom({})
         }).to.not.throw(Error)
