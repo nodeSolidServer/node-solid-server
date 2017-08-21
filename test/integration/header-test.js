@@ -23,17 +23,26 @@ describe('Header handler', () => {
   describe('WAC-Allow', () => {
     describeHeaderTest('read/append for the public', {
       resource: '/public-ra',
-      headers: { 'WAC-Allow': 'user="read append",public="read append"' }
+      headers: {
+        'WAC-Allow': 'user="read append",public="read append"',
+        'Access-Control-Expose-Headers': /(^|,\s*)WAC-Allow(,|$)/
+      }
     })
 
     describeHeaderTest('read/write for the user, read for the public', {
       resource: '/user-rw-public-r',
-      headers: { 'WAC-Allow': 'user="read write append",public="read"' }
+      headers: {
+        'WAC-Allow': 'user="read write append",public="read"',
+        'Access-Control-Expose-Headers': /(^|,\s*)WAC-Allow(,|$)/
+      }
     })
 
     describeHeaderTest('read/write/append/control for the user, nothing for the public', {
       resource: '/user-rwac-public-0',
-      headers: { 'WAC-Allow': 'user="read write append control",public=""' }
+      headers: {
+        'WAC-Allow': 'user="read write append control",public=""',
+        'Access-Control-Expose-Headers': /(^|,\s*)WAC-Allow(,|$)/
+      }
     })
   })
 
@@ -44,9 +53,17 @@ describe('Header handler', () => {
 
       for (const header in headers) {
         const value = headers[header]
-        it(`has a ${header} header of ${value}`, () => {
-          expect(response.headers).to.have.property(header.toLowerCase(), value)
-        })
+        const name = header.toLowerCase()
+        if (value instanceof RegExp) {
+          it(`has a ${header} header matching ${value}`, () => {
+            expect(response.headers).to.have.property(name)
+            expect(response.headers[name]).to.match(value)
+          })
+        } else {
+          it(`has a ${header} header of ${value}`, () => {
+            expect(response.headers).to.have.property(name, value)
+          })
+        }
       }
     })
   }
