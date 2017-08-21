@@ -30,7 +30,6 @@
   "homepage": "http://github.com/solid/node-solid-server",
   "bugs": "http://github.com/solid/node-solid-server/issues",
   "dependencies": {
-    "async": "^1.3.0",
     "body-parser": "^1.14.2",
     "busboy": "^0.2.12",
     "camelize": "^1.0.0",
