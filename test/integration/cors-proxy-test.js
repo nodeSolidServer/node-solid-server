@@ -2,7 +2,6 @@ var assert = require('chai').assert
 var supertest = require('supertest')
 var path = require('path')
 var nock = require('nock')
-var async = require('async')
 
 var ldnode = require('../../index')
 
@@ -108,30 +107,19 @@ describe('CORS Proxy', () => {
       .expect(200, done)
   })
 
-  it('should return the same HTTP status code as the uri', (done) => {
-    async.parallel([
-      // 500
-      (next) => {
-        nock('https://example.org').get('/404').reply(404)
-        server.get('/proxy/?uri=https://example.org/404')
-          .expect(404, next)
-      },
-      (next) => {
-        nock('https://example.org').get('/401').reply(401)
-        server.get('/proxy/?uri=https://example.org/401')
-          .expect(401, next)
-      },
-      (next) => {
-        nock('https://example.org').get('/500').reply(500)
-        server.get('/proxy/?uri=https://example.org/500')
-          .expect(500, next)
-      },
-      (next) => {
-        nock('https://example.org').get('/').reply(200)
-        server.get('/proxy/?uri=https://example.org/')
-          .expect(200, next)
-      }
-    ], done)
+  it('should return the same HTTP status code as the uri', () => {
+    nock('https://example.org')
+      .get('/404').reply(404)
+      .get('/401').reply(401)
+      .get('/500').reply(500)
+      .get('/200').reply(200)
+
+    return Promise.all([
+      server.get('/proxy/?uri=https://example.org/404').expect(404),
+      server.get('/proxy/?uri=https://example.org/401').expect(401),
+      server.get('/proxy/?uri=https://example.org/500').expect(500),
+      server.get('/proxy/?uri=https://example.org/200').expect(200)
+    ])
   })
 
   it('should work with cors', (done) => {
