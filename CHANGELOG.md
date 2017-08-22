@@ -2,6 +2,8 @@
 
 ## 4.0.0
 - Both Node.js 6 and 8 are now supported.
+- Responses now contain a WAC-Allow header, listing the access permissions
+  for the current user and non-authenticated users.
 - The `authProxy` configuration parameter has been added,
   enabling back-end servers to serve authenticated content.
   It accepts an object of path/server pairs
