@@ -2,6 +2,7 @@ var assert = require('chai').assert
 var supertest = require('supertest')
 var path = require('path')
 var nock = require('nock')
+var { checkDnsSettings } = require('../utils')
 
 var ldnode = require('../../index')
 
@@ -12,6 +13,8 @@ describe('CORS Proxy', () => {
     webid: false
   })
   var server = supertest(ldp)
+
+  before(checkDnsSettings)
 
   it('should return the website in /proxy?uri', (done) => {
     nock('https://example.org').get('/').reply(200)
