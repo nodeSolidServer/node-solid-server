@@ -117,7 +117,7 @@ module.exports = [
   },
   {
     name: 'no-reject-unauthorized',
-    help: 'Accepts clients with invalid certificates (set for testing WebID-TLS)',
+    help: 'Accept self-signed certificates',
     flag: true,
     default: false,
     prompt: false
