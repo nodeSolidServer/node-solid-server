@@ -442,8 +442,6 @@ describe('Authentication API (OIDC)', () => {
           expect(res.status).to.equal(302)
           callbackUri = res.headers.get('location')
           expect(callbackUri.startsWith('https://app.example.com#'))
-
-          expect(res.headers.get('user')).to.equal(aliceWebId)
         })
     })
 
