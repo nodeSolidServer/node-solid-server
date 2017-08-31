@@ -44,14 +44,14 @@ describe('TlsAuthenticator', () => {
 
     tlsAuth.extractWebId = sinon.stub().resolves(webId)
     sinon.spy(tlsAuth, 'renegotiateTls')
-    sinon.spy(tlsAuth, 'ensureLocalUser')
+    sinon.spy(tlsAuth, 'loadUser')
 
     return tlsAuth.findValidUser()
       .then(validUser => {
         expect(tlsAuth.renegotiateTls).to.have.been.called()
         expect(connection.getPeerCertificate).to.have.been.called()
         expect(tlsAuth.extractWebId).to.have.been.calledWith(certificate)
-        expect(tlsAuth.ensureLocalUser).to.have.been.calledWith(webId)
+        expect(tlsAuth.loadUser).to.have.been.calledWith(webId)
 
         expect(validUser.webId).to.equal(webId)
       })
@@ -133,31 +133,16 @@ describe('TlsAuthenticator', () => {
     })
   })
 
-  describe('ensureLocalUser()', () => {
-    it('should throw an error if external user and this server not the authorized provider', done => {
-      let tlsAuth = new TlsAuthenticator({ accountManager })
-
-      let externalWebId = 'https://alice.someothersite.com#me'
-
-      tlsAuth.discoverProviderFor = sinon.stub().resolves('https://another-provider.com')
-
-      tlsAuth.ensureLocalUser(externalWebId)
-        .catch(err => {
-          expect(err.message).to.match(/This server is not the authorized provider for Web ID https:\/\/alice.someothersite.com#me/)
-          done()
-        })
-    })
-
+  describe('loadUser()', () => {
     it('should return a user instance if the webid is local', () => {
       let tlsAuth = new TlsAuthenticator({ accountManager })
 
       let webId = 'https://alice.example.com/#me'
 
-      return tlsAuth.ensureLocalUser(webId)
-        .then(user => {
-          expect(user.username).to.equal('alice')
-          expect(user.webId).to.equal(webId)
-        })
+      let user = tlsAuth.loadUser(webId)
+
+      expect(user.username).to.equal('alice')
+      expect(user.webId).to.equal(webId)
     })
 
     it('should return a user instance if external user and this server is authorized provider', () => {
@@ -167,11 +152,10 @@ describe('TlsAuthenticator', () => {
 
       tlsAuth.discoverProviderFor = sinon.stub().resolves('https://example.com')
 
-      tlsAuth.ensureLocalUser(externalWebId)
-        .then(user => {
-          expect(user.username).to.equal(externalWebId)
-          expect(user.webId).to.equal(externalWebId)
-        })
+      let user = tlsAuth.loadUser(externalWebId)
+
+      expect(user.username).to.equal(externalWebId)
+      expect(user.webId).to.equal(externalWebId)
     })
   })
 
