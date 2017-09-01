@@ -30,8 +30,8 @@ beforeEach(() => {
 describe('AddCertificateRequest', () => {
   describe('fromParams()', () => {
     it('should throw a 401 error if session.userId is missing', () => {
-      let multiUser = true
-      let options = { host, multiUser, authMethod: 'oidc' }
+      let multiuser = true
+      let options = { host, multiuser, authMethod: 'oidc' }
       let accountManager = AccountManager.from(options)
 
       let req = {
@@ -49,10 +49,10 @@ describe('AddCertificateRequest', () => {
   })
 
   describe('createRequest()', () => {
-    let multiUser = true
+    let multiuser = true
 
     it('should call certificate.generateCertificate()', () => {
-      let options = { host, multiUser, authMethod: 'oidc' }
+      let options = { host, multiuser, authMethod: 'oidc' }
       let accountManager = AccountManager.from(options)
 
       let req = {
@@ -78,10 +78,10 @@ describe('AddCertificateRequest', () => {
   })
 
   describe('accountManager.addCertKeyToGraph()', () => {
-    let multiUser = true
+    let multiuser = true
 
     it('should add certificate data to a graph', () => {
-      let options = { host, multiUser, authMethod: 'oidc' }
+      let options = { host, multiuser, authMethod: 'oidc' }
       let accountManager = AccountManager.from(options)
 
       let userData = { username: 'alice' }

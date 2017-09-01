@@ -13,7 +13,7 @@ const root = path.join(__dirname, '../resources/patch')
 const serverOptions = {
   root,
   serverUri,
-  idp: false,
+  multiuser: false,
   webid: true,
   sslKey: path.join(__dirname, '../keys/key.pem'),
   sslCert: path.join(__dirname, '../keys/cert.pem'),

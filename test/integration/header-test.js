@@ -5,7 +5,7 @@ const supertest = require('supertest')
 
 const serverOptions = {
   root: path.join(__dirname, '../resources/headers'),
-  idp: false,
+  multiuser: false,
   webid: true,
   sslKey: path.join(__dirname, '../keys/key.pem'),
   sslCert: path.join(__dirname, '../keys/cert.pem'),

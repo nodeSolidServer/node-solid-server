@@ -60,7 +60,7 @@ describe('PasswordResetEmailRequest', () => {
     it('should create an instance and render a reset password form', () => {
       let returnToUrl = 'https://example.com/resource'
       let username = 'alice'
-      let accountManager = { multiUser: true }
+      let accountManager = { multiuser: true }
 
       let req = {
         app: { locals: { accountManager } },
@@ -73,7 +73,7 @@ describe('PasswordResetEmailRequest', () => {
       PasswordResetEmailRequest.get(req, res)
 
       expect(res.render).to.have.been.calledWith('auth/reset-password',
-        { returnToUrl, multiUser: true })
+        { returnToUrl, multiuser: true })
     })
   })
 
@@ -87,7 +87,7 @@ describe('PasswordResetEmailRequest', () => {
       let store = {
         suffixAcl: '.acl'
       }
-      let accountManager = AccountManager.from({ host, multiUser: true, store })
+      let accountManager = AccountManager.from({ host, multiuser: true, store })
       accountManager.accountExists = sinon.stub().resolves(true)
       accountManager.loadAccountRecoveryEmail = sinon.stub().resolves('alice@example.com')
       accountManager.sendPasswordResetEmail = sinon.stub().resolves()
@@ -107,9 +107,9 @@ describe('PasswordResetEmailRequest', () => {
   })
 
   describe('validate()', () => {
-    it('should throw an error if username is missing in multiUser mode', () => {
+    it('should throw an error if username is missing in multi-user mode', () => {
       let host = SolidHost.from({ serverUri: 'https://example.com' })
-      let accountManager = AccountManager.from({ host, multiUser: true })
+      let accountManager = AccountManager.from({ host, multiuser: true })
 
       let request = new PasswordResetEmailRequest({ accountManager })
 
@@ -118,7 +118,7 @@ describe('PasswordResetEmailRequest', () => {
 
     it('should not throw an error if username is missing in single user mode', () => {
       let host = SolidHost.from({ serverUri: 'https://example.com' })
-      let accountManager = AccountManager.from({ host, multiUser: false })
+      let accountManager = AccountManager.from({ host, multiuser: false })
 
       let request = new PasswordResetEmailRequest({ accountManager })
 
@@ -130,7 +130,7 @@ describe('PasswordResetEmailRequest', () => {
     it('should handle the post request', () => {
       let host = SolidHost.from({ serverUri: 'https://example.com' })
       let store = { suffixAcl: '.acl' }
-      let accountManager = AccountManager.from({ host, multiUser: true, store })
+      let accountManager = AccountManager.from({ host, multiuser: true, store })
       accountManager.loadAccountRecoveryEmail = sinon.stub().resolves('alice@example.com')
       accountManager.sendPasswordResetEmail = sinon.stub().resolves()
       accountManager.accountExists = sinon.stub().resolves(true)
@@ -159,7 +159,7 @@ describe('PasswordResetEmailRequest', () => {
     it('should return a UserAccount instance based on username', () => {
       let host = SolidHost.from({ serverUri: 'https://example.com' })
       let store = { suffixAcl: '.acl' }
-      let accountManager = AccountManager.from({ host, multiUser: true, store })
+      let accountManager = AccountManager.from({ host, multiuser: true, store })
       accountManager.accountExists = sinon.stub().resolves(true)
       let username = 'alice'
 
@@ -175,7 +175,7 @@ describe('PasswordResetEmailRequest', () => {
     it('should throw an error if the user does not exist', done => {
       let host = SolidHost.from({ serverUri: 'https://example.com' })
       let store = { suffixAcl: '.acl' }
-      let accountManager = AccountManager.from({ host, multiUser: true, store })
+      let accountManager = AccountManager.from({ host, multiuser: true, store })
       accountManager.accountExists = sinon.stub().resolves(false)
       let username = 'alice'
 

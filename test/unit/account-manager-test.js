@@ -32,7 +32,7 @@ describe('AccountManager', () => {
       let config = {
         host,
         authMethod: 'oidc',
-        multiUser: true,
+        multiuser: true,
         store: {},
         emailService: {},
         tokenService: {}
@@ -41,7 +41,7 @@ describe('AccountManager', () => {
       let mgr = AccountManager.from(config)
       expect(mgr.host).to.equal(config.host)
       expect(mgr.authMethod).to.equal(config.authMethod)
-      expect(mgr.multiUser).to.equal(config.multiUser)
+      expect(mgr.multiuser).to.equal(config.multiuser)
       expect(mgr.store).to.equal(config.store)
       expect(mgr.emailService).to.equal(config.emailService)
       expect(mgr.tokenService).to.equal(config.tokenService)
@@ -56,7 +56,7 @@ describe('AccountManager', () => {
   describe('accountUriFor', () => {
     it('should compose account uri for an account in multi user mode', () => {
       let options = {
-        multiUser: true,
+        multiuser: true,
         host: SolidHost.from({ serverUri: 'https://localhost' })
       }
       let mgr = AccountManager.from(options)
@@ -67,7 +67,7 @@ describe('AccountManager', () => {
 
     it('should compose account uri for an account in single user mode', () => {
       let options = {
-        multiUser: false,
+        multiuser: false,
         host: SolidHost.from({ serverUri: 'https://localhost' })
       }
       let mgr = AccountManager.from(options)
@@ -80,7 +80,7 @@ describe('AccountManager', () => {
   describe('accountWebIdFor()', () => {
     it('should compose a web id uri for an account in multi user mode', () => {
       let options = {
-        multiUser: true,
+        multiuser: true,
         host: SolidHost.from({ serverUri: 'https://localhost' })
       }
       let mgr = AccountManager.from(options)
@@ -90,7 +90,7 @@ describe('AccountManager', () => {
 
     it('should compose a web id uri for an account in single user mode', () => {
       let options = {
-        multiUser: false,
+        multiuser: false,
         host: SolidHost.from({ serverUri: 'https://localhost' })
       }
       let mgr = AccountManager.from(options)
@@ -101,9 +101,9 @@ describe('AccountManager', () => {
 
   describe('accountDirFor()', () => {
     it('should match the solid root dir config, in single user mode', () => {
-      let multiUser = false
-      let store = new LDP({ root: testAccountsDir, idp: multiUser })
-      let options = { multiUser, store, host }
+      let multiuser = false
+      let store = new LDP({ root: testAccountsDir, multiuser })
+      let options = { multiuser, store, host }
       let accountManager = AccountManager.from(options)
 
       let accountDir = accountManager.accountDirFor('alice')
@@ -111,10 +111,10 @@ describe('AccountManager', () => {
     })
 
     it('should compose the account dir in multi user mode', () => {
-      let multiUser = true
-      let store = new LDP({ root: testAccountsDir, idp: multiUser })
+      let multiuser = true
+      let store = new LDP({ root: testAccountsDir, multiuser })
       let host = SolidHost.from({ serverUri: 'https://localhost' })
-      let options = { multiUser, store, host }
+      let options = { multiuser, store, host }
       let accountManager = AccountManager.from(options)
 
       let accountDir = accountManager.accountDirFor('alice')
@@ -124,11 +124,11 @@ describe('AccountManager', () => {
 
   describe('userAccountFrom()', () => {
     describe('in multi user mode', () => {
-      let multiUser = true
+      let multiuser = true
       let options, accountManager
 
       beforeEach(() => {
-        options = { host, multiUser }
+        options = { host, multiuser }
         accountManager = AccountManager.from(options)
       })
 
@@ -172,11 +172,11 @@ describe('AccountManager', () => {
     })
 
     describe('in single user mode', () => {
-      let multiUser = false
+      let multiuser = false
       let options, accountManager
 
       beforeEach(() => {
-        options = { host, multiUser }
+        options = { host, multiuser }
         accountManager = AccountManager.from(options)
       })
 
@@ -247,7 +247,7 @@ describe('AccountManager', () => {
     it('should throw an error if webId is missing', (done) => {
       let emptyUserData = {}
       let userAccount = UserAccount.from(emptyUserData)
-      let options = { host, multiUser: true }
+      let options = { host, multiuser: true }
       let accountManager = AccountManager.from(options)
 
       accountManager.getProfileGraphFor(userAccount)
@@ -267,7 +267,7 @@ describe('AccountManager', () => {
 
       let userData = { webId }
       let userAccount = UserAccount.from(userData)
-      let options = { host, multiUser: true, store }
+      let options = { host, multiuser: true, store }
       let accountManager = AccountManager.from(options)
 
       expect(userAccount.webId).to.equal(webId)
@@ -289,7 +289,7 @@ describe('AccountManager', () => {
 
       let userData = { webId }
       let userAccount = UserAccount.from(userData)
-      let options = { host, multiUser: true, store }
+      let options = { host, multiuser: true, store }
       let accountManager = AccountManager.from(options)
       let profileGraph = rdf.graph()
 
@@ -302,8 +302,8 @@ describe('AccountManager', () => {
 
   describe('rootAclFor()', () => {
     it('should return the server root .acl in single user mode', () => {
-      let store = new LDP({ suffixAcl: '.acl', idp: false })
-      let options = { host, multiUser: false, store }
+      let store = new LDP({ suffixAcl: '.acl', multiuser: false })
+      let options = { host, multiuser: false, store }
       let accountManager = AccountManager.from(options)
 
       let userAccount = UserAccount.from({ username: 'alice' })
@@ -314,8 +314,8 @@ describe('AccountManager', () => {
     })
 
     it('should return the profile root .acl in multi user mode', () => {
-      let store = new LDP({ suffixAcl: '.acl', idp: true })
-      let options = { host, multiUser: true, store }
+      let store = new LDP({ suffixAcl: '.acl', multiuser: true })
+      let options = { host, multiuser: true, store }
       let accountManager = AccountManager.from(options)
 
       let userAccount = UserAccount.from({ username: 'alice' })
@@ -342,7 +342,7 @@ describe('AccountManager', () => {
         getGraph: sinon.stub().resolves(rootAclGraph)
       }
 
-      let options = { host, multiUser: true, store }
+      let options = { host, multiuser: true, store }
       let accountManager = AccountManager.from(options)
 
       return accountManager.loadAccountRecoveryEmail(userAccount)
@@ -361,7 +361,7 @@ describe('AccountManager', () => {
         getGraph: sinon.stub().resolves(emptyGraph)
       }
 
-      let options = { host, multiUser: true, store }
+      let options = { host, multiuser: true, store }
       let accountManager = AccountManager.from(options)
 
       return accountManager.loadAccountRecoveryEmail(userAccount)
@@ -374,7 +374,7 @@ describe('AccountManager', () => {
   describe('passwordResetUrl()', () => {
     it('should return a token reset validation url', () => {
       let tokenService = new TokenService()
-      let options = { host, multiUser: true, tokenService }
+      let options = { host, multiuser: true, tokenService }
 
       let accountManager = AccountManager.from(options)
 

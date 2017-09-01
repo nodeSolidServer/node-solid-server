@@ -51,7 +51,7 @@ const argv = {
   sslKey: path.join(__dirname, '../keys/key.pem'),
   sslCert: path.join(__dirname, '../keys/cert.pem'),
   webid: true,
-  idp: true,
+  multiuser: true,
   auth: 'oidc',
   strictOrigin: true,
   host: { serverUri }

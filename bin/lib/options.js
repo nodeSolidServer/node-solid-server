@@ -123,13 +123,17 @@ module.exports = [
     prompt: false
   },
   {
-    name: 'idp',
-    help: 'Enable multi-user mode (users can sign up for accounts)',
-    question: 'Enable multi-user mode (users can sign up for accounts)',
-    full: 'allow-signup',
+    name: 'multiuser',
+    help: 'Enable multi-user mode',
+    question: 'Enable multi-user mode',
     flag: true,
     default: false,
     prompt: true
+  },
+  {
+    name: 'idp',
+    help: 'Obsolete; use --multiuser',
+    prompt: false
   },
   {
     name: 'no-live',

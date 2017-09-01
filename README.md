@@ -92,7 +92,7 @@ $ solid start
 Otherwise, if you want to use flags, this would be the equivalent
 
 ```bash
-$ solid --idp --port 8443 --cert /path/to/cert --key /path/to/key --root ./accounts
+$ solid --multiuser --port 8443 --cert /path/to/cert --key /path/to/key --root ./accounts
 ```
 
 Your users will have a dedicated folder under `./accounts`. Also, your root domain's website will be in `./accounts/yourdomain.tld`. New users can create accounts on `/api/accounts/new` and create new certificates on `/api/accounts/cert`. An easy-to-use sign-up tool is found on `/api/accounts`.
@@ -157,7 +157,7 @@ $ solid start --help
     --owner [value]         Set the owner of the storage (overwrites the root ACL file)
     --ssl-key [value]       Path to the SSL private key in PEM format
     --ssl-cert [value]      Path to the SSL certificate key in PEM format
-    --idp                   Enable multi-user mode (users can sign up for accounts)
+    --multiuser             Enable multi-user mode
     --corsProxy [value]     Serve the CORS proxy on this path
     --file-browser [value]  Url to file browser app (uses Warp by default)
     --data-browser          Enable viewing RDF resources using a default data browser application (e.g. mashlib)

@@ -21,7 +21,7 @@ describe('API', () => {
     dataBrowser: false,
     fileBrowser: false,
     webid: true,
-    idp: false,
+    multiuser: false,
     configPath
   }
 

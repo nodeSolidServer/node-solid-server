@@ -18,7 +18,7 @@
 //     sslCert: path.join(__dirname, '../keys/cert.pem'),
 //     auth: 'tls',
 //     webid: true,
-//     idp: true,
+//     multiuser: true,
 //     strictOrigin: true
 //   })
 //
