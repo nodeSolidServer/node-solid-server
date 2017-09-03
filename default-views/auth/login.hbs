@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login</title>
+  <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+  <h4>Login</h4>
+</div>
+<div class="container">
+  {{#if error}}
+    <div class="row">
+      <div class="col-md-12">
+        <p class="text-danger"><strong>{{error}}</strong></p>
+      </div>
+    </div>
+  {{/if}}
+  <div class="row">
+    <div class="col-md-5">
+      {{#if enablePassword}}
+        {{> auth/login-username-password}}
+      {{/if}}
+    </div>
+    <div class="col-md-1"><br /></div>
+    <div class="col-md-6">
+      {{#if enableTls}}
+        {{> auth/login-tls}}
+      {{/if}}
+    </div>
+  </div>
+</div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-4">
+      <div>Don't have an account?
+        <a class="btn btn-xs btn-default"
+           href="{{{registerUrl}}}">
+          Register
+        </a>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div>Forgot password?
+        <a class="btn btn-xs btn-default"
+           href="/account/password/reset{{#if returnToUrl}}?returnToUrl={{{returnToUrl}}}{{/if}}">
+          Reset password
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

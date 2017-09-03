@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+COMMAND=$1
+ADD_FLAGS=
+shift
+
+# Disable rejectUnauthorized when starting the server
+if [ "$COMMAND" == "start" ]; then
+  ADD_FLAGS="--no-reject-unauthorized"
+  export NODE_TLS_REJECT_UNAUTHORIZED=0
+fi
+
+exec `dirname "$0"`/solid $COMMAND $ADD_FLAGS $@

@@ -1,0 +1,7 @@
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+
+<#owner> a acl:Authorization;
+  acl:accessTo <./user-rwac-public-0>;
+  acl:agent <https://ruben.verborgh.org/profile/#me>;
+  acl:mode acl:Read, acl:Write, acl:Append, acl:Delete, acl:Control.
