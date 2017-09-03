@@ -159,7 +159,6 @@ $ solid start --help
     --ssl-cert [value]      Path to the SSL certificate key in PEM format
     --multiuser             Enable multi-user mode
     --corsProxy [value]     Serve the CORS proxy on this path
-    --file-browser [value]  Url to file browser app (uses Warp by default)
     --data-browser          Enable viewing RDF resources using a default data browser application (e.g. mashlib)
     --suffix-acl [value]    Suffix for acl files (default: '.acl')
     --suffix-meta [value]   Suffix for metadata files (default: '.meta')
@@ -293,13 +292,7 @@ accidentally commit your certificates to `solid` while you're developing.
 If you started your `solid` server locally on port 8443 as in the example
 above, you would then be able to visit `https://localhost:8443` in the browser
 (ignoring the Untrusted Connection browser warnings as usual), where your
-`solid` server would redirect you to the default viewer app (see the
-`--file-browser` server config parameter), which is usually the
-[github.io/warp](https://linkeddata.github.io/warp/#/list/) file browser.
-
-Accessing most Solid apps (such as Warp) will prompt you to select your browser
-side certificate which contains a WebID from a Solid storage provider (see
-the [pre-requisites](#pre-requisites) discussion above).
+`solid` server would redirect you to the default data viewer app.
 
 #### Editing your local `/etc/hosts`
 

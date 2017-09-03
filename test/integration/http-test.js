@@ -276,11 +276,11 @@ describe('HTTP APIs', function () {
         .end(done)
     })
 
-    it('should redirect to file browser if container was requested as text/html', function (done) {
+    it('should show data browser if container was requested as text/html', function (done) {
       server.get('/sampleContainer2/')
         .set('Accept', 'text/html')
         .expect('content-type', /text\/html/)
-        .expect(303, done)
+        .expect(200, done)
     })
     it('should redirect to the right container URI if missing /', function (done) {
       server.get('/sampleContainer')

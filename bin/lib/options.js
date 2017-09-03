@@ -174,19 +174,6 @@ module.exports = [
     hide: true
   },
   {
-    name: 'file-browser',
-    help: 'Type the URL of default app to use for browsing files (or use default)',
-    default: 'default',
-    filter: function (value) {
-      if (value === 'default' || value === 'warp') {
-        return 'https://linkeddata.github.io/warp/#/list/'
-      }
-      return value
-    },
-    prompt: false
-  },
-
-  {
     name: 'suppress-data-browser',
     help: 'Suppress provision of a data browser',
     flag: true,
@@ -194,7 +181,6 @@ module.exports = [
     default: false,
     hide: false
   },
-
   {
     name: 'data-browser-path',
     help: 'An HTML file which is sent to allow users to browse the data (eg using mashlib.js)',
