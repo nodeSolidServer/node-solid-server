@@ -15,7 +15,7 @@
 - [x] [WebID+TLS Authentication](https://www.w3.org/2005/Incubator/webid/spec/tls/)
 - [x] [Real-time live updates](https://github.com/solid/solid-spec#subscribing) (using WebSockets)
 - [x] Identity provider for WebID
-- [x] Proxy for cross-site data access
+- [x] CORS proxy for cross-site data access
 - [ ] Group members in ACL
 - [x] Email account recovery
 
@@ -59,10 +59,14 @@ $ solid start --root path/to/folder --port 8443 --ssl-key path/to/ssl-key.pem --
 # Solid server (solid v0.2.24) running on https://localhost:8443/
 ```
 
-##### How do I get an SSL key and certificate?
-You need an SSL certificate you get this from your domain provider or for free from [Let's Encrypt!](https://letsencrypt.org/getting-started/).
+### Running in development environments
 
-If you don't have one yet, or you just want to test `solid`, generate a certificate (**DO NOT USE IN PRODUCTION**):
+Solid requires SSL certificates to be valid, so you cannot use self-signed certificates. To switch off this security feature in development environments, you can use the `bin/solid-test` executable, which unsets the `NODE_TLS_REJECT_UNAUTHORIZED` flag and sets the `rejectUnauthorized` option.
+
+##### How do I get an SSL key and certificate?
+You need an SSL certificate from a _certificate authority_, such as your domain provider or [Let's Encrypt!](https://letsencrypt.org/getting-started/).
+
+For testing purposes, you can use `bin/solid-test` with a _self-signed_ certificate, generated as follows:
 ```
 $ openssl genrsa 2048 > ../localhost.key
 $ openssl req -new -x509 -nodes -sha256 -days 3650 -key ../localhost.key -subj '/CN=*.localhost' > ../localhost.cert
@@ -88,10 +92,13 @@ $ solid start
 Otherwise, if you want to use flags, this would be the equivalent
 
 ```bash
-$ solid --idp --port 8443 --cert /path/to/cert --key /path/to/key --root ./accounts
+$ solid --multiuser --port 8443 --cert /path/to/cert --key /path/to/key --root ./accounts
 ```
 
 Your users will have a dedicated folder under `./accounts`. Also, your root domain's website will be in `./accounts/yourdomain.tld`. New users can create accounts on `/api/accounts/new` and create new certificates on `/api/accounts/cert`. An easy-to-use sign-up tool is found on `/api/accounts`.
+
+### Running Solid behind a reverse proxy (such as NGINX)
+See [Running Solid behind a reverse proxy](https://github.com/solid/node-solid-server/wiki/Running-Solid-behind-a-reverse-proxy).
 
 ##### How can send emails to my users with my Gmail?
 
@@ -150,8 +157,8 @@ $ solid start --help
     --owner [value]         Set the owner of the storage (overwrites the root ACL file)
     --ssl-key [value]       Path to the SSL private key in PEM format
     --ssl-cert [value]      Path to the SSL certificate key in PEM format
-    --idp                   Enable multi-user mode (users can sign up for accounts)
-    --proxy [value]         Serve proxy on path (default: '/proxy')
+    --multiuser             Enable multi-user mode
+    --corsProxy [value]     Serve the CORS proxy on this path
     --file-browser [value]  Url to file browser app (uses Warp by default)
     --data-browser          Enable viewing RDF resources using a default data browser application (e.g. mashlib)
     --suffix-acl [value]    Suffix for acl files (default: '.acl')
@@ -195,7 +202,7 @@ default settings.
   mount: '/', // Where to mount Linked Data Platform
   webid: false, // Enable WebID+TLS authentication
   suffixAcl: '.acl', // Suffix for acl files
-  proxy: false, // Where to mount the proxy
+  corsProxy: false, // Where to mount the CORS proxy
   errorHandler: false, // function(err, req, res, next) to have a custom error handler
   errorPages: false // specify a path where the error pages are
 }

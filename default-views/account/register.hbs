@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Register</title>
+  <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+  <h4>Register</h4>
+</div>
+<div class="container">
+  {{#if registerDisabled}}
+    {{> account/register-disabled}}
+  {{else}}
+    {{> account/register-form}}
+  {{/if}}
+</div>
+</body>
+</html>

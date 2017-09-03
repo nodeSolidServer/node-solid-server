@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{title}}</title>
+  <!-- Bootstrap CSS and Theme for demo purposes -->
+  <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+  <style>
+    .title { margin-top: 2em; margin-bottom: 2em; }
+    #authorize { margin-right: 2em; }
+  </style>
+</head>
+<body>
+<div class="container title">
+  <h4>Authorize app to use your Web ID?</h4>
+</div>
+<div class="container">
+  <form method="post" action="/authorize">
+    <input type="hidden" name="response_type" value="{{response_type}}" />
+    <input type="hidden" name="display" value="{{display}}" />
+    <input type="hidden" name="scope" value="{{scope}}" />
+    <input type="hidden" name="client_id" value="{{client_id}}" />
+    <input type="hidden" name="redirect_uri" value="{{redirect_uri}}" />
+    <input type="hidden" name="state" value="{{state}}" />
+    <input type="hidden" name="nonce" value="{{nonce}}" />
+
+    <button type="submit" class="btn btn-primary" name="consent" value="true">Authorize</button>
+    <button type="submit" class="btn" name="cancel" value="true">Cancel</button>
+  </form>
+</div>
+</body>
+</html>

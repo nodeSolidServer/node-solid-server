@@ -5,16 +5,19 @@
     <script type="text/javascript" src="https://linkeddata.github.io/mashlib/dist/mashlib-prealpha.js"></script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    var UI = require('mashlib')
-    var $rdf = UI.rdf
+  var UI = Mashlib
 
-    $rdf.Fetcher.crossSiteProxyTemplate = document.origin + '/xss?uri={uri}';
-    var uri = window.location.href;
-    window.document.title = uri;
-    var kb = UI.store;
-    var subject = kb.sym(uri);
-    UI.outline.GotoSubject(subject, true, undefined, true, undefined);
-});
+  UI.rdf.Fetcher.crossSiteProxyTemplate = document.origin + '/proxy?uri={uri}'
+
+  UI.authn.checkUser()
+    .then(function () {
+      var uri = window.location.href
+      window.document.title = uri
+
+      var subject = UI.rdf.namedNode(uri)
+      UI.outline.GotoSubject(subject, true, undefined, true, undefined)
+    })
+})
 </script>
 </head>
 <body>
