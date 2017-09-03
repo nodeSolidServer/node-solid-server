@@ -18,6 +18,8 @@
 #### 4.0.0 Upgrade Notes
 - The `proxy` configuration parameter has been deprecated and
   renamed to `corsProxy` to better distinguish it from `authProxy`.
+- The `idp` configuration parameter has been deprecated and
+  renamed to `multiuser` to better identify its purpose.
 - Cross-domain cookie-based authentication has been removed for security reasons.
   We instead recommend https://github.com/solid/solid-auth-client.
 
