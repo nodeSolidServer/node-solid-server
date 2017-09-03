@@ -16,7 +16,7 @@ describe('OIDC error handling', function () {
     sslCert: path.join(__dirname, '../keys/cert.pem'),
     auth: 'oidc',
     webid: true,
-    idp: false,
+    multiuser: false,
     strictOrigin: true,
     dbPath,
     serverUri

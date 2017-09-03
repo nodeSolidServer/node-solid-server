@@ -25,11 +25,11 @@ beforeEach(() => {
 describe('api/accounts/user-accounts', () => {
   describe('newCertificate()', () => {
     describe('in multi user mode', () => {
-      let multiUser = true
-      let store = new LDP({ root: testAccountsDir, idp: multiUser })
+      let multiuser = true
+      let store = new LDP({ root: testAccountsDir, multiuser })
 
       it('should throw a 400 error if spkac param is missing', done => {
-        let options = { host, store, multiUser, authMethod: 'oidc' }
+        let options = { host, store, multiuser, authMethod: 'oidc' }
         let accountManager = AccountManager.from(options)
 
         let req = {

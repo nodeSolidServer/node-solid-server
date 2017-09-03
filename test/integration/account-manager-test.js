@@ -28,9 +28,9 @@ describe('AccountManager', () => {
     let host = SolidHost.from({ serverUri: 'https://localhost' })
 
     describe('in multi user mode', () => {
-      let multiUser = true
-      let store = new LDP({ root: testAccountsDir, idp: multiUser })
-      let options = { multiUser, store, host }
+      let multiuser = true
+      let store = new LDP({ root: testAccountsDir, multiuser })
+      let options = { multiuser, store, host }
       let accountManager = AccountManager.from(options)
 
       it('resolves to true if a directory for the account exists in root', () => {
@@ -51,14 +51,14 @@ describe('AccountManager', () => {
     })
 
     describe('in single user mode', () => {
-      let multiUser = false
+      let multiuser = false
 
       it('resolves to true if root .acl exists in root storage', () => {
         let store = new LDP({
           root: path.join(testAccountsDir, 'tim.localhost'),
-          idp: multiUser
+          multiuser
         })
-        let options = { multiUser, store, host }
+        let options = { multiuser, store, host }
         let accountManager = AccountManager.from(options)
 
         return accountManager.accountExists()
@@ -70,9 +70,9 @@ describe('AccountManager', () => {
       it('resolves to false if root .acl does not exist in root storage', () => {
         let store = new LDP({
           root: testAccountsDir,
-          idp: multiUser
+          multiuser
         })
-        let options = { multiUser, store, host }
+        let options = { multiuser, store, host }
         let accountManager = AccountManager.from(options)
 
         return accountManager.accountExists()
@@ -85,9 +85,9 @@ describe('AccountManager', () => {
 
   describe('createAccountFor()', () => {
     it('should create an account directory', () => {
-      let multiUser = true
-      let store = new LDP({ root: testAccountsDir, idp: multiUser })
-      let options = { host, multiUser, store, accountTemplatePath }
+      let multiuser = true
+      let store = new LDP({ root: testAccountsDir, multiuser })
+      let options = { host, multiuser, store, accountTemplatePath }
       let accountManager = AccountManager.from(options)
 
       let userData = {

@@ -20,7 +20,7 @@ describe('AccountManager (OIDC account creation tests)', function () {
     sslCert: path.join(__dirname, '../keys/cert.pem'),
     auth: 'oidc',
     webid: true,
-    idp: true,
+    multiuser: true,
     strictOrigin: true,
     dbPath,
     serverUri
@@ -212,7 +212,7 @@ describe('Single User signup page', () => {
     sslKey: path.join(__dirname, '../keys/key.pem'),
     sslCert: path.join(__dirname, '../keys/cert.pem'),
     webid: true,
-    idp: false,
+    multiuser: false,
     strictOrigin: true
   })
   const server = supertest(serverUri)

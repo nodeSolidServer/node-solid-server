@@ -14,7 +14,7 @@ const SolidHost = require('../../lib/models/solid-host')
 const AccountManager = require('../../lib/models/account-manager')
 
 const host = SolidHost.from({ serverUri: 'https://example.com' })
-const accountManager = AccountManager.from({ host, multiUser: true })
+const accountManager = AccountManager.from({ host, multiuser: true })
 
 describe('TlsAuthenticator', () => {
   describe('fromParams()', () => {

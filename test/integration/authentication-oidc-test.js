@@ -44,7 +44,7 @@ describe('Authentication API (OIDC)', () => {
     dataBrowser: false,
     fileBrowser: false,
     webid: true,
-    idp: false,
+    multiuser: false,
     configPath
   }
 

@@ -138,11 +138,11 @@ describe('PasswordAuthenticator', () => {
     })
 
     describe('in Multi User mode', () => {
-      let multiUser = true
+      let multiuser = true
       let serverUri = 'https://example.com'
       let host = SolidHost.from({ serverUri })
 
-      let accountManager = AccountManager.from({ multiUser, host })
+      let accountManager = AccountManager.from({ multiuser, host })
 
       let aliceRecord = { webId: 'https://alice.example.com/profile/card#me' }
       let mockUserStore = {
@@ -187,11 +187,11 @@ describe('PasswordAuthenticator', () => {
     })
 
     describe('in Single User mode', () => {
-      let multiUser = false
+      let multiuser = false
       let serverUri = 'https://localhost:8443'
       let host = SolidHost.from({ serverUri })
 
-      let accountManager = AccountManager.from({ multiUser, host })
+      let accountManager = AccountManager.from({ multiuser, host })
 
       let aliceRecord = { webId: 'https://localhost:8443/profile/card#me' }
       let mockUserStore = {

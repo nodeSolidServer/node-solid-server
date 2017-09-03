@@ -26,7 +26,7 @@ beforeEach(() => {
     host,
     emailService,
     authMethod: 'oidc',
-    multiUser: true
+    multiuser: true
   }
   accountManager = AccountManager.from(mgrConfig)
 })
