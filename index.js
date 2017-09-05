@@ -1,3 +1,3 @@
 module.exports = require('./lib/create-app')
 module.exports.createServer = require('./lib/create-server')
-module.exports.cli = require('./bin/lib/cli')
+module.exports.startCli = require('./bin/lib/cli')

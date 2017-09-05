@@ -1,11 +1,10 @@
-var program = require('commander')
-var packageJson = require('../../package.json')
-var loadInit = require('./init')
-var loadStart = require('./start')
+const program = require('commander')
+const packageJson = require('../../package.json')
+const loadInit = require('./init')
+const loadStart = require('./start')
 
-module.exports = function cli (server) {
-  program
-  .version(packageJson.version)
+module.exports = function startCli (server) {
+  program.version(packageJson.version)
 
   loadInit(program)
   loadStart(program, server)
