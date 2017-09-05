@@ -19,7 +19,6 @@ describe('API', () => {
     sslCert: path.join(__dirname, '../keys/cert.pem'),
     auth: 'oidc',
     dataBrowser: false,
-    fileBrowser: false,
     webid: true,
     multiuser: false,
     configPath
