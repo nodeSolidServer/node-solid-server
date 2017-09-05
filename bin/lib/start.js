@@ -6,7 +6,7 @@ const extend = require('extend')
 const packageJson = require('../../package.json')
 const colors = require('colors/safe')
 
-module.exports = function (program) {
+module.exports = function (program, server) {
   const start = program
     .command('start')
     .description('run the Solid server')
@@ -38,12 +38,12 @@ module.exports = function (program) {
         })
       }
 
-      bin(argv)
+      bin(argv, server)
     })
   })
 }
 
-function bin (argv) {
+function bin (argv, server) {
   if (!argv.email) {
     argv.email = {
       host: argv['emailHost'],
@@ -117,7 +117,7 @@ function bin (argv) {
   const solid = require('../../')
   let app
   try {
-    app = solid.createServer(argv)
+    app = solid.createServer(argv, server)
   } catch (e) {
     if (e.code === 'EACCES') {
       console.log(colors.red.bold('ERROR'), 'You need root privileges to start on this port')
