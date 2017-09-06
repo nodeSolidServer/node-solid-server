@@ -16,7 +16,7 @@ var ldpServer = ldnode.createServer({
   webid: false
 })
 var server = supertest(ldpServer)
-var assert = require('chai').assert
+var { assert, expect } = require('chai')
 
 /**
  * Creates a new test basic container via an LDP POST
@@ -606,6 +606,71 @@ describe('HTTP APIs', function () {
           }
           done()
         })
+    })
+
+    describe('content-type-based file extensions', () => {
+      // ensure the container exists
+      before(() =>
+        server.post('/post-tests/')
+          .send(postRequest1Body)
+          .set('content-type', 'text/turtle')
+      )
+
+      describe('a new text/turtle document posted without slug', () => {
+        let response
+        before(() =>
+          server.post('/post-tests/')
+                .set('content-type', 'text/turtle; charset=utf-8')
+                .then(res => { response = res })
+        )
+
+        it('is assigned an extensionless URL', () => {
+          expect(response.headers).to.have.property('location')
+          expect(response.headers.location).to.match(/^\/post-tests\/[^./]+$/)
+        })
+      })
+
+      describe('a new text/turtle document posted with a slug', () => {
+        let response
+        before(() =>
+          server.post('/post-tests/')
+                .set('slug', 'slug1')
+                .set('content-type', 'text/turtle; charset=utf-8')
+                .then(res => { response = res })
+        )
+
+        it('is assigned an extensionless URL', () => {
+          expect(response.headers).to.have.property('location', '/post-tests/slug1')
+        })
+      })
+
+      describe('a new text/html document posted without slug', () => {
+        let response
+        before(() =>
+          server.post('/post-tests/')
+                .set('content-type', 'text/html; charset=utf-8')
+                .then(res => { response = res })
+        )
+
+        it('is assigned an URL with the .html extension', () => {
+          expect(response.headers).to.have.property('location')
+          expect(response.headers.location).to.match(/^\/post-tests\/[^./]+\.html$/)
+        })
+      })
+
+      describe('a new text/html document posted with a slug', () => {
+        let response
+        before(() =>
+          server.post('/post-tests/')
+                .set('slug', 'slug2')
+                .set('content-type', 'text/html; charset=utf-8')
+                .then(res => { response = res })
+        )
+
+        it('is assigned an URL with the .html extension', () => {
+          expect(response.headers).to.have.property('location', '/post-tests/slug2.html')
+        })
+      })
     })
 
     /* No, URLs are NOT ex-encoded to make filenames -- the other way around.
