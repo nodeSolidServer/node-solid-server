@@ -245,26 +245,21 @@ describe('LDP', function () {
       })
     })
 
-    it('should ldp:contains the same amount of files in dir', function (done) {
+    it('should ldp:contains the same files in dir', function (done) {
       ldp.listContainer(path.join(__dirname, '../resources/sampleContainer/'), 'https://server.tld/resources/sampleContainer/', 'https://server.tld', '', 'text/turtle', function (err, data) {
         if (err) done(err)
-        fs.readdir(path.join(__dirname, '../resources/sampleContainer/'), function (err, files) {
-          var graph = $rdf.graph()
-          $rdf.parse(
-            data,
-            graph,
-            'https://server.tld/sampleContainer',
-            'text/turtle')
+        fs.readdir(path.join(__dirname, '../resources/sampleContainer/'), function (err, expectedFiles) {
+          const graph = $rdf.graph()
+          $rdf.parse(data, graph, 'https://server.tld/sampleContainer', 'text/turtle')
+          const statements = graph.match(null, ns.ldp('contains'), null)
+          const files = statements
+            .map(s => s.object.value.replace(/.*\//, ''))
+            .map(decodeURIComponent)
 
-          var statements = graph.each(
-            undefined,
-            ns.ldp('contains'),
-            undefined)
-
-          assert.notEqual(graph.statements.length, 0)
-          assert.equal(statements.length, files.length)
-          assert.notOk(err)
-          done()
+          files.sort()
+          expectedFiles.sort()
+          assert.deepEqual(files, expectedFiles)
+          done(err)
         })
       })
     })
