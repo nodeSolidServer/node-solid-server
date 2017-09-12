@@ -510,7 +510,7 @@ describe('HTTP APIs', function () {
       server.post('/post-tests/')
         .send(postRequest1Body)
         .set('content-type', 'text/turtle')
-        .set('slug', 'post-resource-1.ttl')
+        .set('slug', 'post-resource-1')
         .expect('location', /\/post-resource-1/)
         .expect(hasHeader('describedBy', suffixMeta))
         .expect(hasHeader('acl', suffixAcl))
@@ -521,7 +521,7 @@ describe('HTTP APIs', function () {
         server.post('')
           .send(postRequest1Body)
           .set('content-type', 'text/turtle')
-          .set('slug', 'post-test-target.ttl')
+          .set('slug', 'post-test-target')
           .expect('location', /\/post-test-target\.ttl/)
           .expect(hasHeader('describedBy', suffixMeta))
           .expect(hasHeader('acl', suffixAcl))
@@ -531,7 +531,7 @@ describe('HTTP APIs', function () {
       server.post('/hello.html/')
         .send(postRequest1Body)
         .set('content-type', 'text/turtle')
-        .set('slug', 'post-test-target2.ttl')
+        .set('slug', 'post-test-target2')
         .expect(404, done)
     })
     it('should create a new slug if there is a resource with the same name',
@@ -539,7 +539,7 @@ describe('HTTP APIs', function () {
         server.post('/post-tests/')
           .send(postRequest1Body)
           .set('content-type', 'text/turtle')
-          .set('slug', 'post-resource-1.ttl')
+          .set('slug', 'post-resource-1')
           .expect(201, done)
       })
     it('should be able to delete newly created resource', function (done) {
@@ -624,9 +624,9 @@ describe('HTTP APIs', function () {
                 .then(res => { response = res })
         )
 
-        it('is assigned an extensionless URL', () => {
+        it('is assigned an URL with the .ttl extension', () => {
           expect(response.headers).to.have.property('location')
-          expect(response.headers.location).to.match(/^\/post-tests\/[^./]+$/)
+          expect(response.headers.location).to.match(/^\/post-tests\/[^./]+\.ttl$/)
         })
       })
 
@@ -639,8 +639,8 @@ describe('HTTP APIs', function () {
                 .then(res => { response = res })
         )
 
-        it('is assigned an extensionless URL', () => {
-          expect(response.headers).to.have.property('location', '/post-tests/slug1')
+        it('is assigned an URL with the .ttl extension', () => {
+          expect(response.headers).to.have.property('location', '/post-tests/slug1.ttl')
         })
       })
 
