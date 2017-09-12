@@ -252,7 +252,9 @@ describe('LDP', function () {
           const graph = $rdf.graph()
           $rdf.parse(data, graph, 'https://server.tld/sampleContainer', 'text/turtle')
           const statements = graph.match(null, ns.ldp('contains'), null)
-          const files = statements.map(s => s.object.value.replace(/.*\//, ''))
+          const files = statements
+            .map(s => s.object.value.replace(/.*\//, ''))
+            .map(decodeURIComponent)
 
           files.sort()
           expectedFiles.sort()
