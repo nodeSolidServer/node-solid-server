@@ -15,6 +15,7 @@
 - Self-signed certificates are no longer trusted in production.
   To allow self-signed certificates (for testing purposes), use `bin/solid-test`,
   which sets `NODE_TLS_REJECT_UNAUTHORIZED=0` and `--no-reject-unauthorized`.
+- On POST requests, an extension will be appended to the file.
 
 #### 4.0.0 Upgrade Notes
 - The `proxy` configuration parameter has been deprecated and
@@ -23,6 +24,8 @@
   renamed to `multiuser` to better identify its purpose.
 - Cross-domain cookie-based authentication has been removed for security reasons.
   We instead recommend https://github.com/solid/solid-auth-client.
+- Clients should not include an extension in the slug of POST requests
+  (they never should have), as the server now adds an extension.
 
 ## 3.5.0
 
