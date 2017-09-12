@@ -1,6 +1,7 @@
 # History
 
 ## 4.0.0
+- OIDC is now supported as authentication method in addition to WebID-TLS.
 - Both Node.js 6 and 8 are now supported.
 - Responses now contain a WAC-Allow header, listing the access permissions
   for the current user and non-authenticated users.
