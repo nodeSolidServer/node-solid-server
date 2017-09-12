@@ -13,6 +13,10 @@
   The Solid server acts as a reverse proxy for these paths, forwarding requests
   to the back-end server along with the authenticated user (`User` header)
   and the host through which Solid is being accessed (`Forwarded` header).
+- The `acceptCertificateHeader` configuration parameter has been added.
+  This allows WebID-TLS authentication behind a reverse proxy such as NGINX:
+  the reverse proxy should be configured to pass the client certificate
+  in a certain header, which is then read by a (non-public) Solid server.
 - Self-signed certificates are no longer trusted in production.
   To allow self-signed certificates (for testing purposes), use `bin/solid-test`,
   which sets `NODE_TLS_REJECT_UNAUTHORIZED=0` and `--no-reject-unauthorized`.
