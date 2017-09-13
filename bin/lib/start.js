@@ -63,7 +63,9 @@ function bin (argv, server) {
   argv.live = !argv.noLive
 
   // Set up debug environment
-  process.env.DEBUG = argv.verbose ? 'solid:*' : false
+  if (argv.verbose) {
+    process.env.DEBUG = 'solid:*'
+  }
 
   // Set up port
   argv.port = argv.port || 3456
