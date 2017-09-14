@@ -1,0 +1,10 @@
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+
+# All permissions on the root
+<#owner>
+    a acl:Authorization;
+    acl:agent <https://ruben.verborgh.org/profile/#me>;
+    acl:accessTo <./>;
+    acl:defaultForNew <./>;
+    acl:mode acl:Read, acl:Write, acl:Control.
