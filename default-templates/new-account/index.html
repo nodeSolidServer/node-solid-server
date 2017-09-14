@@ -3,18 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Solid User Profile</title>
+  <title>Solid Homepage {{#if name}} of {{name}}{{/if}}</title>
   <link rel="stylesheet" href="/common/css/bootstrap.min.css">
 </head>
 <body>
 <div class="container">
-  <h3>Solid User Profile</h3>
+  <h3>Solid Homepage {{#if name}} of {{name}}{{/if}}</h3>
 </div>
 <div class="container">
   <div class="row">
     <div class="col-md-12">
-      <p style="margin-top: 3em; margin-bottom: 3em;">
-        Welcome to the account of <code>{{webId}}</code>
+      <p>
+        This is a public homepage of
+        {{#if name}}{{name}}, whose WebID is{{else}}a user with WebID{{/if}}
+        <a href="{{webId}}">{{webId}}</a>.
       </p>
     </div>
   </div>
