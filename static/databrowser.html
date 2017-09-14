@@ -2,23 +2,27 @@
 <html id="docHTML">
 <head>
     <link type="text/css" rel="stylesheet" href="https://linkeddata.github.io/solid-app-set/style/tabbedtab.css" />
+    <script>
+      var $SOLID_GLOBAL_config = {
+        popupUri: '/common/popup.html'
+      }
+    </script>
     <script type="text/javascript" src="https://linkeddata.github.io/mashlib/dist/mashlib.min.js"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  var UI = Mashlib
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        var UI = Mashlib
 
-  UI.rdf.Fetcher.crossSiteProxyTemplate = document.origin + '/proxy?uri={uri}'
+        UI.rdf.Fetcher.crossSiteProxyTemplate = document.origin + '/proxy?uri={uri}'
 
-  UI.authn.checkUser()
-    .then(function () {
-      var uri = window.location.href
-      window.document.title = uri
-
-      var subject = UI.rdf.namedNode(uri)
-      UI.outline.GotoSubject(subject, true, undefined, true, undefined)
-    })
-})
-</script>
+        UI.authn.checkUser()
+          .then(function () {
+            var uri = window.location.href
+            var dataUri = window.document.title = uri.slice(0, uri.lastIndexOf('/')+1) + ''
+            var subject = UI.rdf.sym(dataUri)
+            UI.outline.GotoSubject(subject, true, undefined, true, undefined)
+          })
+      })
+    </script>
 </head>
 <body>
 <div class="TabulatorOutline" id="DummyUUID">
