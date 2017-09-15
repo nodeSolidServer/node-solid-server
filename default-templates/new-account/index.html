@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{#if name}}{{name}} -- {{/if}}Solid Home</title>
+  <title>{{#if name}}{{name}} &ndash; {{/if}}Solid Home</title>
   <link rel="stylesheet" href="/common/css/bootstrap.min.css">
 </head>
 <body>
@@ -11,7 +11,7 @@
   <nav class="navbar navbar-default">
     <div class="container-fluid">
       <div class="navbar-header">
-        <a href="/" class="navbar-brand">{{#if name}}{{name}} -- {{/if}}Solid Home</a>
+        <a href="/" class="navbar-brand">{{#if name}}{{name}} &ndash; {{/if}}Solid Home</a>
       </div>
     </div>
   </nav>
@@ -20,9 +20,10 @@
   <div class="row">
     <div class="col-md-12">
       <p class="lead">
-        This is a public homepage of
-        {{#if name}}{{name}}, whose WebID is{{else}}a user with WebID{{/if}}
-        <a href="{{webId}}">{{webId}}</a>.
+        <span>
+          This is a public homepage of {{#if name}}{{name}}, whose WebID is{{else}}a user with WebID{{/if}}
+        </span>
+        <a href="{{webId}}"><mark>{{webId}}</mark></a>.
       </p>
     </div>
   </div>
@@ -36,12 +37,10 @@
         </a>
         <a href="/inbox/" target="_blank" class="list-group-item">
           <span class="lead">Inbox</span>
-          <span>- Anyone can post messages to this, but only {{#if name}}{{name}}{{else}}the account owner{{/if}} can read them</span>
           <span class="badge">private</span>
         </a>
         <a href="/public/" target="_blank" class="list-group-item">
           <span class="lead">Public Folder</span>
-          <span>- {{#if name}}{{name}}{{else}}the account owner{{/if}} shares public documents here</span>
           <span class="badge">public</span>
         </a>
       </div>
