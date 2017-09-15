@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{#if name}}{{name}} &ndash; {{/if}}Solid Home</title>
   <link rel="stylesheet" href="/common/css/bootstrap.min.css">
-  <script id="solid-auth-client" src="/common/js/solid-auth-client.bundle.js" defer></script>
   <style>
     .session-action {
       margin-right: 15px;
@@ -76,6 +75,7 @@
   </section>
 </div>
 </body>
+<script src="/common/js/solid-auth-client.bundle.js"></script>
 <script type="text/javascript">
   const popupUri = window.location.origin + '/common/popup.html'
   const stateData = {
@@ -133,6 +133,6 @@
     return document.getElementById('session-action')
   }
 
-  main()
+  document.addEventListener('DOMContentLoaded', main)
 </script>
 </html>
