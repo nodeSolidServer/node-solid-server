@@ -23,6 +23,7 @@
 - On POST requests, an extension will be appended to the file.
 - Server logging is now more concise.
 - Express server injection is now supported
+- The root route (e.g. `/`) now displays a public home page.
 
 #### 4.0.0 Upgrade Notes
 - The `proxy` configuration parameter has been deprecated and
