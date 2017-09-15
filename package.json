@@ -6,7 +6,11 @@
     "name": "Tim Berners-Lee",
     "email": "timbl@w3.org"
   },
-  "maintainers": [
+  "contributors": [
+    {
+      "name": "Martin Martinez Rivera",
+      "email": "martinmr@mit.edu"
+    },
     {
       "name": "Nicola Greco",
       "email": "me@nicolagreco.com"
@@ -14,12 +18,11 @@
     {
       "name": "Dmitri Zagidulin",
       "url": "https://github.com/dmitrizagidulin/"
-    }
-  ],
-  "contributors": [
+    },
     {
-      "name": "Martin Martinez Rivera",
-      "email": "martinmr@mit.edu"
+      "name": "Ruben Verborgh",
+      "email": "ruben@verborgh.org",
+      "url": "https://ruben.verborgh.org/"
     }
   ],
   "license": "MIT",

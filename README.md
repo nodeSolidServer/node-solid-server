@@ -352,13 +352,13 @@ npm run test-(acl|formats|params|patch)
       <th align="left">Tim Berners-Lee</th>
       <td><a href="https://github.com/timbl">GitHub/timbl</a></td>
       <td><a href="http://twitter.com/timberners_lee">Twitter/@timberners_lee</a></td>
-      <td><a href="https://www.w3.org/People/Berners-Lee/card#i">webid</a></td>
+      <td><a href="https://www.w3.org/People/Berners-Lee/card#i">WebID</a></td>
     </tr>
     <tr>
       <th align="left">Nicola Greco</th>
       <td><a href="https://github.com/nicola">GitHub/nicola</a></td>
       <td><a href="http://twitter.com/nicolagreco">Twitter/@nicolagreco</a></td>
-      <td><a href="https://nicola.databox.me/profile/card#me">webid</a></td>
+      <td><a href="https://nicola.databox.me/profile/card#me">WebID</a></td>
     </tr>
     <tr>
       <th align="left">Martin Martinez Rivera</th>
@@ -370,7 +370,19 @@ npm run test-(acl|formats|params|patch)
       <th align="left">Andrei Sambra</th>
       <td><a href="https://github.com/deiu">GitHub/deiu</a></td>
       <td><a href="http://twitter.com/deiu">Twitter/@deiu</a></td>
-      <td><a href="https://deiu.me/profile#me">webid</a></td>
+      <td><a href="https://deiu.me/profile#me">WebID</a></td>
+    </tr>
+    <tr>
+      <th align="left">Dmitri Zagidulin</th>
+      <td><a href="https://github.com/dmitrizagidulin/">GitHub/dmitrizagidulin</a></td>
+      <td><a href="https://twitter.com/codenamedmitri">Twitter/@codenamedmitri</a></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th align="left">Ruben Verborgh</th>
+      <td><a href="https://github.com/RubenVerborgh/">GitHub/RubenVerborgh</a></td>
+      <td><a href="https://twitter.com/RubenVerborgh">Twitter/@RubenVerborgh</a></td>
+      <td><a href="https://ruben.verborgh.org/profile/#me">WebID</a></td>
     </tr>
   </tbody>
 </table>
