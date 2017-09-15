@@ -102,7 +102,7 @@
   "main": "index.js",
   "scripts": {
     "solid": "node ./bin/solid",
-    "standard": "standard",
+    "standard": "standard '{bin,examples,lib,test}/**/*.js'",
     "nyc": "NODE_TLS_REJECT_UNAUTHORIZED=0 nyc mocha",
     "mocha": "NODE_TLS_REJECT_UNAUTHORIZED=0 mocha",
     "test": "npm run standard && npm run nyc"
