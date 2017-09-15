@@ -324,7 +324,9 @@ Edit your `/etc/hosts` file, and append:
 
 ```
 # Used for unit testing solid
-127.0.0.1 nic.localhost, tim.localhost, nicola.localhost
+127.0.0.1 nic.localhost
+127.0.0.1 tim.localhost
+127.0.0.1 nicola.localhost
 ```
 
 #### Running the Unit Tests
