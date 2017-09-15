@@ -21,6 +21,7 @@
   To allow self-signed certificates (for testing purposes), use `bin/solid-test`,
   which sets `NODE_TLS_REJECT_UNAUTHORIZED=0` and `--no-reject-unauthorized`.
 - On POST requests, an extension will be appended to the file.
+- Server logging is now more concise.
 
 #### 4.0.0 Upgrade Notes
 - The `proxy` configuration parameter has been deprecated and
