@@ -3,10 +3,9 @@
 const options = require('./options')
 const fs = require('fs')
 const extend = require('extend')
-const packageJson = require('../../package.json')
 const colors = require('colors/safe')
 
-module.exports = function (program) {
+module.exports = function (program, server) {
   const start = program
     .command('start')
     .description('run the Solid server')
@@ -24,7 +23,7 @@ module.exports = function (program) {
   start.option('-v, --verbose', 'Print the logs to console')
 
   start.action((opts) => {
-    let argv = extend({}, opts)
+    let argv = extend({}, opts, { version: program.version() })
 
     fs.readFile(process.cwd() + '/config.json', (err, file) => {
       // No file exists, not a problem
@@ -38,12 +37,12 @@ module.exports = function (program) {
         })
       }
 
-      bin(argv)
+      bin(argv, server)
     })
   })
 }
 
-function bin (argv) {
+function bin (argv, server) {
   if (!argv.email) {
     argv.email = {
       host: argv['emailHost'],
@@ -64,7 +63,9 @@ function bin (argv) {
   argv.live = !argv.noLive
 
   // Set up debug environment
-  process.env.DEBUG = argv.verbose ? 'solid:*' : false
+  if (argv.verbose) {
+    process.env.DEBUG = 'solid:*'
+  }
 
   // Set up port
   argv.port = argv.port || 3456
@@ -117,7 +118,7 @@ function bin (argv) {
   const solid = require('../../')
   let app
   try {
-    app = solid.createServer(argv)
+    app = solid.createServer(argv, server)
   } catch (e) {
     if (e.code === 'EACCES') {
       console.log(colors.red.bold('ERROR'), 'You need root privileges to start on this port')
@@ -131,7 +132,7 @@ function bin (argv) {
     return 1
   }
   app.listen(argv.port, function () {
-    console.log('Solid server (solid v' + packageJson.version + ') running on \u001b[4mhttps://localhost:' + argv.port + '/\u001b[0m')
+    console.log(`Solid server (${argv.version}) running on \u001b[4mhttps://localhost:${argv.port}/\u001b[0m`)
     console.log('Press <ctrl>+c to stop')
   })
 }

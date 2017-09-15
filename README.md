@@ -15,7 +15,7 @@
 - [x] [WebID+TLS Authentication](https://www.w3.org/2005/Incubator/webid/spec/tls/)
 - [x] [Real-time live updates](https://github.com/solid/solid-spec#subscribing) (using WebSockets)
 - [x] Identity provider for WebID
-- [x] Proxy for cross-site data access
+- [x] CORS proxy for cross-site data access
 - [ ] Group members in ACL
 - [x] Email account recovery
 
@@ -59,10 +59,14 @@ $ solid start --root path/to/folder --port 8443 --ssl-key path/to/ssl-key.pem --
 # Solid server (solid v0.2.24) running on https://localhost:8443/
 ```
 
-##### How do I get an SSL key and certificate?
-You need an SSL certificate you get this from your domain provider or for free from [Let's Encrypt!](https://letsencrypt.org/getting-started/).
+### Running in development environments
 
-If you don't have one yet, or you just want to test `solid`, generate a certificate (**DO NOT USE IN PRODUCTION**):
+Solid requires SSL certificates to be valid, so you cannot use self-signed certificates. To switch off this security feature in development environments, you can use the `bin/solid-test` executable, which unsets the `NODE_TLS_REJECT_UNAUTHORIZED` flag and sets the `rejectUnauthorized` option.
+
+##### How do I get an SSL key and certificate?
+You need an SSL certificate from a _certificate authority_, such as your domain provider or [Let's Encrypt!](https://letsencrypt.org/getting-started/).
+
+For testing purposes, you can use `bin/solid-test` with a _self-signed_ certificate, generated as follows:
 ```
 $ openssl genrsa 2048 > ../localhost.key
 $ openssl req -new -x509 -nodes -sha256 -days 3650 -key ../localhost.key -subj '/CN=*.localhost' > ../localhost.cert
@@ -88,10 +92,13 @@ $ solid start
 Otherwise, if you want to use flags, this would be the equivalent
 
 ```bash
-$ solid --idp --port 8443 --cert /path/to/cert --key /path/to/key --root ./accounts
+$ solid --multiuser --port 8443 --cert /path/to/cert --key /path/to/key --root ./accounts
 ```
 
 Your users will have a dedicated folder under `./accounts`. Also, your root domain's website will be in `./accounts/yourdomain.tld`. New users can create accounts on `/api/accounts/new` and create new certificates on `/api/accounts/cert`. An easy-to-use sign-up tool is found on `/api/accounts`.
+
+### Running Solid behind a reverse proxy (such as NGINX)
+See [Running Solid behind a reverse proxy](https://github.com/solid/node-solid-server/wiki/Running-Solid-behind-a-reverse-proxy).
 
 ##### How can send emails to my users with my Gmail?
 
@@ -138,31 +145,49 @@ $ solid init --help
 
 
 $ solid start --help
+
   Usage: start [options]
+
   run the Solid server
 
+
   Options:
-    -h, --help              output usage information
-    --root [value]          Root folder to serve (defaut: './')
-    --port [value]          Port to use (default: '8443')
-    --serverUri [value]     Solid server uri (default: 'https://localhost:8443')
-    --webid                 Enable WebID authentication and access control (uses HTTPS. default: true)
-    --owner [value]         Set the owner of the storage (overwrites the root ACL file)
-    --ssl-key [value]       Path to the SSL private key in PEM format
-    --ssl-cert [value]      Path to the SSL certificate key in PEM format
-    --idp                   Enable multi-user mode (users can sign up for accounts)
-    --proxy [value]         Serve proxy on path (default: '/proxy')
-    --file-browser [value]  Url to file browser app (uses Warp by default)
-    --data-browser          Enable viewing RDF resources using a default data browser application (e.g. mashlib)
-    --suffix-acl [value]    Suffix for acl files (default: '.acl')
-    --suffix-meta [value]   Suffix for metadata files (default: '.meta')
-    --secret [value]        Secret used to sign the session ID cookie (e.g. "your secret phrase")
-    --error-pages [value]   Folder from which to look for custom error pages files (files must be named <error-code>.html -- eg. 500.html)
-    --mount [value]         Serve on a specific URL path (default: '/')
-    --force-user [value]    Force a WebID to always be logged in (useful when offline)
-    --strict-origin         Enforce same origin policy in the ACL
-    -v, --verbose           Print the logs to console
-```
+
+    --root [value]                Root folder to serve (default: './data')
+    --port [value]                SSL port to use
+    --serverUri [value]           Solid server uri (default: 'https://localhost:8443')
+    --webid                       Enable WebID authentication and access control (uses HTTPS)
+    --mount [value]               Serve on a specific URL path (default: '/')
+    --config-path [value]
+    --db-path [value]
+    --auth [value]                Pick an authentication strategy for WebID: `tls` or `oidc`
+    --certificate-header [value]
+    --owner [value]               Set the owner of the storage (overwrites the root ACL file)
+    --ssl-key [value]             Path to the SSL private key in PEM format
+    --ssl-cert [value]            Path to the SSL certificate key in PEM format
+    --no-reject-unauthorized      Accept self-signed certificates
+    --multiuser                   Enable multi-user mode
+    --idp [value]                 Obsolete; use --multiuser
+    --no-live                     Disable live support through WebSockets
+    --proxy [value]               Obsolete; use --corsProxy
+    --corsProxy [value]           Serve the CORS proxy on this path
+    --suppress-data-browser       Suppress provision of a data browser
+    --data-browser-path [value]   An HTML file which is sent to allow users to browse the data (eg using mashlib.js)
+    --suffix-acl [value]          Suffix for acl files (default: '.acl')
+    --suffix-meta [value]         Suffix for metadata files (default: '.meta')
+    --secret [value]              Secret used to sign the session ID cookie (e.g. "your secret phrase")
+    --error-pages [value]         Folder from which to look for custom error pages files (files must be named <error-code>.html -- eg. 500.html)
+    --force-user [value]          Force a WebID to always be logged in (useful when offline)
+    --strict-origin               Enforce same origin policy in the ACL
+    --useEmail                    Do you want to set up an email service?
+    --email-host [value]          Host of your email service
+    --email-port [value]          Port of your email service
+    --email-auth-user [value]     User of your email service
+    --email-auth-pass [value]     Password of your email service
+    --useApiApps                  Do you want to load your default apps on /api/apps?
+    --api-apps [value]            Path to the folder to mount on /api/apps
+    -v, --verbose                 Print the logs to console
+ ```
 
 ## Library Usage
 
@@ -195,7 +220,7 @@ default settings.
   mount: '/', // Where to mount Linked Data Platform
   webid: false, // Enable WebID+TLS authentication
   suffixAcl: '.acl', // Suffix for acl files
-  proxy: false, // Where to mount the proxy
+  corsProxy: false, // Where to mount the CORS proxy
   errorHandler: false, // function(err, req, res, next) to have a custom error handler
   errorPages: false // specify a path where the error pages are
 }
@@ -286,13 +311,7 @@ accidentally commit your certificates to `solid` while you're developing.
 If you started your `solid` server locally on port 8443 as in the example
 above, you would then be able to visit `https://localhost:8443` in the browser
 (ignoring the Untrusted Connection browser warnings as usual), where your
-`solid` server would redirect you to the default viewer app (see the
-`--file-browser` server config parameter), which is usually the
-[github.io/warp](https://linkeddata.github.io/warp/#/list/) file browser.
-
-Accessing most Solid apps (such as Warp) will prompt you to select your browser
-side certificate which contains a WebID from a Solid storage provider (see
-the [pre-requisites](#pre-requisites) discussion above).
+`solid` server would redirect you to the default data viewer app.
 
 #### Editing your local `/etc/hosts`
 
@@ -335,13 +354,13 @@ npm run test-(acl|formats|params|patch)
       <th align="left">Tim Berners-Lee</th>
       <td><a href="https://github.com/timbl">GitHub/timbl</a></td>
       <td><a href="http://twitter.com/timberners_lee">Twitter/@timberners_lee</a></td>
-      <td><a href="https://www.w3.org/People/Berners-Lee/card#i">webid</a></td>
+      <td><a href="https://www.w3.org/People/Berners-Lee/card#i">WebID</a></td>
     </tr>
     <tr>
       <th align="left">Nicola Greco</th>
       <td><a href="https://github.com/nicola">GitHub/nicola</a></td>
       <td><a href="http://twitter.com/nicolagreco">Twitter/@nicolagreco</a></td>
-      <td><a href="https://nicola.databox.me/profile/card#me">webid</a></td>
+      <td><a href="https://nicola.databox.me/profile/card#me">WebID</a></td>
     </tr>
     <tr>
       <th align="left">Martin Martinez Rivera</th>
@@ -353,7 +372,19 @@ npm run test-(acl|formats|params|patch)
       <th align="left">Andrei Sambra</th>
       <td><a href="https://github.com/deiu">GitHub/deiu</a></td>
       <td><a href="http://twitter.com/deiu">Twitter/@deiu</a></td>
-      <td><a href="https://deiu.me/profile#me">webid</a></td>
+      <td><a href="https://deiu.me/profile#me">WebID</a></td>
+    </tr>
+    <tr>
+      <th align="left">Dmitri Zagidulin</th>
+      <td><a href="https://github.com/dmitrizagidulin/">GitHub/dmitrizagidulin</a></td>
+      <td><a href="https://twitter.com/codenamedmitri">Twitter/@codenamedmitri</a></td>
+      <td></td>
+    </tr>
+    <tr>
+      <th align="left">Ruben Verborgh</th>
+      <td><a href="https://github.com/RubenVerborgh/">GitHub/RubenVerborgh</a></td>
+      <td><a href="https://twitter.com/RubenVerborgh">Twitter/@RubenVerborgh</a></td>
+      <td><a href="https://ruben.verborgh.org/profile/#me">WebID</a></td>
     </tr>
   </tbody>
 </table>

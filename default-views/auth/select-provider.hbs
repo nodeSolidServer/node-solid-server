@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Select Provider</title>
+  <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+  <div>
+    <h2>Select Provider</h2>
+  </div>
+  {{#if error}}
+    <div class="row">
+      <div class="col-md-12">
+        <p class="text-danger"><strong>{{error}}</strong></p>
+      </div>
+    </div>
+  {{/if}}
+</div>
+<div class="container">
+  <form method="post" action="/api/auth/select-provider">
+    <div class="form-group">
+      <label for="webid">WebID or server URL:</label>
+      <input type="text" class="form-control" name="webid" id="webid"
+             value="{{serverUri}}" />
+      <input type="hidden" name="returnToUrl" id="returnToUrl" value="" />
+    </div>
+    <button type="submit" class="btn btn-primary" id="discover">Submit</button>
+  </form>
+</div>
+</body>
+</html>

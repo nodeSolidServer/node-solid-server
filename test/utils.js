@@ -1,52 +1,73 @@
-var assert = require('chai').assert
+var fs = require('fs')
+var fsExtra = require('fs-extra')
+var rimraf = require('rimraf')
+var path = require('path')
+const OIDCProvider = require('@trust/oidc-op')
+const dns = require('dns')
 
-var utils = require('../lib/utils')
+const TEST_HOSTS = ['nic.localhost', 'tim.localhost', 'nicola.localhost']
 
-describe('Utility functions', function () {
-  describe('pathBasename', function () {
-    it('should return bar as relative path for /foo/bar', function () {
-      assert.equal(utils.pathBasename('/foo/bar'), 'bar')
-    })
-    it('should return empty as relative path for /foo/', function () {
-      assert.equal(utils.pathBasename('/foo/'), '')
-    })
-    it('should return empty as relative path for /', function () {
-      assert.equal(utils.pathBasename('/'), '')
-    })
-    it('should return empty as relative path for empty path', function () {
-      assert.equal(utils.pathBasename(''), '')
-    })
-    it('should return empty as relative path for undefined path', function () {
-      assert.equal(utils.pathBasename(undefined), '')
-    })
+exports.rm = function (file) {
+  return rimraf.sync(path.join(__dirname, '/resources/' + file))
+}
+
+exports.write = function (text, file) {
+  return fs.writeFileSync(path.join(__dirname, '/resources/' + file), text)
+}
+
+exports.cp = function (src, dest) {
+  return fsExtra.copySync(
+    path.join(__dirname, '/resources/' + src),
+    path.join(__dirname, '/resources/' + dest))
+}
+
+exports.read = function (file) {
+  return fs.readFileSync(path.join(__dirname, '/resources/' + file), {
+    'encoding': 'utf8'
   })
+}
 
-  describe('uriToFilename', function () {
-    it('should decode hex-encoded space', function () {
-      assert.equal(utils.uriToFilename('uri%20', 'base/'), 'base/uri ')
+// Backs up the given file
+exports.backup = function (src) {
+  exports.cp(src, src + '.bak')
+}
+
+// Restores a backup of the given file
+exports.restore = function (src) {
+  exports.cp(src + '.bak', src)
+  exports.rm(src + '.bak')
+}
+
+// Verifies that all HOSTS entries are present
+exports.checkDnsSettings = function () {
+  return Promise.all(TEST_HOSTS.map(hostname => {
+    return new Promise((resolve, reject) => {
+      dns.lookup(hostname, (error, ip) => {
+        if (error || ip !== '127.0.0.1') {
+          reject(error)
+        } else {
+          resolve(true)
+        }
+      })
     })
-    it('should decode hex-encoded at sign', function () {
-      assert.equal(utils.uriToFilename('film%4011', 'base/'), 'base/film@11')
-    })
-    it('should decode hex-encoded single quote', function () {
-      assert.equal(utils.uriToFilename('quote%27', 'base/'), 'base/quote\'')
-    })
+  }))
+  .catch(() => {
+    throw new Error(`Expected HOSTS entries of 127.0.0.1 for ${TEST_HOSTS.join()}`)
   })
+}
 
-  describe('stripLineEndings()', () => {
-    it('should pass through falsy string arguments', () => {
-      assert.equal(utils.stripLineEndings(''), '')
-      assert.equal(utils.stripLineEndings(null), null)
-      assert.equal(utils.stripLineEndings(undefined), undefined)
+/**
+ * @param configPath {string}
+ *
+ * @returns {Promise<Provider>}
+ */
+exports.loadProvider = function loadProvider (configPath) {
+  return Promise.resolve()
+    .then(() => {
+      const config = require(configPath)
+
+      const provider = new OIDCProvider(config)
+
+      return provider.initializeKeyChain(config.keys)
     })
-
-    it('should remove line-endings characters', () => {
-      let str = '123\n456'
-      assert.equal(utils.stripLineEndings(str), '123456')
-
-      str = `123
-456`
-      assert.equal(utils.stripLineEndings(str), '123456')
-    })
-  })
-})
+}

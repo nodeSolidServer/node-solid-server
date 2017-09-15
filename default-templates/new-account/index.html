@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{#if name}}{{name}} &ndash; {{/if}}Solid Home</title>
+  <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+  <script id="solid-auth-client" src="/common/js/solid-auth-client.bundle.js" defer></script>
+  <style>
+    .session-action {
+      margin-right: 15px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a href="/" class="navbar-brand">{{#if name}}{{name}} &ndash; {{/if}}Solid Home</a>
+      </div>
+      <div class="navbar-right">
+        <button id="session-action" type="button" class="session-action btn btn-default navbar-btn">Loading...</button>
+      </div>
+    </div>
+  </nav>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <p class="lead">
+        <span>
+          This is a public homepage of {{#if name}}{{name}}, whose WebID is{{else}}a user with WebID{{/if}}
+        </span>
+        <a href="{{webId}}"><mark>{{webId}}</mark></a>.
+      </p>
+    </div>
+  </div>
+  <section class="row">
+    <div class="col-md-12">
+      <h1>Data</h1>
+      <div class="list-group">
+        <a href="/profile/card" target="_blank" class="list-group-item">
+          <span class="lead">Profile</span>
+          <span class="badge">public</span>
+        </a>
+        <a href="/inbox/" target="_blank" class="list-group-item">
+          <span class="lead">Inbox</span>
+          <span class="badge">private</span>
+        </a>
+        <a href="/public/" target="_blank" class="list-group-item">
+          <span class="lead">Public Folder</span>
+          <span class="badge">public</span>
+        </a>
+      </div>
+    </div>
+  </section>
+  <section class="row">
+    <div class="col-md-12">
+      <h1>Apps</h1>
+      <div class="list-group">
+        <a href="http://solid.github.io/solid-profile-ui/" target="_blank" class="list-group-item">
+          <span class="lead">Profile Editor</span>
+        </a>
+        <a href="https://databox.me/apps/friends/" target="_blank" class="list-group-item">
+          <span class="lead">Friends</span>
+        </a>
+        <a href="https://markisforbookmarks.herokuapp.com" target="_blank" class="list-group-item">
+          <span class="lead">Bookmark List</span>
+        </a>
+        <a href="https://github.com/solid/solid-apps" target="_blank" class="list-group-item">
+          <span class="lead">More Apps</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</div>
+</body>
+<script type="text/javascript">
+  const popupUri = window.location.origin + '/common/popup.html'
+  const stateData = {
+    session: null
+  }
+  const state = new Proxy(stateData, {
+    set: (obj, prop, value) => {
+      obj[prop] = value
+      render()
+    }
+  })
+
+  function main() {
+    // Render the session state
+    SolidAuthClient
+      .currentSession()
+      .then(saveSession)
+      .then(render)
+
+    // Add event listeners
+    const actionButton = sessionActionButton()
+    actionButton.addEventListener('click', takeSessionAction)
+  }
+
+  function saveSession(session) {
+    state.session = session
+    return session
+  }
+
+  function takeSessionAction() {
+    const { session } = state
+    const loggedIn = !!session
+    if (loggedIn) {
+      SolidAuthClient
+        .logout()
+        .then(saveSession)
+    } else {
+      SolidAuthClient
+        .popupLogin({ popupUri })
+        .then(saveSession)
+    }
+  }
+
+  function render() {
+    const { session } = state
+    const actionButton = sessionActionButton()
+    if (!session) {
+      actionButton.innerText = 'Log in'
+    } else {
+      actionButton.innerText = 'Log out'
+    }
+  }
+
+  function sessionActionButton() {
+    return document.getElementById('session-action')
+  }
+
+  main()
+</script>
+</html>

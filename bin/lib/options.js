@@ -10,9 +10,9 @@ module.exports = [
   // },
   {
     name: 'root',
-    help: "Root folder to serve (defaut: './')",
+    help: "Root folder to serve (default: './data')",
     question: 'Path to the folder you want to serve. Default is',
-    default: './',
+    default: './data',
     prompt: true,
     filter: (value) => path.resolve(value)
   },
@@ -47,21 +47,39 @@ module.exports = [
     prompt: true
   },
   {
+    name: 'config-path',
+    question: 'Path to the config directory (for example: /etc/solid-server)',
+    default: './config',
+    prompt: true
+  },
+  {
+    name: 'db-path',
+    question: 'Path to the server metadata db directory (for users/apps etc)',
+    default: './.db',
+    prompt: true
+  },
+  {
     name: 'auth',
     help: 'Pick an authentication strategy for WebID: `tls` or `oidc`',
     question: 'Select authentication strategy',
     type: 'list',
     choices: [
-      'WebID-TLS'
+      'WebID-OpenID Connect'
     ],
     prompt: false,
-    default: 'WebID-TLS',
+    default: 'WebID-OpenID Connect',
     filter: (value) => {
-      if (value === 'WebID-TLS') return 'tls'
+      if (value === 'WebID-OpenID Connect') return 'oidc'
     },
     when: (answers) => {
       return answers.webid
     }
+  },
+  {
+    name: 'certificate-header',
+    question: 'Accept client certificates through this HTTP header (for reverse proxies)',
+    default: '',
+    prompt: false
   },
   {
     name: 'useOwner',
@@ -98,13 +116,24 @@ module.exports = [
     prompt: true
   },
   {
-    name: 'idp',
-    help: 'Enable multi-user mode (users can sign up for accounts)',
-    question: 'Enable multi-user mode (users can sign up for accounts)',
-    full: 'allow-signup',
+    name: 'no-reject-unauthorized',
+    help: 'Accept self-signed certificates',
+    flag: true,
+    default: false,
+    prompt: false
+  },
+  {
+    name: 'multiuser',
+    help: 'Enable multi-user mode',
+    question: 'Enable multi-user mode',
     flag: true,
     default: false,
     prompt: true
+  },
+  {
+    name: 'idp',
+    help: 'Obsolete; use --multiuser',
+    prompt: false
   },
   {
     name: 'no-live',
@@ -117,7 +146,7 @@ module.exports = [
   //   help: 'URI to use as a default app for resources (default: https://linkeddata.github.io/warp/#/list/)'
   // },
   {
-    name: 'useProxy',
+    name: 'useCorsProxy',
     help: 'Do you want to have a CORS proxy endpoint?',
     flag: true,
     prompt: true,
@@ -125,27 +154,25 @@ module.exports = [
   },
   {
     name: 'proxy',
-    help: 'Serve proxy on path',
+    help: 'Obsolete; use --corsProxy',
+    prompt: false
+  },
+  {
+    name: 'corsProxy',
+    help: 'Serve the CORS proxy on this path',
     when: function (answers) {
-      return answers.useProxy
+      return answers.useCorsProxy
     },
     default: '/proxy',
     prompt: true
   },
-
   {
-    name: 'file-browser',
-    help: 'Type the URL of default app to use for browsing files (or use default)',
-    default: 'default',
-    filter: function (value) {
-      if (value === 'default' || value === 'warp') {
-        return 'https://linkeddata.github.io/warp/#/list/'
-      }
-      return value
-    },
-    prompt: false
+    name: 'authProxy',
+    help: 'Object with path/server pairs to reverse proxy',
+    default: {},
+    prompt: false,
+    hide: true
   },
-
   {
     name: 'suppress-data-browser',
     help: 'Suppress provision of a data browser',
@@ -154,7 +181,6 @@ module.exports = [
     default: false,
     hide: false
   },
-
   {
     name: 'data-browser-path',
     help: 'An HTML file which is sent to allow users to browse the data (eg using mashlib.js)',
