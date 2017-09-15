@@ -55,7 +55,7 @@ describe('Auth Proxy', () => {
             .then(res => { response = res })
         )
         it('returns status code 200', () => {
-          expect(response).to.have.property('statusCode', 200)
+          expect(response.statusCode).to.equal(200)
         })
       })
 
@@ -67,7 +67,7 @@ describe('Auth Proxy', () => {
         )
 
         it('returns status code 403', () => {
-          expect(response).to.have.property('statusCode', 403)
+          expect(response.statusCode).to.equal(403)
         })
       })
     })
@@ -80,7 +80,7 @@ describe('Auth Proxy', () => {
             .then(res => { response = res })
         )
         it('returns status code 200', () => {
-          expect(response).to.have.property('statusCode', 200)
+          expect(response.statusCode).to.equal(200)
         })
       })
 
@@ -92,7 +92,7 @@ describe('Auth Proxy', () => {
         )
 
         it('returns status code 403', () => {
-          expect(response).to.have.property('statusCode', 403)
+          expect(response.statusCode).to.equal(403)
         })
       })
     })
@@ -105,7 +105,7 @@ describe('Auth Proxy', () => {
             .then(res => { response = res })
         )
         it('returns status code 200', () => {
-          expect(response).to.have.property('statusCode', 200)
+          expect(response.statusCode).to.equal(200)
         })
       })
 
@@ -117,7 +117,7 @@ describe('Auth Proxy', () => {
         )
 
         it('returns status code 403', () => {
-          expect(response).to.have.property('statusCode', 403)
+          expect(response.statusCode).to.equal(403)
         })
       })
 
@@ -129,7 +129,7 @@ describe('Auth Proxy', () => {
         )
 
         it('returns status code 403', () => {
-          expect(response).to.have.property('statusCode', 403)
+          expect(response.statusCode).to.equal(403)
         })
       })
     })
