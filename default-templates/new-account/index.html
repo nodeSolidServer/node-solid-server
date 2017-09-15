@@ -3,31 +3,69 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Solid Homepage {{#if name}} of {{name}}{{/if}}</title>
+  <title>{{#if name}}{{name}} -- {{/if}}Solid Home</title>
   <link rel="stylesheet" href="/common/css/bootstrap.min.css">
 </head>
 <body>
 <div class="container">
-  <h3>Solid Homepage {{#if name}} of {{name}}{{/if}}</h3>
+  <nav class="navbar navbar-default">
+    <div class="container-fluid">
+      <div class="navbar-header">
+        <a href="/" class="navbar-brand">{{#if name}}{{name}} -- {{/if}}Solid Home</a>
+      </div>
+    </div>
+  </nav>
 </div>
 <div class="container">
   <div class="row">
     <div class="col-md-12">
-      <p>
+      <p class="lead">
         This is a public homepage of
         {{#if name}}{{name}}, whose WebID is{{else}}a user with WebID{{/if}}
         <a href="{{webId}}">{{webId}}</a>.
       </p>
-      <p>
-        We've added some things to get started:
-      </p>
-      <ul>
-        <li><a href="/profile/card">a public profile</a></li>
-        <li><a href="/inbox/">a private inbox</a> anybody can post to (log in to read messages)</li>
-        <li><a href="/public/">a public folder</a> where you can upload documents for anyone to see</li>
-      </ul>
     </div>
   </div>
+  <section class="row">
+    <div class="col-md-12">
+      <h1>Data</h1>
+      <div class="list-group">
+        <a href="/profile/card" target="_blank" class="list-group-item">
+          <span class="lead">Profile</span>
+          <span class="badge">public</span>
+        </a>
+        <a href="/inbox/" target="_blank" class="list-group-item">
+          <span class="lead">Inbox</span>
+          <span>- Anyone can post messages to this, but only {{#if name}}{{name}}{{else}}the account owner{{/if}} can read them</span>
+          <span class="badge">private</span>
+        </a>
+        <a href="/public/" target="_blank" class="list-group-item">
+          <span class="lead">Public Folder</span>
+          <span>- {{#if name}}{{name}}{{else}}the account owner{{/if}} shares public documents here</span>
+          <span class="badge">public</span>
+        </a>
+      </div>
+    </div>
+  </section>
+  <section class="row">
+    <div class="col-md-12">
+      <h1>Apps</h1>
+      <div class="list-group">
+        <a href="http://solid.github.io/solid-profile-ui/" target="_blank" class="list-group-item">
+          <span class="lead">Profile Editor</span>
+        </a>
+        <a href="https://databox.me/apps/friends/" target="_blank" class="list-group-item">
+          <span class="lead">Friends</span>
+        </a>
+        <a href="https://markisforbookmarks.herokuapp.com" target="_blank" class="list-group-item">
+          <span class="lead">Bookmark List</span>
+        </a>
+        <a href="https://github.com/solid/solid-apps" target="_blank" class="list-group-item">
+          <span class="lead">More Apps</span>
+        </a>
+      </div>
+    </div>
+  </section>
 </div>
 </body>
 </html>
