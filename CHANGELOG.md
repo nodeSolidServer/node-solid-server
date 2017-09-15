@@ -24,6 +24,7 @@
 - Server logging is now more concise.
 - Express server injection is now supported
 - The root route (e.g. `/`) now displays a public home page.
+- Several other bugfixes
 
 #### 4.0.0 Upgrade Notes
 - The `proxy` configuration parameter has been deprecated and
