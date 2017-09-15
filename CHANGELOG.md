@@ -1,5 +1,41 @@
 # History
 
+## 4.0.0
+- OIDC is now supported as authentication method in addition to WebID-TLS.
+- Both Node.js 6 and 8 are now supported.
+- The server now accepts N3 patches.
+- Responses now contain a WAC-Allow header, listing the access permissions
+  for the current user and non-authenticated users.
+- The `authProxy` configuration parameter has been added,
+  enabling back-end servers to serve authenticated content.
+  It accepts an object of path/server pairs
+  (such as `/my/path": "http://localhost:2345/app"`).
+  The Solid server acts as a reverse proxy for these paths, forwarding requests
+  to the back-end server along with the authenticated user (`User` header)
+  and the host through which Solid is being accessed (`Forwarded` header).
+- The `acceptCertificateHeader` configuration parameter has been added.
+  This allows WebID-TLS authentication behind a reverse proxy such as NGINX:
+  the reverse proxy should be configured to pass the client certificate
+  in a certain header, which is then read by a (non-public) Solid server.
+- Self-signed certificates are no longer trusted in production.
+  To allow self-signed certificates (for testing purposes), use `bin/solid-test`,
+  which sets `NODE_TLS_REJECT_UNAUTHORIZED=0` and `--no-reject-unauthorized`.
+- On POST requests, an extension will be appended to the file.
+- Server logging is now more concise.
+- Express server injection is now supported
+- The root route (e.g. `/`) now displays a public home page.
+- Several other bugfixes
+
+#### 4.0.0 Upgrade Notes
+- The `proxy` configuration parameter has been deprecated and
+  renamed to `corsProxy` to better distinguish it from `authProxy`.
+- The `idp` configuration parameter has been deprecated and
+  renamed to `multiuser` to better identify its purpose.
+- Cross-domain cookie-based authentication has been removed for security reasons.
+  We instead recommend https://github.com/solid/solid-auth-client.
+- Clients should not include an extension in the slug of POST requests
+  (they never should have), as the server now adds an extension.
+
 ## 3.5.0
 
 - Major refactoring of Account Creation classes (new account resources are now
