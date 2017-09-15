@@ -145,30 +145,49 @@ $ solid init --help
 
 
 $ solid start --help
+
   Usage: start [options]
+
   run the Solid server
 
+
   Options:
-    -h, --help              output usage information
-    --root [value]          Root folder to serve (defaut: './')
-    --port [value]          Port to use (default: '8443')
-    --serverUri [value]     Solid server uri (default: 'https://localhost:8443')
-    --webid                 Enable WebID authentication and access control (uses HTTPS. default: true)
-    --owner [value]         Set the owner of the storage (overwrites the root ACL file)
-    --ssl-key [value]       Path to the SSL private key in PEM format
-    --ssl-cert [value]      Path to the SSL certificate key in PEM format
-    --multiuser             Enable multi-user mode
-    --corsProxy [value]     Serve the CORS proxy on this path
-    --data-browser          Enable viewing RDF resources using a default data browser application (e.g. mashlib)
-    --suffix-acl [value]    Suffix for acl files (default: '.acl')
-    --suffix-meta [value]   Suffix for metadata files (default: '.meta')
-    --secret [value]        Secret used to sign the session ID cookie (e.g. "your secret phrase")
-    --error-pages [value]   Folder from which to look for custom error pages files (files must be named <error-code>.html -- eg. 500.html)
-    --mount [value]         Serve on a specific URL path (default: '/')
-    --force-user [value]    Force a WebID to always be logged in (useful when offline)
-    --strict-origin         Enforce same origin policy in the ACL
-    -v, --verbose           Print the logs to console
-```
+
+    --root [value]                Root folder to serve (default: './data')
+    --port [value]                SSL port to use
+    --serverUri [value]           Solid server uri (default: 'https://localhost:8443')
+    --webid                       Enable WebID authentication and access control (uses HTTPS)
+    --mount [value]               Serve on a specific URL path (default: '/')
+    --config-path [value]
+    --db-path [value]
+    --auth [value]                Pick an authentication strategy for WebID: `tls` or `oidc`
+    --certificate-header [value]
+    --owner [value]               Set the owner of the storage (overwrites the root ACL file)
+    --ssl-key [value]             Path to the SSL private key in PEM format
+    --ssl-cert [value]            Path to the SSL certificate key in PEM format
+    --no-reject-unauthorized      Accept self-signed certificates
+    --multiuser                   Enable multi-user mode
+    --idp [value]                 Obsolete; use --multiuser
+    --no-live                     Disable live support through WebSockets
+    --proxy [value]               Obsolete; use --corsProxy
+    --corsProxy [value]           Serve the CORS proxy on this path
+    --suppress-data-browser       Suppress provision of a data browser
+    --data-browser-path [value]   An HTML file which is sent to allow users to browse the data (eg using mashlib.js)
+    --suffix-acl [value]          Suffix for acl files (default: '.acl')
+    --suffix-meta [value]         Suffix for metadata files (default: '.meta')
+    --secret [value]              Secret used to sign the session ID cookie (e.g. "your secret phrase")
+    --error-pages [value]         Folder from which to look for custom error pages files (files must be named <error-code>.html -- eg. 500.html)
+    --force-user [value]          Force a WebID to always be logged in (useful when offline)
+    --strict-origin               Enforce same origin policy in the ACL
+    --useEmail                    Do you want to set up an email service?
+    --email-host [value]          Host of your email service
+    --email-port [value]          Port of your email service
+    --email-auth-user [value]     User of your email service
+    --email-auth-pass [value]     Password of your email service
+    --useApiApps                  Do you want to load your default apps on /api/apps?
+    --api-apps [value]            Path to the folder to mount on /api/apps
+    -v, --verbose                 Print the logs to console
+ ```
 
 ## Library Usage
 
