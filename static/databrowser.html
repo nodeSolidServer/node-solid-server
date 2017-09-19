@@ -17,8 +17,8 @@
         UI.authn.checkUser()
           .then(function () {
             var uri = window.location.href
-            var dataUri = window.document.title = uri.slice(0, uri.lastIndexOf('/')+1) + ''
-            var subject = UI.rdf.sym(dataUri)
+            window.document.title = uri
+            var subject = UI.rdf.namedNode(uri)
             UI.outline.GotoSubject(subject, true, undefined, true, undefined)
           })
       })
