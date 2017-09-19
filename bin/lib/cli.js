@@ -2,6 +2,7 @@ const program = require('commander')
 const loadInit = require('./init')
 const loadStart = require('./start')
 const { spawnSync } = require('child_process')
+const path = require('path')
 
 module.exports = function startCli (server) {
   program.version(getVersion())
@@ -21,7 +22,7 @@ function getVersion () {
     return stdout.trim()
   } catch (e) {
     // Obtain version from package.json
-    const { version } = require('../package.json')
+    const { version } = require(path.join(__dirname, '../../package.json'))
     return version
   }
 }
