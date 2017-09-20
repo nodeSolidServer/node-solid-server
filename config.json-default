@@ -1,0 +1,13 @@
+{
+  "root": "./data",
+  "port": "8443",
+  "serverUri": "https://localhost:8443",
+  "webid": true,
+  "mount": "/",
+  "configPath": "./config",
+  "dbPath": "./.db",
+  "sslKey": "./cert.key",
+  "sslCert": "./cert.pem",
+  "multiuser": true,
+  "corsProxy": "/proxy"
+}
