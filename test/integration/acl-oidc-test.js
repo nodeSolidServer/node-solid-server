@@ -326,7 +326,7 @@ describe('ACL HTTP', function () {
           done()
         })
       })
-    it('agent should able to access test directory when origin is invalid',
+    it('agent should be able to access test directory when origin is invalid',
       function (done) {
         var options = createOptions('/origin/test-folder/')
         options.headers.origin = origin2
