@@ -315,14 +315,14 @@ describe('ACL with WebID+TLS', function () {
           done()
         })
       })
-    it('user1 should be denied access to test directory when origin is invalid',
+    it('user1 should be able to access test directory when origin is invalid',
       function (done) {
         var options = createOptions('/acl-tls/origin/test-folder/', 'user1')
         options.headers.origin = origin2
 
         request.head(options, function (error, response, body) {
           assert.equal(error, null)
-          assert.equal(response.statusCode, 403)
+          assert.equal(response.statusCode, 200)
           done()
         })
       })
@@ -347,14 +347,14 @@ describe('ACL with WebID+TLS', function () {
           done()
         })
       })
-    it('agent should be denied access to test directory when origin is invalid',
+    it('agent should be able to access test directory when origin is invalid',
       function (done) {
         var options = createOptions('/acl-tls/origin/test-folder/')
         options.headers.origin = origin2
 
         request.head(options, function (error, response, body) {
           assert.equal(error, null)
-          assert.equal(response.statusCode, 401)
+          assert.equal(response.statusCode, 200)
           done()
         })
       })
