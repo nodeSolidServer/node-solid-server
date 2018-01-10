@@ -364,6 +364,107 @@ describe('ACL with WebID+TLS', function () {
     })
   })
 
+  describe('Mixed statement Origin', function () {
+    before(function () {
+      rm('acl-tls/origin/test-folder/.acl')
+    })
+
+    it('should PUT new ACL file', function (done) {
+      var options = createOptions('/acl-tls/origin/test-folder/.acl', 'user1')
+      options.headers = {
+        'content-type': 'text/turtle'
+      }
+      options.body = '<#Owner1> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#accessTo> <https://localhost:3456/test/acl-tls/origin/test-folder/.acl>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#agent> <' + user1 + '>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Control> .\n' +
+        '<#Owner2> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
+          ' <http://www.w3.org/ns/auth/acl#accessTo> <https://localhost:3456/test/acl-tls/origin/test-folder/.acl>;\n' +
+          ' <http://www.w3.org/ns/auth/acl#origin> <' + origin1 + '>;\n' +
+          ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Control> .\n' +
+        '<#Public> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#accessTo> <./>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#agentClass> <http://xmlns.com/foaf/0.1/Agent>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#origin> <' + origin1 + '>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read> .\n'
+      request.put(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 201)
+        done()
+        // TODO triple header
+        // TODO user header
+      })
+    })
+    it('user1 should be able to access test directory', function (done) {
+      var options = createOptions('/acl-tls/origin/test-folder/', 'user1')
+      options.headers.origin = origin1
+
+      request.head(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 200)
+        done()
+      })
+    })
+    it('user1 should be able to access to test directory when origin is valid',
+      function (done) {
+        var options = createOptions('/acl-tls/origin/test-folder/', 'user1')
+        options.headers.origin = origin1
+
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 200)
+          done()
+        })
+      })
+    it('user1 should be able to access test directory when origin is invalid',
+      function (done) {
+        var options = createOptions('/acl-tls/origin/test-folder/', 'user1')
+        options.headers.origin = origin2
+
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 200)
+          done()
+        })
+      })
+    it('agent should be able to access test directory', function (done) {
+      var options = createOptions('/acl-tls/origin/test-folder/')
+      options.headers.origin = origin1
+
+      request.head(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 200)
+        done()
+      })
+    })
+    it('agent should be able to access to test directory when origin is valid',
+      function (done) {
+        var options = createOptions('/acl-tls/origin/test-folder/', 'user1')
+        options.headers.origin = origin1
+
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 200)
+          done()
+        })
+      })
+    it('agent should be able to access test directory when origin is invalid',
+      function (done) {
+        var options = createOptions('/acl-tls/origin/test-folder/')
+        options.headers.origin = origin2
+
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 200)
+          done()
+        })
+      })
+
+    after(function () {
+      rm('acl-tls/origin/test-folder/.acl')
+    })
+  })
+
   describe('Read-only', function () {
     var body = fs.readFileSync(path.join(__dirname, '../resources/acl-tls/read-acl/.acl'))
     it('user1 should be able to access ACL file', function (done) {
