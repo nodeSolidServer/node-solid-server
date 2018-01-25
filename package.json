@@ -76,7 +76,8 @@
     "uuid": "^3.0.0",
     "valid-url": "^1.0.9",
     "vhost": "^3.0.2",
-    "webid": "^0.3.7"
+    "webid": "^0.3.7",
+    "global-tunnel-ng": "^2.1.0"
   },
   "optionalDependencies": {
     "x509": "^0.3.2"
