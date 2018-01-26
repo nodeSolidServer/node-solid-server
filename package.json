@@ -61,7 +61,7 @@
     "node-forge": "^0.6.38",
     "nodemailer": "^3.1.4",
     "nomnom": "^1.8.1",
-    "oidc-auth-manager": "^0.13.0",
+    "oidc-auth-manager": "^0.14.0",
     "oidc-op-express": "^0.0.3",
     "rdflib": "^0.16.2",
     "recursive-readdir": "^2.1.0",
@@ -76,7 +76,8 @@
     "uuid": "^3.0.0",
     "valid-url": "^1.0.9",
     "vhost": "^3.0.2",
-    "webid": "^0.3.7"
+    "webid": "^0.3.7",
+    "global-tunnel-ng": "^2.1.0"
   },
   "optionalDependencies": {
     "x509": "^0.3.2"
