@@ -23,6 +23,11 @@
 
 ### Install
 
+You can install and run the server either using Node.js directly or using 
+[Docker](https://www.docker.com/).  This and the following sections describe the 
+first approach, for the second approach see the section [use Docker](#use-docker)
+Section below.
+
 To install, first install [Node](https://nodejs.org/en/) and then run the following
 
 ```bash
@@ -188,6 +193,27 @@ $ solid start --help
     --api-apps [value]            Path to the folder to mount on /api/apps
     -v, --verbose                 Print the logs to console
  ```
+
+## Use Docker
+
+Build with:
+
+```bash
+docker build -t node-solid-server .
+```
+
+Run with:
+```bash
+docker run -p 8443:8443 --name solid node-solid-server
+```
+
+Modify the config as follows:
+
+ - Copy the config to the current directory with: `docker cp solid:/usr/src/app/config.json .`
+ - Edit the `config.json` file
+ - Copy the file back with `docker cp config.json solid:/usr/src/app/`
+ - Restart the server with `docker restart solid`
+
 
 ## Library Usage
 
