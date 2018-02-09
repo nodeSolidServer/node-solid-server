@@ -301,6 +301,22 @@ module.exports = [
     when: (answers) => {
       return answers.useApiApps
     }
+  },
+  { // copied from name: 'owner'
+    name: 'redirect-http-from',
+    help: 'HTTP port or \',\'-separated ports to redirect to the solid server port (e.g. "80,8080").',
+    prompt: false,
+    validate: function (value) {
+      if (!value.match(/^[0-9]+(,[0-9]+)*$/)) {
+        return 'direct-port(s) must be a comma-separated list of integers.'
+      }
+      let list = value.split(/,/).map(v => parseInt(v))
+      let bad = list.find(v => { return v < 1 || v > 65535 })
+      if (bad.length) {
+        return 'redirect-http-from port(s) ' + bad + ' out of range'
+      }
+      return true
+    }
   }
 ]
 
