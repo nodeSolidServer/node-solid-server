@@ -313,7 +313,7 @@ module.exports = [
       let list = value.split(/,/).map(v => parseInt(v))
       let bad = list.find(v => { return v < 1 || v > 65535 })
       if (bad.length) {
-        return 'redirect-http-from port(s) ' + bad + ' out of length'
+        return 'redirect-http-from port(s) ' + bad + ' out of range'
       }
       return true
     }
