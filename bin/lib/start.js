@@ -24,8 +24,9 @@ module.exports = function (program, server) {
 
   start.action((opts) => {
     let argv = extend({}, opts, { version: program.version() })
+    let configFile = argv['configFile'] || './config.json'
 
-    fs.readFile(process.cwd() + '/config.json', (err, file) => {
+    fs.readFile(configFile, (err, file) => {
       // No file exists, not a problem
       if (err) {
         console.log(colors.cyan.bold('TIP'), 'create a config.json: `$ solid init`')

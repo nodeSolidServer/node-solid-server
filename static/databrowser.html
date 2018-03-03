@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html id="docHTML">
 <head>
-    <link type="text/css" rel="stylesheet" href="https://linkeddata.github.io/solid-app-set/style/tabbedtab.css" />
+    <link type="text/css" rel="stylesheet" href="https://solid.github.io/solid-panes/style/tabbedtab.css" />
     <script>
       var $SOLID_GLOBAL_config = {
         popupUri: window.location.origin + '/common/popup.html'
@@ -10,16 +10,22 @@
     <script type="text/javascript" src="https://linkeddata.github.io/mashlib/dist/mashlib.min.js"></script>
     <script>
       document.addEventListener('DOMContentLoaded', function () {
-        var UI = Mashlib
+        const panes = require('mashlib')
+        const UI = panes.UI
 
-        UI.rdf.Fetcher.crossSiteProxyTemplate = document.origin + '/proxy?uri={uri}'
+        // Set up cross-site proxy
+        const $rdf = UI.rdf
+        $rdf.Fetcher.crossSiteProxyTemplate = document.origin + '/xss/?uri={uri}'
 
+        // Authenticate the user
         UI.authn.checkUser()
           .then(function () {
-            var uri = window.location.href
-            window.document.title = uri
-            var subject = UI.rdf.namedNode(uri)
-            UI.outline.GotoSubject(subject, true, undefined, true, undefined)
+            // Set up the view for the current subject
+            const kb = UI.store
+            const uri = window.location.href
+            const subject = kb.sym(uri)
+            const outliner = panes.getOutliner(document)
+            outliner.GotoSubject(subject, true, undefined, true, undefined)
           })
       })
     </script>
