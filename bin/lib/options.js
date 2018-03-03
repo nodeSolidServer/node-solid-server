@@ -53,6 +53,12 @@ module.exports = [
     prompt: true
   },
   {
+    name: 'config-file',
+    question: 'Path to the config file (for example: ./config.json)',
+    default: './config.json',
+    prompt: true
+  },
+  {
     name: 'db-path',
     question: 'Path to the server metadata db directory (for users/apps etc)',
     default: './.db',
