@@ -4,11 +4,13 @@ const { expect } = chai
 chai.use(require('chai-as-promised'))
 
 const itMapsUrl = asserter(mapsUrl)
+const itMapsFile = asserter(mapsFile)
 
 describe('ResourceMapper', () => {
   describe('A ResourceMapper instance for a single-user setup', () => {
+    const rootUrl = 'http://localhost/'
     const rootPath = '/var/www/folder/'
-    const mapper = new ResourceMapper({ rootPath })
+    const mapper = new ResourceMapper({ rootUrl, rootPath })
 
     // PUT base cases from https://www.w3.org/DesignIssues/HTTPFilenameMapping.html
 
@@ -123,6 +125,50 @@ describe('ResourceMapper', () => {
         url: 'http://localhost/space/../bar'
       },
       new Error('Disallowed /.. segment in URL'))
+
+    // File to URL mapping
+
+    itMapsFile(mapper, 'an HTML file',
+      { path: `${rootPath}space/foo.html` },
+      {
+        url: 'http://localhost/space/foo.html',
+        contentType: 'text/html'
+      })
+
+    itMapsFile(mapper, 'a Turtle file',
+      { path: `${rootPath}space/foo.ttl` },
+      {
+        url: 'http://localhost/space/foo.ttl',
+        contentType: 'text/turtle'
+      })
+
+    itMapsFile(mapper, 'an unknown file type',
+      { path: `${rootPath}space/foo.bar` },
+      {
+        url: 'http://localhost/space/foo.bar',
+        contentType: 'application/octet-stream'
+      })
+
+    itMapsFile(mapper, 'an extensionless HTML file',
+      { path: `${rootPath}space/foo$.html` },
+      {
+        url: 'http://localhost/space/foo',
+        contentType: 'text/html'
+      })
+
+    itMapsFile(mapper, 'an extensionless Turtle file',
+      { path: `${rootPath}space/foo$.ttl` },
+      {
+        url: 'http://localhost/space/foo',
+        contentType: 'text/turtle'
+      })
+
+    itMapsFile(mapper, 'an extensionless unknown file type',
+      { path: `${rootPath}space/foo$.bar` },
+      {
+        url: 'http://localhost/space/foo',
+        contentType: 'application/octet-stream'
+      })
   })
 })
 
@@ -153,4 +199,11 @@ function mapsUrl (it, mapper, label, options, files, expected) {
       await expect(actual).to.be.rejectedWith(expected.message)
     })
   }
+}
+
+function mapsFile (it, mapper, label, options, expected) {
+  it(`maps ${label}`, async () => {
+    const actual = await mapper.mapFileToUrl(options)
+    expect(actual).to.deep.equal(expected)
+  })
 }
