@@ -3,6 +3,8 @@ const chai = require('chai')
 const { expect } = chai
 chai.use(require('chai-as-promised'))
 
+const itMapsUrl = asserter(mapsUrl)
+
 describe('ResourceMapper', () => {
   describe('A ResourceMapper instance for a single-user setup', () => {
     const rootPath = '/var/www/folder/'
@@ -52,7 +54,14 @@ describe('ResourceMapper', () => {
   })
 })
 
-function itMapsUrl (mapper, label, options, expected) {
+function asserter (assert) {
+  const f = (...args) => assert(it, ...args)
+  f.skip = (...args) => assert(it.skip, ...args)
+  f.only = (...args) => assert(it.only, ...args)
+  return f
+}
+
+function mapsUrl (it, mapper, label, options, expected) {
   if (!(expected instanceof Error)) {
     it(`maps ${label}`, async () => {
       const actual = await mapper.mapUrlToFile(options)
