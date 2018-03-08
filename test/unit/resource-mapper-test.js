@@ -36,6 +36,78 @@ describe('ResourceMapper', () => {
       },
       { path: `${rootPath}space/foo.exe$.html` })
 
+    // GET/HEAD/POST/DELETE/PATCH base cases
+
+    itMapsUrl.skip(mapper, 'a URL of a non-existing file',
+      {
+        url: 'http://localhost/space/foo.html',
+        contentTypes: ['text/html']
+      },
+      [/* no files */],
+      new Error('Not found'))
+
+    itMapsUrl(mapper, 'a URL of an existing file with extension',
+      {
+        url: 'http://localhost/space/foo.html',
+        contentTypes: ['text/html']
+      },
+      [
+        `${rootPath}space/foo.html`
+      ],
+      { path: `${rootPath}space/foo.html` })
+
+    itMapsUrl.skip(mapper, 'an extensionless URL of an existing file',
+      {
+        url: 'http://localhost/space/foo',
+        contentTypes: ['text/html']
+      },
+      [
+        `${rootPath}space/foo$.html`
+      ],
+      { path: `${rootPath}space/foo$.html` })
+
+    itMapsUrl.skip(mapper, 'an extensionless URL of an existing file, with choices',
+      {
+        url: 'http://localhost/space/foo',
+        contentTypes: ['text/html', 'text/turtle', 'image/png']
+      },
+      [
+        `${rootPath}space/foo$.html`,
+        `${rootPath}space/foo$.ttl`,
+        `${rootPath}space/foo$.png`
+      ],
+      { path: `${rootPath}space/foo$.html` })
+
+    itMapsUrl.skip(mapper, 'an extensionless URL of an existing file, first choice not available',
+      {
+        url: 'http://localhost/space/foo',
+        contentTypes: ['text/html', 'text/turtle', 'image/png']
+      },
+      [
+        `${rootPath}space/foo$.ttl`,
+        `${rootPath}space/foo$.png`
+      ],
+      { path: `${rootPath}space/foo$.ttl` })
+
+    itMapsUrl.skip(mapper, 'an extensionless URL of an existing file, no choice available',
+      {
+        url: 'http://localhost/space/foo',
+        contentTypes: ['text/html', 'text/turtle', 'image/png']
+      },
+      [
+        `${rootPath}space/foo$.txt`
+      ],
+      new Error('Not acceptable'))
+
+    itMapsUrl.skip(mapper, 'an extensionless URL of an existing file, no choice given',
+      {
+        url: 'http://localhost/space/foo'
+      },
+      [
+        `${rootPath}space/foo$.txt`
+      ],
+      { path: `${rootPath}space/foo$.txt` })
+
     // Security cases
 
     itMapsUrl(mapper, 'a URL with an unknown content type',
@@ -61,12 +133,20 @@ function asserter (assert) {
   return f
 }
 
-function mapsUrl (it, mapper, label, options, expected) {
+function mapsUrl (it, mapper, label, options, files, expected) {
+  // Shift parameters if necessary
+  if (!expected) {
+    expected = files
+    files = []
+  }
+
+  // Set up positive test
   if (!(expected instanceof Error)) {
     it(`maps ${label}`, async () => {
       const actual = await mapper.mapUrlToFile(options)
       expect(actual).to.deep.equal(expected)
     })
+  // Set up error test
   } else {
     it(`does not map ${label}`, async () => {
       const actual = mapper.mapUrlToFile(options)
