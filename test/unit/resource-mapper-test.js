@@ -59,6 +59,39 @@ describe('ResourceMapper', () => {
         contentType: 'application/octet-stream'
       })
 
+    itMapsUrl(mapper, 'a URL with an alternative extension that matches the content type',
+      {
+        url: 'http://localhost/space/foo.jpeg',
+        contentType: 'image/jpeg',
+        createIfNotExists: true
+      },
+      {
+        path: `${rootPath}space/foo.jpeg`,
+        contentType: 'image/jpeg'
+      })
+
+    itMapsUrl(mapper, 'a URL with an uppercase extension that matches the content type',
+      {
+        url: 'http://localhost/space/foo.JPG',
+        contentType: 'image/jpeg',
+        createIfNotExists: true
+      },
+      {
+        path: `${rootPath}space/foo.JPG`,
+        contentType: 'image/jpeg'
+      })
+
+    itMapsUrl(mapper, 'a URL with a mixed-case extension that matches the content type',
+      {
+        url: 'http://localhost/space/foo.jPeG',
+        contentType: 'image/jpeg',
+        createIfNotExists: true
+      },
+      {
+        path: `${rootPath}space/foo.jPeG`,
+        contentType: 'image/jpeg'
+      })
+
     // GET/HEAD/POST/DELETE/PATCH base cases
 
     itMapsUrl.skip(mapper, 'a URL of a non-existing file',
@@ -106,6 +139,30 @@ describe('ResourceMapper', () => {
         contentType: 'text/html'
       })
 
+    itMapsUrl.skip(mapper, 'an extensionless URL of an existing file with an uppercase extension',
+      {
+        url: 'http://localhost/space/foo'
+      },
+      [
+        `${rootPath}space/foo$.HTML`
+      ],
+      {
+        path: `${rootPath}space/foo$.HTML`,
+        contentType: 'text/html'
+      })
+
+    itMapsUrl.skip(mapper, 'an extensionless URL of an existing file with a mixed-case extension',
+      {
+        url: 'http://localhost/space/foo'
+      },
+      [
+        `${rootPath}space/foo$.HtMl`
+      ],
+      {
+        path: `${rootPath}space/foo$.HtMl`,
+        contentType: 'text/html'
+      })
+
     // Security cases
 
     itMapsUrl(mapper, 'a URL with an unknown content type',
@@ -148,6 +205,20 @@ describe('ResourceMapper', () => {
         contentType: 'application/octet-stream'
       })
 
+    itMapsFile.skip(mapper, 'a file with an uppercase extension',
+      { path: `${rootPath}space/foo.HTML` },
+      {
+        url: 'http://localhost/space/foo.HTML',
+        contentType: 'text/html'
+      })
+
+    itMapsFile.skip(mapper, 'a file with a mixed-case extension',
+      { path: `${rootPath}space/foo.HtMl` },
+      {
+        url: 'http://localhost/space/foo.HtMl',
+        contentType: 'text/html'
+      })
+
     itMapsFile(mapper, 'an extensionless HTML file',
       { path: `${rootPath}space/foo$.html` },
       {
@@ -167,6 +238,20 @@ describe('ResourceMapper', () => {
       {
         url: 'http://localhost/space/foo',
         contentType: 'application/octet-stream'
+      })
+
+    itMapsFile.skip(mapper, 'an extensionless file with an uppercase extension',
+      { path: `${rootPath}space/foo$.HTML` },
+      {
+        url: 'http://localhost/space/foo',
+        contentType: 'text/html'
+      })
+
+    itMapsFile.skip(mapper, 'an extensionless file with a mixed-case extension',
+      { path: `${rootPath}space/foo$.HtMl` },
+      {
+        url: 'http://localhost/space/foo',
+        contentType: 'text/html'
       })
   })
 })
