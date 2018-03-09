@@ -3,13 +3,14 @@ const chai = require('chai')
 const { expect } = chai
 chai.use(require('chai-as-promised'))
 
+const rootUrl = 'http://localhost/'
+const rootPath = '/var/www/folder/'
+
 const itMapsUrl = asserter(mapsUrl)
 const itMapsFile = asserter(mapsFile)
 
 describe('ResourceMapper', () => {
   describe('A ResourceMapper instance for a single-user setup', () => {
-    const rootUrl = 'http://localhost/'
-    const rootPath = '/var/www/folder/'
     const mapper = new ResourceMapper({ rootUrl, rootPath })
 
     // PUT base cases from https://www.w3.org/DesignIssues/HTTPFilenameMapping.html
@@ -94,14 +95,14 @@ describe('ResourceMapper', () => {
 
     // GET/HEAD/POST/DELETE/PATCH base cases
 
-    itMapsUrl.skip(mapper, 'a URL of a non-existing file',
+    itMapsUrl(mapper, 'a URL of a non-existing file',
       {
         url: 'http://localhost/space/foo.html'
       },
       [/* no files */],
-      new Error('Not found'))
+      new Error('File not found'))
 
-    itMapsUrl.skip(mapper, 'a URL of an existing file with extension',
+    itMapsUrl(mapper, 'a URL of an existing file with extension',
       {
         url: 'http://localhost/space/foo.html'
       },
@@ -113,7 +114,7 @@ describe('ResourceMapper', () => {
         contentType: 'text/html'
       })
 
-    itMapsUrl.skip(mapper, 'an extensionless URL of an existing file',
+    itMapsUrl(mapper, 'an extensionless URL of an existing file',
       {
         url: 'http://localhost/space/foo'
       },
@@ -125,7 +126,7 @@ describe('ResourceMapper', () => {
         contentType: 'text/html'
       })
 
-    itMapsUrl.skip(mapper, 'an extensionless URL of an existing file, with multiple choices',
+    itMapsUrl(mapper, 'an extensionless URL of an existing file, with multiple choices',
       {
         url: 'http://localhost/space/foo'
       },
@@ -139,7 +140,7 @@ describe('ResourceMapper', () => {
         contentType: 'text/html'
       })
 
-    itMapsUrl.skip(mapper, 'an extensionless URL of an existing file with an uppercase extension',
+    itMapsUrl(mapper, 'an extensionless URL of an existing file with an uppercase extension',
       {
         url: 'http://localhost/space/foo'
       },
@@ -151,7 +152,7 @@ describe('ResourceMapper', () => {
         contentType: 'text/html'
       })
 
-    itMapsUrl.skip(mapper, 'an extensionless URL of an existing file with a mixed-case extension',
+    itMapsUrl(mapper, 'an extensionless URL of an existing file with a mixed-case extension',
       {
         url: 'http://localhost/space/foo'
       },
@@ -205,14 +206,14 @@ describe('ResourceMapper', () => {
         contentType: 'application/octet-stream'
       })
 
-    itMapsFile.skip(mapper, 'a file with an uppercase extension',
+    itMapsFile(mapper, 'a file with an uppercase extension',
       { path: `${rootPath}space/foo.HTML` },
       {
         url: 'http://localhost/space/foo.HTML',
         contentType: 'text/html'
       })
 
-    itMapsFile.skip(mapper, 'a file with a mixed-case extension',
+    itMapsFile(mapper, 'a file with a mixed-case extension',
       { path: `${rootPath}space/foo.HtMl` },
       {
         url: 'http://localhost/space/foo.HtMl',
@@ -240,14 +241,14 @@ describe('ResourceMapper', () => {
         contentType: 'application/octet-stream'
       })
 
-    itMapsFile.skip(mapper, 'an extensionless file with an uppercase extension',
+    itMapsFile(mapper, 'an extensionless file with an uppercase extension',
       { path: `${rootPath}space/foo$.HTML` },
       {
         url: 'http://localhost/space/foo',
         contentType: 'text/html'
       })
 
-    itMapsFile.skip(mapper, 'an extensionless file with a mixed-case extension',
+    itMapsFile(mapper, 'an extensionless file with a mixed-case extension',
       { path: `${rootPath}space/foo$.HtMl` },
       {
         url: 'http://localhost/space/foo',
@@ -270,15 +271,25 @@ function mapsUrl (it, mapper, label, options, files, expected) {
     files = []
   }
 
+  // Mock filesystem
+  function mockReaddir () {
+    mapper._readdir = async (path) => {
+      expect(path).to.equal(`${rootPath}space/`)
+      return files.map(f => f.replace(/.*\//, ''))
+    }
+  }
+
   // Set up positive test
   if (!(expected instanceof Error)) {
     it(`maps ${label}`, async () => {
+      mockReaddir()
       const actual = await mapper.mapUrlToFile(options)
       expect(actual).to.deep.equal(expected)
     })
   // Set up error test
   } else {
     it(`does not map ${label}`, async () => {
+      mockReaddir()
       const actual = mapper.mapUrlToFile(options)
       await expect(actual).to.be.rejectedWith(expected.message)
     })
