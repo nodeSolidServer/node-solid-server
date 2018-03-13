@@ -10,7 +10,7 @@ const itMapsUrl = asserter(mapsUrl)
 const itMapsFile = asserter(mapsFile)
 
 describe('ResourceMapper', () => {
-  describe('A ResourceMapper instance for a single-user setup', () => {
+  describe('A ResourceMapper instance for a single-host setup', () => {
     const mapper = new ResourceMapper({ rootUrl, rootPath })
 
     // PUT base cases from https://www.w3.org/DesignIssues/HTTPFilenameMapping.html
@@ -252,6 +252,57 @@ describe('ResourceMapper', () => {
       { path: `${rootPath}space/foo$.HtMl` },
       {
         url: 'http://localhost/space/foo',
+        contentType: 'text/html'
+      })
+  })
+
+  describe('A ResourceMapper instance for a multi-host setup', () => {
+    const mapper = new ResourceMapper({ rootUrl, rootPath, includeHost: true })
+
+    itMapsUrl(mapper, 'a URL with a host',
+      {
+        url: 'http://example.org/space/foo.html',
+        contentType: 'text/html',
+        createIfNotExists: true
+      },
+      {
+        path: `${rootPath}example.org/space/foo.html`,
+        contentType: 'text/html'
+      })
+
+    itMapsUrl(mapper, 'a URL with a host with a port',
+      {
+        url: 'http://example.org:3000/space/foo.html',
+        contentType: 'text/html',
+        createIfNotExists: true
+      },
+      {
+        path: `${rootPath}example.org/space/foo.html`,
+        contentType: 'text/html'
+      })
+
+    itMapsFile(mapper, 'a file on a host',
+      {
+        path: `${rootPath}space/foo.html`,
+        hostname: 'example.org'
+      },
+      {
+        url: 'http://example.org/space/foo.html',
+        contentType: 'text/html'
+      })
+  })
+
+  describe('A ResourceMapper instance for a multi-host setup with a subfolder root URL', () => {
+    const rootUrl = 'http://localhost/foo/bar/'
+    const mapper = new ResourceMapper({ rootUrl, rootPath, includeHost: true })
+
+    itMapsFile(mapper, 'a file on a host',
+      {
+        path: `${rootPath}space/foo.html`,
+        hostname: 'example.org'
+      },
+      {
+        url: 'http://example.org/foo/bar/space/foo.html',
         contentType: 'text/html'
       })
   })
