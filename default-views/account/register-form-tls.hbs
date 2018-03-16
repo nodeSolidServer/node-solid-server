@@ -1,0 +1,57 @@
+<form method="post" action="/api/accounts/new">
+  <div class="form-group">
+    {{#if error}}
+      <div class="row">
+        <div class="col-md-12">
+          <p class="text-danger"><strong>{{error}}</strong></p>
+        </div>
+      </div>
+    {{/if}}
+    <div class="row">
+      <div class="col-md-6">
+        <label for="username">Username:</label>
+        <input type="text" class="form-control" name="username" id="username" placeholder="alice" />
+      </div>
+      <div class="col-md-6">&nbsp;</div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+        <label for="name">Name:</label>
+        <input type="text" class="form-control" name="name" id="name" value="{{name}}"/>
+      </div>
+      <div class="col-md-6">&nbsp;</div>
+    </div>
+    <div class="row">
+      <div class="col-md-6">
+<!--
+        <label for="externalWebId">(Optional) External WebID:</label>
+        <p>We will generate a Web ID when you register, but if you
+        already have a Web ID hosted elsewhere, enter it here</p>
+-->
+        <label for="externalWebId">WebID:</label>
+        <input type="text" class="form-control" name="externalWebId" id="externalWebId" value="{{webid}}" />
+      </div>
+      <div class="col-md-6">&nbsp;</div>
+    </div>
+    <input type="hidden" name="returnToUrl" value="{{returnToUrl}}" />
+  </div>
+
+  <div class="form-group">
+    <div class="row">
+      <div class="col-md-2">
+        <button type="submit" class="btn btn-primary" id="register">Register</button>
+
+        {{> auth/auth-hidden-fields}}
+      </div>
+
+      <div class="col-md-10">
+        <div>Already have an account?
+          <a class="btn btn-xs btn-default"
+             href="{{{loginUrl}}}">
+            Log In
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

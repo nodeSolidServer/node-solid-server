@@ -1,6 +1,5 @@
 <form id="tls" method="post" action="/login/tls">
 
-{{#unless enablePassword }}
   <div class="form-group">
     <div class="row">
       <div class="col-md-12">
@@ -9,7 +8,6 @@
       </div>
     </div>
   </div>
-{{/unless}}
   
   <div class="form-group">
 
@@ -18,7 +16,6 @@
     </button>
 
     {{> auth/auth-hidden-fields}}
-
   </div>
 </form>
 
@@ -28,12 +25,9 @@
     const client_id = document.querySelector('#tls #client_id')
     const scope = document.querySelector('#tls #scope')
     const request = document.querySelector('#tls #request')
-    const username_tls = document.querySelector('#tls #username');
-    const username_pwd = document.querySelector('#login_pwd #username');
+    const username = document.querySelector('#tls #username').value;
 
     document.querySelector('#error').style.display="none";
-
-    let uid = username_tls? username_tls.value: username_pwd.value;
 
     if (client_id && scope && request 
         && client_id.value.length == 0
@@ -42,12 +36,6 @@
 
       event.preventDefault()
 
-      if (uid.length === 0) {
-         document.querySelector('#error').style.display='block';
-         document.querySelector('#error_msg').innerText = 'Username required';
-         return;
-      }
-
       fetch('/login/tls',
         { method: 'POST', 
           headers: {
@@ -55,7 +43,7 @@
             'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
           },
           credentials: 'include', 
-          body:'username='+uid})
+          body:'username='+username})
        .then(function(response) {
           if (!response.ok) {
             document.querySelector('#error').style.display="block";
@@ -87,6 +75,5 @@
          alert(error);
        }) 
     }
-    
   })
 </script>
