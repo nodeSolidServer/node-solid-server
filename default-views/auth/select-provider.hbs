@@ -20,12 +20,10 @@
   {{/if}}
 </div>
 <div class="container">
-  <form method="post" action="/api/auth/select-provider">
+  <form method="post">
     <div class="form-group">
       <label for="webid">WebID or server URL:</label>
-      <input type="text" class="form-control" name="webid" id="webid"
-             value="{{serverUri}}" />
-      <input type="hidden" name="returnToUrl" id="returnToUrl" value="" />
+      <input type="text" class="form-control" name="webid" id="webid" value="{{serverUri}}" />
     </div>
     <button type="submit" class="btn btn-primary" id="discover">Submit</button>
   </form>
