@@ -29,24 +29,24 @@
     solid:publicTypeIndex </settings/publicTypeIndex.ttl> ;
     solid:privateTypeIndex </settings/privateTypeIndex.ttl> .
 
-{{#if add_owl_sameAs}}
+{{#if addOwlSameAs}}
 :me
     owl:sameAs <{{extWebId}}> .
 {{/if}}
 
-{{#if tls_cert_webid}}
+{{#if tlsCertWebid}}
 :me
-    acl:delegates <{{tls_cert_webid}}> ; # Delegation Relations for Software Agent 
+    acl:delegates <{{tlsCertWebid}}> ; # Delegation Relations for Software Agent 
     cert:key [
                a cert:RSAPublicKey ;
                cert:exponent   "65537"^^xsd:int ;
                cert:modulus    "00"^^xsd:hexBinary
              ] .
 
-<{{tls_cert_webid}}>
+<{{tlsCertWebid}}>
     cert:key [
                a cert:RSAPublicKey ;
-               cert:exponent   "{{tls_cert_exponent}}"^^xsd:int ;
-               cert:modulus    "{{tls_cert_modulus}}"^^xsd:hexBinary
+               cert:exponent   "{{tlsCertExponent}}"^^xsd:int ;
+               cert:modulus    "{{tlsCertModulus}}"^^xsd:hexBinary
              ] .
 {{/if}}

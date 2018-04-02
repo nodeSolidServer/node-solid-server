@@ -9,6 +9,9 @@
 
     acl:agent
         <{{webId}}>;
+{{#if addOwlSameAs}}
+    acl:agent  <{{extWebId}}>;
+{{/if}}
 
     acl:accessTo </.meta>;
 

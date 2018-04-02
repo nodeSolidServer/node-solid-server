@@ -19,7 +19,12 @@ const accountManager = AccountManager.from({ host, multiuser: true })
 describe('TlsAuthenticator', () => {
   describe('fromParams()', () => {
     let req = {
-      connection: {}
+      connection: {},
+      app: {
+        locals: {
+          authMethod: 'tls'
+        }
+      }
     }
     let options = { accountManager }
 

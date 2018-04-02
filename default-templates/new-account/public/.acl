@@ -6,6 +6,9 @@
 <#owner>
     a acl:Authorization;
     acl:agent <{{webId}}>;
+{{#if addOwlSameAs}}
+    acl:agent <{{extWebId}}>;
+{{/if}}
     acl:accessTo <./>;
     acl:defaultForNew <./>;
     acl:mode acl:Read, acl:Write, acl:Control.

@@ -5,6 +5,9 @@
     a acl:Authorization;
 
     acl:agent <{{webId}}> ;
+{{#if addOwlSameAs}}
+    acl:agent  <{{extWebId}}>;
+{{/if}}
 
     # Optional owner email, to be used for account recovery:
     {{#if email}}acl:agent <mailto:{{{email}}}>;{{/if}}
