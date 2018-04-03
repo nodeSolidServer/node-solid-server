@@ -22,7 +22,7 @@
         <a id="logged-href" href="" title="" style="display:none">
           <span class="glyphicon glyphicon-user"></span>
         </a>
-        <span>&nbsp&nbsp</span>
+        <span>&nbsp;&nbsp;</span>
         <button id="session-action" type="button" class="session-action btn btn-default navbar-btn">Loading...</button>
       </div>
     </div>
@@ -218,25 +218,6 @@
         if (!response.ok) {
           throw new Error('Network update request was not ok. HTTP='+response.status+'  '+response.statusText)
         }
-/***
-        var msg = '<?xml version="1.0" encoding="utf-8" ?>'+
-            '<D:propertyupdate xmlns:D="DAV:"><D:set><D:prop>'+
-            '<virtpermissions xmlns="http://www.openlinksw.com/virtuoso/webdav/1.0/">110100100RM</virtpermissions>'+
-            '</D:prop></D:set></D:propertyupdate>'
-
-        fetch(file_url.href,
-          { method: 'POST', 
-            headers: {
-              'Content-Type': 'text/xml; charset=utf-8'
-            },
-            credentials: 'include', 
-            body: msg
-        })
-        .then(function(response) {
-          alert('Attr: '+response.statusText);
-        })
-        .catch(function(error) {})
-***/
         alert('Your profile file '+prof_url+' was updated.')
             
       })
