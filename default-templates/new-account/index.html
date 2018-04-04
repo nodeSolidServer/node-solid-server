@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Personal Data Space (or POD) {{#if name}} of {{name}} {{/if}}</title>
+  <title>{{#if name}}{{name}} &ndash; {{/if}}Solid Home</title>
   <link rel="stylesheet" href="/common/css/bootstrap.min.css">
   <style>
     .session-action {
@@ -16,7 +16,7 @@
   <nav class="navbar navbar-default">
     <div class="container-fluid">
       <div class="navbar-header">
-        <a href="/" class="navbar-brand">Personal Data Space (POD)</a>
+        <a href="/" class="navbar-brand">{{#if name}}{{name}} &ndash; {{/if}}Solid Home</a>
       </div>
       <div class="navbar-right">
         <a id="logged-href" href="" title="" style="display:none">
@@ -33,8 +33,9 @@
     <div class="col-md-12">
       <p class="lead">
         <span>
-          This is a public homepage of <a href="{{webId}}">{{#if name}} {{name}} {{/if}}</a>
+          This is a public homepage of {{#if name}}{{name}}, whose WebID is{{else}}a user with WebID{{/if}}
         </span>
+        <a href="{{webId}}"><mark>{{webId}}</mark></a>.
       </p>
     </div>
   </div>
@@ -151,18 +152,18 @@
   function render() {
     const { session } = state
     const actionButton = sessionActionButton()
-    const logged_href = sessionLogged_href()
+    const loggedHref = sessionLoggedHref()
     if (!session) {
       actionButton.innerText = 'Log in'
-      logged_href.style.display = 'none'
-      logged_href.href = "";
-      logged_href.title = "";
+      loggedHref.style.display = 'none'
+      loggedHref.href = ""
+      loggedHref.title = ""
     } else {
       actionButton.innerText = 'Log out'
       if (session.webId) {
-        logged_href.style.display = 'initial'
-        logged_href.href = session.webId;
-        logged_href.title = session.webId;
+        loggedHref.style.display = 'initial'
+        loggedHref.href = session.webId
+        loggedHref.title = session.webId
       }
     }
   }
@@ -170,7 +171,7 @@
   function sessionActionButton() {
     return document.getElementById('session-action')
   }
-  function sessionLogged_href() {
+  function sessionLoggedHref() {
     return document.getElementById('logged-href')
   }
 
