@@ -28,65 +28,54 @@
     const client_id = document.querySelector('#tls #client_id')
     const scope = document.querySelector('#tls #scope')
     const request = document.querySelector('#tls #request')
-    const username_tls = document.querySelector('#tls #username');
-    const username_pwd = document.querySelector('#login_pwd #username');
+    const username_tls = document.querySelector('#tls #username')
+    const username_pwd = document.querySelector('#login_pwd #username')
 
-    document.querySelector('#error').style.display="none";
+    document.querySelector('#error').style.display="none"
 
-    let uid = username_tls? username_tls.value: username_pwd.value;
+    let uid = username_tls? username_tls.value: username_pwd.value
 
-    if (client_id && scope && request 
-        && client_id.value.length == 0
-        && scope.value.length == 0
-        && request.value.length == 0) {
+    event.preventDefault()
 
-      event.preventDefault()
-
-      if (uid.length === 0) {
-         document.querySelector('#error').style.display='block';
-         document.querySelector('#error_msg').innerText = 'Username required';
-         return;
-      }
-
-      fetch('/login/tls',
-        { method: 'POST', 
-          headers: {
-            'Accept': 'text/plain, text/html, *.*',
-            'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
-          },
-          credentials: 'include', 
-          body:'username='+uid})
-       .then(function(response) {
-          if (!response.ok) {
-            document.querySelector('#error').style.display="block";
-            document.querySelector('#error_msg').innerText = response.statusText;
-            return;
-          }
-          const webId = response.headers.get('user')
-          const idp = new URL(webId).origin
-          const session = { authType: 'WebID-TLS', webId, idp }
-          const authClientNamespace = 'solid-auth-client'
-          let authClientStore
-          try {
-            authClientStore = JSON.parse(localStorage.getItem(authClientNamespace) || '{}')
-          } catch (err) {
-            authClientStore = {}
-          }
-          authClientStore.session = session
-          localStorage.setItem(authClientNamespace, JSON.stringify(authClientStore))
-
-          response.text().then(function(text) {
-            try {
-              const url = new URL(text);
-              window.location.href = url.href;
-            } catch(err) {
-            }
-          })
-       })
-       .catch(function(error) {
-         alert(error);
-       }) 
+    if (uid.length === 0) {
+       document.querySelector('#error').style.display='block';
+       document.querySelector('#error_msg').innerText = 'Username required';
+       return;
     }
-    
+
+    fetch('/login/tls',
+      { method: 'POST', 
+        headers: {
+          'Accept': 'text/html, text/plain, *.*',
+          'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+        },
+        credentials: 'include', 
+        body:'username='+uid})
+     .then(function(response) {
+        if (!response.ok) {
+          document.querySelector('#error').style.display="block";
+          document.querySelector('#error_msg').innerText = response.statusText;
+          return;
+        }
+        const webId = response.headers.get('user')
+        const idp = new URL(webId).origin
+        const session = { authType: 'WebID-TLS', webId, idp }
+        const authClientNamespace = 'solid-auth-client'
+        let authClientStore
+        try {
+          authClientStore = JSON.parse(localStorage.getItem(authClientNamespace) || '{}')
+        } catch (err) {
+          authClientStore = {}
+        }
+        authClientStore.session = session
+        localStorage.setItem(authClientNamespace, JSON.stringify(authClientStore))
+        return response
+     })
+     .then(function(response) {
+        window.location.href = response.url
+     })
+     .catch(function(error) {
+       alert(error);
+     }) 
   })
 </script>
