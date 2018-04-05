@@ -25,9 +25,6 @@
 <script type="text/javascript">
   const button = document.getElementById('login-tls')
   button.addEventListener('click', function(event) {
-    const client_id = document.querySelector('#tls #client_id')
-    const scope = document.querySelector('#tls #scope')
-    const request = document.querySelector('#tls #request')
     const username_tls = document.querySelector('#tls #username')
     const username_pwd = document.querySelector('#login_pwd #username')
 
@@ -38,9 +35,9 @@
     event.preventDefault()
 
     if (uid.length === 0) {
-       document.querySelector('#error').style.display='block';
-       document.querySelector('#error_msg').innerText = 'Username required';
-       return;
+       document.querySelector('#error').style.display='block'
+       document.querySelector('#error_msg').innerText = 'Username required'
+       return
     }
 
     fetch('/login/tls',
@@ -53,9 +50,9 @@
         body:'username='+uid})
      .then(function(response) {
         if (!response.ok) {
-          document.querySelector('#error').style.display="block";
-          document.querySelector('#error_msg').innerText = response.statusText;
-          return;
+          document.querySelector('#error').style.display="block"
+          document.querySelector('#error_msg').innerText = response.statusText
+          return
         }
         const webId = response.headers.get('user')
         const idp = new URL(webId).origin

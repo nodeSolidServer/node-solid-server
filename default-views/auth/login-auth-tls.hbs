@@ -22,9 +22,6 @@
 <script type="text/javascript">
   const button = document.getElementById('login-tls')
   button.addEventListener('click', function(event) {
-    const client_id = document.querySelector('#tls #client_id')
-    const scope = document.querySelector('#tls #scope')
-    const request = document.querySelector('#tls #request')
     const username = document.querySelector('#tls #username').value
 
     document.querySelector('#error').style.display="none"
@@ -41,9 +38,9 @@
         body:'username='+username})
      .then(function(response) {
         if (!response.ok) {
-          document.querySelector('#error').style.display="block";
-          document.querySelector('#error_msg').innerText = response.statusText;
-          return;
+          document.querySelector('#error').style.display="block"
+          document.querySelector('#error_msg').innerText = response.statusText
+          return
         }
         const webId = response.headers.get('user')
         const idp = new URL(webId).origin
