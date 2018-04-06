@@ -22,45 +22,58 @@
 <script type="text/javascript">
   const button = document.getElementById('login-tls')
   button.addEventListener('click', function(event) {
+    const clientId = document.querySelector('#tls #client_id')
+    const scope = document.querySelector('#tls #scope')
+    const request = document.querySelector('#tls #request')
     const username = document.querySelector('#tls #username').value
 
     document.querySelector('#error').style.display="none"
 
-    event.preventDefault()
+    if (clientId && scope && request 
+        && clientId.value.length == 0
+        && scope.value.length == 0
+        && request.value.length == 0) {
 
-    fetch('/login/tls',
-      { method: 'POST', 
-        headers: {
-          'Accept': 'text/html, text/plain, *.*',
-          'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
-        },
-        credentials: 'include', 
-        body:'username='+username})
-     .then(function(response) {
-        if (!response.ok) {
-          document.querySelector('#error').style.display="block"
-          document.querySelector('#error_msg').innerText = response.statusText
-          return
-        }
-        const webId = response.headers.get('user')
-        const idp = new URL(webId).origin
-        const session = { authType: 'WebID-TLS', webId, idp }
-        const authClientNamespace = 'solid-auth-client'
-        let authClientStore
-        try {
-          authClientStore = JSON.parse(localStorage.getItem(authClientNamespace) || '{}')
-        } catch (err) {
-          authClientStore = {}
-        }
-        authClientStore.session = session
-        localStorage.setItem(authClientNamespace, JSON.stringify(authClientStore))
-        return response
-     })
-     .then(function(response) {
-        window.location.href = response.url
-     })
-     .catch(function(error) {
-       alert(error);
-     }) 
+      event.preventDefault()
+
+      fetch('/login/tls',
+        { method: 'POST', 
+          headers: {
+            'Accept': 'text/html, text/plain, *.*',
+            'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8'
+          },
+          credentials: 'include', 
+          body:'username='+username})
+       .then(function(response) {
+          if (!response.ok) {
+            document.querySelector('#error').style.display="block"
+            document.querySelector('#error_msg').innerText = response.statusText
+            return
+          }
+          const webId = response.headers.get('user')
+          const idp = new URL(webId).origin
+          const session = { authType: 'WebID-TLS', webId, idp }
+          const authClientNamespace = 'solid-auth-client'
+          let authClientStore
+          try {
+            authClientStore = JSON.parse(localStorage.getItem(authClientNamespace) || '{}')
+          } catch (err) {
+            authClientStore = {}
+          }
+          authClientStore.session = session
+          localStorage.setItem(authClientNamespace, JSON.stringify(authClientStore))
+
+          response.text().then(function(text) {
+            try {
+              const url = new URL(text)
+              window.location.href = url.href
+            } catch(err) {
+            }
+          })
+       })
+       .catch(function(error) {
+         alert(error);
+       }) 
+    }
   })
 </script>
