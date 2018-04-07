@@ -19,6 +19,10 @@
         <a href="/" class="navbar-brand">{{#if name}}{{name}} &ndash; {{/if}}Solid Home</a>
       </div>
       <div class="navbar-right">
+        <a id="logged-href" href="" title="" style="display:none">
+          <span class="glyphicon glyphicon-user"></span>
+        </a>
+        <span>&nbsp;&nbsp;</span>
         <button id="session-action" type="button" class="session-action btn btn-default navbar-btn">Loading...</button>
       </div>
     </div>
@@ -35,6 +39,23 @@
       </p>
     </div>
   </div>
+
+{{#if tlsCertWebid}}
+  <div class="row" id="update_profile" style="display:none">
+    <div class="col-md-12">
+      <p class="lead">
+        Regarding WebID-TLS+Delegation protocol, add the following RDF statement to your Delegates WebID-Profile Document or click "Update WebID-Profile Doc" to attempt this action right now.
+        <pre>
+&lt;{{tlsCertWebid}}&gt; &lt;http://www.openlinksw.com/schemas/cert#onBehalfOf&gt; &lt;{{webId}}&gt; .
+        </pre>
+        <span>
+          <input id="load_btn" class="btn btn-primary" value=" Update WebID-Profile Doc " type="button">
+        </span>
+      </p>
+    </div>
+  </div>
+{{/if}}
+
   <section class="row">
     <div class="col-md-12">
       <h1>Data</h1>
@@ -89,6 +110,11 @@
   })
 
   function main() {
+    if (window.location.hash === '#init') {
+      let update_block = document.querySelector('#update_profile');
+      if (update_block)
+        update_block.style.display="block";
+    }
     // Render the session state
     SolidAuthClient
       .currentSession()
@@ -98,6 +124,10 @@
     // Add event listeners
     const actionButton = sessionActionButton()
     actionButton.addEventListener('click', takeSessionAction)
+
+    const button = document.getElementById('load_btn')
+    if (button)
+      button.addEventListener('click', updateData)
   }
 
   function saveSession(session) {
@@ -122,17 +152,81 @@
   function render() {
     const { session } = state
     const actionButton = sessionActionButton()
+    const loggedHref = sessionLoggedHref()
     if (!session) {
       actionButton.innerText = 'Log in'
+      loggedHref.style.display = 'none'
+      loggedHref.href = ""
+      loggedHref.title = ""
     } else {
       actionButton.innerText = 'Log out'
+      if (session.webId) {
+        loggedHref.style.display = 'initial'
+        loggedHref.href = session.webId
+        loggedHref.title = session.webId
+      }
     }
   }
 
   function sessionActionButton() {
     return document.getElementById('session-action')
   }
+  function sessionLoggedHref() {
+    return document.getElementById('logged-href')
+  }
 
   document.addEventListener('DOMContentLoaded', main)
+
+
+  function updateData() {
+      let prof_url = '{{tlsCertWebid}}'
+      let delegator = '{{webId}}'
+      let rel_add = '\n <'+prof_url+'> <http://www.openlinksw.com/schemas/cert#onBehalfOf>  <'+delegator+'> . \n'
+      let file_url = new URL(prof_url)
+
+      if (file_url.protocol === 'http:')
+        file_url.protocol = 'https:'
+
+      file_url.hash = ''
+
+      event.preventDefault()
+
+      fetch(file_url.href,
+        { method: 'GET', 
+          headers: {
+            'Accept': 'text/turtle; charset=utf-8'
+          },
+          credentials: 'include'
+        })
+      .then(function(response) {
+        if (response.ok) {
+          return response.text()
+        }
+        throw new Error('Network response was not ok. HTTP='+response.status+'  '+response.statusText)
+      })
+      .then(function(text) {
+
+        return fetch(file_url.href,
+          { method: 'PUT', 
+            headers: {
+              'Content-Type': 'text/turtle; charset=utf-8'
+            },
+            credentials: 'include', 
+            body: text+rel_add
+          })
+      })
+      .then(function(response) {
+        if (!response.ok) {
+          throw new Error('Network update request was not ok. HTTP='+response.status+'  '+response.statusText)
+        }
+        alert('Your profile file '+prof_url+' was updated.')
+            
+      })
+       .catch(function(error) {
+         alert(error)
+       }) 
+
+  }
+
 </script>
 </html>

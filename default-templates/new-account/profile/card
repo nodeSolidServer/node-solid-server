@@ -3,13 +3,18 @@
 @prefix pim: <http://www.w3.org/ns/pim/space#>.
 @prefix schema: <http://schema.org/>.
 @prefix ldp: <http://www.w3.org/ns/ldp#>.
+@prefix acl: <http://www.w3.org/ns/auth/acl#> . 
+@prefix owl: <http://www.w3.org/2002/07/owl#> . 
+@prefix cert: <http://www.w3.org/ns/auth/cert#> . 
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> . 
+@prefix : <#> .
 
 <>
     a foaf:PersonalProfileDocument ;
-    foaf:maker <{{webId}}> ;
-    foaf:primaryTopic <{{webId}}> .
+    foaf:maker :me ;
+    foaf:primaryTopic :me .
 
-<{{webId}}>
+:me
     a foaf:Person ;
     a schema:Person ;
 
@@ -23,3 +28,25 @@
     pim:preferencesFile </settings/prefs.ttl> ;  # private settings/preferences
     solid:publicTypeIndex </settings/publicTypeIndex.ttl> ;
     solid:privateTypeIndex </settings/privateTypeIndex.ttl> .
+
+{{#if addOwlSameAs}}
+:me
+    owl:sameAs <{{extWebId}}> .
+{{/if}}
+
+{{#if tlsCertWebid}}
+:me
+    acl:delegates <{{tlsCertWebid}}> ; # Delegation Relations for Software Agent 
+    cert:key [
+               a cert:RSAPublicKey ;
+               cert:exponent   "65537"^^xsd:int ;
+               cert:modulus    "00"^^xsd:hexBinary
+             ] .
+
+<{{tlsCertWebid}}>
+    cert:key [
+               a cert:RSAPublicKey ;
+               cert:exponent   "{{tlsCertExponent}}"^^xsd:int ;
+               cert:modulus    "{{tlsCertModulus}}"^^xsd:hexBinary
+             ] .
+{{/if}}

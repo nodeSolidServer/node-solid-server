@@ -47,6 +47,7 @@
     "from2": "^2.1.0",
     "fs-extra": "^2.1.0",
     "glob": "^7.1.1",
+    "global-tunnel-ng": "^2.1.1",
     "handlebars": "^4.0.6",
     "http-proxy-middleware": "^0.17.4",
     "inquirer": "^1.0.2",
