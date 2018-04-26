@@ -6,7 +6,7 @@ const expect = require('chai').expect
 // In this test we always assume that we are Alice
 
 describe('API', () => {
-  let alice, aliceServer
+  let alice
 
   let aliceServerUri = 'https://localhost:5000'
   let configPath = path.join(__dirname, '../../config')
@@ -47,7 +47,7 @@ describe('API', () => {
   })
 
   after(() => {
-    if (aliceServer) aliceServer.close()
+    alicePod.close()
     fs.removeSync(path.join(aliceRootPath, 'index.html'))
     fs.removeSync(path.join(aliceRootPath, 'index.html.acl'))
   })

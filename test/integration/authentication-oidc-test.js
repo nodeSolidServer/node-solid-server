@@ -21,8 +21,7 @@ chai.use(require('dirty-chai'))
 // In this test we always assume that we are Alice
 
 describe('Authentication API (OIDC)', () => {
-  let alice, aliceServer
-  let bob, bobServer
+  let alice, bob
 
   let aliceServerUri = 'https://localhost:7000'
   let aliceWebId = 'https://localhost:7000/profile/card#me'
@@ -81,8 +80,8 @@ describe('Authentication API (OIDC)', () => {
   })
 
   after(() => {
-    if (aliceServer) aliceServer.close()
-    if (bobServer) bobServer.close()
+    alicePod.close()
+    bobPod.close()
     fs.removeSync(path.join(aliceDbPath, 'oidc/users'))
     fs.removeSync(path.join(aliceRootPath, 'index.html'))
     fs.removeSync(path.join(aliceRootPath, 'index.html.acl'))
