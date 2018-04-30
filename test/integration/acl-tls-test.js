@@ -1073,6 +1073,14 @@ describe('ACL with WebID+TLS', function () {
 })
 
 describe('ACL with WebID through X-SSL-Cert', function () {
+  let hasX509
+  try {
+    require('x509')
+    hasX509 = true
+  } catch (error) {
+    hasX509 = false
+  }
+
   var ldpHttpsServer
   before(function (done) {
     const ldp = ldnode.createServer({
@@ -1122,10 +1130,12 @@ describe('ACL with WebID through X-SSL-Cert', function () {
     before(prepareRequest(escapedCert, res => { response = res }))
 
     it('should return 200', function () {
+      hasX509 || this.skip()
       assert.propertyVal(response, 'statusCode', 200)
     })
 
     it('should set the User header', function () {
+      hasX509 || this.skip()
       assert.propertyVal(response.headers, 'user', 'https://user1.databox.me/profile/card#me')
     })
   })
