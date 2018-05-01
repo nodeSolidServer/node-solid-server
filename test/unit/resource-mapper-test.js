@@ -164,6 +164,29 @@ describe('ResourceMapper', () => {
         contentType: 'text/html'
       })
 
+    itMapsUrl(mapper, 'a URL of an existing file with encoded characters',
+      {
+        url: 'http://localhost/space/foo%20bar%20bar.html'
+      },
+      [
+        `${rootPath}space/foo bar bar.html`
+      ],
+      {
+        path: `${rootPath}space/foo bar bar.html`,
+        contentType: 'text/html'
+      })
+
+    itMapsUrl(mapper, 'a URL of a new file with encoded characters',
+      {
+        url: 'http://localhost/space%2Ffoo%20bar%20bar.html',
+        contentType: 'text/html',
+        createIfNotExists: true
+      },
+      {
+        path: `${rootPath}space/foo bar bar.html`,
+        contentType: 'text/html'
+      })
+
     // Security cases
 
     itMapsUrl(mapper, 'a URL with an unknown content type',
@@ -180,6 +203,12 @@ describe('ResourceMapper', () => {
     itMapsUrl(mapper, 'a URL with a /.. path segment',
       {
         url: 'http://localhost/space/../bar'
+      },
+      new Error('Disallowed /.. segment in URL'))
+
+    itMapsUrl(mapper, 'a URL with an encoded /.. path segment',
+      {
+        url: 'http://localhost/space%2F..%2Fbar'
       },
       new Error('Disallowed /.. segment in URL'))
 
@@ -252,6 +281,13 @@ describe('ResourceMapper', () => {
       { path: `${rootPath}space/foo$.HtMl` },
       {
         url: 'http://localhost/space/foo',
+        contentType: 'text/html'
+      })
+
+    itMapsFile(mapper, 'a file with disallowed IRI characters',
+      { path: `${rootPath}space/foo bar bar.html` },
+      {
+        url: 'http://localhost/space/foo%20bar%20bar.html',
         contentType: 'text/html'
       })
   })
