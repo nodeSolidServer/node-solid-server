@@ -4,14 +4,14 @@ node_js:
   - "8.0"
   - "node"
 env:
-  - CXX=g++-6
+  - CXX=g++-5
 
 addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
     packages:
-      - g++-6
+      - g++-5
   hosts:
     - nic.localhost
     - tim.localhost
