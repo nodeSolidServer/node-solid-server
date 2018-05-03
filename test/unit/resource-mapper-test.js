@@ -329,7 +329,7 @@ describe('ResourceMapper', () => {
   })
 
   describe('A ResourceMapper instance for a multi-host setup with a subfolder root URL', () => {
-    const rootUrl = 'http://localhost/foo/bar/'
+    const rootUrl = 'https://localhost/foo/bar/'
     const mapper = new ResourceMapper({ rootUrl, rootPath, includeHost: true })
 
     itMapsFile(mapper, 'a file on a host',
@@ -338,7 +338,61 @@ describe('ResourceMapper', () => {
         hostname: 'example.org'
       },
       {
-        url: 'http://example.org/foo/bar/space/foo.html',
+        url: 'https://example.org/foo/bar/space/foo.html',
+        contentType: 'text/html'
+      })
+  })
+
+  describe('A ResourceMapper instance for an HTTP host with non-default port', () => {
+    const mapper = new ResourceMapper({ rootUrl: 'http://localhost:81/', rootPath })
+
+    itMapsFile(mapper, 'a file with the port',
+      {
+        path: `${rootPath}space/foo.html`
+      },
+      {
+        url: 'http://localhost:81/space/foo.html',
+        contentType: 'text/html'
+      })
+  })
+
+  describe('A ResourceMapper instance for an HTTP host with non-default port in a multi-host setup', () => {
+    const mapper = new ResourceMapper({ rootUrl: 'http://localhost:81/', rootPath, includeHost: true })
+
+    itMapsFile(mapper, 'a file with the port',
+      {
+        path: `${rootPath}space/foo.html`,
+        hostname: 'example.org'
+      },
+      {
+        url: 'http://example.org:81/space/foo.html',
+        contentType: 'text/html'
+      })
+  })
+
+  describe('A ResourceMapper instance for an HTTPS host with non-default port', () => {
+    const mapper = new ResourceMapper({ rootUrl: 'https://localhost:81/', rootPath })
+
+    itMapsFile(mapper, 'a file with the port',
+      {
+        path: `${rootPath}space/foo.html`
+      },
+      {
+        url: 'https://localhost:81/space/foo.html',
+        contentType: 'text/html'
+      })
+  })
+
+  describe('A ResourceMapper instance for an HTTPS host with non-default port in a multi-host setup', () => {
+    const mapper = new ResourceMapper({ rootUrl: 'https://localhost:81/', rootPath, includeHost: true })
+
+    itMapsFile(mapper, 'a file with the port',
+      {
+        path: `${rootPath}space/foo.html`,
+        hostname: 'example.org'
+      },
+      {
+        url: 'https://example.org:81/space/foo.html',
         contentType: 'text/html'
       })
   })
