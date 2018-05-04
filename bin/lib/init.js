@@ -3,7 +3,7 @@ const fs = require('fs')
 const options = require('./options')
 const camelize = require('camelize')
 
-var questions = options
+let questions = options
   .map((option) => {
     if (!option.type) {
       if (option.flag) {
@@ -56,8 +56,8 @@ module.exports = function (program) {
           })
 
           // write config file
-          var config = JSON.stringify(camelize(answers), null, '  ')
-          var configPath = process.cwd() + '/config.json'
+          const config = JSON.stringify(camelize(answers), null, '  ')
+          const configPath = process.cwd() + '/config.json'
 
           fs.writeFile(configPath, config, (err) => {
             if (err) {
