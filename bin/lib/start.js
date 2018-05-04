@@ -13,7 +13,7 @@ module.exports = function (program, server) {
   options
     .filter((option) => !option.hide)
     .forEach((option) => {
-      var name = '--' + option.name
+      let name = '--' + option.name
       if (!option.flag) {
         name += ' [value]'
       }
