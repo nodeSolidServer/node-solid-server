@@ -30,10 +30,11 @@
         return response
       })
       .then(function(response) {
-        // TODO: redirect to proper location stored in hidden field redirect_uri
-        // depends on https://github.com/solid/node-solid-server/pull/648
-        // and https://github.com/solid/oidc-auth-manager/issues/17
-        window.location.href = '/'
+        // Temporary solution to restore return URL
+        // until https://github.com/solid/oidc-auth-manager/issues/17 is resolved
+        const returnToUrl = localStorage.getItem('returnToUrl')
+        localStorage.removeItem('returnToUrl')
+        window.location.href = returnToUrl || '/'
       })
   })
 </script>
