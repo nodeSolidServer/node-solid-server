@@ -100,6 +100,12 @@ describe('API', () => {
           .expect('Link', /<https:\/\/localhost:5000>; rel="http:\/\/openid\.net\/specs\/connect\/1\.0\/issuer"/)
           .expect(204, done)
       })
+
+      it('should return a service Link header without multiple slashes', (done) => {
+        alice.options('/')
+          .expect('Link', /<.*[^/]\/\.well-known\/solid>; rel="service"/)
+          .expect(204, done)
+      })
     })
   })
 })
