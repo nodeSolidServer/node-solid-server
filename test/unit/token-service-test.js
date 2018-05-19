@@ -1,6 +1,5 @@
 'use strict'
 
-const moment = require('moment')
 const chai = require('chai')
 const expect = chai.expect
 const dirtyChai = require('dirty-chai')
@@ -36,7 +35,7 @@ describe('TokenService', () => {
 
       let token = service.generate()
 
-      service.tokens[token].exp = moment().subtract(40, 'minutes')
+      service.tokens[token].exp = new Date(Date.now() - 1000)
 
       expect(service.verify(token)).to.be.false()
     })
