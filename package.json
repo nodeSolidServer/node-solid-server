@@ -71,7 +71,6 @@
     "solid-namespace": "^0.1.0",
     "solid-permissions": "^0.5.2",
     "solid-ws": "^0.2.3",
-    "string": "^3.3.0",
     "ulid": "^0.1.0",
     "uuid": "^3.0.0",
     "valid-url": "^1.0.9",
