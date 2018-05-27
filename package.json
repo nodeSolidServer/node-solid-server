@@ -57,10 +57,10 @@
     "mime-types": "^2.1.11",
     "negotiator": "^0.6.0",
     "node-forge": "^0.6.38",
-    "nodemailer": "^3.1.4",
+    "nodemailer": "^4.6.5",
     "oidc-auth-manager": "^0.15.1",
     "oidc-op-express": "^0.0.3",
-    "rdflib": "^0.16.2",
+    "rdflib": "^0.16.9",
     "recursive-readdir": "^2.1.0",
     "rimraf": "^2.5.0",
     "solid-namespace": "^0.1.0",
@@ -73,10 +73,10 @@
     "webid": "^0.3.9"
   },
   "optionalDependencies": {
-    "x509": "^0.3.2"
+    "x509": "^0.3.3"
   },
   "devDependencies": {
-    "@trust/oidc-op": "^0.3.0",
+    "@trust/oidc-op": "^0.3.1",
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
     "dirty-chai": "^1.2.2",
