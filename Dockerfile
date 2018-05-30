@@ -1,6 +1,6 @@
-FROM node:6.11.1-onbuild
+FROM node:8.11.2-onbuild
 EXPOSE 8443
-RUN cp config.json-default config.json
+COPY config.json-default config.json
 RUN openssl req \
     -new \
     -newkey rsa:4096 \
