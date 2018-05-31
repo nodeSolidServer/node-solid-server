@@ -1,4 +1,4 @@
-# Keep this in sync with .npmignore
+# Keep this in sync with .gitignore
 *.swp
 *~
 /.idea
@@ -15,3 +15,6 @@
 /coverage
 /node_modules
 /npm-debug.log
+
+# Additional .npmignore entries (not in .gitignore)
+/test
