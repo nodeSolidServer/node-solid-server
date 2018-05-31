@@ -1,7 +1,7 @@
 {
   "name": "solid-server",
   "description": "Solid server on top of the file-system",
-  "version": "4.0.10",
+  "version": "4.0.13",
   "author": {
     "name": "Tim Berners-Lee",
     "email": "timbl@w3.org"
@@ -60,7 +60,7 @@
     "nodemailer": "^3.1.4",
     "oidc-auth-manager": "^0.15.2",
     "oidc-op-express": "^0.0.3",
-    "rdflib": "^0.16.2",
+    "rdflib": "^0.17.0",
     "recursive-readdir": "^2.1.0",
     "rimraf": "^2.5.0",
     "solid-namespace": "^0.1.0",
