@@ -164,6 +164,29 @@ describe('ResourceMapper', () => {
         contentType: 'text/html'
       })
 
+    itMapsUrl(mapper, 'a URL of an existing file with encoded characters',
+      {
+        url: 'http://localhost/space/foo%20bar%20bar.html'
+      },
+      [
+        `${rootPath}space/foo bar bar.html`
+      ],
+      {
+        path: `${rootPath}space/foo bar bar.html`,
+        contentType: 'text/html'
+      })
+
+    itMapsUrl(mapper, 'a URL of a new file with encoded characters',
+      {
+        url: 'http://localhost/space%2Ffoo%20bar%20bar.html',
+        contentType: 'text/html',
+        createIfNotExists: true
+      },
+      {
+        path: `${rootPath}space/foo bar bar.html`,
+        contentType: 'text/html'
+      })
+
     // Security cases
 
     itMapsUrl(mapper, 'a URL with an unknown content type',
@@ -180,6 +203,12 @@ describe('ResourceMapper', () => {
     itMapsUrl(mapper, 'a URL with a /.. path segment',
       {
         url: 'http://localhost/space/../bar'
+      },
+      new Error('Disallowed /.. segment in URL'))
+
+    itMapsUrl(mapper, 'a URL with an encoded /.. path segment',
+      {
+        url: 'http://localhost/space%2F..%2Fbar'
       },
       new Error('Disallowed /.. segment in URL'))
 
@@ -254,6 +283,13 @@ describe('ResourceMapper', () => {
         url: 'http://localhost/space/foo',
         contentType: 'text/html'
       })
+
+    itMapsFile(mapper, 'a file with disallowed IRI characters',
+      { path: `${rootPath}space/foo bar bar.html` },
+      {
+        url: 'http://localhost/space/foo%20bar%20bar.html',
+        contentType: 'text/html'
+      })
   })
 
   describe('A ResourceMapper instance for a multi-host setup', () => {
@@ -293,7 +329,7 @@ describe('ResourceMapper', () => {
   })
 
   describe('A ResourceMapper instance for a multi-host setup with a subfolder root URL', () => {
-    const rootUrl = 'http://localhost/foo/bar/'
+    const rootUrl = 'https://localhost/foo/bar/'
     const mapper = new ResourceMapper({ rootUrl, rootPath, includeHost: true })
 
     itMapsFile(mapper, 'a file on a host',
@@ -302,7 +338,61 @@ describe('ResourceMapper', () => {
         hostname: 'example.org'
       },
       {
-        url: 'http://example.org/foo/bar/space/foo.html',
+        url: 'https://example.org/foo/bar/space/foo.html',
+        contentType: 'text/html'
+      })
+  })
+
+  describe('A ResourceMapper instance for an HTTP host with non-default port', () => {
+    const mapper = new ResourceMapper({ rootUrl: 'http://localhost:81/', rootPath })
+
+    itMapsFile(mapper, 'a file with the port',
+      {
+        path: `${rootPath}space/foo.html`
+      },
+      {
+        url: 'http://localhost:81/space/foo.html',
+        contentType: 'text/html'
+      })
+  })
+
+  describe('A ResourceMapper instance for an HTTP host with non-default port in a multi-host setup', () => {
+    const mapper = new ResourceMapper({ rootUrl: 'http://localhost:81/', rootPath, includeHost: true })
+
+    itMapsFile(mapper, 'a file with the port',
+      {
+        path: `${rootPath}space/foo.html`,
+        hostname: 'example.org'
+      },
+      {
+        url: 'http://example.org:81/space/foo.html',
+        contentType: 'text/html'
+      })
+  })
+
+  describe('A ResourceMapper instance for an HTTPS host with non-default port', () => {
+    const mapper = new ResourceMapper({ rootUrl: 'https://localhost:81/', rootPath })
+
+    itMapsFile(mapper, 'a file with the port',
+      {
+        path: `${rootPath}space/foo.html`
+      },
+      {
+        url: 'https://localhost:81/space/foo.html',
+        contentType: 'text/html'
+      })
+  })
+
+  describe('A ResourceMapper instance for an HTTPS host with non-default port in a multi-host setup', () => {
+    const mapper = new ResourceMapper({ rootUrl: 'https://localhost:81/', rootPath, includeHost: true })
+
+    itMapsFile(mapper, 'a file with the port',
+      {
+        path: `${rootPath}space/foo.html`,
+        hostname: 'example.org'
+      },
+      {
+        url: 'https://example.org:81/space/foo.html',
         contentType: 'text/html'
       })
   })

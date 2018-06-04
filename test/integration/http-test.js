@@ -472,12 +472,11 @@ describe('HTTP APIs', function () {
 
     it('should delete a new and empty container', function (done) {
       server.delete('/delete-test-empty-container/')
-        .expect(function () {
-          // Ensure container was deleted
+        .end(() => {
           server.get('/delete-test-empty-container/')
             .expect(404)
+            .end(done)
         })
-        .end(done)
     })
 
     after(function () {

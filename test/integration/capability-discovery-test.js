@@ -6,7 +6,7 @@ const expect = require('chai').expect
 // In this test we always assume that we are Alice
 
 describe('API', () => {
-  let alice, aliceServer
+  let alice
 
   let aliceServerUri = 'https://localhost:5000'
   let configPath = path.join(__dirname, '../../config')
@@ -47,7 +47,7 @@ describe('API', () => {
   })
 
   after(() => {
-    if (aliceServer) aliceServer.close()
+    alicePod.close()
     fs.removeSync(path.join(aliceRootPath, 'index.html'))
     fs.removeSync(path.join(aliceRootPath, 'index.html.acl'))
   })
@@ -98,6 +98,12 @@ describe('API', () => {
       it('should return the http://openid.net/specs/connect/1.0/issuer Link rel header', (done) => {
         alice.options('/')
           .expect('Link', /<https:\/\/localhost:5000>; rel="http:\/\/openid\.net\/specs\/connect\/1\.0\/issuer"/)
+          .expect(204, done)
+      })
+
+      it('should return a service Link header without multiple slashes', (done) => {
+        alice.options('/')
+          .expect('Link', /<.*[^/]\/\.well-known\/solid>; rel="service"/)
           .expect(204, done)
       })
     })
