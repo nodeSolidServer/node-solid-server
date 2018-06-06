@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{#if name}}{{name}} &ndash; {{/if}}Solid Home</title>
+  <title>Personal Data Space (or POD) {{#if name}} of {{name}} {{/if}}</title>
   <link rel="stylesheet" href="/common/css/bootstrap.min.css">
   <style>
     .session-action {
@@ -16,13 +16,13 @@
   <nav class="navbar navbar-default">
     <div class="container-fluid">
       <div class="navbar-header">
-        <a href="/" class="navbar-brand">{{#if name}}{{name}} &ndash; {{/if}}Solid Home</a>
+        <a href="/" class="navbar-brand">Personal Data Space (POD)</a>
       </div>
       <div class="navbar-right">
         <a id="logged-href" href="" title="" style="display:none">
           <span class="glyphicon glyphicon-user"></span>
         </a>
-        <span>&nbsp;&nbsp;</span>
+        <span>&nbsp&nbsp</span>
         <button id="session-action" type="button" class="session-action btn btn-default navbar-btn">Loading...</button>
       </div>
     </div>
@@ -33,9 +33,8 @@
     <div class="col-md-12">
       <p class="lead">
         <span>
-          This is a public homepage of {{#if name}}{{name}}, whose WebID is{{else}}a user with WebID{{/if}}
+          This is a public homepage of <a href="{{webId}}">{{#if name}} {{name}} {{/if}}</a>
         </span>
-        <a href="{{webId}}"><mark>{{webId}}</mark></a>.
       </p>
     </div>
   </div>
@@ -79,6 +78,7 @@
     <div class="col-md-12">
       <h1>Apps</h1>
       <div class="list-group">
+<!--
         <a href="http://solid.github.io/solid-profile-ui/" target="_blank" class="list-group-item">
           <span class="lead">Profile Editor</span>
         </a>
@@ -88,6 +88,7 @@
         <a href="https://markisforbookmarks.herokuapp.com" target="_blank" class="list-group-item">
           <span class="lead">Bookmark List</span>
         </a>
+-->
         <a href="https://github.com/solid/solid-apps" target="_blank" class="list-group-item">
           <span class="lead">More Apps</span>
         </a>
@@ -219,6 +220,25 @@
         if (!response.ok) {
           throw new Error('Network update request was not ok. HTTP='+response.status+'  '+response.statusText)
         }
+/***
+        var msg = '<?xml version="1.0" encoding="utf-8" ?>'+
+            '<D:propertyupdate xmlns:D="DAV:"><D:set><D:prop>'+
+            '<virtpermissions xmlns="http://www.openlinksw.com/virtuoso/webdav/1.0/">110100100RM</virtpermissions>'+
+            '</D:prop></D:set></D:propertyupdate>'
+
+        fetch(file_url.href,
+          { method: 'POST', 
+            headers: {
+              'Content-Type': 'text/xml; charset=utf-8'
+            },
+            credentials: 'include', 
+            body: msg
+        })
+        .then(function(response) {
+          alert('Attr: '+response.statusText);
+        })
+        .catch(function(error) {})
+***/
         alert('Your profile file '+prof_url+' was updated.')
             
       })

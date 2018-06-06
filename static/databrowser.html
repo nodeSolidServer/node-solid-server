@@ -9,19 +9,29 @@
     </script>
     <script type="text/javascript" src="https://linkeddata.github.io/mashlib/dist/mashlib.min.js"></script>
     <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        var UI = Mashlib
+  document.addEventListener('DOMContentLoaded', function() {
 
-        UI.rdf.Fetcher.crossSiteProxyTemplate = document.origin + '/proxy?uri={uri}'
+    const panes  = require('mashlib')
+    const UI = panes.UI
+    const $rdf = UI.rdf
 
-        UI.authn.checkUser()
-          .then(function () {
-            var uri = window.location.href
-            window.document.title = uri
-            var subject = UI.rdf.namedNode(uri)
-            UI.outline.GotoSubject(subject, true, undefined, true, undefined)
-          })
-      })
+    // UI.config = { idpSelectUri:  'https://timbl.com/timbl/Automation/Library/Mashup/idp-select-ui.html',
+    //               callbackUri:  'https://timbl.com/timbl/Automation/Library/Mashup/idp-callback.html'
+    //  }
+
+    $rdf.Fetcher.crossSiteProxyTemplate = document.origin + '/proxy?uri={uri}';
+    var uri = window.location.href;
+
+    // UI.authn.checkUser()
+
+    // tabulator = {}
+
+    window.document.title = 'Loading ' + uri
+    var kb = UI.store
+    var subject = kb.sym(uri)
+    var outliner = panes.getOutliner(document)
+    outliner.GotoSubject(subject, true, undefined, true, undefined);
+
     </script>
 </head>
 <body>

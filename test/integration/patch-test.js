@@ -22,12 +22,17 @@ const serverOptions = {
 
 describe('PATCH', () => {
   var request
+  let server
 
   // Start the server
   before(done => {
-    const server = ldnode.createServer(serverOptions)
+    server = ldnode.createServer(serverOptions)
     server.listen(port, done)
     request = supertest(serverUri)
+  })
+
+  after(() => {
+    server.close()
   })
 
   describe('with a patch document', () => {
