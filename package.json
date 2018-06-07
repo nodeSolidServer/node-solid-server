@@ -70,7 +70,7 @@
     "uuid": "^3.0.0",
     "valid-url": "^1.0.9",
     "vhost": "^3.0.2",
-    "webid": "^0.3.9"
+    "webid": "^0.3.10"
   },
   "optionalDependencies": {
     "x509": "^0.3.2"
