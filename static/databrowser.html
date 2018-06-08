@@ -22,15 +22,16 @@
     $rdf.Fetcher.crossSiteProxyTemplate = document.origin + '/proxy?uri={uri}';
     var uri = window.location.href;
 
-    // UI.authn.checkUser()
-
-    // tabulator = {}
-
     window.document.title = 'Loading ' + uri
-    var kb = UI.store
-    var subject = kb.sym(uri)
-    var outliner = panes.getOutliner(document)
-    outliner.GotoSubject(subject, true, undefined, true, undefined);
+
+    UI.authn.checkUser()
+      .then(function () {
+        // Set up the view for the current subject
+        const kb = UI.store
+        const subject = kb.sym(uri)
+        const outliner = panes.getOutliner(document)
+        outliner.GotoSubject(subject, true, undefined, true, undefined)
+      })
 
     </script>
 </head>
