@@ -9,29 +9,25 @@
     </script>
     <script type="text/javascript" src="https://linkeddata.github.io/mashlib/dist/mashlib.min.js"></script>
     <script>
-  document.addEventListener('DOMContentLoaded', function() {
+      document.addEventListener('DOMContentLoaded', function () {
+        const panes = require('mashlib')
+        const UI = panes.UI
 
-    const panes  = require('mashlib')
-    const UI = panes.UI
-    const $rdf = UI.rdf
+        // Set up cross-site proxy
+        const $rdf = UI.rdf
+        $rdf.Fetcher.crossSiteProxyTemplate = document.origin + '/xss/?uri={uri}'
 
-    // UI.config = { idpSelectUri:  'https://timbl.com/timbl/Automation/Library/Mashup/idp-select-ui.html',
-    //               callbackUri:  'https://timbl.com/timbl/Automation/Library/Mashup/idp-callback.html'
-    //  }
-
-    $rdf.Fetcher.crossSiteProxyTemplate = document.origin + '/proxy?uri={uri}';
-    var uri = window.location.href;
-
-    // UI.authn.checkUser()
-
-    // tabulator = {}
-
-    window.document.title = 'Loading ' + uri
-    var kb = UI.store
-    var subject = kb.sym(uri)
-    var outliner = panes.getOutliner(document)
-    outliner.GotoSubject(subject, true, undefined, true, undefined);
-
+        // Authenticate the user
+        UI.authn.checkUser()
+          .then(function () {
+            // Set up the view for the current subject
+            const kb = UI.store
+            const uri = window.location.href
+            const subject = kb.sym(uri)
+            const outliner = panes.getOutliner(document)
+            outliner.GotoSubject(subject, true, undefined, true, undefined)
+          })
+      })
     </script>
 </head>
 <body>
