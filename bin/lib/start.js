@@ -2,7 +2,6 @@
 
 const options = require('./options')
 const fs = require('fs')
-const extend = require('extend')
 const colors = require('colors/safe')
 
 module.exports = function (program, server) {
@@ -23,7 +22,7 @@ module.exports = function (program, server) {
   start.option('-v, --verbose', 'Print the logs to console')
 
   start.action((opts) => {
-    let argv = extend({}, opts, { version: program.version() })
+    let argv = Object.assign({}, opts, { version: program.version() })
     let configFile = argv['configFile'] || './config.json'
 
     fs.readFile(configFile, (err, file) => {

@@ -43,7 +43,6 @@
     "express": "^4.16.3",
     "express-handlebars": "^3.0.0",
     "express-session": "^1.15.6",
-    "extend": "^3.0.0",
     "from2": "^2.1.0",
     "fs-extra": "^2.1.0",
     "glob": "^7.1.1",
