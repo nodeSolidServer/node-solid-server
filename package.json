@@ -57,7 +57,7 @@
     "negotiator": "^0.6.0",
     "node-forge": "^0.6.38",
     "nodemailer": "^3.1.4",
-    "oidc-auth-manager": "^0.15.3",
+    "oidc-auth-manager": "^0.16.0",
     "oidc-op-express": "^0.0.3",
     "rdflib": "^0.17.0",
     "recursive-readdir": "^2.1.0",
@@ -75,7 +75,7 @@
     "x509": "^0.3.2"
   },
   "devDependencies": {
-    "@trust/oidc-op": "^0.3.0",
+    "@trust/oidc-op": "solid/oidc-op#rc-0.3.2",
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
     "dirty-chai": "^1.2.2",
