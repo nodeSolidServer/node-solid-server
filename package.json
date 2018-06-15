@@ -45,7 +45,7 @@
     "express-handlebars": "^3.0.0",
     "express-session": "^1.15.6",
     "from2": "^2.1.0",
-    "fs-extra": "^2.1.0",
+    "fs-extra": "^6.0.1",
     "glob": "^7.1.1",
     "global-tunnel-ng": "^2.1.0",
     "handlebars": "^4.0.6",
