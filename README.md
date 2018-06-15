@@ -77,6 +77,10 @@ $ openssl genrsa 2048 > ../localhost.key
 $ openssl req -new -x509 -nodes -sha256 -days 3650 -key ../localhost.key -subj '/CN=*.localhost' > ../localhost.cert
 ```
 
+Note that this example creates the `localhost.cert` and `localhost.key` files
+in a directory one level higher from the current, so that you don't
+accidentally commit your certificates to `solid` while you're developing.
+
 ### Run multi-user server (intermediate)
 
 You can run `solid` so that new users can sign up, in other words, get their WebIDs _username.yourdomain.com_.
@@ -317,20 +321,8 @@ without them.
 When deploying `solid` in production, we recommend that you go the
 usual Certificate Authority route to generate your SSL certificate (as you
 would with any website that supports HTTPS). However, for testing it locally,
-you can easily generate a self-signed certificate for whatever domain you're
-working with.
-
-For example, here is how to generate a self-signed certificate for `localhost`
-using the `openssl` library:
-
-```bash
-
-solid --webid --port 8443 --cert ../localhost.cert --key ../localhost.key -v
-```
-
-Note that this example creates the `localhost.cert` and `localhost.key` files
-in a directory one level higher from the current, so that you don't
-accidentally commit your certificates to `solid` while you're developing.
+you can easily [generate a self-signed certificate for whatever domain you're
+Working with](https://github.com/solid/node-solid-server#how-do-i-get-an-ssl-key-and-certificate).
 
 #### Accessing your server
 
