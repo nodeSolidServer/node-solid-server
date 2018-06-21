@@ -48,23 +48,31 @@ describe('Header handler', () => {
 
   function describeHeaderTest (label, { resource, headers }) {
     describe(`a resource that is ${label}`, () => {
-      let response
-      before(() => request.get(resource).then(res => { response = res }))
+      // Retrieve the response headers
+      let response = {}
+      before(async () => {
+        const { headers } = await request.get(resource)
+        response.headers = headers
+      })
 
+      // Assert the existence of each of the expected headers
       for (const header in headers) {
-        const value = headers[header]
-        const name = header.toLowerCase()
-        if (value instanceof RegExp) {
-          it(`has a ${header} header matching ${value}`, () => {
-            expect(response.headers).to.have.property(name)
-            expect(response.headers[name]).to.match(value)
-          })
-        } else {
-          it(`has a ${header} header of ${value}`, () => {
-            expect(response.headers).to.have.property(name, value)
-          })
-        }
+        assertResponseHasHeader(response, header, headers[header])
       }
     })
+  }
+
+  function assertResponseHasHeader (response, name, value) {
+    const key = name.toLowerCase()
+    if (value instanceof RegExp) {
+      it(`has a ${name} header matching ${value}`, () => {
+        expect(response.headers).to.have.property(key)
+        expect(response.headers[key]).to.match(value)
+      })
+    } else {
+      it(`has a ${name} header of ${value}`, () => {
+        expect(response.headers).to.have.property(key, value)
+      })
+    }
   }
 })

@@ -277,7 +277,7 @@ module.exports = [
       return answers.useEmail
     },
     validate: (value) => {
-      if (!value || value === '') {
+      if (!value) {
         return 'You must enter this information'
       }
       return true
@@ -330,7 +330,7 @@ function validPath (value) {
   if (value === 'default') {
     return Promise.resolve(true)
   }
-  if (!value || value === '') {
+  if (!value) {
     return Promise.resolve('You must enter a valid path')
   }
   return new Promise((resolve) => {
