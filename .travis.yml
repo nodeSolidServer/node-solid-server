@@ -18,6 +18,11 @@ addons:
     - tim.localhost
     - nicola.localhost
 
+script:
+  - npm run standard
+  - npm run sonar
+  - npm run nyc
+
 cache:
   apt: true
   directories:
