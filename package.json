@@ -58,7 +58,7 @@
     "negotiator": "^0.6.0",
     "node-forge": "^0.6.38",
     "nodemailer": "^3.1.4",
-    "oidc-auth-manager": "^0.15.2",
+    "oidc-auth-manager": "^0.16.1",
     "oidc-op-express": "^0.0.3",
     "rdflib": "^0.17.0",
     "recursive-readdir": "^2.1.0",
