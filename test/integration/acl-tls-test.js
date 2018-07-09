@@ -29,11 +29,8 @@ var testDirAclFile = testDir + '/' + aclExtension
 var testDirMetaFile = testDir + '/' + metaExtension
 
 var abcFile = testDir + '/abc.ttl'
-var abcAclFile = abcFile + aclExtension
 
 var globFile = testDir + '/*'
-
-var groupFile = testDir + '/group'
 
 var origin1 = 'http://example.org/'
 var origin2 = 'http://example.com/'
@@ -774,7 +771,6 @@ describe('ACL with WebID+TLS', function () {
       })
     })
   })
-
 
   describe('defaultForNew', function () {
     before(function () {
