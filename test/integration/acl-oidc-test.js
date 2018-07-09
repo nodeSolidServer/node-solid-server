@@ -57,7 +57,7 @@ const argv = {
   host: { serverUri }
 }
 
-describe('ACL HTTP', function () {
+describe('ACL with WebID+OIDC over HTTP', function () {
   let ldp, ldpHttpsServer
 
   before(checkDnsSettings)
