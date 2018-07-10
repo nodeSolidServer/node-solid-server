@@ -1,7 +1,7 @@
 sudo: false
 language: node_js
 node_js:
-  - "8.10"
+  - "8.0"
   - "10.0"
   - "node"
 env:
@@ -17,6 +17,9 @@ addons:
     - nic.localhost
     - tim.localhost
     - nicola.localhost
+
+before_install:
+  - npm install -g npm@latest
 
 script:
   - npm run standard
