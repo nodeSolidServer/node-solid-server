@@ -5,9 +5,7 @@ node_js:
   - "10.0"
   - "node"
 env:
-  matrix:
-    - CXX=g++-4.8
-    - secure: WM1Hod++b/jUVAZBRRn/8WAPrHQrzILhbE0ubCSyl1kOeyULKbCFpNg82TLbJisg+wSeLrhgbWbYVvW0Bu1rXU9Za7nqWhSwU2EXtjrg3RmRq8WgNcP3cuZq8xYOQ/C6eO3hsysdThkkDnU+M5c+wUvZhVTsMWN8+U2vHfIdjzg=
+  - CXX=g++-4.8
 addons:
   apt:
     sources:
