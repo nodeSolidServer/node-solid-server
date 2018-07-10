@@ -499,6 +499,48 @@ describe('ACL with WebID+OIDC over HTTP', function () {
     })
   })
 
+  describe('Group', function () {
+    // before(function () {
+    //   rm('/accounts-acl/tim.localhost/group/test-folder/.acl')
+    // })
+
+    // it('should PUT new ACL file', function (done) {
+    //   var options = createOptions('/group/test-folder/.acl', 'user1')
+    //   options.body = '<#Owner> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
+    //     ' <http://www.w3.org/ns/auth/acl#accessTo> <./.acl>;\n' +
+    //     ' <http://www.w3.org/ns/auth/acl#agent> <' + user1 + '>;\n' +
+    //     ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Control> .\n' +
+    //     '<#Public> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
+    //     ' <http://www.w3.org/ns/auth/acl#accessTo> <./>;\n' +
+    //     ' <http://www.w3.org/ns/auth/acl#agentGroup> <group-listing#folks>;\n' +
+    //     ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read> .\n'
+    //   request.put(options, function (error, response, body) {
+    //     assert.equal(error, null)
+    //     assert.equal(response.statusCode, 201)
+    //     done()
+    //   })
+    // })
+    it('user1 should be able to access test directory', function (done) {
+      var options = createOptions('/group/test-folder/', 'user1')
+
+      request.head(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 200)
+        done()
+      })
+    })
+    it('user2 should be able to access test directory',
+      function (done) {
+        var options = createOptions('/group/test-folder/', 'user2')
+
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 200)
+          done()
+        })
+      })
+  })
+
   describe('Restricted', function () {
     var body = '<#Owner> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
       ' <http://www.w3.org/ns/auth/acl#accessTo> <./abc2.ttl>;\n' +
