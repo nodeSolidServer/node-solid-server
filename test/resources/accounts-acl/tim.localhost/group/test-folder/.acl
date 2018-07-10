@@ -1,7 +1,7 @@
 @prefix : <#>.
 @prefix acl: <http://www.w3.org/ns/auth/acl#>.
 @prefix tes: <./>.
-@prefix c: </profile/card#>.
+@prefix c: <https://tim.localhost:7777/profile/card#>.
 @prefix foaf: <http://xmlns.com/foaf/0.1/>.
 
 :owner
@@ -13,4 +13,4 @@
     acl:accessTo tes:;
     acl:agentGroup <group-listing.ttl#folks>;
     acl:defaultForNew tes:;
-    acl:mode acl:Read.
+    acl:mode acl:Read, acl:Write.

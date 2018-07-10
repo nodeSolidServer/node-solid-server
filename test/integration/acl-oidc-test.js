@@ -529,16 +529,55 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it('user2 should be able to access test directory',
-      function (done) {
-        var options = createOptions('/group/test-folder/', 'user2')
+    it('user2 should be able to access test directory', function (done) {
+      var options = createOptions('/group/test-folder/', 'user2')
 
-        request.head(options, function (error, response, body) {
+      request.head(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 200)
+        done()
+      })
+    })
+    it('user2 should be able to write a file in the test directory',
+      function (done) {
+        var options = createOptions('/group/test-folder/test.ttl', 'user2')
+        options.body = '<#Dahut> a <https://dbpedia.org/resource/Category:French_legendary_creatures>.\n'
+
+        request.put(options, function (error, response, body) {
           assert.equal(error, null)
-          assert.equal(response.statusCode, 200)
+          assert.equal(response.statusCode, 201)
           done()
         })
       })
+    it('user1 should be able to get the file', function (done) {
+      var options = createOptions('/group/test-folder/test.ttl', 'user1')
+
+      request.get(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 200)
+        done()
+      })
+    })
+    it('user2 should not be able to write to the ACL',
+      function (done) {
+        var options = createOptions('/group/test-folder/.acl', 'user2')
+        options.body = '<#Dahut> a <https://dbpedia.org/resource/Category:French_legendary_creatures>.\n'
+
+        request.put(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 403)
+          done()
+        })
+      })
+    it('user1 should be able to delete the file', function (done) {
+      var options = createOptions('/group/test-folder/test.ttl', 'user1')
+
+      request.delete(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 200) // Should be 204, right?
+        done()
+      })
+    })
   })
 
   describe('Restricted', function () {
