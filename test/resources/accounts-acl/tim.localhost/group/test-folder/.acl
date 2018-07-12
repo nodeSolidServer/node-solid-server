@@ -5,12 +5,19 @@
 @prefix foaf: <http://xmlns.com/foaf/0.1/>.
 
 :owner
+    a acl:Authorization;
     acl:accessTo tes:;
     acl:agent c:me;
     acl:defaultForNew tes:;
     acl:mode acl:Control, acl:Read, acl:Write.
-:public
+:folks
+    a acl:Authorization;
     acl:accessTo tes:;
     acl:agentGroup <group-listing.ttl#folks>;
     acl:defaultForNew tes:;
+    acl:mode acl:Read, acl:Write.
+:errors
+    a acl:Authorization;
+    acl:accessTo <some-other-file.txt>;
+    acl:agentGroup <group-listing-error.ttl#folks>;
     acl:mode acl:Read, acl:Write.
