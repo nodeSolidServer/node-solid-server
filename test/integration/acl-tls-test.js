@@ -29,11 +29,8 @@ var testDirAclFile = testDir + '/' + aclExtension
 var testDirMetaFile = testDir + '/' + metaExtension
 
 var abcFile = testDir + '/abc.ttl'
-var abcAclFile = abcFile + aclExtension
 
 var globFile = testDir + '/*'
-
-var groupFile = testDir + '/group'
 
 var origin1 = 'http://example.org/'
 var origin2 = 'http://example.com/'
@@ -770,138 +767,6 @@ describe('ACL with WebID+TLS', function () {
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 401)
-        done()
-      })
-    })
-  })
-
-  describe.skip('Group', function () {
-    var groupTriples = '<#> a <http://xmlns.com/foaf/0.1/Group>;\n' +
-      ' <http://xmlns.com/foaf/0.1/member> <a>, <b>, <' + user2 + '> .\n'
-    var body = '<#Owner>\n' +
-      ' <http://www.w3.org/ns/auth/acl#accessTo> <' + address + abcFile + '>, <' +
-      address + abcAclFile + '>;\n' +
-      ' <http://www.w3.org/ns/auth/acl#agent> <' + user1 + '>;\n' +
-      ' <http://www.w3.org/ns/auth/acl#defaultForNew> <' + address + testDir + '>;\n' +
-      ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write> .\n' +
-      '<#Group>\n' +
-      ' <http://www.w3.org/ns/auth/acl#accessTo> <' + address + abcFile + '>;\n' +
-      ' <http://www.w3.org/ns/auth/acl#agentClass> <' + address + groupFile + '#>;\n' +
-      ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read> .\n'
-    it('user1 should be able to add group triples', function (done) {
-      var options = createOptions(groupFile, 'user1')
-      options.headers = {
-        'content-type': 'text/turtle'
-      }
-      options.body = groupTriples
-      request.put(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 201)
-        done()
-      })
-    })
-    it("user1 should be able to modify test file's ACL file", function (done) {
-      var options = createOptions(abcAclFile, 'user1')
-      options.headers = {
-        'content-type': 'text/turtle'
-      }
-      options.body = body
-      request.put(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 201)
-        done()
-      })
-    })
-
-    it("user1 should be able to access test file's ACL file", function (done) {
-      var options = createOptions(abcAclFile, 'user1')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
-      })
-    })
-    it('user1 should be able to modify test file', function (done) {
-      var options = createOptions(abcFile, 'user1')
-      options.headers = {
-        'content-type': 'text/turtle'
-      }
-      options.body = '<a> <b> <c> .\n'
-      request.put(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 201)
-        done()
-      })
-    })
-    it('user1 should be able to access test file', function (done) {
-      var options = createOptions(abcFile, 'user1')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
-      })
-    })
-    it("user2 should not be able to access test file's ACL file", function (done) {
-      var options = createOptions(abcAclFile, 'user2')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 403)
-        done()
-      })
-    })
-    it('user2 should be able to access test file', function (done) {
-      var options = createOptions(abcFile, 'user2')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
-      })
-    })
-    it('user2 should not be able to modify test file', function (done) {
-      var options = createOptions(abcFile, 'user2')
-      options.headers = {
-        'content-type': 'text/turtle'
-      }
-      options.body = '<d> <e> <f> .\n'
-      request.put(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 403)
-        done()
-      })
-    })
-    it('agent should not be able to access test file', function (done) {
-      var options = createOptions(abcFile)
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 401)
-        done()
-      })
-    })
-    it('agent should not be able to modify test file', function (done) {
-      var options = createOptions(abcFile)
-      options.headers = {
-        'content-type': 'text/turtle'
-      }
-      options.body = '<d> <e> <f> .\n'
-      request.put(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 401)
-        done()
-      })
-    })
-    it('user1 should be able to delete group file', function (done) {
-      var options = createOptions(groupFile, 'user1')
-      request.del(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
-      })
-    })
-    it("user1 should be able to delete test file's ACL file", function (done) {
-      var options = createOptions(abcAclFile, 'user1')
-      request.del(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
         done()
       })
     })

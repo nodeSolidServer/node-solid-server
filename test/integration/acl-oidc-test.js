@@ -57,7 +57,7 @@ const argv = {
   host: { serverUri }
 }
 
-describe('ACL HTTP', function () {
+describe('ACL with WebID+OIDC over HTTP', function () {
   let ldp, ldpHttpsServer
 
   before(checkDnsSettings)
@@ -496,6 +496,87 @@ describe('ACL HTTP', function () {
     })
     after(function () {
       rm('/accounts-acl/tim.localhost/append-inherited/test.ttl')
+    })
+  })
+
+  describe('Group', function () {
+    // before(function () {
+    //   rm('/accounts-acl/tim.localhost/group/test-folder/.acl')
+    // })
+
+    // it('should PUT new ACL file', function (done) {
+    //   var options = createOptions('/group/test-folder/.acl', 'user1')
+    //   options.body = '<#Owner> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
+    //     ' <http://www.w3.org/ns/auth/acl#accessTo> <./.acl>;\n' +
+    //     ' <http://www.w3.org/ns/auth/acl#agent> <' + user1 + '>;\n' +
+    //     ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Control> .\n' +
+    //     '<#Public> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
+    //     ' <http://www.w3.org/ns/auth/acl#accessTo> <./>;\n' +
+    //     ' <http://www.w3.org/ns/auth/acl#agentGroup> <group-listing#folks>;\n' +
+    //     ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read> .\n'
+    //   request.put(options, function (error, response, body) {
+    //     assert.equal(error, null)
+    //     assert.equal(response.statusCode, 201)
+    //     done()
+    //   })
+    // })
+    it('user1 should be able to access test directory', function (done) {
+      var options = createOptions('/group/test-folder/', 'user1')
+
+      request.head(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 200)
+        done()
+      })
+    })
+    it('user2 should be able to access test directory', function (done) {
+      var options = createOptions('/group/test-folder/', 'user2')
+
+      request.head(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 200)
+        done()
+      })
+    })
+    it('user2 should be able to write a file in the test directory',
+      function (done) {
+        var options = createOptions('/group/test-folder/test.ttl', 'user2')
+        options.body = '<#Dahut> a <https://dbpedia.org/resource/Category:French_legendary_creatures>.\n'
+
+        request.put(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 201)
+          done()
+        })
+      })
+    it('user1 should be able to get the file', function (done) {
+      var options = createOptions('/group/test-folder/test.ttl', 'user1')
+
+      request.get(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 200)
+        done()
+      })
+    })
+    it('user2 should not be able to write to the ACL',
+      function (done) {
+        var options = createOptions('/group/test-folder/.acl', 'user2')
+        options.body = '<#Dahut> a <https://dbpedia.org/resource/Category:French_legendary_creatures>.\n'
+
+        request.put(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 403)
+          done()
+        })
+      })
+    it('user1 should be able to delete the file', function (done) {
+      var options = createOptions('/group/test-folder/test.ttl', 'user1')
+
+      request.delete(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 200) // Should be 204, right?
+        done()
+      })
     })
   })
 
