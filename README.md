@@ -101,10 +101,10 @@ $ solid start
 Otherwise, if you want to use flags, this would be the equivalent
 
 ```bash
-$ solid --multiuser --port 8443 --cert /path/to/cert --key /path/to/key --root ./accounts
+$ solid --multiuser --port 8443 --cert /path/to/cert --key /path/to/key --root ./data
 ```
 
-Your users will have a dedicated folder under `./accounts`. Also, your root domain's website will be in `./accounts/yourdomain.tld`. New users can create accounts on `/api/accounts/new` and create new certificates on `/api/accounts/cert`. An easy-to-use sign-up tool is found on `/api/accounts`.
+Your users will have a dedicated folder under `./data` at `./data/<username>.<yourdomain.tld>`. Also, your root domain's website will be in `./data/<yourdomain.tld>`. New users can create accounts on `/api/accounts/new` and create new certificates on `/api/accounts/cert`. An easy-to-use sign-up tool is found on `/api/accounts`.
 
 ### Running Solid behind a reverse proxy (such as NGINX)
 See [Running Solid behind a reverse proxy](https://github.com/solid/node-solid-server/wiki/Running-Solid-behind-a-reverse-proxy).
