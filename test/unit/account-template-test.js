@@ -6,6 +6,8 @@ const sinonChai = require('sinon-chai')
 chai.use(sinonChai)
 chai.should()
 
+const SolidHost = require('../../lib/models/solid-host')
+const AccountManager = require('../../lib/models/account-manager')
 const AccountTemplate = require('../../lib/models/account-template')
 const UserAccount = require('../../lib/models/user-account')
 
@@ -42,6 +44,18 @@ describe('AccountTemplate', () => {
 
   describe('templateSubstitutionsFor()', () => {
     it('should init', () => {
+      let host = SolidHost.from({ serverUri: 'https://example.com' })
+      let config = {
+        host,
+        authMethod: 'oidc',
+        multiuser: true,
+        store: {},
+        emailService: {},
+        tokenService: {}
+      }
+
+      let mgr = AccountManager.from(config)
+
       let userOptions = {
         username: 'alice',
         webId: 'https://alice.example.com/profile/card#me',
@@ -50,7 +64,7 @@ describe('AccountTemplate', () => {
       }
       let userAccount = UserAccount.from(userOptions)
 
-      let substitutions = AccountTemplate.templateSubstitutionsFor(userAccount)
+      let substitutions = AccountTemplate.templateSubstitutionsFor(userAccount, mgr)
       expect(substitutions.name).to.equal('Alice Q.')
       expect(substitutions.email).to.equal('alice@example.com')
       expect(substitutions.webId).to.equal('https://alice.example.com/profile/card#me')

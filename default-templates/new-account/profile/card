@@ -20,6 +20,8 @@
 
     foaf:name "{{name}}" ;
 
+    solid:oidcIssuer <{{serverUri}}> ;
+
     solid:account </> ;  # link to the account uri
     pim:storage </> ;    # root storage
 

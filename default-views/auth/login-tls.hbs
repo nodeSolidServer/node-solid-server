@@ -75,15 +75,18 @@
           authClientStore.session = session
           localStorage.setItem(authClientNamespace, JSON.stringify(authClientStore))
  
-          // Temporary solution to restore return URL
-          // until https://github.com/solid/oidc-auth-manager/issues/17 is resolved
-          const returnToUrl = localStorage.getItem('returnToUrl')
-          localStorage.removeItem('returnToUrl')
-          window.location.href = returnToUrl || '/'
+          response.text().then(function(text) {
+            try {
+              const url = new URL(text)
+              window.location.href = url.href
+            } catch(err) {
+            }
+          })
        })
        .catch(function(error) {
          alert(error);
        }) 
     }
+    
   })
 </script>
