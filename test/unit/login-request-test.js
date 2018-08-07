@@ -175,13 +175,13 @@ describe('LoginRequest', () => {
   })
 
   describe('redirectPostLogin()', () => {
-    it('should redirect to the /authorize url if client_id is present', () => {
+    it('should redirect to the /authorize url if response_type includes token', () => {
       let res = HttpMocks.createResponse()
-      let authUrl = 'https://localhost:8443/authorize?client_id=client123'
+      let authUrl = 'https://localhost:8443/authorize?response_type=token'
       let validUser = accountManager.userAccountFrom({ username: 'alice' })
 
       let authQueryParams = {
-        client_id: 'client123'
+        response_type: 'token'
       }
 
       let options = { accountManager, authQueryParams, response: res }
