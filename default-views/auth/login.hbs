@@ -33,6 +33,15 @@
   </div>
 </div>
 
+<script>
+  // Send return URL from localStorage to server through hidden redirect_uri field
+  const returnToUrl = localStorage.getItem('returnToUrl')
+  if (returnToUrl)
+    for (let redirect of document.getElementsByName("redirect_uri"))
+      redirect.value = returnToUrl
+  localStorage.removeItem('returnToUrl')
+</script>
+
 <div class="container">
   <div class="row">
     <div class="col-md-4">

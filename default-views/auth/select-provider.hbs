@@ -29,8 +29,8 @@
   </form>
 </div>
 <script>
-  // Temporary solution to preserve return URL
-  // until https://github.com/solid/oidc-auth-manager/issues/17 is resolved
+  // Preserve return URL in localStorage
+  // (Do this on the client, because there might be a URL fragment the server can't see)
   const locationUrl = new URL(location)
   const returnToUrl = locationUrl.searchParams.get('returnToUrl')
   localStorage.removeItem('returnToUrl')
