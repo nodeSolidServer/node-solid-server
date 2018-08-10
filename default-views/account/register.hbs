@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Register</title>
   <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+  <script>
+    function showPasswd() {
+      var x = document.getElementById("password");
+      if (x.type === "password") {
+        x.type = "text";
+      } else {
+        x.type = "password";
+      }
+    }
+  </script>
 </head>
 <body>
 <div class="container">
