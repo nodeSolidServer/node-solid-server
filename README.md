@@ -16,7 +16,7 @@
 - [x] [Real-time live updates](https://github.com/solid/solid-spec#subscribing) (using WebSockets)
 - [x] Identity provider for WebID
 - [x] CORS proxy for cross-site data access
-- [ ] Group members in ACL
+- [x] Group members in ACL
 - [x] Email account recovery
 
 ## Command Line Usage
