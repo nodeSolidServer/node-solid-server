@@ -82,12 +82,6 @@ module.exports = [
     }
   },
   {
-    name: 'certificate-header',
-    question: 'Accept client certificates through this HTTP header (for reverse proxies)',
-    default: '',
-    prompt: false
-  },
-  {
     name: 'useOwner',
     question: 'Do you already have a WebID?',
     type: 'confirm',

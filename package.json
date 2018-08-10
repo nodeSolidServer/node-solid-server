@@ -73,9 +73,6 @@
     "vhost": "^3.0.2",
     "webid": "^0.3.10"
   },
-  "optionalDependencies": {
-    "x509": "^0.3.2"
-  },
   "devDependencies": {
     "@trust/oidc-op": "^0.3.0",
     "chai": "^3.5.0",

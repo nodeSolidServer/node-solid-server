@@ -9,8 +9,6 @@
 - Fix the use of allow handler.
 - Misc. cleanups and improvements.
 - Add .well-known folder and set up with public access.
-- Node.js 8 is required, Node.js 10 will also work, except for the
-  x509 optional dependency, which is only needed in corner cases.
 
 ## 4.0.0
 - OIDC is now supported as authentication method in addition to WebID-TLS.

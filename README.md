@@ -166,7 +166,6 @@ $ solid start --help
     --config-path [value]
     --db-path [value]
     --auth [value]                Pick an authentication strategy for WebID: `tls` or `oidc`
-    --certificate-header [value]
     --owner [value]               Set the owner of the storage (overwrites the root ACL file)
     --ssl-key [value]             Path to the SSL private key in PEM format
     --ssl-cert [value]            Path to the SSL certificate key in PEM format
