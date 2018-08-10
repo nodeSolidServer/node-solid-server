@@ -412,6 +412,12 @@ npm run test-(acl|formats|params|patch)
       <td><a href="https://twitter.com/RubenVerborgh">Twitter/@RubenVerborgh</a></td>
       <td><a href="https://ruben.verborgh.org/profile/#me">WebID</a></td>
     </tr>
+    <tr>
+      <th align="left">Kjetil Kjernsmo</th>
+      <td><a href="https://github.com/kjetilk">GitHub/kjetilk</a></td>
+      <td><a href="https://twitter.com/KKjernsmo">Twitter/@KKjernsmo</a></td>
+      <td><a href="https://solid.kjernsmo.net/profile/card#me">WebID</a></td>
+    </tr>
   </tbody>
 </table>
 
