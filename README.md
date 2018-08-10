@@ -223,10 +223,6 @@ Modify the config as follows:
 npm install
 ```
 
-Node version 8 is the preferred version, as some libraries, e.g. the
-optional `x509` library has been known to cause problems on Node
-version 10.
-
 ### Library Usage
 
 The library provides two APIs:
