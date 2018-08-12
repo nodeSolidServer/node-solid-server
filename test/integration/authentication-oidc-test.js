@@ -7,13 +7,11 @@ const SolidAuthOIDC = require('solid-auth-oidc')
 
 const fetch = require('node-fetch')
 const localStorage = require('localstorage-memory')
-const url = require('url')
 const URL = require('whatwg-url').URL
 global.URL = URL
 global.URLSearchParams = require('whatwg-url').URLSearchParams
 
 const supertest = require('supertest')
-const nock = require('nock')
 const chai = require('chai')
 const expect = chai.expect
 chai.use(require('dirty-chai'))
@@ -87,48 +85,6 @@ describe('Authentication API (OIDC)', () => {
     fs.removeSync(path.join(aliceRootPath, 'index.html.acl'))
     fs.removeSync(path.join(bobRootPath, 'index.html'))
     fs.removeSync(path.join(bobRootPath, 'index.html.acl'))
-  })
-
-  describe('Provider Discovery (POST /api/auth/select-provider)', () => {
-    it('form should load on a get', done => {
-      alice.get('/api/auth/select-provider')
-        .expect(200)
-        .expect((res) => { res.text.match(/Provider Discovery/) })
-        .end(done)
-    })
-
-    it('should complain if WebID URI is missing', (done) => {
-      alice.post('/api/auth/select-provider')
-        .expect(400, done)
-    })
-
-    it('should prepend https:// to webid, if necessary', (done) => {
-      alice.post('/api/auth/select-provider')
-        .type('form')
-        .send({ webid: 'localhost:7000' })
-        .expect(302, done)
-    })
-
-    it("should return a 400 if endpoint doesn't have Link Headers", (done) => {
-      // Fake provider, replies with 200 and no Link headers
-      nock('https://amazingwebsite.tld').intercept('/', 'OPTIONS').reply(204)
-
-      alice.post('/api/auth/select-provider')
-        .send('webid=https://amazingwebsite.tld/')
-        .expect(400)
-        .end(done)
-    })
-
-    it('should redirect user to discovered provider if valid uri', (done) => {
-      bob.post('/api/auth/select-provider')
-        .send('webid=' + aliceServerUri)
-        .expect(302)
-        .end((err, res) => {
-          let loginUri = res.header.location
-          expect(loginUri.startsWith(aliceServerUri + '/authorize'))
-          done(err)
-        })
-    })
   })
 
   describe('Login page (GET /login)', () => {
@@ -279,39 +235,13 @@ describe('Authentication API (OIDC)', () => {
     })
   })
 
-  describe('Two Pods + Browser Login workflow', () => {
-    // Step 1: Alice tries to access bob.com/shared-with-alice.txt, and
-    //   gets redirected to bob.com's Provider Discovery endpoint
-    it('401 Unauthorized -> redirect to provider discovery', (done) => {
+  describe('Browser login workflow', () => {
+    it('401 Unauthorized asking the user to log in', (done) => {
       bob.get('/shared-with-alice.txt')
         .expect(401)
         .end((err, res) => {
-          if (err) return done(err)
-          let redirectString = 'http-equiv="refresh" ' +
-            `content="0; url=${bobServerUri}/api/auth/select-provider`
-          expect(res.text).to.match(new RegExp(redirectString))
-          done()
-        })
-    })
-
-    // Step 2: Alice enters her pod's URI to Bob's Provider Discovery endpoint
-    it('Enter webId -> redirect to provider login', () => {
-      return bob.post('/api/auth/select-provider')
-        .send('webid=' + aliceServerUri)
-        .expect(302)
-        .then(res => {
-          // Submitting select-provider form redirects to Alice's pod's /authorize
-          let authorizeUri = res.header.location
-          expect(authorizeUri.startsWith(aliceServerUri + '/authorize'))
-
-          // Follow the redirect to /authorize
-          let authorizePath = url.parse(authorizeUri).path
-          return alice.get(authorizePath)
-        })
-        .then(res => {
-          // Since alice not logged in to her pod, /authorize redirects to /login
-          let loginUri = res.header.location
-          expect(loginUri.startsWith('/login'))
+          expect(res.text).to.contain('Log in')
+          done(err)
         })
     })
   })

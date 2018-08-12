@@ -39,40 +39,6 @@ describe('handlers/error-pages', () => {
     })
   })
 
-  describe('requiresSelectProvider()', () => {
-    it('should only apply to 401 error codes', () => {
-      let authMethod = 'oidc'
-      let req = { accepts: sinon.stub().withArgs('text/html').returns(true) }
-
-      expect(errorPages.requiresSelectProvider(authMethod, 404, req))
-        .to.equal(false)
-      expect(errorPages.requiresSelectProvider(authMethod, 401, req))
-        .to.equal(true)
-    })
-
-    it('should only apply to oidc auth method', () => {
-      let statusCode = 401
-      let req = { accepts: sinon.stub().withArgs('text/html').returns(true) }
-
-      expect(errorPages.requiresSelectProvider('tls', statusCode, req))
-        .to.equal(false)
-      expect(errorPages.requiresSelectProvider('oidc', statusCode, req))
-        .to.equal(true)
-    })
-
-    it('should only apply to html requests', () => {
-      let authMethod = 'oidc'
-      let statusCode = 401
-      let htmlReq = { accepts: sinon.stub().withArgs('text/html').returns(true) }
-      let nonHtmlReq = { accepts: sinon.stub().withArgs('text/html').returns(false) }
-
-      expect(errorPages.requiresSelectProvider(authMethod, statusCode, nonHtmlReq))
-        .to.equal(false)
-      expect(errorPages.requiresSelectProvider(authMethod, statusCode, htmlReq))
-        .to.equal(true)
-    })
-  })
-
   describe('sendErrorResponse()', () => {
     it('should send http status code and error message', () => {
       let statusCode = 404
