@@ -14,11 +14,19 @@ addons:
 before_install:
   - npm install -g npm@latest
 
+install:
+  - npm ci
+  - snyk test
+
 script:
   - npm run standard
   - npm run sonar
   - npm run nyc
 
-cache:
-  directories:
-    - node_modules
+after_success:
+  - snyk monitor
+
+notifications:
+  email:
+  - solid@janeirodigital.com
+  - solid-travis@inrupt.com
