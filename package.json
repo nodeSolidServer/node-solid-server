@@ -89,7 +89,8 @@
     "sonarjs": "^1.0.0",
     "standard": "^8.6.0",
     "supertest": "^3.0.0",
-    "whatwg-url": "^6.1.0"
+    "whatwg-url": "^6.1.0",
+    "snyk": "^1.88.2"
   },
   "main": "index.js",
   "scripts": {
@@ -98,7 +99,7 @@
     "nyc": "NODE_TLS_REJECT_UNAUTHORIZED=0 nyc --reporter=text-summary mocha",
     "mocha": "NODE_TLS_REJECT_UNAUTHORIZED=0 mocha",
     "sonar": "sonarjs",
-    "test": "npm run standard && npm run nyc"
+    "test": "snyk test && npm run standard && npm run nyc"
   },
   "nyc": {
     "reporter": [
