@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Log in</title>
+  <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+  <script src="/common/js/solid-auth-client.bundle.js"></script>
+</head>
+<body>
+<div class="container">
+  <div class="jumbotron">
+    <h2>Log in to access this resource</h2>
+    <p>
+      The resource you are trying to access
+      (<code>{{currentUrl}}</code>)
+      requires you to log in.
+    </p>
+    <button class="btn btn-primary" onclick="login()">Log in</button>
+    <button class="btn btn-primary" onclick="register()">Register</button>
+  </div>
+</div>
+<script>
+  async function login() {
+    // Log in through the popup
+    const popupUri = '/common/popup.html'
+    const session = await SolidAuthClient.popupLogin({ popupUri })
+    if (session) {
+      // Make authenticated request to the server to establish a session cookie
+      await SolidAuthClient.fetch(location)
+      // Now that we have a cookie, reload to display the authenticated page
+      location.reload()
+    }
+  }
+
+  function register() {
+    const registration = new URL('/register', location);
+    registration.searchParams.set('returnToUrl', location);
+    location.href = registration;
+  }
+</script>
+</body>
+</html>

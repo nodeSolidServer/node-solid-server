@@ -43,12 +43,12 @@ describe('OIDC error handling', function () {
           .expect(401)
       })
 
-      it('should return an html redirect body', () => {
+      it('should return an html login page', () => {
         return server.get('/profile/')
           .set('Accept', 'text/html')
           .expect('Content-Type', 'text/html; charset=utf-8')
           .then(res => {
-            expect(res.text).to.match(/<meta http-equiv="refresh" content="0; url=https:\/\/localhost:3457\/api\/auth\/select-provider/)
+            expect(res.text).to.match(/Log in/)
           })
       })
     })
