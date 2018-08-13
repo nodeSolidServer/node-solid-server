@@ -1,0 +1,35 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.12.0
+# ignores vulnerabilities until expiry date; change duration by modifying expiry date
+ignore:
+  'npm:braces:20180219':
+    - http-proxy-middleware > micromatch > braces:
+        reason: None given
+        expires: '2018-09-11T01:52:14.022Z'
+  'npm:node-forge:20180226':
+    - node-forge:
+        reason: None given
+        expires: '2018-09-11T01:52:14.022Z'
+    - webid > node-forge:
+        reason: None given
+        expires: '2018-09-11T01:52:14.023Z'
+  'npm:base64url:20180511':
+    - rdflib > solid-auth-client > @trust/oidc-rp > base64url:
+        reason: None given
+        expires: '2018-09-11T01:52:14.023Z'
+    - rdflib > solid-auth-client > @trust/oidc-rp > @trust/webcrypto > base64url:
+        reason: None given
+        expires: '2018-09-11T01:52:14.023Z'
+    - oidc-auth-manager > rdflib > solid-auth-client > @trust/oidc-rp > base64url:
+        reason: None given
+        expires: '2018-09-11T01:52:14.023Z'
+    - oidc-auth-manager > rdflib > solid-auth-client > @trust/oidc-rp > @trust/webcrypto > base64url:
+        reason: None given
+        expires: '2018-09-11T01:52:14.023Z'
+    - solid-auth-client@2.1.0 > @trust/oidc-rp@0.4.3 > base64url@2.0.0:
+        reason: None given
+        expires: '2018-09-11T01:52:14.023Z'
+    - solid-auth-client@2.1.0 > @trust/oidc-rp@0.4.3 > @trust/webcrypto@0.4.0 > base64url@2.0.0:
+        reason: None given
+        expires: '2018-09-11T01:52:14.023Z'
+patch: {}
