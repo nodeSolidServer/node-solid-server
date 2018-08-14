@@ -16,7 +16,6 @@ before_install:
 
 install:
   - npm ci
-  - snyk test
 
 script:
   - npm run standard
