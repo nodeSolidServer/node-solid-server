@@ -4,6 +4,7 @@ var ns = require('solid-namespace')($rdf)
 var LDP = require('../../lib/ldp')
 var path = require('path')
 var stringToStream = require('../../lib/utils').stringToStream
+var LegacyResourceMapper = require('../../lib/legacy-resource-mapper')
 
 // Helper functions for the FS
 var rm = require('./../utils').rm
@@ -13,8 +14,15 @@ var read = require('./../utils').read
 var fs = require('fs')
 
 describe('LDP', function () {
+  var root = path.join(__dirname, '..')
+
+  var resourceMapper = new LegacyResourceMapper({
+    rootPath: root
+  })
+
   var ldp = new LDP({
-    root: path.join(__dirname, '..'),
+    root,
+    resourceMapper,
     webid: false
   })
 
