@@ -83,15 +83,15 @@
     "mocha": "^5.1.1",
     "nock": "^9.0.14",
     "node-mocks-http": "^1.7.0",
-    "nyc": "^10.1.2",
+    "nyc": "^13.0.1",
     "sinon": "^2.1.0",
     "sinon-chai": "^2.8.0",
+    "snyk": "^1.88.2",
     "solid-auth-oidc": "^0.2.0",
     "sonarjs": "^1.0.0",
     "standard": "^8.6.0",
     "supertest": "^3.0.0",
-    "whatwg-url": "^6.1.0",
-    "snyk": "^1.88.2"
+    "whatwg-url": "^6.1.0"
   },
   "main": "index.js",
   "scripts": {
