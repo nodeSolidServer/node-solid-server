@@ -27,7 +27,11 @@
     const session = await SolidAuthClient.popupLogin({ popupUri })
     if (session) {
       // Make authenticated request to the server to establish a session cookie
-      await SolidAuthClient.fetch(location)
+      const { status } = await SolidAuthClient.fetch(location)
+      if (status === 401) {
+        alert(`Invalid login.\n\nDid you set ${session.idp} as your OIDC provider in your profile ${session.webId}?`);
+        await SolidAuthClient.logout();
+      }
       // Now that we have a cookie, reload to display the authenticated page
       location.reload()
     }
