@@ -29,22 +29,19 @@ describe('LDP', function () {
     webid: false
   })
 
-  describe('readFile', function () {
-    it('return 404 if file does not exist', function (done) {
-      ldp.readFile('resources/unexistent.ttl', function (err) {
+  describe('readResource', function () {
+    it('return 404 if file does not exist', () => {
+      return ldp.readResource('/resources/unexistent.ttl').catch(err => {
         assert.equal(err.status, 404)
-        done()
       })
     })
 
-    it('return file if file exists', function (done) {
+    it('return file if file exists', () => {
       // file can be empty as well
       write('hello world', 'fileExists.txt')
-      ldp.readFile(path.join(__dirname, '../resources/fileExists.txt'), function (err, file) {
+      return ldp.readResource('/resources/fileExists.txt').then(file => {
         rm('fileExists.txt')
-        assert.notOk(err)
         assert.equal(file, 'hello world')
-        done()
       })
     })
   })
