@@ -49,33 +49,28 @@ describe('LDP', function () {
     })
   })
 
-  describe('readContainerMeta', function () {
-    it('should return 404 if .meta is not found', function (done) {
-      ldp.readContainerMeta('resources/', function (err) {
+  describe('readContainerMeta', () => {
+    it('should return 404 if .meta is not found', () => {
+      return ldp.readContainerMeta('/resources/').catch(err => {
         assert.equal(err.status, 404)
-        done()
       })
     })
 
-    it('should return content if metaFile exists', function (done) {
+    it('should return content if metaFile exists', () => {
       // file can be empty as well
       write('This function just reads this, does not parse it', '.meta')
-      ldp.readContainerMeta(path.join(__dirname, '../resources/'), function (err, metaFile) {
+      return ldp.readContainerMeta('/resources/').then(metaFile => {
         rm('.meta')
-        assert.notOk(err)
         assert.equal(metaFile, 'This function just reads this, does not parse it')
-        done()
       })
     })
 
-    it('should work also if trailing `/` is not passed', function (done) {
+    it('should work also if trailing `/` is not passed', () => {
       // file can be empty as well
       write('This function just reads this, does not parse it', '.meta')
-      ldp.readContainerMeta(path.join(__dirname, '../resources'), function (err, metaFile) {
+      return ldp.readContainerMeta('/resources').then(metaFile => {
         rm('.meta')
-        assert.notOk(err)
         assert.equal(metaFile, 'This function just reads this, does not parse it')
-        done()
       })
     })
   })
