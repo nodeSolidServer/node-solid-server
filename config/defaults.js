@@ -11,6 +11,7 @@ module.exports = {
   'port': 8443,
   'serverUri': 'https://localhost:8443',
   'webid': true,
+  'strictOrigin': true,
   'dataBrowserPath': 'default'
 
   // For use in Enterprises to configure a HTTP proxy for all outbound HTTP requests from the SOLID server (we use
