@@ -306,6 +306,34 @@ describe('ResourceMapper', () => {
         contentType: 'text/html'
       })
 
+    itMapsUrl(mapper, 'a URL with a host specified as a URL object',
+      {
+        url: {
+          hostname: 'example.org',
+          path: '/space/foo.html'
+        },
+        contentType: 'text/html',
+        createIfNotExists: true
+      },
+      {
+        path: `${rootPath}example.org/space/foo.html`,
+        contentType: 'text/html'
+      })
+
+    itMapsUrl(mapper, 'a URL with a host specified as an Express request object',
+      {
+        url: {
+          hostname: 'example.org',
+          pathname: '/space/foo.html'
+        },
+        contentType: 'text/html',
+        createIfNotExists: true
+      },
+      {
+        path: `${rootPath}example.org/space/foo.html`,
+        contentType: 'text/html'
+      })
+
     itMapsUrl(mapper, 'a URL with a host with a port',
       {
         url: 'http://example.org:3000/space/foo.html',
