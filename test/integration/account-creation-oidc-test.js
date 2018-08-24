@@ -131,7 +131,7 @@ describe('AccountManager (OIDC account creation tests)', function () {
           var card = read(path.join('accounts/nicola.' + domain,
             'profile/card$.ttl'))
           var cardAcl = read(path.join('accounts/nicola.' + domain,
-            'profile/card.acl'))
+           'profile/.acl'))
           var prefs = read(path.join('accounts/nicola.' + domain,
             'settings/prefs.ttl'))
           var inboxAcl = read(path.join('accounts/nicola.' + domain,
