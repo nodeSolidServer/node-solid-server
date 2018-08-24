@@ -124,7 +124,7 @@ describe('ACL with WebID+TLS', function () {
   })
 
   describe('empty .acl', function () {
-    describe('with no defaultForNew in parent path', function () {
+    describe('with no default in parent path', function () {
       it('should give no access', function (done) {
         var options = createOptions('/acl-tls/empty-acl/test-folder', 'user1')
         options.body = ''
@@ -158,7 +158,7 @@ describe('ACL with WebID+TLS', function () {
         })
       })
     })
-    describe('with defaultForNew in parent path', function () {
+    describe('with default in parent path', function () {
       before(function () {
         rm('/acl-tls/write-acl/empty-acl/another-empty-folder/test-file.acl')
         rm('/acl-tls/write-acl/empty-acl/test-folder/test-file')
@@ -774,7 +774,7 @@ describe('ACL with WebID+TLS', function () {
     })
   })
 
-  describe('defaultForNew', function () {
+  describe('default', function () {
     before(function () {
       rm('/acl-tls/write-acl/default-for-new/.acl')
       rm('/acl-tls/write-acl/default-for-new/test-file.ttl')
@@ -783,11 +783,11 @@ describe('ACL with WebID+TLS', function () {
     var body = '<#Owner> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
       ' <http://www.w3.org/ns/auth/acl#accessTo> <./>;\n' +
       ' <http://www.w3.org/ns/auth/acl#agent> <' + user1 + '>;\n' +
-      ' <http://www.w3.org/ns/auth/acl#defaultForNew> <./>;\n' +
+      ' <http://www.w3.org/ns/auth/acl#default> <./>;\n' +
       ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Control> .\n' +
       '<#Default> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
       ' <http://www.w3.org/ns/auth/acl#accessTo> <./>;\n' +
-      ' <http://www.w3.org/ns/auth/acl#defaultForNew> <./>;\n' +
+      ' <http://www.w3.org/ns/auth/acl#default> <./>;\n' +
       ' <http://www.w3.org/ns/auth/acl#agentClass> <http://xmlns.com/foaf/0.1/Agent>;\n' +
       ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read> .\n'
     it("user1 should be able to modify test directory's ACL file", function (done) {

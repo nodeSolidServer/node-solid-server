@@ -103,13 +103,13 @@ function bin (argv, server) {
      a                 n0:Authorization;
      n0:accessTo       <./>;
      n0:agent          <${argv.owner}>;
-     n0:defaultForNew  <./>;
+     n0:default        <./>;
      n0:mode           n0:Control, n0:Read, n0:Write.
   <#everyone>
      a                 n0:Authorization;
      n0:               n2:Agent;
      n0:accessTo       <./>;
-     n0:defaultForNew  <./>;
+     n0:default        <./>;
      n0:mode           n0:Read.`
 
     fs.writeFileSync(rootPath, defaultAcl)

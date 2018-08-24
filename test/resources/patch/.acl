@@ -2,6 +2,6 @@
 
 <#Owner> a acl:Authorization;
   acl:accessTo </>;
-  acl:defaultForNew </>;
+  acl:default </>;
   acl:agent <https://tim.localhost:7777/profile/card#me>;
   acl:mode acl:Read, acl:Write, acl:Control.
