@@ -64,7 +64,7 @@
     "rdflib": "^0.17.0",
     "recursive-readdir": "^2.1.0",
     "rimraf": "^2.5.0",
-    "solid-auth-client": "^2.1.1",
+    "solid-auth-client": "^2.2.1-rc.0",
     "solid-namespace": "^0.1.0",
     "solid-permissions": "^0.6.0",
     "solid-ws": "^0.2.3",
