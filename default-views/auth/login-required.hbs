@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Log in</title>
   <link rel="stylesheet" href="/common/css/bootstrap.min.css">
-  <script src="/common/js/solid-auth-client.bundle.js"></script>
 </head>
 <body>
 <div class="container">
@@ -20,17 +19,16 @@
     <button class="btn btn-primary" onclick="register()">Register</button>
   </div>
 </div>
+<script src="/common/js/solid-auth-client.bundle.js"></script>
 <script>
   async function login() {
-    // Log in through the popup
-    const popupUri = '/common/popup.html'
-    const session = await SolidAuthClient.popupLogin({ popupUri })
+    const session = await solid.auth.popupLogin()
     if (session) {
       // Make authenticated request to the server to establish a session cookie
-      const { status } = await SolidAuthClient.fetch(location)
+      const { status } = await solid.auth.fetch(location)
       if (status === 401) {
         alert(`Invalid login.\n\nDid you set ${session.idp} as your OIDC provider in your profile ${session.webId}?`);
-        await SolidAuthClient.logout();
+        await solid.auth.logout()
       }
       // Now that we have a cookie, reload to display the authenticated page
       location.reload()
