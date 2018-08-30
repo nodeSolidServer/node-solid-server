@@ -1,7 +1,7 @@
 {
   "name": "solid-server",
   "description": "Solid server on top of the file-system",
-  "version": "4.1.1",
+  "version": "4.1.2-rc.0",
   "author": {
     "name": "Tim Berners-Lee",
     "email": "timbl@w3.org"
@@ -33,6 +33,7 @@
   "homepage": "http://github.com/solid/node-solid-server",
   "bugs": "http://github.com/solid/node-solid-server/issues",
   "dependencies": {
+    "@solid/oidc-auth-manager": "^0.16.2",
     "body-parser": "^1.18.3",
     "busboy": "^0.2.12",
     "camelize": "^1.0.0",
@@ -59,12 +60,11 @@
     "node-fetch": "^2.1.2",
     "node-forge": "^0.6.38",
     "nodemailer": "^3.1.4",
-    "oidc-auth-manager": "^0.16.1",
     "oidc-op-express": "^0.0.3",
     "rdflib": "^0.17.0",
     "recursive-readdir": "^2.1.0",
     "rimraf": "^2.5.0",
-    "solid-auth-client": "^2.1.1",
+    "solid-auth-client": "^2.2.1",
     "solid-namespace": "^0.1.0",
     "solid-permissions": "^0.6.0",
     "solid-ws": "^0.2.3",
@@ -75,7 +75,7 @@
     "webid": "^0.3.10"
   },
   "devDependencies": {
-    "@trust/oidc-op": "solid/oidc-op#rc-0.3.2",
+    "@solid/oidc-op": "0.3.2",
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
     "dirty-chai": "^1.2.2",
@@ -87,7 +87,7 @@
     "sinon": "^2.1.0",
     "sinon-chai": "^2.8.0",
     "snyk": "^1.88.2",
-    "solid-auth-oidc": "^0.2.0",
+    "@solid/solid-auth-oidc": "^0.2.1",
     "sonarjs": "^1.0.0",
     "standard": "^8.6.0",
     "supertest": "^3.0.0",
@@ -97,7 +97,7 @@
   "scripts": {
     "solid": "node ./bin/solid",
     "standard": "standard '{bin,examples,lib,test}/**/*.js'",
-    "nyc": "NODE_TLS_REJECT_UNAUTHORIZED=0 nyc --reporter=text-summary mocha",
+    "nyc": "NODE_TLS_REJECT_UNAUTHORIZED=0 nyc --reporter=text-summary mocha --inspect",
     "mocha": "NODE_TLS_REJECT_UNAUTHORIZED=0 mocha",
     "sonar": "sonarjs",
     "test": "npm run standard && npm run nyc"
