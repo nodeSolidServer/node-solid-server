@@ -30,8 +30,8 @@
     "type": "git",
     "url": "https://github.com/solid/node-solid-server"
   },
-  "homepage": "http://github.com/solid/node-solid-server",
-  "bugs": "http://github.com/solid/node-solid-server/issues",
+  "homepage": "https://github.com/solid/node-solid-server",
+  "bugs": "https://github.com/solid/node-solid-server/issues",
   "dependencies": {
     "@solid/oidc-auth-manager": "^0.16.2",
     "body-parser": "^1.18.3",
