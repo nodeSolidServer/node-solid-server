@@ -33,7 +33,7 @@
   "homepage": "https://github.com/solid/node-solid-server",
   "bugs": "https://github.com/solid/node-solid-server/issues",
   "dependencies": {
-    "@solid/oidc-auth-manager": "^0.16.2",
+    "@solid/oidc-auth-manager": "^0.16.3",
     "body-parser": "^1.18.3",
     "busboy": "^0.2.12",
     "camelize": "^1.0.0",
