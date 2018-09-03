@@ -283,6 +283,41 @@ describe('Authentication API (OIDC)', () => {
             expect(response).to.have.property('status', 403)
           })
         })
+
+        // Fail 403 Origin Unauthorized
+        describe('without that cookie and a matching origin', () => {
+          let response
+          before(done => {
+            alice.get('/')
+              .set('Origin', bobServerUri)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 403', () => {
+            expect(response).to.have.property('status', 403)
+          })
+        })
+
+        // TODO Does this really make sense?
+        describe('with that cookie and a non-matching origin', () => {
+          let response
+          before(done => {
+            alice.get('/')
+              .set('Cookie', cookie)
+              .set('Origin', bobServerUri)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 403', () => {
+            expect(response).to.have.property('status', 403)
+          })
+        })
       })
     })
 
