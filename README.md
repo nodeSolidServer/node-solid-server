@@ -23,8 +23,8 @@
 
 ### Install
 
-You can install and run the server either using Node.js directly or using 
-[Docker](https://www.docker.com/).  This and the following sections describe the 
+You can install and run the server either using Node.js directly or using
+[Docker](https://www.docker.com/).  This and the following sections describe the
 first approach, for the second approach see the section [use Docker](#use-docker)
 Section below.
 
@@ -306,7 +306,7 @@ In order to really get a feel for the Solid platform, and to test out `solid`,
 you will need the following:
 
 1. A WebID profile and browser certificate from one of the Solid-compliant
-    identity providers, such as [databox.me](https://databox.me).
+    identity providers, such as [solid.community](https://solid.community).
 
 2. A server-side SSL certificate for `solid` to use (see the section below
     on creating a self-signed certificate for testing).
@@ -408,6 +408,12 @@ npm run test-(acl|formats|params|patch)
       <td><a href="https://github.com/kjetilk">GitHub/kjetilk</a></td>
       <td><a href="https://twitter.com/KKjernsmo">Twitter/@KKjernsmo</a></td>
       <td><a href="https://solid.kjernsmo.net/profile/card#me">WebID</a></td>
+    </tr>
+    <tr>
+      <th align="left">Justin Bingham</th>
+      <td><a href="https://github.com/justinwb">GitHub/justinwb</a></td>
+      <td><a href="https://twitter.com/justinwb">Twitter/@justinwb</a></td>
+      <td><a href="https://justin.janeirodigital.exchange/profile/card#me">WebID</a></td>
     </tr>
   </tbody>
 </table>
