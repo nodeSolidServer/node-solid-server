@@ -20,6 +20,7 @@ describe('Auth Proxy', () => {
       // Set up Solid server
       server = ldnode({
         root: path.join(__dirname, '../resources/auth-proxy'),
+        configPath: path.join(__dirname, '../resources/config'),
         authProxy: {
           '/server/a': 'http://server-a.org'
         },
