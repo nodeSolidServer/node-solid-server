@@ -1,9 +1,9 @@
 const Solid = require('../../index')
 const path = require('path')
 const fs = require('fs-extra')
-const { UserStore } = require('oidc-auth-manager')
+const { UserStore } = require('@solid/oidc-auth-manager')
 const UserAccount = require('../../lib/models/user-account')
-const SolidAuthOIDC = require('solid-auth-oidc')
+const SolidAuthOIDC = require('@solid/solid-auth-oidc')
 
 const fetch = require('node-fetch')
 const localStorage = require('localstorage-memory')

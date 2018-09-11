@@ -2,7 +2,7 @@ var fs = require('fs')
 var fsExtra = require('fs-extra')
 var rimraf = require('rimraf')
 var path = require('path')
-const OIDCProvider = require('@trust/oidc-op')
+const OIDCProvider = require('@solid/oidc-op')
 const dns = require('dns')
 
 const TEST_HOSTS = ['nic.localhost', 'tim.localhost', 'nicola.localhost']

@@ -3,7 +3,7 @@ const fs = require('fs-extra')
 const request = require('request')
 const path = require('path')
 const { loadProvider, rm, checkDnsSettings } = require('../utils')
-const IDToken = require('@trust/oidc-op/src/IDToken')
+const IDToken = require('@solid/oidc-op/src/IDToken')
 
 const ldnode = require('../../index')
 
