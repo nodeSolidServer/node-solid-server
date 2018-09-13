@@ -143,12 +143,7 @@ describe('Authentication API (OIDC)', () => {
         expect(cookie).to.match(/Secure/)
       })
 
-      /* Reflecting https://github.com/solid/web-access-control-spec#referring-to-origins-ie-web-apps
-       where the cookie implies that the user is logged in
-       */
-
       describe('and performing a subsequent request', () => {
-        // If the user is not logged on, then fail 401 Unauthenticated
         describe('without that cookie', () => {
           let response
           before(done => {
@@ -164,9 +159,23 @@ describe('Authentication API (OIDC)', () => {
           })
         })
 
-        // TODO User not authorized test here
+        describe('with that cookie and a non-matching origin', () => {
+          let response
+          before(done => {
+            alice.get('/')
+              .set('Cookie', cookie)
+              .set('Origin', bobServerUri)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
 
-        // If the Origin header is not present, the succeed 200 OK
+          it('should return a 401', () => {
+            expect(response).to.have.property('status', 401)
+          })
+        })
+
         describe('with that cookie but without origin', () => {
           let response
           before(done => {
@@ -183,29 +192,11 @@ describe('Authentication API (OIDC)', () => {
           })
         })
 
-        // Clear cut case
         describe('with that cookie and a matching origin', () => {
           let response
           before(done => {
             alice.get('/')
               .set('Cookie', cookie)
-              .set('Origin', aliceServerUri)
-              .end((err, res) => {
-                response = res
-                done(err)
-              })
-          })
-
-          it('should return a 200', () => {
-            expect(response).to.have.property('status', 200)
-          })
-        })
-
-        // If the Origin is allowed by the ACL, then succeed 200 OK
-        describe('without that cookie but with a matching origin', () => {
-          let response
-          before(done => {
-            alice.get('/')
               .set('Origin', aliceServerUri)
               .end((err, res) => {
                 response = res
@@ -249,6 +240,37 @@ describe('Authentication API (OIDC)', () => {
           })
         })
 
+        describe('without that cookie but with a matching origin', () => {
+          let response
+          before(done => {
+            alice.get('/')
+              .set('Origin', aliceServerUri)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 401', () => {
+            expect(response).to.have.property('status', 401)
+          })
+        })
+        describe('without that cookie and a matching origin', () => {
+          let response
+          before(done => {
+            alice.get('/')
+              .set('Origin', bobServerUri)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 403', () => {
+            expect(response).to.have.property('status', 403)
+          })
+        })
+
         // Fail 403 Origin Unauthorized
         describe('without that cookie and a matching origin', () => {
           let response
@@ -279,43 +301,8 @@ describe('Authentication API (OIDC)', () => {
               })
           })
 
-          it('should return a 403', () => {
-            expect(response).to.have.property('status', 403)
-          })
-        })
-
-        // Fail 403 Origin Unauthorized
-        describe('without that cookie and a matching origin', () => {
-          let response
-          before(done => {
-            alice.get('/')
-              .set('Origin', bobServerUri)
-              .end((err, res) => {
-                response = res
-                done(err)
-              })
-          })
-
-          it('should return a 403', () => {
-            expect(response).to.have.property('status', 403)
-          })
-        })
-
-        // TODO Does this really make sense?
-        describe('with that cookie and a non-matching origin', () => {
-          let response
-          before(done => {
-            alice.get('/')
-              .set('Cookie', cookie)
-              .set('Origin', bobServerUri)
-              .end((err, res) => {
-                response = res
-                done(err)
-              })
-          })
-
-          it('should return a 403', () => {
-            expect(response).to.have.property('status', 403)
+          it('should return a 401', () => {
+            expect(response).to.have.property('status', 401)
           })
         })
       })
