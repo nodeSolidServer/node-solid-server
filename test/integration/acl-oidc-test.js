@@ -530,7 +530,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
     //     done()
     //   })
     // })
-    it.skip('user1 should be able to access test directory', function (done) {
+    it('user1 should be able to access test directory', function (done) {
       var options = createOptions('/group/test-folder/', 'user1')
 
       request.head(options, function (error, response, body) {
@@ -539,7 +539,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it.skip('user2 should be able to access test directory', function (done) {
+    it('user2 should be able to access test directory', function (done) {
       var options = createOptions('/group/test-folder/', 'user2')
 
       request.head(options, function (error, response, body) {
@@ -548,7 +548,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it.skip('user2 should be able to write a file in the test directory',
+    it('user2 should be able to write a file in the test directory',
       function (done) {
         var options = createOptions('/group/test-folder/test.ttl', 'user2', 'text/turtle')
         options.body = '<#Dahut> a <https://dbpedia.org/resource/Category:French_legendary_creatures>.\n'
@@ -559,7 +559,8 @@ describe('ACL with WebID+OIDC over HTTP', function () {
           done()
         })
       })
-    it.skip('user1 should be able to get the file', function (done) {
+
+    it('user1 should be able to get the file', function (done) {
       var options = createOptions('/group/test-folder/test.ttl', 'user1', 'text/turtle')
 
       request.get(options, function (error, response, body) {
@@ -568,7 +569,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it.skip('user2 should not be able to write to the ACL',
+    it('user2 should not be able to write to the ACL',
       function (done) {
         var options = createOptions('/group/test-folder/.acl', 'user2', 'text/turtle')
         options.body = '<#Dahut> a <https://dbpedia.org/resource/Category:French_legendary_creatures>.\n'
@@ -579,7 +580,8 @@ describe('ACL with WebID+OIDC over HTTP', function () {
           done()
         })
       })
-    it.skip('user1 should be able to delete the file', function (done) {
+
+    it('user1 should be able to delete the file', function (done) {
       var options = createOptions('/group/test-folder/test.ttl', 'user1', 'text/turtle')
 
       request.delete(options, function (error, response, body) {
@@ -588,7 +590,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it.skip('We should have a 500 with invalid group listings',
+    it('We should have a 500 with invalid group listings',
       function (done) {
         var options = createOptions('/group/test-folder/some-other-file.txt', 'user2')
 
@@ -598,7 +600,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
           done()
         })
       })
-    it.skip('We should have a 404 for non-existent file',
+    it('We should have a 404 for non-existent file',
       function (done) {
         var options = createOptions('/group/test-folder/nothere.txt', 'user2')
 
