@@ -58,76 +58,25 @@
     <div class="col-md-12">
       <h1>Apps</h1>
       <div class="list-group">
-        <a href="https://databox.me/apps/friends/" target="_blank" class="list-group-item">
-          <span class="lead">Friends</span>
-        </a>
-        <a href="https://github.com/solid/solid-apps" target="_blank" class="list-group-item">
-          <span class="lead">More Apps</span>
+        <a href="https://github.com/solid/userguide" target="_blank" class="list-group-item">
+          <span class="lead">Getting started with Solid and Data Browser</span>
         </a>
       </div>
     </div>
   </section>
-  <footer>| <a target="_blank" href="https://github.com/solid/userguide">Getting started with solid and data browser</a> |</footer>
 </div>
-</body>
 <script src="/common/js/solid-auth-client.bundle.js"></script>
 <script type="text/javascript">
-  const popupUri = window.location.origin + '/common/popup.html'
-  const stateData = {
-    session: null
-  }
-  const state = new Proxy(stateData, {
-    set: (obj, prop, value) => {
-      obj[prop] = value
-      render()
-    }
+  const button = document.getElementById('session-action')
+  let loggedIn = false
+
+  solid.auth.trackSession(session => {
+    loggedIn = !!session
+    button.innerText = loggedIn ? 'Log out' : 'Log in'
   })
 
-  function main() {
-    // Render the session state
-    SolidAuthClient
-      .currentSession()
-      .then(saveSession)
-      .then(render)
-
-    // Add event listeners
-    const actionButton = sessionActionButton()
-    actionButton.addEventListener('click', takeSessionAction)
-  }
-
-  function saveSession(session) {
-    state.session = session
-    return session
-  }
-
-  function takeSessionAction() {
-    const { session } = state
-    const loggedIn = !!session
-    if (loggedIn) {
-      SolidAuthClient
-        .logout()
-        .then(saveSession)
-    } else {
-      SolidAuthClient
-        .popupLogin({ popupUri })
-        .then(saveSession)
-    }
-  }
-
-  function render() {
-    const { session } = state
-    const actionButton = sessionActionButton()
-    if (!session) {
-      actionButton.innerText = 'Log in'
-    } else {
-      actionButton.innerText = 'Log out'
-    }
-  }
-
-  function sessionActionButton() {
-    return document.getElementById('session-action')
-  }
-
-  document.addEventListener('DOMContentLoaded', main)
+  button.addEventListener('click', () =>
+    loggedIn ? solid.auth.logout() : solid.auth.popupLogin())
 </script>
+</body>
 </html>
