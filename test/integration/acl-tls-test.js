@@ -20,6 +20,7 @@ var ns = require('solid-namespace')($rdf)
 
 var address = 'https://localhost:3456/test/'
 let rootPath = path.join(__dirname, '../resources')
+let configPath = path.join(rootPath, 'config')
 
 var aclExtension = '.acl'
 var metaExtension = '.meta'
@@ -53,6 +54,7 @@ describe('ACL with WebID+TLS', function () {
   var ldp = ldnode.createServer({
     mount: '/test',
     root: rootPath,
+    configPath,
     sslKey: path.join(__dirname, '../keys/key.pem'),
     sslCert: path.join(__dirname, '../keys/cert.pem'),
     webid: true,
