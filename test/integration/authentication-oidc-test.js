@@ -193,7 +193,7 @@ describe('Authentication API (OIDC)', () => {
         })
 
         // TODO: Are the next two tests correct?
-        describe('with that cookie and a matching origin', () => {
+        describe('with that cookie and a this origin', () => {
           let response
           before(done => {
             alice.get('/')
@@ -210,7 +210,7 @@ describe('Authentication API (OIDC)', () => {
           })
         })
 
-        describe('without that cookie but with a matching origin', () => {
+        describe('without that cookie but with a this origin', () => {
           let response
           before(done => {
             alice.get('/')
@@ -221,7 +221,7 @@ describe('Authentication API (OIDC)', () => {
               })
           })
 
-          it('Returns a 401, but should it?', () => {
+          it('Should return a 401', () => {
             expect(response).to.have.property('status', 401)
           })
         })
