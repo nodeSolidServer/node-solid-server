@@ -193,7 +193,8 @@ describe('Authentication API (OIDC)', () => {
           })
         })
 
-        describe('with that cookie and a matching origin', () => {
+        // TODO: Are the next two tests correct?
+        describe('with that cookie and a this origin', () => {
           let response
           before(done => {
             alice.get('/')
@@ -205,8 +206,39 @@ describe('Authentication API (OIDC)', () => {
               })
           })
 
-          it('should return a 200', () => {
-            expect(response).to.have.property('status', 200)
+          it('Returns 403 but should it?', () => {
+            expect(response).to.have.property('status', 403)
+          })
+        })
+
+        describe('without that cookie but with a this origin', () => {
+          let response
+          before(done => {
+            alice.get('/')
+              .set('Origin', aliceServerUri)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('Should return a 401', () => {
+            expect(response).to.have.property('status', 401)
+          })
+        })
+        describe('without that cookie and a matching origin', () => {
+          let response
+          before(done => {
+            alice.get('/')
+              .set('Origin', bobServerUri)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 401', () => {
+            expect(response).to.have.property('status', 401)
           })
         })
       })

@@ -12,6 +12,7 @@ module.exports = {
   'serverUri': 'https://localhost:8443',
   'webid': true,
   'strictOrigin': true,
+  'originsAllowed': ['https://apps.solid.invalid'],
   'dataBrowserPath': 'default'
 
   // For use in Enterprises to configure a HTTP proxy for all outbound HTTP requests from the SOLID server (we use
