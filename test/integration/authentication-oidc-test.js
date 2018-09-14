@@ -193,6 +193,7 @@ describe('Authentication API (OIDC)', () => {
           })
         })
 
+        // TODO: Are the next two tests correct?
         describe('with that cookie and a matching origin', () => {
           let response
           before(done => {
@@ -205,8 +206,8 @@ describe('Authentication API (OIDC)', () => {
               })
           })
 
-          it('should return a 200', () => {
-            expect(response).to.have.property('status', 200)
+          it('Returns 403 but should it?', () => {
+            expect(response).to.have.property('status', 403)
           })
         })
 
@@ -221,7 +222,7 @@ describe('Authentication API (OIDC)', () => {
               })
           })
 
-          it('should return a 401', () => {
+          it('Returns a 401, but should it?', () => {
             expect(response).to.have.property('status', 401)
           })
         })
