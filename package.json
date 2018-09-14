@@ -76,7 +76,7 @@
   },
   "devDependencies": {
     "@solid/oidc-op": "0.3.2",
-    "@solid/solid-auth-oidc": "^0.2.2",
+    "@solid/solid-auth-oidc": "^0.3.0",
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
     "dirty-chai": "^1.2.2",
