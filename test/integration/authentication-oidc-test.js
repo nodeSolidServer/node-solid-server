@@ -227,6 +227,23 @@ describe('Authentication API (OIDC)', () => {
           })
         })
 
+        // Configuration for originsAllowed
+        describe('without that cookie but with globally configured origin', () => {
+          let response
+          before(done => {
+            alice.get('/')
+              .set('Origin', 'https://test.apps.solid.invalid')
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 200', () => {
+            expect(response).to.have.property('status', 200)
+          })
+        })
+
         // Fail 403 Origin Unauthorized
         describe('without that cookie and a matching origin', () => {
           let response
