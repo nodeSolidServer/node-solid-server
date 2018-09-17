@@ -184,8 +184,8 @@ describe('Authentication API (OIDC)', () => {
           })
         })
 
-        // Clear cut case
-        describe('with that cookie and a matching origin', () => {
+        // Shouldn't occur in the wild, so what to do?
+        describe('with that cookie and our origin', () => {
           let response
           before(done => {
             alice.get('/')
@@ -202,8 +202,8 @@ describe('Authentication API (OIDC)', () => {
           })
         })
 
-        // If the Origin is allowed by the ACL, then succeed 200 OK
-        describe('without that cookie but with a matching origin', () => {
+        // Our own origin
+        describe('without that cookie but with our origin', () => {
           let response
           before(done => {
             alice.get('/')
@@ -214,8 +214,8 @@ describe('Authentication API (OIDC)', () => {
               })
           })
 
-          it('should return a 200', () => {
-            expect(response).to.have.property('status', 200)
+          it('should return a 403', () => {
+            expect(response).to.have.property('status', 403)
           })
         })
 
@@ -236,7 +236,7 @@ describe('Authentication API (OIDC)', () => {
           })
         })
 
-        // TODO Does this really make sense?
+        // Shouldn't occur in the wild, so what do we do?
         describe('with that cookie and a non-matching origin', () => {
           let response
           before(done => {
