@@ -8,10 +8,12 @@ describe('OIDC error handling', function () {
   const serverUri = 'https://localhost:3457'
   var ldpHttpsServer
   const rootPath = path.join(__dirname, '../resources/accounts/errortests')
+  const configPath = path.join(__dirname, '../resources/config')
   const dbPath = path.join(__dirname, '../resources/accounts/db')
 
   const ldp = ldnode.createServer({
     root: rootPath,
+    configPath,
     sslKey: path.join(__dirname, '../keys/key.pem'),
     sslCert: path.join(__dirname, '../keys/cert.pem'),
     auth: 'oidc',

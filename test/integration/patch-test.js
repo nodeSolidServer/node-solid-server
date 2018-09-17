@@ -10,8 +10,10 @@ const { read, rm, backup, restore } = require('../utils')
 const port = 7777
 const serverUri = `https://tim.localhost:${port}`
 const root = path.join(__dirname, '../resources/patch')
+const configPath = path.join(__dirname, '../resources/config')
 const serverOptions = {
   root,
+  configPath,
   serverUri,
   multiuser: false,
   webid: true,

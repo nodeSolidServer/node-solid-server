@@ -19,7 +19,6 @@ install:
 
 script:
   - npm run standard
-  - npm run sonar
   - npm run nyc
 
 after_success:

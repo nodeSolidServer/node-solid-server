@@ -9,7 +9,7 @@ describe('API', () => {
   let alice
 
   let aliceServerUri = 'https://localhost:5000'
-  let configPath = path.join(__dirname, '../../config')
+  let configPath = path.join(__dirname, '../resources/config')
   let aliceDbPath = path.join(__dirname,
     '../resources/accounts-scenario/alice/db')
   let aliceRootPath = path.join(__dirname, '../resources/accounts-scenario/alice')

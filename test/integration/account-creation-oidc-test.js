@@ -12,10 +12,12 @@ describe('AccountManager (OIDC account creation tests)', function () {
   var host = 'localhost:3457'
   var ldpHttpsServer
   let rootPath = path.join(__dirname, '../resources/accounts/')
+  let configPath = path.join(__dirname, '../resources/config')
   let dbPath = path.join(__dirname, '../resources/accounts/db')
 
   var ldp = ldnode.createServer({
     root: rootPath,
+    configPath,
     sslKey: path.join(__dirname, '../keys/key.pem'),
     sslCert: path.join(__dirname, '../keys/cert.pem'),
     auth: 'oidc',
@@ -206,9 +208,11 @@ describe('Single User signup page', () => {
   const port = 7457
   var ldpHttpsServer
   const rootDir = path.join(__dirname, '../resources/accounts/single-user/')
+  const configPath = path.join(__dirname, '../resources/config')
   const ldp = ldnode.createServer({
     port,
     root: rootDir,
+    configPath,
     sslKey: path.join(__dirname, '../keys/key.pem'),
     sslCert: path.join(__dirname, '../keys/cert.pem'),
     webid: true,
