@@ -9,5 +9,5 @@
     acl:mode
         acl:Read, acl:Write, acl:Control;
 
-    acl:defaultForNew <./>.
+    acl:default <./>.
 
