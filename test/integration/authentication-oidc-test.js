@@ -192,8 +192,8 @@ describe('Authentication API (OIDC)', () => {
           })
         })
 
-        // TODO: Are the next two tests correct?
-        describe('with that cookie and a this origin', () => {
+        // Shouldn't occur in the wild, so what to do?
+        describe('with that cookie and our origin', () => {
           let response
           before(done => {
             alice.get('/')
@@ -210,26 +210,12 @@ describe('Authentication API (OIDC)', () => {
           })
         })
 
-        describe('without that cookie but with a this origin', () => {
+        // Our own origin
+        describe('without that cookie but with our origin', () => {
           let response
           before(done => {
             alice.get('/')
               .set('Origin', aliceServerUri)
-              .end((err, res) => {
-                response = res
-                done(err)
-              })
-          })
-
-          it('Should return a 401', () => {
-            expect(response).to.have.property('status', 401)
-          })
-        })
-        describe('without that cookie and a matching origin', () => {
-          let response
-          before(done => {
-            alice.get('/')
-              .set('Origin', bobServerUri)
               .end((err, res) => {
                 response = res
                 done(err)
@@ -258,7 +244,7 @@ describe('Authentication API (OIDC)', () => {
           })
         })
 
-        // TODO Does this really make sense?
+        // Shouldn't occur in the wild, so what do we do?
         describe('with that cookie and a non-matching origin', () => {
           let response
           before(done => {
