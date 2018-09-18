@@ -192,6 +192,24 @@ describe('Authentication API (OIDC)', () => {
           })
         })
 
+        // How Mallory might set their cookie:
+        describe('with malicious cookie but without origin', () => {
+          let response
+          before(done => {
+            var malcookie = cookie.replace(/connect\.sid=(\S+)/, 'connect.sid=l33th4x0rzp0wn4g3;')
+            alice.get('/')
+              .set('Cookie', malcookie)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 403', () => {
+            expect(response).to.have.property('status', 403)
+          })
+        })
+
         // Our origin isn't trusted by default
         describe('with that cookie and our origin', () => {
           let response
@@ -228,7 +246,7 @@ describe('Authentication API (OIDC)', () => {
         })
 
         // Configuration for originsAllowed
-        describe('without that cookie but with globally configured origin', () => {
+        describe('with that cookie but with globally configured origin', () => {
           let response
           before(done => {
             alice.get('/')
@@ -259,6 +277,25 @@ describe('Authentication API (OIDC)', () => {
 
           it('should return a 401', () => {
             expect(response).to.have.property('status', 401)
+          })
+        })
+
+        // Configuration for originsAllowed with malicious cookie
+        describe('with malicious cookie but with globally configured origin', () => {
+          let response
+          before(done => {
+            var malcookie = cookie.replace(/connect\.sid=(\S+)/, 'connect.sid=l33th4x0rzp0wn4g3;')
+            alice.get('/')
+              .set('Cookie', malcookie)
+              .set('Origin', 'https://test.apps.solid.invalid')
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 403', () => {
+            expect(response).to.have.property('status', 403)
           })
         })
 
@@ -294,6 +331,25 @@ describe('Authentication API (OIDC)', () => {
 
           it('should return a 401', () => {
             expect(response).to.have.property('status', 401)
+          })
+        })
+
+        // Authenticated but origin not OK
+        describe('with malicious cookie and a non-matching origin', () => {
+          let response
+          before(done => {
+            var malcookie = cookie.replace(/connect\.sid=(\S+)/, 'connect.sid=l33th4x0rzp0wn4g3;')
+            alice.get('/')
+              .set('Cookie', malcookie)
+              .set('Origin', bobServerUri)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 403', () => {
+            expect(response).to.have.property('status', 403)
           })
         })
       })
