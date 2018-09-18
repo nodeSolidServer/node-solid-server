@@ -205,8 +205,8 @@ describe('Authentication API (OIDC)', () => {
               })
           })
 
-          it('should return a 403', () => {
-            expect(response).to.have.property('status', 403)
+          it('should return a 401', () => {
+            expect(response).to.have.property('status', 401)
           })
         })
 
@@ -294,12 +294,13 @@ describe('Authentication API (OIDC)', () => {
               })
           })
 
-          it('should return a 403', () => {
-            expect(response).to.have.property('status', 403)
+          it('should return a 401', () => {
+            expect(response).to.have.property('status', 401)
           })
         })
 
-        // Not authenticated but also wrong origin, TODO 401 or 403?
+        // Not authenticated but also wrong origin,
+        // 403 because authenticating wouldn't help, since the Origin is wrong
         describe('without that cookie and a matching origin', () => {
           let response
           before(done => {
