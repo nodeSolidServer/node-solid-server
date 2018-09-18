@@ -409,6 +409,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 401)
+        assert.equal(response.statusMessage, 'Unauthenticated')
         done()
       })
     })
@@ -482,6 +483,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 401)
+        assert.equal(response.statusMessage, 'Unauthenticated')
         done()
       })
     })
@@ -491,6 +493,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 401)
+        assert.equal(response.statusMessage, 'Unauthenticated')
         done()
       })
     })
@@ -673,6 +676,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 401)
+        assert.equal(response.statusMessage, 'Unauthenticated')
         done()
       })
     })
@@ -682,6 +686,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 401)
+        assert.equal(response.statusMessage, 'Unauthenticated')
         done()
       })
     })
@@ -776,6 +781,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 401)
+        assert.equal(response.statusMessage, 'Unauthenticated')
         done()
       })
     })
