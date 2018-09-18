@@ -132,7 +132,7 @@ describe('Authentication API (OIDC)', () => {
       })
 
       it('should set the cookie', () => {
-        expect(cookie).to.match(/connect.sid=/)
+        expect(cookie).to.match(/connect.sid=\S{65,100}/)
       })
 
       it('should set the cookie with HttpOnly', () => {
