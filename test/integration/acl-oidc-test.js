@@ -117,14 +117,14 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it('should not have the `User` set in the Response Header', function (done) {
-      var options = createOptions('/no-acl/', 'user1')
-      request(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.notProperty(response.headers, 'user')
-        done()
-      })
-    })
+    // it('should not have the `User` set in the Response Header', function (done) {
+    //   var options = createOptions('/no-acl/', 'user1')
+    //   request(options, function (error, response, body) {
+    //     assert.equal(error, null)
+    //     assert.notProperty(response.headers, 'user')
+    //     done()
+    //   })
+    // })
   })
 
   describe('empty .acl', function () {
