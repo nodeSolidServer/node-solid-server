@@ -192,7 +192,7 @@ describe('Authentication API (OIDC)', () => {
           })
         })
 
-        // Shouldn't occur in the wild, so what to do?
+        // Our origin isn't trusted by default
         describe('with that cookie and our origin', () => {
           let response
           before(done => {
@@ -205,12 +205,12 @@ describe('Authentication API (OIDC)', () => {
               })
           })
 
-          it('Returns 403 but should it?', () => {
+          it('should return a 403', () => {
             expect(response).to.have.property('status', 403)
           })
         })
 
-        // Our own origin
+        // Our own origin, no agent auth
         describe('without that cookie but with our origin', () => {
           let response
           before(done => {
@@ -222,8 +222,8 @@ describe('Authentication API (OIDC)', () => {
               })
           })
 
-          it('should return a 403', () => {
-            expect(response).to.have.property('status', 403)
+          it('should return a 401', () => {
+            expect(response).to.have.property('status', 401)
           })
         })
 
@@ -232,6 +232,7 @@ describe('Authentication API (OIDC)', () => {
           let response
           before(done => {
             alice.get('/')
+              .set('Cookie', cookie)
               .set('Origin', 'https://test.apps.solid.invalid')
               .end((err, res) => {
                 response = res
@@ -244,7 +245,7 @@ describe('Authentication API (OIDC)', () => {
           })
         })
 
-        // Fail 403 Origin Unauthorized
+        // Not authenticated but also wrong origin, TODO 401 or 403?
         describe('without that cookie and a matching origin', () => {
           let response
           before(done => {
@@ -261,7 +262,7 @@ describe('Authentication API (OIDC)', () => {
           })
         })
 
-        // Shouldn't occur in the wild, so what do we do?
+        // Authenticated but origin not OK
         describe('with that cookie and a non-matching origin', () => {
           let response
           before(done => {
