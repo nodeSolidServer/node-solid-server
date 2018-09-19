@@ -23,7 +23,7 @@ describe('Authentication API (OIDC)', () => {
 
   let aliceServerUri = 'https://localhost:7000'
   let aliceWebId = 'https://localhost:7000/profile/card#me'
-  let configPath = path.join(__dirname, '../../config')
+  let configPath = path.join(__dirname, '../resources/config')
   let aliceDbPath = path.join(__dirname,
     '../resources/accounts-scenario/alice/db')
   let userStorePath = path.join(aliceDbPath, 'oidc/users')
