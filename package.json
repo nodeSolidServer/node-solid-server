@@ -55,6 +55,7 @@
     "ip-range-check": "0.0.2",
     "is-ip": "^2.0.0",
     "li": "^1.0.1",
+    "mashlib": "^0.7.12",
     "mime-types": "^2.1.11",
     "negotiator": "^0.6.0",
     "node-fetch": "^2.1.2",
