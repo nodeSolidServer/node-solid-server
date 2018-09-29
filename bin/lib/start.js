@@ -122,7 +122,12 @@ function bin (argv, server) {
     app = solid.createServer(argv, server)
   } catch (e) {
     if (e.code === 'EACCES') {
-      console.log(colors.red.bold('ERROR'), 'You need root privileges to start on this port')
+      if (e.syscall === 'mkdir') {
+        console.log(colors.red.bold('ERROR'), `You need permissions to create '${e.path}' folder`)
+      }
+      else {
+        console.log(colors.red.bold('ERROR'), 'You need root privileges to start on this port')
+      }
       return 1
     }
     if (e.code === 'EADDRINUSE') {
