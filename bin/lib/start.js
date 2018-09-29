@@ -124,8 +124,7 @@ function bin (argv, server) {
     if (e.code === 'EACCES') {
       if (e.syscall === 'mkdir') {
         console.log(colors.red.bold('ERROR'), `You need permissions to create '${e.path}' folder`)
-      }
-      else {
+      } else {
         console.log(colors.red.bold('ERROR'), 'You need root privileges to start on this port')
       }
       return 1
