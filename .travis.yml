@@ -12,6 +12,8 @@ addons:
     - nicola.localhost
 
 before_install:
+  - echo "No GitHub dependencies allowed" &&
+    ! grep '"github:' package-lock.json
   - npm install -g npm@latest
 
 install:
