@@ -149,7 +149,7 @@ module.exports = [
     name: 'useCorsProxy',
     help: 'Do you want to have a CORS proxy endpoint?',
     flag: true,
-    prompt: true,
+    default: false,
     hide: true
   },
   {
