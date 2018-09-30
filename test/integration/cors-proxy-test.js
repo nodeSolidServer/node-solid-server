@@ -44,7 +44,13 @@ describe('CORS Proxy', () => {
       .end(done)
   })
 
-  const LOCAL_IPS = ['127.0.0.0', '10.0.0.0', '172.16.0.0', '192.168.0.0']
+  const LOCAL_IPS = [
+    '127.0.0.0',
+    '10.0.0.0',
+    '172.16.0.0',
+    '192.168.0.0',
+    '[::1]'
+  ]
   LOCAL_IPS.forEach(ip => {
     it(`should return 400 for a ${ip} address`, (done) => {
       nock(`https://${ip}`).get('/').reply(200)
