@@ -2,13 +2,9 @@
 <html id="docHTML">
 <head>
     <link type="text/css" rel="stylesheet" href="https://solid.github.io/solid-panes/style/tabbedtab.css" />
-    <script>
-      var $SOLID_GLOBAL_config = {
-        popupUri: window.location.origin + '/common/popup.html'
-      }
-    </script>
     <script type="text/javascript" src="/common/js/mashlib.min.js"></script>
     <script>
+      const $SOLID_GLOBAL_config = {}
       document.addEventListener('DOMContentLoaded', function () {
         const panes = require('mashlib')
         const UI = panes.UI
