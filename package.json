@@ -81,6 +81,7 @@
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
     "dirty-chai": "^1.2.2",
+    "eslint": "^5.6.1",
     "localstorage-memory": "^1.0.2",
     "mocha": "^5.1.1",
     "nock": "^9.0.14",
@@ -99,7 +100,8 @@
     "standard": "standard '{bin,examples,lib,test}/**/*.js'",
     "nyc": "NODE_TLS_REJECT_UNAUTHORIZED=0 nyc --reporter=text-summary mocha",
     "mocha": "NODE_TLS_REJECT_UNAUTHORIZED=0 mocha",
-    "test": "npm run standard && npm run nyc"
+    "test": "npm run standard && npm run nyc",
+    "lint": "eslint lib/**"
   },
   "nyc": {
     "reporter": [
