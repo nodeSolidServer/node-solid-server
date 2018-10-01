@@ -82,6 +82,7 @@
     "chai-as-promised": "^6.0.0",
     "dirty-chai": "^1.2.2",
     "eslint": "^5.6.1",
+    "eslint-config-node": "^4.0.0",
     "localstorage-memory": "^1.0.2",
     "mocha": "^5.1.1",
     "nock": "^9.0.14",
