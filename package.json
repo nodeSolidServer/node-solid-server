@@ -37,7 +37,7 @@
     "body-parser": "^1.18.3",
     "busboy": "^0.2.12",
     "camelize": "^1.0.0",
-    "colors": "^1.1.2",
+    "colorette": "^1.0.5",
     "commander": "^2.9.0",
     "cors": "^2.7.1",
     "debug": "^2.6.9",

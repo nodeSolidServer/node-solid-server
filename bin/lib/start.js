@@ -3,7 +3,7 @@
 const options = require('./options')
 const fs = require('fs')
 const extend = require('extend')
-const colors = require('colors/safe')
+const { cyan, red, bold } = require('colorette')
 
 module.exports = function (program, server) {
   const start = program
@@ -29,7 +29,7 @@ module.exports = function (program, server) {
     fs.readFile(configFile, (err, file) => {
       // No file exists, not a problem
       if (err) {
-        console.log(colors.cyan.bold('TIP'), 'create a config.json: `$ solid init`')
+        console.log(cyan(bold('TIP')), 'create a config.json: `$ solid init`')
       } else {
         // Use flags with priority over config file
         const config = JSON.parse(file)
@@ -123,17 +123,17 @@ function bin (argv, server) {
   } catch (e) {
     if (e.code === 'EACCES') {
       if (e.syscall === 'mkdir') {
-        console.log(colors.red.bold('ERROR'), `You need permissions to create '${e.path}' folder`)
+        console.log(red(bold('ERROR')), `You need permissions to create '${e.path}' folder`)
       } else {
-        console.log(colors.red.bold('ERROR'), 'You need root privileges to start on this port')
+        console.log(red(bold('ERROR')), 'You need root privileges to start on this port')
       }
       return 1
     }
     if (e.code === 'EADDRINUSE') {
-      console.log(colors.red.bold('ERROR'), 'The port ' + argv.port + ' is already in use')
+      console.log(red(bold('ERROR')), 'The port ' + argv.port + ' is already in use')
       return 1
     }
-    console.log(colors.red.bold('ERROR'), e.message)
+    console.log(red(bold('ERROR')), e.message)
     return 1
   }
   app.listen(argv.port, function () {
