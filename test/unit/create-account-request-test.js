@@ -84,6 +84,48 @@ describe('CreateAccountRequest', () => {
           done()
         })
     })
+
+    it('should return a 400 error if a username is invalid', () => {
+      let accountManager = AccountManager.from({ host })
+      let locals = { authMethod: defaults.auth, accountManager, oidc: { users: {} } }
+
+      accountManager.accountExists = sinon.stub().returns(Promise.resolve(false))
+
+      const invalidUsernames = [
+        '-',
+        '-a',
+        'a-',
+        '9-',
+        'alice--bob',
+        'alice bob'
+      ]
+
+      let invalidUsernamesCount = 0
+
+      const requests = invalidUsernames.map((username) => {
+        let aliceData = {
+          username: username, password: '1234'
+        }
+
+        let req = HttpMocks.createRequest({ app: { locals }, body: aliceData })
+        let request = CreateAccountRequest.fromParams(req, res)
+
+        return request.createAccount()
+          .then(() => {
+            throw new Error('should not happen')
+          })
+          .catch(err => {
+            invalidUsernamesCount++
+            expect(err.message).to.match(/Invalid username/)
+            expect(err.status).to.equal(400)
+          })
+      })
+
+      return Promise.all(requests)
+        .then(() => {
+          expect(invalidUsernamesCount).to.eq(invalidUsernames.length)
+        })
+    })
   })
 })
 
