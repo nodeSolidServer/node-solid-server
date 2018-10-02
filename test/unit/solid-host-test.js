@@ -55,23 +55,23 @@ describe('SolidHost', () => {
     })
 
     it('should allow a userId with empty origin', () => {
-      expect(host.allowsSessionFor('https://user.test.local/profile/card#me', '')).to.be.true
+      expect(host.allowsSessionFor('https://user.own/profile/card#me', '')).to.be.true
     })
 
     it('should allow a userId with the user subdomain as origin', () => {
-      expect(host.allowsSessionFor('https://user.test.local/profile/card#me', 'https://user.test.local')).to.be.true
-    })
-
-    it('should disallow a userId with another subdomain as origin', () => {
-      expect(host.allowsSessionFor('https://user.test.local/profile/card#me', 'https://other.test.local')).to.be.false
+      expect(host.allowsSessionFor('https://user.own/profile/card#me', 'https://user.own')).to.be.true
     })
 
     it('should allow a userId with the server domain as origin', () => {
-      expect(host.allowsSessionFor('https://user.test.local/profile/card#me', 'https://test.local')).to.be.true
+      expect(host.allowsSessionFor('https://user.own/profile/card#me', 'https://test.local')).to.be.true
+    })
+
+    it('should allow a userId with a server subdomain as origin', () => {
+      expect(host.allowsSessionFor('https://user.own/profile/card#me', 'https://other.test.local')).to.be.true
     })
 
     it('should disallow a userId from a different domain', () => {
-      expect(host.allowsSessionFor('https://user.test.local/profile/card#me', 'https://other.remote')).to.be.false
+      expect(host.allowsSessionFor('https://user.own/profile/card#me', 'https://other.remote')).to.be.false
     })
   })
 
