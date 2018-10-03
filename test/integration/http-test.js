@@ -368,6 +368,11 @@ describe('HTTP APIs', function () {
   })
 
   describe('HEAD API', function () {
+    it('should return content-type turtle by default', function (done) {
+      server.head('/sampleContainer/blank')
+        .expect('Content-Type', 'text/turtle; charset=utf-8')
+        .end(done)
+    })
     it('should have set content-type for turtle files',
       function (done) {
         server.head('/sampleContainer/example1.ttl')
