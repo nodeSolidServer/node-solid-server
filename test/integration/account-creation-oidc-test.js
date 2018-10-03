@@ -91,17 +91,24 @@ describe('AccountManager (OIDC account creation tests)', function () {
         .expect(400, done)
     })
 
+    it('should not create WebID if no password is not repeated', (done) => {
+      let subdomain = supertest('https://nicola.' + host)
+      subdomain.post('/api/accounts/new')
+        .send('username=nicola&password=test&repeat_password=')
+        .expect(400, done)
+    })
+
     it('should not create a WebID if it already exists', function (done) {
       var subdomain = supertest('https://nicola.' + host)
       subdomain.post('/api/accounts/new')
-        .send('username=nicola&password=12345')
+        .send('username=nicola&password=12345&repeat_password=12345')
         .expect(302)
         .end((err, res) => {
           if (err) {
             return done(err)
           }
           subdomain.post('/api/accounts/new')
-            .send('username=nicola&password=12345')
+            .send('username=nicola&password=12345&repeat_password=12345')
             .expect(400)
             .end((err) => {
               done(err)
@@ -112,7 +119,7 @@ describe('AccountManager (OIDC account creation tests)', function () {
     it('should create the default folders', function (done) {
       var subdomain = supertest('https://nicola.' + host)
       subdomain.post('/api/accounts/new')
-        .send('username=nicola&password=12345')
+        .send('username=nicola&password=12345&repeat_password=12345')
         .expect(302)
         .end(function (err) {
           if (err) {
@@ -120,19 +127,19 @@ describe('AccountManager (OIDC account creation tests)', function () {
           }
           var domain = host.split(':')[0]
           var card = read(path.join('accounts/nicola.' + domain,
-           'profile/card'))
+            'profile/card'))
           var cardAcl = read(path.join('accounts/nicola.' + domain,
-           'profile/card.acl'))
+            'profile/card.acl'))
           var prefs = read(path.join('accounts/nicola.' + domain,
-           'settings/prefs.ttl'))
+            'settings/prefs.ttl'))
           var inboxAcl = read(path.join('accounts/nicola.' + domain,
-           'inbox/.acl'))
+            'inbox/.acl'))
           var rootMeta = read(path.join('accounts/nicola.' + domain, '.meta'))
           var rootMetaAcl = read(path.join('accounts/nicola.' + domain,
-           '.meta.acl'))
+            '.meta.acl'))
 
           if (domain && card && cardAcl && prefs && inboxAcl && rootMeta &&
-             rootMetaAcl) {
+            rootMetaAcl) {
             done()
           } else {
             done(new Error('failed to create default files'))
@@ -143,7 +150,7 @@ describe('AccountManager (OIDC account creation tests)', function () {
     it('should link WebID to the root account', function (done) {
       var subdomain = supertest('https://nicola.' + host)
       subdomain.post('/api/accounts/new')
-        .send('username=nicola&password=12345')
+        .send('username=nicola&password=12345&repeat_password=12345')
         .expect(302)
         .end(function (err) {
           if (err) {
