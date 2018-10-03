@@ -7,12 +7,75 @@
   <link rel="stylesheet" href="/common/css/bootstrap.min.css">
   <script>
     function showPasswd() {
-      var x = document.getElementById("password");
-      if (x.type === "password") {
-        x.type = "text";
+      var passwordInput = document.getElementById("password");
+      var repeatPasswordInput = document.getElementById("repeat_password");
+      if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        repeatPasswordInput.type = "text";
       } else {
-        x.type = "password";
+        passwordInput.type = "password";
+        repeatPasswordInput.type = "password";
       }
+    }
+
+    var validatePassword = debounce(function (element) {
+      handleTouchState(element);
+      var repeatPasswordInput = document.getElementById('repeat_password');
+      if (passwordsAreTouched(element, repeatPasswordInput) && repeatPasswordInput.value === element.value) {
+        return changeStateForPassword(true);
+      } else if (repeatPasswordInput.dataset.touched) {
+        return changeStateForPassword(false);
+      }
+    }, 500);
+
+    var validateRepeatPassword = debounce(function (element) {
+      handleTouchState(element);
+      var passwordInput = document.getElementById('password');
+      if (passwordsAreTouched(passwordInput, element) && passwordInput.value === element.value) {
+        return changeStateForPassword(true);
+      } else if (passwordInput.dataset.touched) {
+        return changeStateForPassword(false);
+      }
+    }, 500);
+
+    function changeStateForPassword(isValid) {
+      var formGroup = document.getElementById('password_form_group');
+      formGroup.classList.toggle('has-error', !isValid)
+      formGroup.classList.toggle('has-success', isValid)
+    }
+
+    function isTouched(element) {
+      return element.dataset.touched || element.value !== '';
+    }
+
+    function handleTouchState(element) {
+      if (element.value) {
+        element.dataset.touched = 'true';
+      }
+    }
+
+    function passwordsAreTouched(passwordInput, repeatPasswordInput) {
+      return passwordInput.dataset.touched && repeatPasswordInput.dataset.touched;
+    }
+
+    // fetched from https://davidwalsh.name/javascript-debounce-function
+    // Returns a function, that, as long as it continues to be invoked, will not
+    // be triggered. The function will be called after it stops being called for
+    // N milliseconds. If `immediate` is passed, trigger the function on the
+    // leading edge, instead of the trailing.
+    function debounce(func, wait, immediate) {
+      var timeout;
+      return function() {
+        var context = this, args = arguments;
+        var later = function() {
+          timeout = null;
+          if (!immediate) func.apply(context, args);
+        };
+        var callNow = immediate && !timeout;
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        if (callNow) func.apply(context, args);
+      };
     }
   </script>
 </head>
