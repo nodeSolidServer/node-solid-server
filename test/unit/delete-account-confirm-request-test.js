@@ -19,19 +19,19 @@ describe('DeleteAccountConfirmRequest', () => {
 
   describe('constructor()', () => {
     it('should initialize a request instance from options', () => {
-      let res = HttpMocks.createResponse()
+      const res = HttpMocks.createResponse()
 
-      let accountManager = {}
-      let userStore = {}
+      const accountManager = {}
+      const userStore = {}
 
-      let options = {
+      const options = {
         accountManager,
         userStore,
         response: res,
         token: '12345'
       }
 
-      let request = new DeleteAccountConfirmRequest(options)
+      const request = new DeleteAccountConfirmRequest(options)
 
       expect(request.response).to.equal(res)
       expect(request.token).to.equal(options.token)
@@ -42,17 +42,17 @@ describe('DeleteAccountConfirmRequest', () => {
 
   describe('fromParams()', () => {
     it('should return a request instance from options', () => {
-      let token = '12345'
-      let accountManager = {}
-      let userStore = {}
+      const token = '12345'
+      const accountManager = {}
+      const userStore = {}
 
-      let req = {
+      const req = {
         app: { locals: { accountManager, oidc: { users: userStore } } },
         query: { token }
       }
-      let res = HttpMocks.createResponse()
+      const res = HttpMocks.createResponse()
 
-      let request = DeleteAccountConfirmRequest.fromParams(req, res)
+      const request = DeleteAccountConfirmRequest.fromParams(req, res)
 
       expect(request.response).to.equal(res)
       expect(request.token).to.equal(token)
@@ -62,16 +62,16 @@ describe('DeleteAccountConfirmRequest', () => {
   })
 
   describe('get()', () => {
-    let token = '12345'
-    let userStore = {}
-    let res = HttpMocks.createResponse()
+    const token = '12345'
+    const userStore = {}
+    const res = HttpMocks.createResponse()
     sinon.spy(res, 'render')
 
     it('should create an instance and render a delete account form', () => {
-      let accountManager = {
+      const accountManager = {
         validateDeleteToken: sinon.stub().resolves(true)
       }
-      let req = {
+      const req = {
         app: { locals: { accountManager, oidc: { users: userStore } } },
         query: { token }
       }
@@ -86,10 +86,10 @@ describe('DeleteAccountConfirmRequest', () => {
     })
 
     it('should display an error message on an invalid token', () => {
-      let accountManager = {
+      const accountManager = {
         validateDeleteToken: sinon.stub().throws()
       }
-      let req = {
+      const req = {
         app: { locals: { accountManager, oidc: { users: userStore } } },
         query: { token }
       }
@@ -106,19 +106,14 @@ describe('DeleteAccountConfirmRequest', () => {
     it('creates a request instance and invokes handlePost()', () => {
       sinon.spy(DeleteAccountConfirmRequest, 'handlePost')
 
-      let token = '12345'
-      let host = SolidHost.from({ serverUri: 'https://example.com' })
-      let alice = {
+      const token = '12345'
+      const host = SolidHost.from({ serverUri: 'https://example.com' })
+      const alice = {
         webId: 'https://alice.example.com/#me'
       }
-      let storedToken = { webId: alice.webId }
-      let store = {
-        findUser: sinon.stub().resolves(alice),
-        updatePassword: sinon.stub()
-      }
-      let accountManager = {
+      const storedToken = { webId: alice.webId }
+      const accountManager = {
         host,
-        store,
         userAccountFrom: sinon.stub().resolves(alice),
         validateDeleteToken: sinon.stub().resolves(storedToken)
       }
@@ -126,13 +121,11 @@ describe('DeleteAccountConfirmRequest', () => {
       accountManager.accountExists = sinon.stub().resolves(true)
       accountManager.loadAccountRecoveryEmail = sinon.stub().resolves('alice@example.com')
 
-      // TODO: @kjetilk write in your stuff here - probably a stub
-
-      let req = {
-        app: { locals: { accountManager, oidc: { users: store } } },
+      const req = {
+        app: { locals: { accountManager, oidc: { users: {} } } },
         body: { token }
       }
-      let res = HttpMocks.createResponse()
+      const res = HttpMocks.createResponse()
 
       return DeleteAccountConfirmRequest.post(req, res)
         .then(() => {
@@ -143,18 +136,18 @@ describe('DeleteAccountConfirmRequest', () => {
 
   describe('handlePost()', () => {
     it('should display error message if validation error encountered', () => {
-      let token = '12345'
-      let userStore = {}
-      let res = HttpMocks.createResponse()
-      let accountManager = {
+      const token = '12345'
+      const userStore = {}
+      const res = HttpMocks.createResponse()
+      const accountManager = {
         validateResetToken: sinon.stub().throws()
       }
-      let req = {
+      const req = {
         app: { locals: { accountManager, oidc: { users: userStore } } },
         query: { token }
       }
 
-      let request = DeleteAccountConfirmRequest.fromParams(req, res)
+      const request = DeleteAccountConfirmRequest.fromParams(req, res)
 
       return DeleteAccountConfirmRequest.handlePost(request)
         .then(() => {
@@ -166,10 +159,10 @@ describe('DeleteAccountConfirmRequest', () => {
 
   describe('validateToken()', () => {
     it('should return false if no token is present', () => {
-      let accountManager = {
+      const accountManager = {
         validateDeleteToken: sinon.stub()
       }
-      let request = new DeleteAccountConfirmRequest({ accountManager, token: null })
+      const request = new DeleteAccountConfirmRequest({ accountManager, token: null })
 
       return request.validateToken()
         .then(result => {
@@ -181,9 +174,9 @@ describe('DeleteAccountConfirmRequest', () => {
 
   describe('error()', () => {
     it('should invoke renderForm() with the error', () => {
-      let request = new DeleteAccountConfirmRequest({})
+      const request = new DeleteAccountConfirmRequest({})
       request.renderForm = sinon.stub()
-      let error = new Error('error message')
+      const error = new Error('error message')
 
       request.error(error)
 
@@ -192,20 +185,42 @@ describe('DeleteAccountConfirmRequest', () => {
   })
 
   describe('deleteAccount()', () => {
-    // TODO: @kjetilk Write test when more is in place
+    it('should remove user from userStore and remove directories', () => {
+      const webId = 'https://alice.example.com/#me'
+      const user = { webId, id: webId }
+      const accountManager = {
+        userAccountFrom: sinon.stub().returns(user)
+      }
+      const userStore = {
+        deleteUser: sinon.stub().resolves()
+      }
+
+      const options = {
+        accountManager, userStore, newPassword: 'swordfish'
+      }
+      const request = new DeleteAccountConfirmRequest(options)
+      const tokenContents = { webId }
+
+      return request.deleteAccount(tokenContents)
+        .then(() => {
+          expect(accountManager.userAccountFrom).to.have.been.calledWith(tokenContents)
+          expect(userStore.deleteUser).to.have.been.calledWith(user.id)
+          // TODO: @kjetilk Include the last method for deleting from fs
+        })
+    })
   })
 
   describe('renderForm()', () => {
     it('should set response status to error status, if error exists', () => {
-      let token = '12345'
-      let response = HttpMocks.createResponse()
+      const token = '12345'
+      const response = HttpMocks.createResponse()
       sinon.spy(response, 'render')
 
-      let options = { token, response }
+      const options = { token, response }
 
-      let request = new DeleteAccountConfirmRequest(options)
+      const request = new DeleteAccountConfirmRequest(options)
 
-      let error = new Error('error message')
+      const error = new Error('error message')
 
       request.renderForm(error)
 
