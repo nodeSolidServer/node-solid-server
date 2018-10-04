@@ -5,22 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Register</title>
   <link rel="stylesheet" href="/common/css/bootstrap.min.css">
-  <script>
-    function showPasswd() {
-      var x = document.getElementById("password");
-      if (x.type === "password") {
-        x.type = "text";
-      } else {
-        x.type = "password";
-      }
-    }
-  </script>
+  <link rel="stylesheet" href="/common/css/server.css">
+
 </head>
 <body>
 <div class="container">
-  <h4>Register</h4>
-</div>
-<div class="container">
+
+  <div class="page-header">
+    <h1>Register</h1>
+  </div>
+
   {{#if registerDisabled}}
     {{> account/register-disabled}}
   {{else}}

@@ -5,29 +5,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Log in</title>
   <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/common/css/server.css">
 </head>
 <body>
 <div class="container">
-  <div class="jumbotron">
-    <h2>Log in to access this resource</h2>
+  <div class="page-header">
+    <div class="pull-right">
+      <button class="btn btn-primary" onclick="register()">Register</button>
+      <button class="btn btn-success" onclick="login()">Log in</button>
+    </div>
+    <h1>Log in to access this resource</h1>
+  </div>
+
+  <div class="alert alert-danger">
     <p>
       The resource you are trying to access
       (<code>{{currentUrl}}</code>)
       requires you to log in.
     </p>
-    <button class="btn btn-primary" onclick="login()">Log in</button>
-    <button class="btn btn-primary" onclick="register()">Register</button>
   </div>
+
+</div>
 </div>
 <script src="/common/js/solid-auth-client.bundle.js"></script>
 <script>
-  async function login() {
+  async function login () {
     const session = await solid.auth.popupLogin()
     if (session) {
       // Make authenticated request to the server to establish a session cookie
-      const { status } = await solid.auth.fetch(location)
+      const {status} = await solid.auth.fetch(location)
       if (status === 401) {
-        alert(`Invalid login.\n\nDid you set ${session.idp} as your OIDC provider in your profile ${session.webId}?`);
+        alert(`Invalid login.\n\nDid you set ${session.idp} as your OIDC provider in your profile ${session.webId}?`)
         await solid.auth.logout()
       }
       // Now that we have a cookie, reload to display the authenticated page
@@ -35,10 +43,10 @@
     }
   }
 
-  function register() {
-    const registration = new URL('/register', location);
-    registration.searchParams.set('returnToUrl', location);
-    location.href = registration;
+  function register () {
+    const registration = new URL('/register', location)
+    registration.searchParams.set('returnToUrl', location)
+    location.href = registration
   }
 </script>
 </body>

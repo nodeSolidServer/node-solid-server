@@ -1,10 +1,11 @@
-<form method="post" action="{{tlsUrl}}">
-  <div class="form-group">
+<div class="panel panel-default panel-login-tls">
+  <div class="panel-body">
+    <form method="post" action="{{tlsUrl}}">
+      <button type="submit" class="btn btn-lg btn-primary" id="login-tls">
+        Log in with Certificate (WebId-TLS)
+      </button>
 
-    <button type="submit" class="btn btn-primary" id="login-tls">
-      With Certificate (WebId-TLS)
-    </button>
-
-    {{> auth/auth-hidden-fields}}
+      {{> auth/auth-hidden-fields}}
+    </form>
   </div>
-</form>
+</div>
