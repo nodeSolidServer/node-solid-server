@@ -390,6 +390,27 @@ describe('AccountManager', () => {
     })
   })
 
+  describe('generateDeleteToken()', () => {
+    it('should generate and store an expiring delete token', () => {
+      let tokenService = new TokenService()
+      let options = { host, tokenService }
+
+      let accountManager = AccountManager.from(options)
+
+      let aliceWebId = 'https://alice.example.com/#me'
+      let userAccount = {
+        webId: aliceWebId
+      }
+
+      let token = accountManager.generateDeleteToken(userAccount)
+
+      let tokenValue = accountManager.tokenService.verify('delete-account', token)
+
+      expect(tokenValue.webId).to.equal(aliceWebId)
+      expect(tokenValue).to.have.property('exp')
+    })
+  })
+
   describe('generateResetToken()', () => {
     it('should generate and store an expiring reset token', () => {
       let tokenService = new TokenService()
@@ -404,7 +425,7 @@ describe('AccountManager', () => {
 
       let token = accountManager.generateResetToken(userAccount)
 
-      let tokenValue = accountManager.tokenService.verify(token)
+      let tokenValue = accountManager.tokenService.verify('reset-password', token)
 
       expect(tokenValue.webId).to.equal(aliceWebId)
       expect(tokenValue).to.have.property('exp')
@@ -478,6 +499,77 @@ describe('AccountManager', () => {
       let accountManager = AccountManager.from(options)
 
       accountManager.sendPasswordResetEmail(userAccount, returnToUrl)
+        .catch(error => {
+          expect(error.message).to.equal('Account recovery email has not been provided')
+          done()
+        })
+    })
+  })
+
+  describe('sendDeleteAccountEmail()', () => {
+    it('should compose and send a delete account email', () => {
+      let deleteToken = '1234'
+      let tokenService = {
+        generate: sinon.stub().returns(deleteToken)
+      }
+
+      let emailService = {
+        sendWithTemplate: sinon.stub().resolves()
+      }
+
+      let aliceWebId = 'https://alice.example.com/#me'
+      let userAccount = {
+        webId: aliceWebId,
+        email: 'alice@example.com'
+      }
+
+      let options = { host, tokenService, emailService }
+      let accountManager = AccountManager.from(options)
+
+      accountManager.getAccountDeleteUrl = sinon.stub().returns('delete account url')
+
+      let expectedEmailData = {
+        to: 'alice@example.com',
+        webId: aliceWebId,
+        deleteUrl: 'delete account url'
+      }
+
+      return accountManager.sendDeleteAccountEmail(userAccount)
+        .then(() => {
+          expect(accountManager.getAccountDeleteUrl)
+            .to.have.been.calledWith(deleteToken)
+          expect(emailService.sendWithTemplate)
+            .to.have.been.calledWith('delete-account', expectedEmailData)
+        })
+    })
+
+    it('should reject if no email service is set up', done => {
+      let aliceWebId = 'https://alice.example.com/#me'
+      let userAccount = {
+        webId: aliceWebId,
+        email: 'alice@example.com'
+      }
+      let options = { host }
+      let accountManager = AccountManager.from(options)
+
+      accountManager.sendDeleteAccountEmail(userAccount)
+        .catch(error => {
+          expect(error.message).to.equal('Email service is not set up')
+          done()
+        })
+    })
+
+    it('should reject if no user email is provided', done => {
+      let aliceWebId = 'https://alice.example.com/#me'
+      let userAccount = {
+        webId: aliceWebId
+      }
+      let emailService = {}
+      let options = { host, emailService }
+
+      let accountManager = AccountManager.from(options)
+
+      accountManager.sendDeleteAccountEmail(userAccount)
         .catch(error => {
           expect(error.message).to.equal('Account recovery email has not been provided')
           done()
