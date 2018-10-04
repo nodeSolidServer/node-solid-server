@@ -5,11 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{{#if name}}{{name}} &ndash; {{/if}}Solid Home</title>
   <link rel="stylesheet" href="/common/css/bootstrap.min.css">
-  <style>
-    .session-action {
-      margin-right: 15px;
-    }
-  </style>
+  <link rel="stylesheet" href="/common/css/server.css">
 </head>
 <body>
 <div class="container">
@@ -18,65 +14,66 @@
       <div class="navbar-header">
         <a href="/" class="navbar-brand">{{#if name}}{{name}} &ndash; {{/if}}Solid Home</a>
       </div>
-      <div class="navbar-right">
+      <div class="nav navbar-right navbar-form">
         <button id="session-action" type="button" class="session-action btn btn-default navbar-btn">Loading...</button>
       </div>
     </div>
   </nav>
-</div>
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <p class="lead">
-        <span>
-          This is a public homepage of {{#if name}}{{name}}, whose WebID is{{else}}a user with WebID{{/if}}
-        </span>
-        <a href="{{webId}}"><mark>{{webId}}</mark></a>.
-      </p>
-    </div>
-  </div>
-  <section class="row">
-    <div class="col-md-12">
-      <h1>Data</h1>
-      <div class="list-group">
-        <a href="/profile/card" target="_blank" class="list-group-item">
-          <span class="lead">Profile</span>
-          <span class="badge">public</span>
-        </a>
-        <a href="/inbox/" target="_blank" class="list-group-item">
-          <span class="lead">Inbox</span>
-          <span class="badge">private</span>
-        </a>
-        <a href="/public/" target="_blank" class="list-group-item">
-          <span class="lead">Public Folder</span>
-          <span class="badge">public</span>
-        </a>
-      </div>
+
+
+  <p class="lead">
+    <span>
+      This is a public homepage of {{#if name}}{{name}}, whose WebID is{{else}}a user with WebID{{/if}}
+    </span>
+    <a href="{{webId}}"><mark>{{webId}}</mark></a>.
+  </p>
+
+  <section>
+    <h1>Data</h1>
+    <div class="list-group">
+      <a href="/profile/card" target="_blank" class="list-group-item">
+        <span class="lead">Profile</span>
+        <span class="badge">public</span>
+      </a>
+      <a href="/inbox/" target="_blank" class="list-group-item">
+        <span class="lead">Inbox</span>
+        <span class="badge">private</span>
+      </a>
+      <a href="/public/" target="_blank" class="list-group-item">
+        <span class="lead">Public Folder</span>
+        <span class="badge">public</span>
+      </a>
     </div>
   </section>
-  <section class="row">
-    <div class="col-md-12">
-      <h1>Apps</h1>
-      <div class="list-group">
-        <a href="https://github.com/solid/userguide" target="_blank" class="list-group-item">
-          <span class="lead">Getting started with Solid and Data Browser</span>
-        </a>
-      </div>
+
+  <section>
+    <h1>Apps</h1>
+    <div class="list-group">
+      <a href="https://github.com/solid/userguide" target="_blank" class="list-group-item">
+        <span class="lead">Getting started with Solid and Data Browser</span>
+      </a>
     </div>
   </section>
 </div>
+
 <script src="/common/js/solid-auth-client.bundle.js"></script>
 <script type="text/javascript">
-  const button = document.getElementById('session-action')
-  let loggedIn = false
+  (function () {
+    'use strict'
+    var button = document.getElementById('session-action')
+    var loggedIn = false
 
-  solid.auth.trackSession(session => {
-    loggedIn = !!session
-    button.innerText = loggedIn ? 'Log out' : 'Log in'
-  })
+    solid.auth.trackSession(session => {
+      loggedIn = !!session
+      button.innerText = loggedIn ? 'Log out' : 'Log in'
+      button.classList.remove('btn-default');
+      button.classList.add(loggedIn ? 'btn-danger' : 'btn-primary')
+    })
 
-  button.addEventListener('click', () =>
-    loggedIn ? solid.auth.logout() : solid.auth.popupLogin())
+    button.addEventListener('click', function () {
+      loggedIn ? solid.auth.logout() : solid.auth.popupLogin()
+    })
+  })()
 </script>
 </body>
 </html>

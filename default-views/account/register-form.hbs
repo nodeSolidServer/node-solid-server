@@ -1,71 +1,78 @@
-<form method="post" action="/api/accounts/new">
-  <div class="form-group">
-    {{#if error}}
-      <div class="row">
-        <div class="col-md-12">
-          <p class="text-danger"><strong>{{error}}</strong></p>
-        </div>
+<div class="row">
+  <div class="col-md-6">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <form method="post" action="/api/accounts/new">
+          {{> shared/error}}
+
+          <div class="form-group">
+            <label class="control-label" for="username">Username*</label>
+            <input type="text" class="form-control" name="username" id="username" placeholder="alice"
+                   required/>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label" for="password">Password*</label>
+            <input type="password" class="form-control" name="password" id="password" required/>
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" id="showPassword"/> Show Password
+              </label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label" for="name">Name*</label>
+            <input type="text" class="form-control" name="name" id="name" required/>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label" for="email">Email*</label>
+            <input type="email" class="form-control" name="email" id="email"/>
+            <span class="help-block">Your email will only used for account recovery</span>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label" for="externalWebId">External WebID:</label>
+            <input type="text" class="form-control" name="externalWebId" id="externalWebId"/>
+            <span class="help-block">
+                                We will generate a Web ID when you register, but if you already have a Web ID hosted elsewhere that you'd prefer to use to log in, enter it here
+                            </span>
+          </div>
+
+
+          <button type="submit" class="btn btn-primary" id="register">Register</button>
+
+          <input type="hidden" name="returnToUrl" value="{{returnToUrl}}"/>
+          {{> auth/auth-hidden-fields}}
+
+        </form>
       </div>
-    {{/if}}
-    <div class="row">
-      <div class="col-md-6">
-        <label for="username">Username:</label>
-        <input type="text" class="form-control" name="username" id="username" placeholder="alice" required/>
-      </div>
-      <div class="col-md-6">&nbsp;</div>
     </div>
-    <div class="row">
-      <div class="col-md-6">
-        <label for="password">Password:</label>
-        <input type="password" class="form-control" name="password" id="password" required />
-        <input type="checkbox" onclick="showPasswd()">Show Password</input>
-      </div>
-      <div class="col-md-6">&nbsp;</div>
-    </div>
-    <div class="row">
-      <div class="col-md-6">
-        <label for="name">Name:</label>
-        <input type="text" class="form-control" name="name" id="name" required />
-      </div>
-      <div class="col-md-6">&nbsp;</div>
-    </div>
-    <div class="row">
-      <div class="col-md-6">
-        <label for="email">Email:</label>
-        <p>Your email will only used for account recovery</p>
-        <input type="email" class="form-control" name="email" id="email" />
-      </div>
-      <div class="col-md-6">&nbsp;</div>
-    </div>
-    <div class="row">
-      <div class="col-md-6">
-        <label for="externalWebId">(Optional) External WebID:</label>
-        <p>We will generate a Web ID when you register, but if you
-        already have a Web ID hosted elsewhere that you'd prefer to
-        use to log in, enter it here</p>
-        <input type="text" class="form-control" name="externalWebId" id="externalWebId" />
-      </div>
-      <div class="col-md-6">&nbsp;</div>
-    </div>
-    <input type="hidden" name="returnToUrl" value="{{returnToUrl}}" />
   </div>
 
-  <div class="form-group">
-    <div class="row">
-      <div class="col-md-2">
-        <button type="submit" class="btn btn-primary" id="register">Register</button>
-
-        {{> auth/auth-hidden-fields}}
-      </div>
-
-      <div class="col-md-10">
-        <div>Already have an account?
-          <a class="btn btn-xs btn-default"
-             href="{{{loginUrl}}}">
-            Log In
+  <div class="col-md-6">
+    <div class="panel panel-default panel-already-registered">
+      <div class="panel-body">
+        <h2>Already have an account?</h2>
+        <p>
+          <a class="btn btn-lg btn-success" href="{{{loginUrl}}}">
+            Please Log In
           </a>
-        </div>
+        </p>
       </div>
     </div>
   </div>
-</form>
+</div>
+
+
+<script>
+  (function () {
+    'use strict'
+    var showPasswordToggle = document.getElementById('showPassword')
+    var password = document.getElementById('password')
+    showPasswordToggle.addEventListener('change', function () {
+      password.type = password.type === 'password' ? 'text' : 'password'
+    })
+  })()
+</script>
