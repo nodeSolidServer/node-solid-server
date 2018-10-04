@@ -18,14 +18,14 @@ const SolidHost = require('../../lib/models/solid-host')
 describe('DeleteAccountRequest', () => {
   describe('constructor()', () => {
     it('should initialize a request instance from options', () => {
-      let res = HttpMocks.createResponse()
+      const res = HttpMocks.createResponse()
 
-      let options = {
+      const options = {
         response: res,
         username: 'alice'
       }
 
-      let request = new DeleteAccountRequest(options)
+      const request = new DeleteAccountRequest(options)
 
       expect(request.response).to.equal(res)
       expect(request.username).to.equal(options.username)
@@ -34,16 +34,16 @@ describe('DeleteAccountRequest', () => {
 
   describe('fromParams()', () => {
     it('should return a request instance from options', () => {
-      let username = 'alice'
-      let accountManager = {}
+      const username = 'alice'
+      const accountManager = {}
 
-      let req = {
+      const req = {
         app: { locals: { accountManager } },
         body: { username }
       }
-      let res = HttpMocks.createResponse()
+      const res = HttpMocks.createResponse()
 
-      let request = DeleteAccountRequest.fromParams(req, res)
+      const request = DeleteAccountRequest.fromParams(req, res)
 
       expect(request.accountManager).to.equal(accountManager)
       expect(request.username).to.equal(username)
@@ -53,14 +53,14 @@ describe('DeleteAccountRequest', () => {
 
   describe('get()', () => {
     it('should create an instance and render a delete account form', () => {
-      let username = 'alice'
-      let accountManager = { multiuser: true }
+      const username = 'alice'
+      const accountManager = { multiuser: true }
 
-      let req = {
+      const req = {
         app: { locals: { accountManager } },
         body: { username }
       }
-      let res = HttpMocks.createResponse()
+      const res = HttpMocks.createResponse()
       res.render = sinon.stub()
 
       DeleteAccountRequest.get(req, res)
@@ -74,21 +74,21 @@ describe('DeleteAccountRequest', () => {
     it('creates a request instance and invokes handlePost()', () => {
       sinon.spy(DeleteAccountRequest, 'handlePost')
 
-      let username = 'alice'
-      let host = SolidHost.from({ serverUri: 'https://example.com' })
-      let store = {
+      const username = 'alice'
+      const host = SolidHost.from({ serverUri: 'https://example.com' })
+      const store = {
         suffixAcl: '.acl'
       }
-      let accountManager = AccountManager.from({ host, multiuser: true, store })
+      const accountManager = AccountManager.from({ host, multiuser: true, store })
       accountManager.accountExists = sinon.stub().resolves(true)
       accountManager.loadAccountRecoveryEmail = sinon.stub().resolves('alice@example.com')
       accountManager.sendDeleteLink = sinon.stub().resolves()
 
-      let req = {
+      const req = {
         app: { locals: { accountManager } },
         body: { username }
       }
-      let res = HttpMocks.createResponse()
+      const res = HttpMocks.createResponse()
 
       DeleteAccountRequest.post(req, res)
         .then(() => {
@@ -99,19 +99,19 @@ describe('DeleteAccountRequest', () => {
 
   describe('validate()', () => {
     it('should throw an error if username is missing in multi-user mode', () => {
-      let host = SolidHost.from({ serverUri: 'https://example.com' })
-      let accountManager = AccountManager.from({ host, multiuser: true })
+      const host = SolidHost.from({ serverUri: 'https://example.com' })
+      const accountManager = AccountManager.from({ host, multiuser: true })
 
-      let request = new DeleteAccountRequest({ accountManager })
+      const request = new DeleteAccountRequest({ accountManager })
 
       expect(() => request.validate()).to.throw(/Username required/)
     })
 
     it('should not throw an error if username is missing in single user mode', () => {
-      let host = SolidHost.from({ serverUri: 'https://example.com' })
-      let accountManager = AccountManager.from({ host, multiuser: false })
+      const host = SolidHost.from({ serverUri: 'https://example.com' })
+      const accountManager = AccountManager.from({ host, multiuser: false })
 
-      let request = new DeleteAccountRequest({ accountManager })
+      const request = new DeleteAccountRequest({ accountManager })
 
       expect(() => request.validate()).to.not.throw()
     })
@@ -119,19 +119,19 @@ describe('DeleteAccountRequest', () => {
 
   describe('handlePost()', () => {
     it('should handle the post request', () => {
-      let host = SolidHost.from({ serverUri: 'https://example.com' })
-      let store = { suffixAcl: '.acl' }
-      let accountManager = AccountManager.from({ host, multiuser: true, store })
+      const host = SolidHost.from({ serverUri: 'https://example.com' })
+      const store = { suffixAcl: '.acl' }
+      const accountManager = AccountManager.from({ host, multiuser: true, store })
       accountManager.loadAccountRecoveryEmail = sinon.stub().resolves('alice@example.com')
       accountManager.sendDeleteAccountEmail = sinon.stub().resolves()
       accountManager.accountExists = sinon.stub().resolves(true)
 
-      let username = 'alice'
-      let response = HttpMocks.createResponse()
+      const username = 'alice'
+      const response = HttpMocks.createResponse()
       response.render = sinon.stub()
 
-      let options = { accountManager, username, response }
-      let request = new DeleteAccountRequest(options)
+      const options = { accountManager, username, response }
+      const request = new DeleteAccountRequest(options)
 
       sinon.spy(request, 'error')
 
@@ -146,14 +146,14 @@ describe('DeleteAccountRequest', () => {
 
   describe('loadUser()', () => {
     it('should return a UserAccount instance based on username', () => {
-      let host = SolidHost.from({ serverUri: 'https://example.com' })
-      let store = { suffixAcl: '.acl' }
-      let accountManager = AccountManager.from({ host, multiuser: true, store })
+      const host = SolidHost.from({ serverUri: 'https://example.com' })
+      const store = { suffixAcl: '.acl' }
+      const accountManager = AccountManager.from({ host, multiuser: true, store })
       accountManager.accountExists = sinon.stub().resolves(true)
-      let username = 'alice'
+      const username = 'alice'
 
-      let options = { accountManager, username }
-      let request = new DeleteAccountRequest(options)
+      const options = { accountManager, username }
+      const request = new DeleteAccountRequest(options)
 
       return request.loadUser()
         .then(account => {
@@ -162,14 +162,14 @@ describe('DeleteAccountRequest', () => {
     })
 
     it('should throw an error if the user does not exist', done => {
-      let host = SolidHost.from({ serverUri: 'https://example.com' })
-      let store = { suffixAcl: '.acl' }
-      let accountManager = AccountManager.from({ host, multiuser: true, store })
+      const host = SolidHost.from({ serverUri: 'https://example.com' })
+      const store = { suffixAcl: '.acl' }
+      const accountManager = AccountManager.from({ host, multiuser: true, store })
       accountManager.accountExists = sinon.stub().resolves(false)
-      let username = 'alice'
+      const username = 'alice'
 
-      let options = { accountManager, username }
-      let request = new DeleteAccountRequest(options)
+      const options = { accountManager, username }
+      const request = new DeleteAccountRequest(options)
 
       request.loadUser()
         .catch(error => {
