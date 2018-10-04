@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Delete Account</title>
+  <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+  <h4>Delete Account</h4>
+</div>
+<div class="container">
+  <form method="post" action="/account/delete/confirm">
+    {{#if error}}
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-12">
+            <p class="text-danger"><strong>{{error}}</strong></p>
+          </div>
+        </div>
+      </div>
+    {{/if}}
+
+    {{#if validToken}}
+      <p>Beware that this is an irreversible action. All your data that is stored in the POD will be deleted.</p>
+
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-2">
+            <button type="submit" class="btn btn-danger">Delete account</button>
+          </div>
+        </div>
+
+        <input type="hidden" name="token" value="{{token}}" />
+      </div>
+    {{else}}
+      <div class="form-group">
+        <div class="row">
+          <div class="col-md-12">
+            <div>
+              <strong>Token not valid</strong>
+            </div>
+          </div>
+        </div>
+      </div>
+    {{/if}}
+  </form>
+</div>
+</body>
+</html>
