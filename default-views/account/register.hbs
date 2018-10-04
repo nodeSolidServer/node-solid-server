@@ -27,5 +27,15 @@
     {{> account/register-form}}
   {{/if}}
 </div>
+<script src="https://raw.githubusercontent.com/nowsecure/owasp-password-strength-test/master/owasp-password-strength-test.js" defer></script>
+<script>
+    function validatePassword () {
+        let pw = document.getElementById('password').value;
+        let owaspCheck = owaspPasswordStrengthTest.test(pw);
+        //check for errors and show
+        // call pwned api and check
+        //submit the form
+    }
+</script>
 </body>
 </html>
