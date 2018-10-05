@@ -113,7 +113,7 @@
 
     function sha1(str) {
         let buffer = new TextEncoder("utf-8").encode(str);
-        return crypto.subtle.digest("SHA-256", buffer).then(function (hash) {
+        return crypto.subtle.digest("SHA-1", buffer).then(function (hash) {
             return hex(hash);
         });
     }
