@@ -27,14 +27,56 @@
     {{> account/register-form}}
   {{/if}}
 </div>
-<script src="https://raw.githubusercontent.com/nowsecure/owasp-password-strength-test/master/owasp-password-strength-test.js" defer></script>
+<script src="https://raw.githubusercontent.com/nowsecure/owasp-password-strength-test/master/owasp-password-strength-test.js"
+        defer></script>
 <script>
-    function validatePassword () {
+    function validatePasswordBeforeSubmit (e) {
+        e.preventDefault();
+        const pwdErrorDiv = document.getElementById('passwordHelp');
         let pw = document.getElementById('password').value;
-        let owaspCheck = owaspPasswordStrengthTest.test(pw);
-        //check for errors and show
-        // call pwned api and check
-        //submit the form
+        let owaspCheck = owaspPasswordStrengthTest.test(pw)
+        if (owaspCheck.strong === true) {
+            pwdErrorDiv.innerText = '';
+            sha1(pw).then((digest) => {
+              const preFix = digest.slice(0, 5);
+              const url = 'https://api.pwnedpasswords.com/range/';
+              fetch(url+preFix).then(
+                response => response.text()
+              ).then(
+                data => {
+                  if (data.indexOf(digest) !== -1) {
+                      pwdErrorDiv.innerText = 'This password was exposed in a data breach. Please use a more secure alternative one!';
+                      return false;
+                  }
+                }
+              )
+            });
+        }
+        else {
+            pwdErrorDiv.innerText = owaspCheck.requiredTestErrors[0]
+            return false;
+        }
+        return true;
+    }
+
+    function sha1(str) {
+        let buffer = new TextEncoder("utf-8").encode(str);
+        return crypto.subtle.digest("SHA-256", buffer).then(function (hash) {
+            return hex(hash);
+        });
+    }
+
+    function hex(buffer) {
+        let hexCodes = [];
+        let view = new DataView(buffer);
+        for (let i = 0; i < view.byteLength; i += 4) {
+            let value = view.getUint32(i);
+            let stringValue = value.toString(16);
+            const padding = '00000000';
+            let paddedValue = (padding + stringValue).slice(-padding.length);
+            hexCodes.push(paddedValue);
+        }
+        return hexCodes.join("");
     }
 </script>
 </body>
