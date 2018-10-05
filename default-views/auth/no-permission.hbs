@@ -5,16 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>No permission</title>
   <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/common/css/server.css">
 </head>
 <body>
 <div class="container">
-  <div class="jumbotron">
-    <h2>No permission to access this resource</h2>
+  <div class="page-header">
+    <h1>No permission to access this resource</h1>
+  </div>
+  <div class="alert alert-danger">
     <p>
       You are currently logged in as <code>{{webId}}</code>,
       but do not have permission to access <code>{{currentUrl}}</code>.
     </p>
   </div>
+</div>
 </div>
 </body>
 </html>

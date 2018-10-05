@@ -5,35 +5,31 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Welcome to Solid</title>
   <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/common/css/server.css">
 </head>
 <body>
 <div class="container">
-  <h3>Welcome to the Solid Prototype</h3>
-</div>
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <p style="margin-top: 3em; margin-bottom: 3em;">
-	This is a prototype implementation of a Solid server.
+  <div class="page-header">
+    <div class="pull-right">
+      <a href="/register" class="btn btn-primary">
+        Register
+      </a>
 
-	It is a fully functional server, but there are no security or stability guarantees.
+      <a href="/login" class="btn btn-success">
+        Login
+      </a>
+    </div>
 
-	If you have not already done so, please create an account.
-      </p>
-    </div>
+    <h1>Welcome to the Solid Prototype</h1>
   </div>
-  <div class="row">
-    <div class="col-md-2">
-      <form method="get" action="/register">
-        <button type="submit" class="btn btn-primary" id="register">Register</button>
-      </form>
-    </div>
-    <div class="col-md-10">
-      <form method="get" action="/login">
-        <button type="submit" class="btn btn-primary" id="login">Login</button>
-      </form>
-    </div>
-  </div>
+
+  <p class="lead">
+    This is a prototype implementation of a Solid server.
+
+    It is a fully functional server, but there are no security or stability guarantees.
+
+    If you have not already done so, please create an account.
+  </p>
 </div>
 </body>
 </html>

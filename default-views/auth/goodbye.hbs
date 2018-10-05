@@ -5,16 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Logged Out</title>
   <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/common/css/server.css">
 </head>
 <body>
 <div class="container">
-  <h3>You have logged out.</h3>
-</div>
-<div class="container">
-  <form method="get" action="/login">
-    <button type="submit" class="btn btn-primary"
-            id="login">Login Again</button>
-  </form>
+  <div class="page-title">
+    <h1>Logout</h1>
+  </div>
+
+  <div class="alert alert-success">
+    <p>You have successfully logged out.</p>
+  </div>
+
+  <a href="/login" class="btn btn-primary">Login Again</a>
 </div>
 </body>
 </html>
