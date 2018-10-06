@@ -17,8 +17,18 @@
       You are currently logged in as <code>{{webId}}</code>,
       but do not have permission to access <code>{{currentUrl}}</code>.
     </p>
+    <p>
+      <button class="btn btn-danger" onclick="logout()">Log out</button>
+    </p>
   </div>
 </div>
 </div>
+<script src="/common/js/solid-auth-client.bundle.js"></script>
+<script>
+  async function logout () {
+    await solid.auth.logout()
+    location.reload()
+  }
+</script>
 </body>
 </html>
