@@ -189,7 +189,8 @@ describe('DeleteAccountConfirmRequest', () => {
       const webId = 'https://alice.example.com/#me'
       const user = { webId, id: webId }
       const accountManager = {
-        userAccountFrom: sinon.stub().returns(user)
+        userAccountFrom: sinon.stub().returns(user),
+        accountDirFor: sinon.stub().returns('/some/path/to/data/for/alice.example.com/')
       }
       const userStore = {
         deleteUser: sinon.stub().resolves()
@@ -204,8 +205,8 @@ describe('DeleteAccountConfirmRequest', () => {
       return request.deleteAccount(tokenContents)
         .then(() => {
           expect(accountManager.userAccountFrom).to.have.been.calledWith(tokenContents)
-          expect(userStore.deleteUser).to.have.been.calledWith(user.id)
-          // TODO: @kjetilk Include the last method for deleting from fs
+          expect(accountManager.accountDirFor).to.have.been.calledWith(user.username)
+          expect(userStore.deleteUser).to.have.been.calledWith(user)
         })
     })
   })
