@@ -239,8 +239,8 @@ function mapsUrl (it, mapper, label, options, expected) {
 }
 
 function mapsFile (it, mapper, label, options, expected) {
-  it(`maps ${label}`, async () => {
-    const actual = await mapper.mapFileToUrl(options)
+  it(`maps ${label}`, () => {
+    const actual = mapper.mapFileToUrl(options)
     expect(actual).to.deep.equal(expected)
   })
 }
