@@ -95,7 +95,7 @@
   },
   "main": "index.js",
   "scripts": {
-    "solid": "npm run clean && node ./bin/solid",
+    "solid": "node ./bin/solid",
     "standard": "standard '{bin,examples,lib,test}/**/*.js'",
     "nyc": "NODE_TLS_REJECT_UNAUTHORIZED=0 nyc --reporter=text-summary mocha",
     "mocha": "NODE_TLS_REJECT_UNAUTHORIZED=0 mocha",
