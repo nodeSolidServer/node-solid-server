@@ -95,11 +95,12 @@
   },
   "main": "index.js",
   "scripts": {
-    "solid": "node ./bin/solid",
+    "solid": "npm run clean && node ./bin/solid",
     "standard": "standard '{bin,examples,lib,test}/**/*.js'",
     "nyc": "NODE_TLS_REJECT_UNAUTHORIZED=0 nyc --reporter=text-summary mocha",
     "mocha": "NODE_TLS_REJECT_UNAUTHORIZED=0 mocha",
-    "test": "npm run standard && npm run nyc"
+    "test": "npm run standard && npm run nyc",
+    "clean": "rimraf config/templates config/views"
   },
   "nyc": {
     "reporter": [
