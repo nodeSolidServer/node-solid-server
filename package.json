@@ -23,6 +23,11 @@
       "name": "Ruben Verborgh",
       "email": "ruben@verborgh.org",
       "url": "https://ruben.verborgh.org/"
+    },
+    {
+      "name": "Kjetil Kjernsmo",
+      "email": "kjetil@inrupt.com",
+      "url": "http://kjetil.kjernsmo.net/"
     }
   ],
   "license": "MIT",
