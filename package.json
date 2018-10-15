@@ -80,7 +80,7 @@
     "uuid": "^3.0.0",
     "valid-url": "^1.0.9",
     "vhost": "^3.0.2",
-    "webid": "^0.3.10"
+    "webid": "^0.3.11"
   },
   "devDependencies": {
     "@solid/oidc-op": "^0.4.0",
