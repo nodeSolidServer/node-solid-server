@@ -63,8 +63,6 @@
     "li": "^1.0.1",
     "mashlib": "^0.7.13",
     "mime-types": "^2.1.11",
-    "mkdirp": "^0.5.1",
-    "ncp": "^2.0.0",
     "negotiator": "^0.6.0",
     "node-fetch": "^2.1.2",
     "node-forge": "^0.7.4",
@@ -109,14 +107,8 @@
     "nyc": "NODE_TLS_REJECT_UNAUTHORIZED=0 nyc --reporter=text-summary mocha",
     "mocha": "NODE_TLS_REJECT_UNAUTHORIZED=0 mocha",
     "test": "npm run standard && npm run nyc",
-    "clean": "rimraf config/templates config/views",
-    "postinstall": "npm run front-end-vendors",
-    "front-end-vendors": "node ./bin/fe-vendors"
+    "clean": "rimraf config/templates config/views"
   },
-  "frontendassets": [
-    "bootstrap",
-    "owasp-password-strength-test"
-  ],
   "nyc": {
     "reporter": [
       "html",
