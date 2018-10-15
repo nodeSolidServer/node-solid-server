@@ -100,7 +100,7 @@
   username.onkeyup = function() {
   var list = document.getElementsByClassName('editable-username');
   for (let item of list) {
-    item.innerHTML = username.value
+    item.innerHTML = username.value.toLowerCase()
   }
 }
 </script>
