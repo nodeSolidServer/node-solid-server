@@ -10,12 +10,12 @@
             <input type="text" class="form-control" name="username" id="username" placeholder="alice"
                    required/>
 
-	    {{#if multiuser}}
+
 	    <p>Your username should be a lower-case word with only
 	    letters a-z and numbers 0-9 and without periods.</p>
-	    <p>Your public Solid POD URL will be: <tt>https://[username].hostname.com</tt></p>
+	    <p>Your public Solid POD URL will be: <tt>https://<span class="editable-username">alice</span>.hostname.com</tt></p>
 	    <p>Your public Solid WebID will be:
-	    <tt>https://[username].hostname.com/profile/card#me</tt></p>
+	    <tt>https://<span class="editable-username">alice</span>.hostname.com/profile/card#me</tt></p>
 
 	    <p>Your <em>POD URL</em> is like the homepage for your Solid
 	    pod. By default, it is readable by the public, but you can
@@ -25,7 +25,7 @@
 	    <p>Your <em>Solid WebID</em> is your globally unique name
 	    that you can use to identify and authenticate yourself with
 	    other PODs across the world.</p>
-            {{/if}}
+
 
 	  </div>
 
@@ -94,3 +94,14 @@
 <script src="/common/js/owasp-password-strength-test.js" defer></script>
 <script src="/common/js/text-encoder-lite.min.js" defer></script>
 <script src="/common/js/solid.js" defer></script>
+
+<script>
+  var username = document.getElementById('username');
+  username.onkeyup = function() {
+  var list = document.getElementsByClassName('editable-username');
+  for (let item of list) {
+    item.innerHTML = username.value
+  }
+}
+</script>
+
