@@ -3,6 +3,7 @@ var fs = require('fs-extra')
 var $rdf = require('rdflib')
 var request = require('request')
 var path = require('path')
+var { cleanDir } = require('../utils')
 
 /**
  * Note: this test suite requires an internet connection, since it actually
@@ -69,7 +70,7 @@ describe('ACL with WebID+TLS', function () {
 
   after(function () {
     if (ldpHttpsServer) ldpHttpsServer.close()
-    fs.removeSync(path.join(rootPath))
+    cleanDir(rootPath)
   })
 
   function createOptions (path, user) {

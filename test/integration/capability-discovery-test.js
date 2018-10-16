@@ -1,6 +1,6 @@
 const Solid = require('../../index')
 const path = require('path')
-const fs = require('fs-extra')
+const { cleanDir } = require('../utils')
 const supertest = require('supertest')
 const expect = require('chai').expect
 // In this test we always assume that we are Alice
@@ -48,7 +48,7 @@ describe('API', () => {
 
   after(() => {
     alicePod.close()
-    fs.removeSync(path.join(aliceRootPath))
+    cleanDir(aliceRootPath)
   })
 
   describe('Capability Discovery', () => {

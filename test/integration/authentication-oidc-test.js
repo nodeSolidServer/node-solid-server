@@ -10,6 +10,7 @@ const localStorage = require('localstorage-memory')
 const URL = require('whatwg-url').URL
 global.URL = URL
 global.URLSearchParams = require('whatwg-url').URLSearchParams
+const { cleanDir } = require('../utils')
 
 const supertest = require('supertest')
 const chai = require('chai')
@@ -81,8 +82,8 @@ describe('Authentication API (OIDC)', () => {
     alicePod.close()
     bobPod.close()
     fs.removeSync(path.join(aliceDbPath, 'oidc/users'))
-    fs.removeSync(path.join(aliceRootPath))
-    fs.removeSync(path.join(bobRootPath))
+    cleanDir(aliceRootPath)
+    cleanDir(bobRootPath)
   })
 
   describe('Login page (GET /login)', () => {
