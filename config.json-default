@@ -9,5 +9,10 @@
   "sslKey": "./cert.key",
   "sslCert": "./cert.pem",
   "multiuser": true,
-  "corsProxy": "/proxy"
+  "corsProxy": "/proxy",
+  "server": {
+    "name": "",
+    "description": "",
+    "logo": ""
+  }
 }

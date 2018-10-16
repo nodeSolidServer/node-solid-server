@@ -31,12 +31,20 @@
     If you have not already done so, please create an account.
   </p>
 
-
   <section>
+    {{#if serverLogo}}
+    <img src="{{serverLogo}}" />
+    {{/if}}
     <h2>Server info</h2>
     <dl>
-      <dt>Server name</dt>
+      <dt>Name</dt>
       <dd>{{serverName}}</dd>
+      {{#if serverDescription}}
+      <dt>Description</dt>
+      <dd>{{serverDescription}}</dd>
+      {{/if}}
+      <dt>Details</dt>
+      <dd>Running on {{serverVersion}} of <a href="https://solid.mit.edu/">Solid</a> (<a href="https://solid.inrupt.com/docs">Documentation</a>)</dd>
     </dl>
   </section>
 </div>
