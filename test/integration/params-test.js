@@ -1,12 +1,8 @@
 var assert = require('chai').assert
 var supertest = require('supertest')
 var path = require('path')
-const fs = require('fs-extra')
 // Helper functions for the FS
-var rm = require('../utils').rm
-var write = require('../utils').write
-// var cp = require('./utils').cp
-var read = require('../utils').read
+const { rm, write, read, cleanDir } = require('../utils')
 
 var ldnode = require('../../index')
 
@@ -127,7 +123,7 @@ describe('LDNODE params', function () {
 
     after(function () {
       if (ldpHttpsServer) ldpHttpsServer.close()
-      fs.removeSync(path.join(rootPath))
+      cleanDir(rootPath)
     })
 
     var server = supertest(serverUri)

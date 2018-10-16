@@ -2,7 +2,7 @@ const assert = require('chai').assert
 const fs = require('fs-extra')
 const request = require('request')
 const path = require('path')
-const { loadProvider, rm, checkDnsSettings } = require('../utils')
+const { loadProvider, rm, checkDnsSettings, cleanDir } = require('../utils')
 const IDToken = require('@solid/oidc-op/src/IDToken')
 
 const ldnode = require('../../index')
@@ -86,7 +86,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
 
   after(() => {
     if (ldpHttpsServer) ldpHttpsServer.close()
-    fs.removeSync(path.join(rootPath))
+    cleanDir(rootPath)
   })
 
   const origin1 = 'http://example.org/'

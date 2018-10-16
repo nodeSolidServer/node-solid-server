@@ -1,7 +1,7 @@
 const supertest = require('supertest')
 const ldnode = require('../../index')
 const path = require('path')
-const fs = require('fs-extra')
+const { cleanDir } = require('../utils')
 const expect = require('chai').expect
 
 describe('OIDC error handling', function () {
@@ -30,7 +30,7 @@ describe('OIDC error handling', function () {
 
   after(function () {
     if (ldpHttpsServer) ldpHttpsServer.close()
-    fs.removeSync(path.join(rootPath))
+    cleanDir(rootPath)
   })
 
   const server = supertest(serverUri)
