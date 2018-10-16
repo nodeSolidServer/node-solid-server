@@ -11,6 +11,10 @@ exports.rm = function (file) {
   return rimraf.sync(path.join(__dirname, '/resources/' + file))
 }
 
+exports.rmDir = function (path = '') {
+  return rimraf.sync(path.join(__dirname, '/resources/' + path))
+}
+
 exports.write = function (text, file) {
   return fs.writeFileSync(path.join(__dirname, '/resources/' + file), text)
 }

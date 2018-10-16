@@ -30,8 +30,7 @@ describe('OIDC error handling', function () {
 
   after(function () {
     if (ldpHttpsServer) ldpHttpsServer.close()
-    fs.removeSync(path.join(rootPath, 'index.html'))
-    fs.removeSync(path.join(rootPath, 'index.html.acl'))
+    fs.removeSync(path.join(rootPath))
   })
 
   const server = supertest(serverUri)

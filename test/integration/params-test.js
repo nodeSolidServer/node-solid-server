@@ -127,8 +127,7 @@ describe('LDNODE params', function () {
 
     after(function () {
       if (ldpHttpsServer) ldpHttpsServer.close()
-      fs.removeSync(path.join(rootPath, 'index.html'))
-      fs.removeSync(path.join(rootPath, 'index.html.acl'))
+      fs.removeSync(path.join(rootPath))
     })
 
     var server = supertest(serverUri)
