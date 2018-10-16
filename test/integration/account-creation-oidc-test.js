@@ -37,8 +37,8 @@ describe('AccountManager (OIDC account creation tests)', function () {
   after(function () {
     if (ldpHttpsServer) ldpHttpsServer.close()
     fs.removeSync(path.join(dbPath, 'oidc/users/users'))
-    fs.removeSync(path.join(rootPath, 'localhost/index.html'))
-    fs.removeSync(path.join(rootPath, 'localhost/index.html.acl'))
+    fs.removeSync(path.join(rootPath, 'localhost'))
+    fs.removeSync(path.join(rootPath, 'localhost'))
   })
 
   var server = supertest(serverUri)

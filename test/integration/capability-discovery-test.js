@@ -48,8 +48,7 @@ describe('API', () => {
 
   after(() => {
     alicePod.close()
-    fs.removeSync(path.join(aliceRootPath, 'index.html'))
-    fs.removeSync(path.join(aliceRootPath, 'index.html.acl'))
+    fs.removeSync(path.join(aliceRootPath))
   })
 
   describe('Capability Discovery', () => {
