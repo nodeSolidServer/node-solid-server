@@ -40,6 +40,7 @@
   "dependencies": {
     "@solid/oidc-auth-manager": "^0.17.1",
     "body-parser": "^1.18.3",
+    "bootstrap": "^3.3.7",
     "busboy": "^0.2.12",
     "camelize": "^1.0.0",
     "colorette": "^1.0.5",
@@ -67,18 +68,20 @@
     "node-forge": "^0.7.4",
     "nodemailer": "^3.1.4",
     "oidc-op-express": "^0.0.3",
+    "owasp-password-strength-test": "^1.3.0",
     "rdflib": "^0.17.1",
     "recursive-readdir": "^2.1.0",
     "rimraf": "^2.5.0",
-    "solid-auth-client": "^2.2.4",
+    "solid-auth-client": "^2.2.8",
     "solid-namespace": "^0.1.0",
     "solid-permissions": "^0.6.0",
     "solid-ws": "^0.2.3",
+    "text-encoder-lite": "^1.0.1",
     "ulid": "^0.1.0",
     "uuid": "^3.0.0",
     "valid-url": "^1.0.9",
     "vhost": "^3.0.2",
-    "webid": "^0.3.10"
+    "webid": "^0.3.11"
   },
   "devDependencies": {
     "@solid/oidc-op": "^0.4.0",

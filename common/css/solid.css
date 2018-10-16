@@ -1,0 +1,50 @@
+.panel-login-tls,
+.panel-already-registered{
+    text-align: center;
+}
+
+/**
+ * Password Strength
+ */
+
+/* Remove the bottom border on the input to make the progress bar like a part of it */
+.control-progress{
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom: 0;
+}
+
+/* Remove the top border on the progress bar to make the bar part of the input */
+.form-group .progress{
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    height: 7px;
+    margin-bottom: 0;
+}
+
+.form-group .progress-bar{
+    width: 0;
+}
+
+/**
+ * Password strength levels sizes for the progress bar
+ */
+.progress .level-0{
+    width: 5%
+}
+
+.progress .level-1{
+    width: 25%;
+}
+
+.progress .level-2{
+    width: 50%;
+}
+
+.progress .level-3{
+    width: 75%;
+}
+
+.progress .level-4{
+    width: 100%;
+}

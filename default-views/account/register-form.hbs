@@ -2,7 +2,7 @@
   <div class="col-md-6">
     <div class="panel panel-default">
       <div class="panel-body">
-        <form method="post" action="/api/accounts/new" onsubmit="return validatePasswordBeforeSubmit(e)">
+        <form method="post" action="/api/accounts/new">
           {{> shared/error}}
 
           <div class="form-group">
@@ -11,16 +11,23 @@
                    required/>
           </div>
 
-          <div class="form-group">
+          <div class="form-group has-feedback">
             <label class="control-label" for="password">Password*</label>
-            <input type="password" class="form-control" name="password" id="password" required/>
-            <div class="checkbox">
-              <label>
-                <input type="checkbox" id="showPassword"/> Show Password
-              </label>
+            <input type="password" class="form-control control-progress" name="password" id="password" required/>
+            <span class="glyphicon glyphicon-remove form-control-feedback hidden" aria-hidden="true"></span>
+            <div class="progress">
+              <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="4"></div>
             </div>
-            <span id="passwordHelp" class="text-danger"></span>
+            <div class="help-block"></div>
           </div>
+
+
+          <div class="form-group has-feedback">
+            <label class="control-label" for="repeat_password">Repeat password*</label>
+            <input type="password" class="form-control" name="repeat_password" id="repeat_password" required/>
+            <span class="glyphicon glyphicon-remove form-control-feedback hidden"></span>
+          </div>
+
 
           <div class="form-group">
             <label class="control-label" for="name">Name*</label>
@@ -37,8 +44,8 @@
             <label class="control-label" for="externalWebId">External WebID:</label>
             <input type="text" class="form-control" name="externalWebId" id="externalWebId"/>
             <span class="help-block">
-                                We will generate a Web ID when you register, but if you already have a Web ID hosted elsewhere that you'd prefer to use to log in, enter it here
-                            </span>
+                We will generate a Web ID when you register, but if you already have a Web ID hosted elsewhere that you'd prefer to use to log in, enter it here
+            </span>
           </div>
 
 
@@ -66,68 +73,6 @@
   </div>
 </div>
 
-
-<script src="https://raw.githubusercontent.com/nowsecure/owasp-password-strength-test/master/owasp-password-strength-test.js"
-        defer></script>
-<script>
-    
-</script>
-<script>
-  (function () {
-    'use strict'
-    var showPasswordToggle = document.getElementById('showPassword')
-    var password = document.getElementById('password')
-    showPasswordToggle.addEventListener('change', function () {
-      password.type = password.type === 'password' ? 'text' : 'password'
-    })
-  })()
-
-  function validatePasswordBeforeSubmit (e) {
-        e.preventDefault();
-        const pwdErrorDiv = document.getElementById('passwordHelp');
-        let pw = document.getElementById('password').value;
-        let owaspCheck = owaspPasswordStrengthTest.test(pw)
-        if (owaspCheck.strong === true) {
-            pwdErrorDiv.innerText = '';
-            sha1(pw).then((digest) => {
-              const preFix = digest.slice(0, 5);
-              const url = 'https://api.pwnedpasswords.com/range/';
-              fetch(url+preFix).then(
-                response => response.text()
-              ).then(
-                data => {
-                  if (data.indexOf(digest) !== -1) {
-                      pwdErrorDiv.innerText = 'This password was exposed in a data breach. Please use a more secure alternative one!';
-                      return false;
-                  }
-                }
-              )
-            });
-        }
-        else {
-            pwdErrorDiv.innerText = owaspCheck.requiredTestErrors[0]
-            return false;
-        }
-        return true;
-    }
-
-    function sha1(str) {
-        let buffer = new TextEncoder("utf-8").encode(str);
-        return crypto.subtle.digest("SHA-1", buffer).then(function (hash) {
-            return hex(hash);
-        });
-    }
-
-    function hex(buffer) {
-        let hexCodes = [];
-        let view = new DataView(buffer);
-        for (let i = 0; i < view.byteLength; i += 4) {
-            let value = view.getUint32(i);
-            let stringValue = value.toString(16);
-            const padding = '00000000';
-            let paddedValue = (padding + stringValue).slice(-padding.length);
-            hexCodes.push(paddedValue);
-        }
-        return hexCodes.join("");
-    }
-</script>
+<script src="/common/js/owasp-password-strength-test.js" defer></script>
+<script src="/common/js/text-encoder-lite.min.js" defer></script>
+<script src="/common/js/solid.js" defer></script>
