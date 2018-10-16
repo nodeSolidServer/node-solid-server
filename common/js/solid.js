@@ -1,8 +1,8 @@
-/* global owaspPasswordStrengthTest, TextEncoder, crypto */
+/* global owaspPasswordStrengthTest, TextEncoder, crypto, fetch */
 (function () {
   'use strict'
 
-  var PasswordValidator = function (passwordField, repeatedPasswordField) {
+  const PasswordValidator = function (passwordField, repeatedPasswordField) {
     if (
       passwordField === null || passwordField === undefined ||
       repeatedPasswordField === null || repeatedPasswordField === undefined
@@ -20,23 +20,23 @@
     this.errors = []
   }
 
-  PasswordValidator.prototype.FEEDBACK_SUCCESS = 'success'
-  PasswordValidator.prototype.FEEDBACK_WARNING = 'warning'
-  PasswordValidator.prototype.FEEDBACK_ERROR = 'error'
+  const FEEDBACK_SUCCESS = 'success'
+  const FEEDBACK_WARNING = 'warning'
+  const FEEDBACK_ERROR = 'error'
 
-  PasswordValidator.prototype.ICON_SUCCESS = 'glyphicon-ok'
-  PasswordValidator.prototype.ICON_WARNING = 'glyphicon-warning-sign'
-  PasswordValidator.prototype.ICON_ERROR = 'glyphicon-remove'
+  const ICON_SUCCESS = 'glyphicon-ok'
+  const ICON_WARNING = 'glyphicon-warning-sign'
+  const ICON_ERROR = 'glyphicon-remove'
 
-  PasswordValidator.prototype.VALIDATION_SUCCESS = 'has-success'
-  PasswordValidator.prototype.VALIDATION_WARNING = 'has-warning'
-  PasswordValidator.prototype.VALIDATION_ERROR = 'has-error'
+  const VALIDATION_SUCCESS = 'has-success'
+  const VALIDATION_WARNING = 'has-warning'
+  const VALIDATION_ERROR = 'has-error'
 
-  PasswordValidator.prototype.STRENGTH_PROGRESS_0 = 'progress-bar-danger level-0'
-  PasswordValidator.prototype.STRENGTH_PROGRESS_1 = 'progress-bar-danger level-1'
-  PasswordValidator.prototype.STRENGTH_PROGRESS_2 = 'progress-bar-warning level-2'
-  PasswordValidator.prototype.STRENGTH_PROGRESS_3 = 'progress-bar-success level-3'
-  PasswordValidator.prototype.STRENGTH_PROGRESS_4 = 'progress-bar-success level-4'
+  const STRENGTH_PROGRESS_0 = 'progress-bar-danger level-0'
+  const STRENGTH_PROGRESS_1 = 'progress-bar-danger level-1'
+  const STRENGTH_PROGRESS_2 = 'progress-bar-warning level-2'
+  const STRENGTH_PROGRESS_3 = 'progress-bar-success level-3'
+  const STRENGTH_PROGRESS_4 = 'progress-bar-success level-4'
 
   /**
    * Prefetch all dom nodes at initialisation in order to gain time at execution since DOM manipulations
@@ -77,8 +77,8 @@
    * Validate password on the fly to provide the user a visual strength meter
    */
   PasswordValidator.prototype.instantFeedbackForPassword = function () {
-    var passwordStrength = this.getPasswordStrength(this.passwordField.value)
-    var strengthLevel = this.getStrengthLevel(passwordStrength)
+    const passwordStrength = this.getPasswordStrength(this.passwordField.value)
+    const strengthLevel = this.getStrengthLevel(passwordStrength)
 
     if (this.currentStrengthLevel === strengthLevel) {
       return
@@ -98,8 +98,8 @@
    */
   PasswordValidator.prototype.validatePassword = function () {
     this.errors = []
-    var password = this.passwordField.value
-    var passwordStrength = this.getPasswordStrength(password)
+    const password = this.passwordField.value
+    const passwordStrength = this.getPasswordStrength(password)
     this.currentStrengthLevel = this.getStrengthLevel(passwordStrength)
 
     if (passwordStrength.errors) {
@@ -135,7 +135,7 @@
   }
 
   PasswordValidator.prototype.setPasswordFeedback = function () {
-    var feedback = this.getFeedbackFromLevel()
+    const feedback = this.getFeedbackFromLevel()
     this.updateStrengthMeter()
     this.displayPasswordErrors()
     this.setFeedbackForField(feedback, this.passwordField)
@@ -145,7 +145,7 @@
    * Update the repeated password feedback icon and color
    */
   PasswordValidator.prototype.updateRepeatedPasswordFeedback = function () {
-    var feedback = this.checkPasswordFieldsEquality() ? this.FEEDBACK_SUCCESS : this.FEEDBACK_ERROR
+    const feedback = this.checkPasswordFieldsEquality() ? FEEDBACK_SUCCESS : FEEDBACK_ERROR
     this.setFeedbackForField(feedback, this.repeatedPasswordField)
   }
 
@@ -155,8 +155,8 @@
    * @param {HTMLElement} field
    */
   PasswordValidator.prototype.setFeedbackForField = function (feedback, field) {
-    var formGroup = this.getFormGroupElementForField(field)
-    var visualFeedback = this.getFeedbackElementForField(field)
+    const formGroup = this.getFormGroupElementForField(field)
+    const visualFeedback = this.getFeedbackElementForField(field)
 
     this.resetValidation(formGroup)
     this.resetFeedbackIcon(visualFeedback)
@@ -218,10 +218,13 @@
     return 4
   }
 
-  PasswordValidator.prototype.LEVEL_TO_FEEDBACK_MAP = []
-  PasswordValidator.prototype.LEVEL_TO_FEEDBACK_MAP[0] = PasswordValidator.prototype.LEVEL_TO_FEEDBACK_MAP[1] = PasswordValidator.prototype.FEEDBACK_ERROR
-  PasswordValidator.prototype.LEVEL_TO_FEEDBACK_MAP[2] = PasswordValidator.prototype.FEEDBACK_WARNING
-  PasswordValidator.prototype.LEVEL_TO_FEEDBACK_MAP[3] = PasswordValidator.prototype.LEVEL_TO_FEEDBACK_MAP[4] = PasswordValidator.prototype.FEEDBACK_SUCCESS
+  PasswordValidator.prototype.LEVEL_TO_FEEDBACK_MAP = [
+    FEEDBACK_ERROR,
+    FEEDBACK_ERROR,
+    FEEDBACK_WARNING,
+    FEEDBACK_SUCCESS,
+    FEEDBACK_SUCCESS
+  ]
 
   /**
    * @returns {string}
@@ -230,12 +233,13 @@
     return this.LEVEL_TO_FEEDBACK_MAP[this.currentStrengthLevel]
   }
 
-  PasswordValidator.prototype.LEVEL_TO_PROGRESS_MAP = []
-  PasswordValidator.prototype.LEVEL_TO_PROGRESS_MAP[0] = PasswordValidator.prototype.STRENGTH_PROGRESS_0
-  PasswordValidator.prototype.LEVEL_TO_PROGRESS_MAP[1] = PasswordValidator.prototype.STRENGTH_PROGRESS_1
-  PasswordValidator.prototype.LEVEL_TO_PROGRESS_MAP[2] = PasswordValidator.prototype.STRENGTH_PROGRESS_2
-  PasswordValidator.prototype.LEVEL_TO_PROGRESS_MAP[3] = PasswordValidator.prototype.STRENGTH_PROGRESS_3
-  PasswordValidator.prototype.LEVEL_TO_PROGRESS_MAP[4] = PasswordValidator.prototype.STRENGTH_PROGRESS_4
+  PasswordValidator.prototype.LEVEL_TO_PROGRESS_MAP = [
+    STRENGTH_PROGRESS_0,
+    STRENGTH_PROGRESS_1,
+    STRENGTH_PROGRESS_2,
+    STRENGTH_PROGRESS_3,
+    STRENGTH_PROGRESS_4
+  ]
 
   /**
    * Get the CSS class for the meter based on the current level
@@ -245,24 +249,28 @@
   }
 
   PasswordValidator.prototype.addPasswordError = function (error) {
-    if (Array.isArray(error)) {
-      for (var i = 0, ln = error.length; i < ln; i++) {
-        this.addPasswordError(error[i])
-      }
-      return
-    }
-
-    this.errors.push(error)
+    this.errors.push(...(Array.isArray(error) ? error : [error]))
   }
 
   PasswordValidator.prototype.displayPasswordErrors = function () {
-    this.passwordHelpText.innerHTML = '<p>' + this.errors.join('</p><p>') + '</p>'
+    // Erase the error list content
+    while (this.passwordHelpText.firstChild) {
+      this.passwordHelpText.removeChild(this.passwordHelpText.firstChild)
+    }
+
+    // Add the errors in the stack to the DOM
+    this.errors.map((error) => {
+      let text = document.createTextNode(error)
+      let paragraph = document.createElement('p')
+      paragraph.appendChild(text)
+      this.passwordHelpText.appendChild(paragraph)
+    })
   }
 
   PasswordValidator.prototype.FEEDBACK_TO_ICON_MAP = []
-  PasswordValidator.prototype.FEEDBACK_TO_ICON_MAP[PasswordValidator.prototype.FEEDBACK_SUCCESS] = PasswordValidator.prototype.ICON_SUCCESS
-  PasswordValidator.prototype.FEEDBACK_TO_ICON_MAP[PasswordValidator.prototype.FEEDBACK_WARNING] = PasswordValidator.prototype.ICON_WARNING
-  PasswordValidator.prototype.FEEDBACK_TO_ICON_MAP[PasswordValidator.prototype.FEEDBACK_ERROR] = PasswordValidator.prototype.ICON_ERROR
+  PasswordValidator.prototype.FEEDBACK_TO_ICON_MAP[FEEDBACK_SUCCESS] = ICON_SUCCESS
+  PasswordValidator.prototype.FEEDBACK_TO_ICON_MAP[FEEDBACK_WARNING] = ICON_WARNING
+  PasswordValidator.prototype.FEEDBACK_TO_ICON_MAP[FEEDBACK_ERROR] = ICON_ERROR
 
   /**
    * @param success|error|warning feedback
@@ -272,9 +280,9 @@
   }
 
   PasswordValidator.prototype.FEEDBACK_TO_VALIDATION_MAP = []
-  PasswordValidator.prototype.FEEDBACK_TO_VALIDATION_MAP[PasswordValidator.prototype.FEEDBACK_SUCCESS] = PasswordValidator.prototype.VALIDATION_SUCCESS
-  PasswordValidator.prototype.FEEDBACK_TO_VALIDATION_MAP[PasswordValidator.prototype.FEEDBACK_WARNING] = PasswordValidator.prototype.VALIDATION_WARNING
-  PasswordValidator.prototype.FEEDBACK_TO_VALIDATION_MAP[PasswordValidator.prototype.FEEDBACK_ERROR] = PasswordValidator.prototype.VALIDATION_ERROR
+  PasswordValidator.prototype.FEEDBACK_TO_VALIDATION_MAP[FEEDBACK_SUCCESS] = VALIDATION_SUCCESS
+  PasswordValidator.prototype.FEEDBACK_TO_VALIDATION_MAP[FEEDBACK_WARNING] = VALIDATION_WARNING
+  PasswordValidator.prototype.FEEDBACK_TO_VALIDATION_MAP[FEEDBACK_ERROR] = VALIDATION_ERROR
 
   /**
    * @param success|error|warning feedback
@@ -300,12 +308,12 @@
    * @param password
    */
   PasswordValidator.prototype.checkLeakedPassword = function (password) {
-    var url = 'https://api.pwnedpasswords.com/range/'
+    const url = 'https://api.pwnedpasswords.com/range/'
 
     return new Promise(function (resolve, reject) {
       this.sha1(password).then((digest) => {
-        var preFix = digest.slice(0, 5)
-        var suffix = digest.slice(5, digest.length)
+        const preFix = digest.slice(0, 5)
+        let suffix = digest.slice(5, digest.length)
         suffix = suffix.toUpperCase()
 
         return fetch(url + preFix)
@@ -335,12 +343,11 @@
    * CSS Classes reseters
    */
 
-
   PasswordValidator.prototype.resetValidation = function (el) {
-    var tokenizedClasses = this.tokenize(
-      this.VALIDATION_ERROR,
-      this.VALIDATION_WARNING,
-      this.VALIDATION_SUCCESS
+    const tokenizedClasses = this.tokenize(
+      VALIDATION_ERROR,
+      VALIDATION_WARNING,
+      VALIDATION_SUCCESS
     )
 
     el.classList.remove.apply(
@@ -350,10 +357,10 @@
   }
 
   PasswordValidator.prototype.resetFeedbackIcon = function (el) {
-    var tokenizedClasses = this.tokenize(
-      this.ICON_ERROR,
-      this.ICON_WARNING,
-      this.ICON_SUCCESS
+    const tokenizedClasses = this.tokenize(
+      ICON_ERROR,
+      ICON_WARNING,
+      ICON_SUCCESS
     )
 
     el.classList.remove.apply(
@@ -363,11 +370,11 @@
   }
 
   PasswordValidator.prototype.resetStrengthMeter = function () {
-    var tokenizedClasses = this.tokenize(
-      this.STRENGTH_PROGRESS_1,
-      this.STRENGTH_PROGRESS_2,
-      this.STRENGTH_PROGRESS_3,
-      this.STRENGTH_PROGRESS_4
+    const tokenizedClasses = this.tokenize(
+      STRENGTH_PROGRESS_1,
+      STRENGTH_PROGRESS_2,
+      STRENGTH_PROGRESS_3,
+      STRENGTH_PROGRESS_4
     )
 
     this.passwordStrengthMeter.classList.remove.apply(
@@ -405,8 +412,8 @@
    * @returns {string[]}
    */
   PasswordValidator.prototype.tokenize = function () {
-    var tokenArray = []
-    for (var i in arguments) {
+    let tokenArray = []
+    for (let i in arguments) {
       tokenArray.push(arguments[i])
     }
     return tokenArray.join(' ').split(' ')
@@ -415,9 +422,9 @@
   PasswordValidator.prototype.sha1 = function (str) {
     let buffer = new TextEncoder('utf-8').encode(str)
 
-    return crypto.subtle.digest('SHA-1', buffer).then(function (hash) {
+    return crypto.subtle.digest('SHA-1', buffer).then((hash) => {
       return this.hex(hash)
-    }.bind(this))
+    })
   }
 
   PasswordValidator.prototype.hex = function (buffer) {
