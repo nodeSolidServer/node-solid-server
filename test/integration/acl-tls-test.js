@@ -69,8 +69,7 @@ describe('ACL with WebID+TLS', function () {
 
   after(function () {
     if (ldpHttpsServer) ldpHttpsServer.close()
-    fs.removeSync(path.join(rootPath, 'index.html'))
-    fs.removeSync(path.join(rootPath, 'index.html.acl'))
+    fs.removeSync(path.join(rootPath))
   })
 
   function createOptions (path, user) {

@@ -81,10 +81,8 @@ describe('Authentication API (OIDC)', () => {
     alicePod.close()
     bobPod.close()
     fs.removeSync(path.join(aliceDbPath, 'oidc/users'))
-    fs.removeSync(path.join(aliceRootPath, 'index.html'))
-    fs.removeSync(path.join(aliceRootPath, 'index.html.acl'))
-    fs.removeSync(path.join(bobRootPath, 'index.html'))
-    fs.removeSync(path.join(bobRootPath, 'index.html.acl'))
+    fs.removeSync(path.join(aliceRootPath))
+    fs.removeSync(path.join(bobRootPath))
   })
 
   describe('Login page (GET /login)', () => {

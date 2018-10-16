@@ -86,8 +86,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
 
   after(() => {
     if (ldpHttpsServer) ldpHttpsServer.close()
-    fs.removeSync(path.join(rootPath, 'index.html'))
-    fs.removeSync(path.join(rootPath, 'index.html.acl'))
+    fs.removeSync(path.join(rootPath))
   })
 
   const origin1 = 'http://example.org/'
