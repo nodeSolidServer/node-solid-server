@@ -3,7 +3,7 @@ const path = require('path')
 const nock = require('nock')
 const request = require('supertest')
 const { expect } = require('chai')
-const rmDir = require('../utils').rmDir
+const rm = require('../utils').rm
 
 const USER = 'https://ruben.verborgh.org/profile/#me'
 
@@ -32,7 +32,8 @@ describe('Auth Proxy', () => {
       // Release back-end server
       nock.cleanAll()
       // Remove created index files
-      rmDir()
+      rm('index.html')
+      rm('index.html.acl')
     })
 
     describe('responding to /server/a', () => {
