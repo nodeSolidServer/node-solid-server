@@ -87,6 +87,9 @@
     });
 
     function getOriginFromWebId(webId) {
+      if (window.URL.prototype) {
+        return new URL(webId).origin;
+      }
       var uriParts = webId.split('/');
       return uriParts[0] + '//' + uriParts[2];
     }
