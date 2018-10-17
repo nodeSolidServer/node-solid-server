@@ -31,29 +31,9 @@ module.exports = function (program) {
       // Prompt to the user
       inquirer.prompt(questions)
         .then((answers) => {
-          // setting email
-          if (answers.useEmail) {
-            answers.email = {
-              host: answers['email-host'],
-              port: answers['email-port'],
-              secure: true,
-              auth: {
-                user: answers['email-auth-user'],
-                pass: answers['email-auth-pass']
-              }
-            }
-            delete answers['email-host']
-            delete answers['email-port']
-            delete answers['email-auth-user']
-            delete answers['email-auth-pass']
-          }
-
-          // clean answers
-          Object.keys(answers).forEach((answer) => {
-            if (answer.startsWith('use')) {
-              delete answers[answer]
-            }
-          })
+          manipulateEmailSection(answers)
+          manipulateServerSection(answers)
+          cleanupAnswers(answers)
 
           // write config file
           const config = JSON.stringify(camelize(answers), null, '  ')
@@ -70,4 +50,45 @@ module.exports = function (program) {
           console.log('Error:', err)
         })
     })
+}
+
+function cleanupAnswers (answers) {
+  // clean answers
+  Object.keys(answers).forEach((answer) => {
+    if (answer.startsWith('use')) {
+      delete answers[answer]
+    }
+  })
+}
+
+function manipulateEmailSection (answers) {
+  // setting email
+  if (answers.useEmail) {
+    answers.email = {
+      host: answers['email-host'],
+      port: answers['email-port'],
+      secure: true,
+      auth: {
+        user: answers['email-auth-user'],
+        pass: answers['email-auth-pass']
+      }
+    }
+    delete answers['email-host']
+    delete answers['email-port']
+    delete answers['email-auth-user']
+    delete answers['email-auth-pass']
+  }
+}
+
+function manipulateServerSection (answers) {
+  answers.server = {
+    name: answers['server-name'],
+    description: answers['server-description'],
+    logo: answers['server-logo']
+  }
+  Object.keys(answers).forEach((answer) => {
+    if (answer.startsWith('server-')) {
+      delete answers[answer]
+    }
+  })
 }
