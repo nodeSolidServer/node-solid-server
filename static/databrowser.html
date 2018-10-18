@@ -11,7 +11,7 @@
 
         // Set up cross-site proxy
         const $rdf = UI.rdf
-        $rdf.Fetcher.crossSiteProxyTemplate = document.origin + '/xss/?uri={uri}'
+        $rdf.Fetcher.crossSiteProxyTemplate = self.origin + '/xss/?uri={uri}'
 
         // Authenticate the user
         UI.authn.checkUser()
