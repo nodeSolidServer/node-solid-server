@@ -40,7 +40,7 @@
   "dependencies": {
     "@solid/oidc-auth-manager": "^0.17.1",
     "body-parser": "^1.18.3",
-    "bootstrap": "^3.3.7",
+    "bootstrap": "^4.0.0",
     "busboy": "^0.2.12",
     "camelize": "^1.0.0",
     "colorette": "^1.0.5",
