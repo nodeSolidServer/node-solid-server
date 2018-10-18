@@ -20,7 +20,6 @@
     </div>
   </nav>
 
-
   <p class="lead">
     <span>
       This is a public homepage of {{#if name}}{{name}}, whose WebID is{{else}}a user with WebID{{/if}}
@@ -54,26 +53,49 @@
       </a>
     </div>
   </section>
+
+  <section class="hidden" id="account-settings">
+    <h1>Account settings</h1>
+    <div class="list-group">
+      <a href="/account/delete/" class="list-group-item">
+        <span class="lead">Delete account</span>
+      </a>
+    </div>
+  </section>
 </div>
 
 <script src="/common/js/solid-auth-client.bundle.js"></script>
 <script type="text/javascript">
   (function () {
-    'use strict'
-    var button = document.getElementById('session-action')
-    var loggedIn = false
+    'use strict';
+    var button = document.getElementById('session-action');
+    var loggedIn = false;
+    var accountSettings = document.getElementById('account-settings');
 
-    solid.auth.trackSession(session => {
-      loggedIn = !!session
-      button.innerText = loggedIn ? 'Log out' : 'Log in'
+    solid.auth.trackSession(function(session) {
+      loggedIn = !!session;
+      button.innerText = loggedIn ? 'Log out' : 'Log in';
       button.classList.remove('btn-default');
-      button.classList.add(loggedIn ? 'btn-danger' : 'btn-primary')
-    })
+      button.classList.add(loggedIn ? 'btn-danger' : 'btn-primary');
+      if (loggedIn) {
+        var sessionOrigin = getOriginFromWebId(session.webId);
+        var isOwner = sessionOrigin === location.origin;
+        accountSettings.classList.toggle('hidden', !isOwner);
+      }
+    });
 
     button.addEventListener('click', function () {
-      loggedIn ? solid.auth.logout() : solid.auth.popupLogin()
-    })
-  })()
+      loggedIn ? solid.auth.logout() : solid.auth.popupLogin();
+    });
+
+    function getOriginFromWebId(webId) {
+      if (window.URL.prototype) {
+        return new URL(webId).origin;
+      }
+      var uriParts = webId.split('/');
+      return uriParts[0] + '//' + uriParts[2];
+    }
+  })();
 </script>
 </body>
 </html>
