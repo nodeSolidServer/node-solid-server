@@ -206,6 +206,12 @@ $ solid start --help
     -h, --help                    output usage information
  ```
 
+Instead of using flags, these same options can also be configured via environment variables taking the form of `SOLID_` followed by the `SNAKE_CASE` of the flag. For example `--api-apps` can be set via the `SOLID_API_APPS`environment variable, and `--serverUri` can be set with `SOLID_SERVER_URI`.
+
+CLI flags take precedence over Environment variables, which take precedence over entries in the config file.
+
+Configuring Solid via the config file can be a concise and convenient method and is the generally recommended approach. CLI flags can be useful when you would like to override a single configuration parameter, and using environment variables can be helpful in situations where you wish to deploy a single generic Docker image to multiple environments.
+
 ## Use Docker
 
 Build with:
