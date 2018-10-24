@@ -72,14 +72,17 @@ Solid requires SSL certificates to be valid, so you cannot use self-signed certi
 You need an SSL certificate from a _certificate authority_, such as your domain provider or [Let's Encrypt!](https://letsencrypt.org/getting-started/).
 
 For testing purposes, you can use `bin/solid-test` with a _self-signed_ certificate, generated as follows:
+
 ```
-$ openssl genrsa 2048 > ../localhost.key
-$ openssl req -new -x509 -nodes -sha256 -days 3650 -key ../localhost.key -subj '/CN=*.localhost' > ../localhost.cert
+$ openssl req -outform PEM -keyform PEM -new -x509 -sha256 -newkey rsa:2048 -nodes -keyout ../privkey.pem -days 365 -out ../fullchain.pem
+
 ```
 
-Note that this example creates the `localhost.cert` and `localhost.key` files
+Note that this example creates the `fullchain.pem` and `privkey.pem` files
 in a directory one level higher from the current, so that you don't
 accidentally commit your certificates to `solid` while you're developing.
+
+If you would like to get rid of the browser warnings, import your fullchain.pem certificate into your 'Trusted Root Certificate' store. 
 
 ### Run multi-user server (intermediate)
 

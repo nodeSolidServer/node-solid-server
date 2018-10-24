@@ -12,11 +12,11 @@ solid can be started on its own by using the solid binary. Below are some exampl
 
 * Starting solid as an HTTPS server with WebID+TLS authentication. This parameter requires that the user specifies the location of the key and the certificate used to start the HTTPS server with the help of the appropriate parameters.
  
- `$ solid --root /var/www --webid --cert ./cert.pem --key ./key.pem`
+ `$ solid --root /var/www --webid --cert ./fullchain.pem --key ./privkey.pem`
 
 * Start HTTPS with custom error pages. solid will look for a file in the specified directory of the form <error-code>.html. If it's not found it will default to node's error page.
 
- `$ solid --root /var/www/ --webid --cert ./cert.pem --key ./key.pem --error-pages ./errors/`
+ `$ solid --root /var/www/ --webid --cert ./fullchain.pem --key ./privkey.pem --error-pages ./errors/`
 
 * solid makes use of special files used for things such as access control, metadata management, subscription to changes, etc. These files are recognized by solid because of their suffix, which can be customized with the command line options that start with 'suffix'.
 
@@ -47,8 +47,3 @@ var existingApp; //Some existing Express app independent of solid.
 var app = solid(options);  
 exisingApp.use('/mount-point', app);  
 ```
-
-
-
-
-
