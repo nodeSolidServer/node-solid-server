@@ -8,6 +8,6 @@ RUN openssl req \
     -nodes \
     -x509 \
     -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com" \
-    -keyout cert.key \
-    -out cert.pem
+    -keyout privkey.pem \
+    -out fullchain.pem
 CMD npm run solid start
