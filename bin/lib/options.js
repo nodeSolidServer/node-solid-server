@@ -334,6 +334,21 @@ module.exports = [
     name: 'server-logo',
     help: 'A logo that represents you, your brand, or your server (not required)',
     prompt: true
+  },
+  {
+    name: 'enforceToc',
+    help: 'Do you want to enforce Terms & Conditions for your service?',
+    flag: true,
+    prompt: true,
+    default: true,
+    when: answers => answers.multiuser
+  },
+  {
+    name: 'tocUri',
+    help: 'URI to your Terms & Conditions',
+    prompt: true,
+    validate: validUri,
+    when: answers => answers.enforceToc
   }
 ]
 
