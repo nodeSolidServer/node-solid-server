@@ -56,6 +56,7 @@
     "glob": "^7.1.1",
     "global-tunnel-ng": "^2.1.0",
     "handlebars": "^4.0.6",
+    "handlebars-helpers": "^0.10.0",
     "http-proxy-middleware": "^0.18.0",
     "inquirer": "^1.0.2",
     "ip-range-check": "0.0.2",
