@@ -332,7 +332,7 @@ module.exports = [
   },
   {
     name: 'server-logo',
-    help: 'A logo that represents you, your brand or your server (not required)',
+    help: 'A logo that represents you, your brand, or your server (not required)',
     prompt: true
   }
 ]
