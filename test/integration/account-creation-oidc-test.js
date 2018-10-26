@@ -2,7 +2,7 @@ const supertest = require('supertest')
 // Helper functions for the FS
 const $rdf = require('rdflib')
 
-const { rm, read, checkDnsSettings } = require('../utils')
+const { rm, read, checkDnsSettings, cleanDir } = require('../utils')
 const ldnode = require('../../index')
 const path = require('path')
 const fs = require('fs-extra')
@@ -37,8 +37,7 @@ describe('AccountManager (OIDC account creation tests)', function () {
   after(function () {
     if (ldpHttpsServer) ldpHttpsServer.close()
     fs.removeSync(path.join(dbPath, 'oidc/users/users'))
-    fs.removeSync(path.join(rootPath, 'localhost/index.html'))
-    fs.removeSync(path.join(rootPath, 'localhost/index.html.acl'))
+    cleanDir(path.join(rootPath, 'localhost'))
   })
 
   var server = supertest(serverUri)

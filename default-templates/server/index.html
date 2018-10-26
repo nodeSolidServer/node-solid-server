@@ -31,6 +31,23 @@
     You are logged in as
     <a href="#" id="profileLink"></a>.
   </p>
+
+  <section>
+    {{#if serverLogo}}
+    <img src="{{serverLogo}}" />
+    {{/if}}
+    <h2>Server info</h2>
+    <dl>
+      <dt>Name</dt>
+      <dd>{{serverName}}</dd>
+      {{#if serverDescription}}
+      <dt>Description</dt>
+      <dd>{{serverDescription}}</dd>
+      {{/if}}
+      <dt>Details</dt>
+      <dd>Running on <a href="https://solid.mit.edu/">Solid {{serverVersion}}</a> (<a href="https://solid.inrupt.com/docs">Documentation</a>)</dd>
+    </dl>
+  </section>
 </div>
 <script src="/common/js/solid-auth-client.bundle.js"></script>
 <script>

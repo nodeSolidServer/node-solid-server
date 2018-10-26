@@ -9,5 +9,10 @@
   "sslKey": "./privkey.pem",
   "sslCert": "./fullchain.pem",
   "multiuser": true,
-  "corsProxy": "/proxy"
+  "corsProxy": "/proxy",
+  "server": {
+    "name": "",
+    "description": "",
+    "logo": ""
+  }
 }

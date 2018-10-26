@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const validUrl = require('valid-url')
+const { URL } = require('url')
 
 module.exports = [
   // {
@@ -317,6 +318,22 @@ module.exports = [
       }
       return true
     }
+  },
+  {
+    name: 'server-name',
+    help: 'A name for your server (not required, but will be presented on your server\'s frontpage)',
+    prompt: true,
+    default: answers => new URL(answers.serverUri).hostname
+  },
+  {
+    name: 'server-description',
+    help: 'A description of your server (not required)',
+    prompt: true
+  },
+  {
+    name: 'server-logo',
+    help: 'A logo that represents you, your brand, or your server (not required)',
+    prompt: true
   }
 ]
 
