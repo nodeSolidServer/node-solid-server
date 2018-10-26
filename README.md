@@ -171,6 +171,7 @@ $ solid start --help
     --webid                       Enable WebID authentication and access control (uses HTTPS)
     --mount [value]               Serve on a specific URL path (default: '/')
     --config-path [value]
+    --config-file [value]
     --db-path [value]
     --auth [value]                Pick an authentication strategy for WebID: `tls` or `oidc`
     --owner [value]               Set the owner of the storage (overwrites the root ACL file)
@@ -197,8 +198,19 @@ $ solid start --help
     --email-auth-pass [value]     Password of your email service
     --useApiApps                  Do you want to load your default apps on /api/apps?
     --api-apps [value]            Path to the folder to mount on /api/apps
+    --redirect-http-from [value]  HTTP port or ','-separated ports to redirect to the solid server port (e.g. "80,8080").
+    --server-name [value]         A name for your server (not required, but will be presented on your server's frontpage)
+    --server-description [value]  A description of your server (not required)
+    --server-logo [value]         A logo that represents you, your brand, or your server (not required)
     -v, --verbose                 Print the logs to console
+    -h, --help                    output usage information
  ```
+
+Instead of using flags, these same options can also be configured via environment variables taking the form of `SOLID_` followed by the `SNAKE_CASE` of the flag. For example `--api-apps` can be set via the `SOLID_API_APPS`environment variable, and `--serverUri` can be set with `SOLID_SERVER_URI`.
+
+CLI flags take precedence over Environment variables, which take precedence over entries in the config file.
+
+Configuring Solid via the config file can be a concise and convenient method and is the generally recommended approach. CLI flags can be useful when you would like to override a single configuration parameter, and using environment variables can be helpful in situations where you wish to deploy a single generic Docker image to multiple environments.
 
 ## Use Docker
 
