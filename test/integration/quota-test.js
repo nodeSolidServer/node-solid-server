@@ -14,4 +14,7 @@ describe('Quota', function () {
   it('Get the quota', function () {
     expect(getQuota(path.join('test/resources/', root), 'https://localhost')).to.equal(2000)
   })
+  it('Get the quota with non-existant file', function () {
+    expect(getQuota(path.join('nowhere/', root), 'https://localhost')).to.equal(Infinity)
+  })
 })
