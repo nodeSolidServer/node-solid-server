@@ -8,15 +8,17 @@ const path = require('path')
 const fs = require('fs-extra')
 
 describe('AccountManager (OIDC account creation tests)', function () {
-  var serverUri = 'https://localhost:3457'
-  var host = 'localhost:3457'
-  var ldpHttpsServer
-  let rootPath = path.join(__dirname, '../resources/accounts/')
-  let configPath = path.join(__dirname, '../resources/config')
-  let dbPath = path.join(__dirname, '../resources/accounts/db')
+  const port = 3457
+  const serverUri = `https://localhost:${port}`
+  const host = `localhost:${port}`
+  const root = path.join(__dirname, '../resources/accounts/')
+  const configPath = path.join(__dirname, '../resources/config')
+  const dbPath = path.join(__dirname, '../resources/accounts/db')
+
+  let ldpHttpsServer
 
   var ldp = ldnode.createServer({
-    root: rootPath,
+    root,
     configPath,
     sslKey: path.join(__dirname, '../keys/key.pem'),
     sslCert: path.join(__dirname, '../keys/cert.pem'),
@@ -25,19 +27,20 @@ describe('AccountManager (OIDC account creation tests)', function () {
     multiuser: true,
     strictOrigin: true,
     dbPath,
-    serverUri
+    serverUri,
+    enforceToc: true
   })
 
   before(checkDnsSettings)
 
   before(function (done) {
-    ldpHttpsServer = ldp.listen(3457, done)
+    ldpHttpsServer = ldp.listen(port, done)
   })
 
   after(function () {
     if (ldpHttpsServer) ldpHttpsServer.close()
     fs.removeSync(path.join(dbPath, 'oidc/users/users'))
-    cleanDir(path.join(rootPath, 'localhost'))
+    cleanDir(path.join(root, 'localhost'))
   })
 
   var server = supertest(serverUri)
@@ -93,14 +96,14 @@ describe('AccountManager (OIDC account creation tests)', function () {
     it('should not create a WebID if it already exists', function (done) {
       var subdomain = supertest('https://nicola.' + host)
       subdomain.post('/api/accounts/new')
-        .send('username=nicola&password=12345')
+        .send('username=nicola&password=12345&acceptToc=true')
         .expect(302)
         .end((err, res) => {
           if (err) {
             return done(err)
           }
           subdomain.post('/api/accounts/new')
-            .send('username=nicola&password=12345')
+            .send('username=nicola&password=12345&acceptToc=true')
             .expect(400)
             .end((err) => {
               done(err)
@@ -108,10 +111,17 @@ describe('AccountManager (OIDC account creation tests)', function () {
         })
     })
 
+    it('should not create WebID if T&C is not accepted', (done) => {
+      let subdomain = supertest('https://nicola.' + host)
+      subdomain.post('/api/accounts/new')
+        .send('username=nicola&password=12345&acceptToc=false')
+        .expect(400, done)
+    })
+
     it('should create the default folders', function (done) {
       var subdomain = supertest('https://nicola.' + host)
       subdomain.post('/api/accounts/new')
-        .send('username=nicola&password=12345')
+        .send('username=nicola&password=12345&acceptToc=true')
         .expect(302)
         .end(function (err) {
           if (err) {
@@ -119,19 +129,19 @@ describe('AccountManager (OIDC account creation tests)', function () {
           }
           var domain = host.split(':')[0]
           var card = read(path.join('accounts/nicola.' + domain,
-           'profile/card'))
+            'profile/card'))
           var cardAcl = read(path.join('accounts/nicola.' + domain,
-           'profile/card.acl'))
+            'profile/card.acl'))
           var prefs = read(path.join('accounts/nicola.' + domain,
-           'settings/prefs.ttl'))
+            'settings/prefs.ttl'))
           var inboxAcl = read(path.join('accounts/nicola.' + domain,
-           'inbox/.acl'))
+            'inbox/.acl'))
           var rootMeta = read(path.join('accounts/nicola.' + domain, '.meta'))
           var rootMetaAcl = read(path.join('accounts/nicola.' + domain,
-           '.meta.acl'))
+            '.meta.acl'))
 
           if (domain && card && cardAcl && prefs && inboxAcl && rootMeta &&
-             rootMetaAcl) {
+            rootMetaAcl) {
             done()
           } else {
             done(new Error('failed to create default files'))
@@ -142,7 +152,7 @@ describe('AccountManager (OIDC account creation tests)', function () {
     it('should link WebID to the root account', function (done) {
       var subdomain = supertest('https://nicola.' + host)
       subdomain.post('/api/accounts/new')
-        .send('username=nicola&password=12345')
+        .send('username=nicola&password=12345&acceptToc=true')
         .expect(302)
         .end(function (err) {
           if (err) {
@@ -234,5 +244,48 @@ describe('Single User signup page', () => {
       .set('accept', 'text/plain')
       .expect(401)
       .end(done)
+  })
+})
+
+describe('Signup page where Terms & Conditions are not being enforced', () => {
+  const port = 3457
+  const host = `localhost:${port}`
+  const root = path.join(__dirname, '../resources/accounts/')
+  const configPath = path.join(__dirname, '../resources/config')
+  const dbPath = path.join(__dirname, '../resources/accounts/db')
+  const ldp = ldnode.createServer({
+    port,
+    root,
+    configPath,
+    sslKey: path.join(__dirname, '../keys/key.pem'),
+    sslCert: path.join(__dirname, '../keys/cert.pem'),
+    auth: 'oidc',
+    webid: true,
+    multiuser: true,
+    strictOrigin: true,
+    enforceToc: false
+  })
+  let ldpHttpsServer
+
+  before(function (done) {
+    ldpHttpsServer = ldp.listen(port, done)
+  })
+
+  after(function () {
+    if (ldpHttpsServer) ldpHttpsServer.close()
+    fs.removeSync(path.join(dbPath, 'oidc/users/users'))
+    cleanDir(path.join(root, 'localhost'))
+    rm('accounts/nicola.localhost')
+  })
+
+  beforeEach(function () {
+    rm('accounts/nicola.localhost')
+  })
+
+  it('should not enforce T&C upon creating account', function (done) {
+    var subdomain = supertest('https://nicola.' + host)
+    subdomain.post('/api/accounts/new')
+      .send('username=nicola&password=12345')
+      .expect(302, done)
   })
 })
