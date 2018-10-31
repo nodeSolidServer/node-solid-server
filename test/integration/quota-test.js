@@ -1,13 +1,17 @@
 var expect = require('chai').expect
-// var getQuota = require('../../lib/utils').getQuota
+var getQuota = require('../../lib/utils').getQuota
 const path = require('path')
 const read = require('../utils').read
-const host = 'localhost:3457'
-var domain = host.split(':')[0]
+const root = 'accounts-acl/config/templates/new-account/'
+// const $rdf = require('rdflib')
 
 describe('Quota', function () {
-  it('Check that the file is readable', function () {
-    var prefs = read(path.join('accounts/nicola.' + domain, 'settings/serverSide.ttl'))
-    expect(prefs).to.be.true()
+  var prefs = read(path.join(root, 'settings/serverSide.ttl'))
+  it('Check that the file is readable and has predicate', function () {
+    expect(prefs).to.be.a('string')
+    expect(prefs).to.match(/storageQuota/)
+  })
+  it('Get the quota', function () {
+    expect(getQuota(path.join('test/resources/', root), 'https://localhost')).to.equal(2000)
   })
 })

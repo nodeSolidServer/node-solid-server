@@ -9,5 +9,5 @@
   dct:description "Administrative settings for the server that are only readable to the user." .
 
 </>
-    solid:storageQuota "25"^^unit:megabyte .
+    solid:storageQuota "2"^^unit:kilobyte .
     
