@@ -30,6 +30,7 @@ describe('BlacklistService', () => {
         customBlacklistedUsernames: ['foo']
       })
       expect(blacklistService.list.length).to.equal(1)
+      expect(blacklistService.validate('admin')).to.equal(true)
     })
 
     it('is a singleton', () => {
