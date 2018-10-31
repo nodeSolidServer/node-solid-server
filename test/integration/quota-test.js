@@ -25,10 +25,10 @@ describe('Get Quota', function () {
 
 describe('Check if over Quota', function () {
   it('Check the quota', function () {
-    expect(overQuota(path.join('test/resources/', root), 'https://localhost')).to.be.false()
+    expect(overQuota(path.join('test/resources/', root), 'https://localhost')).to.be.true
   })
   it('Check the quota with non-existant file', function () {
-    expect(overQuota(path.join('nowhere/', root), 'https://localhost')).to.be.false()
+    expect(overQuota(path.join('nowhere/', root), 'https://localhost')).to.be.false
   })
   it('Check the quota when the predicate is not present', function () {
     expect(overQuota('test/resources/accounts-acl/quota', 'https://localhost')).to.be.false()
