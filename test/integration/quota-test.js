@@ -1,5 +1,6 @@
 var expect = require('chai').expect
-var getQuota = require('../../lib/utils').getQuota
+const getQuota = require('../../lib/utils').getQuota
+const overQuota = require('../../lib/utils').overQuota
 const path = require('path')
 const read = require('../utils').read
 const root = 'accounts-acl/config/templates/new-account/'
@@ -19,5 +20,17 @@ describe('Get Quota', function () {
   })
   it('Get the quota when the predicate is not present', function () {
     expect(getQuota('test/resources/accounts-acl/quota', 'https://localhost')).to.equal(Infinity)
+  })
+})
+
+describe('Check if over Quota', function () {
+  it('Check the quota', function () {
+    expect(overQuota(path.join('test/resources/', root), 'https://localhost')).to.be.false()
+  })
+  it('Check the quota with non-existant file', function () {
+    expect(overQuota(path.join('nowhere/', root), 'https://localhost')).to.be.false()
+  })
+  it('Check the quota when the predicate is not present', function () {
+    expect(overQuota('test/resources/accounts-acl/quota', 'https://localhost')).to.be.false()
   })
 })
