@@ -5,7 +5,7 @@ const read = require('../utils').read
 const root = 'accounts-acl/config/templates/new-account/'
 // const $rdf = require('rdflib')
 
-describe('Quota', function () {
+describe('Get Quota', function () {
   var prefs = read(path.join(root, 'settings/serverSide.ttl'))
   it('Check that the file is readable and has predicate', function () {
     expect(prefs).to.be.a('string')
@@ -16,5 +16,8 @@ describe('Quota', function () {
   })
   it('Get the quota with non-existant file', function () {
     expect(getQuota(path.join('nowhere/', root), 'https://localhost')).to.equal(Infinity)
+  })
+  it('Get the quota when the predicate is not present', function () {
+    expect(getQuota('test/resources/accounts-acl/quota', 'https://localhost')).to.equal(Infinity)
   })
 })
