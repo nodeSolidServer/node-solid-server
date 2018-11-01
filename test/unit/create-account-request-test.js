@@ -14,7 +14,7 @@ const AccountManager = require('../../lib/models/account-manager')
 const SolidHost = require('../../lib/models/solid-host')
 const defaults = require('../../config/defaults')
 const { CreateAccountRequest } = require('../../lib/requests/create-account-request')
-const blacklistService = require('../../lib/common/blacklist-service')
+const blacklistService = require('../../lib/services/blacklist-service')
 
 describe('CreateAccountRequest', () => {
   let host, store, accountManager

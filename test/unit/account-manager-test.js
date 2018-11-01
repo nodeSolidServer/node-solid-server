@@ -15,7 +15,7 @@ const LDP = require('../../lib/ldp')
 const SolidHost = require('../../lib/models/solid-host')
 const AccountManager = require('../../lib/models/account-manager')
 const UserAccount = require('../../lib/models/user-account')
-const TokenService = require('../../lib/models/token-service')
+const TokenService = require('../../lib/services/token-service')
 const WebIdTlsCertificate = require('../../lib/models/webid-tls-certificate')
 
 const testAccountsDir = path.join(__dirname, '../resources/accounts')

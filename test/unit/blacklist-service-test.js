@@ -4,7 +4,7 @@ const chai = require('chai')
 const expect = chai.expect
 
 const blacklist = require('the-big-username-blacklist').list
-const blacklistService = require('../../lib/common/blacklist-service')
+const blacklistService = require('../../lib/services/blacklist-service')
 
 describe('BlacklistService', () => {
   afterEach(() => blacklistService.reset())
