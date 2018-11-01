@@ -377,7 +377,7 @@ npm run test-(acl|formats|params|patch)
 
 ## Blacklisted usernames
 
-By default Solid will ban [certain usernames as they might cause
+By default Solid will not allow [certain usernames as they might cause
 confusion or allow vulnerabilies for social engineering](https://github.com/marteinn/The-Big-Username-Blacklist).
 This list is configurable via `config/usernames-blacklist.json`. Solid does not
 blacklist profanities by default.
