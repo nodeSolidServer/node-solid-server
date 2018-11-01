@@ -82,7 +82,7 @@ Note that this example creates the `fullchain.pem` and `privkey.pem` files
 in a directory one level higher from the current, so that you don't
 accidentally commit your certificates to `solid` while you're developing.
 
-If you would like to get rid of the browser warnings, import your fullchain.pem certificate into your 'Trusted Root Certificate' store. 
+If you would like to get rid of the browser warnings, import your fullchain.pem certificate into your 'Trusted Root Certificate' store.
 
 ### Run multi-user server (intermediate)
 
@@ -375,6 +375,12 @@ In order to test a single component, you can run
 npm run test-(acl|formats|params|patch)
 ```
 
+## Blacklisted usernames
+
+By default Solid will not allow [certain usernames as they might cause
+confusion or allow vulnerabilies for social engineering](https://github.com/marteinn/The-Big-Username-Blacklist).
+This list is configurable via `config/usernames-blacklist.json`. Solid does not
+blacklist profanities by default.
 
 ## Contributing
 
