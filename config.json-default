@@ -14,5 +14,7 @@
     "name": "",
     "description": "",
     "logo": ""
-  }
+  },
+  "enforceToc": true,
+  "tocUri": "https://your-toc"
 }
