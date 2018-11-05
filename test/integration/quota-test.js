@@ -16,6 +16,10 @@ describe('Get Quota', function () {
     const quota = await getQuota(path.join('test/resources/', root), 'https://localhost')
     expect(quota).to.equal(2000)
   })
+  it('Get the quota with wrong size', async function () {
+    const quota = await getQuota(path.join('test/resources/', root), 'https://localhost')
+    expect(quota).to.not.equal(3000)
+  })
   it('Get the quota with non-existant file', async function () {
     const quota = await getQuota(path.join('nowhere/', root), 'https://localhost')
     expect(quota).to.equal(Infinity)
