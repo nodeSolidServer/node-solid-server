@@ -1,5 +1,4 @@
-var fs = require('fs')
-var fsExtra = require('fs-extra')
+var fs = require('fs-extra')
 var rimraf = require('rimraf')
 var path = require('path')
 const OIDCProvider = require('@solid/oidc-op')
@@ -11,12 +10,22 @@ exports.rm = function (file) {
   return rimraf.sync(path.join(__dirname, '/resources/' + file))
 }
 
+exports.cleanDir = function (dirPath) {
+  fs.removeSync(path.join(dirPath, '.well-known/.acl'))
+  fs.removeSync(path.join(dirPath, 'favicon.ico'))
+  fs.removeSync(path.join(dirPath, 'favicon.ico.acl'))
+  fs.removeSync(path.join(dirPath, 'index.html'))
+  fs.removeSync(path.join(dirPath, 'index.html.acl'))
+  fs.removeSync(path.join(dirPath, 'robots.txt'))
+  fs.removeSync(path.join(dirPath, 'robots.txt.acl'))
+}
+
 exports.write = function (text, file) {
   return fs.writeFileSync(path.join(__dirname, '/resources/' + file), text)
 }
 
 exports.cp = function (src, dest) {
-  return fsExtra.copySync(
+  return fs.copySync(
     path.join(__dirname, '/resources/' + src),
     path.join(__dirname, '/resources/' + dest))
 }

@@ -10,6 +10,7 @@ const localStorage = require('localstorage-memory')
 const URL = require('whatwg-url').URL
 global.URL = URL
 global.URLSearchParams = require('whatwg-url').URLSearchParams
+const { cleanDir } = require('../utils')
 
 const supertest = require('supertest')
 const chai = require('chai')
@@ -81,10 +82,8 @@ describe('Authentication API (OIDC)', () => {
     alicePod.close()
     bobPod.close()
     fs.removeSync(path.join(aliceDbPath, 'oidc/users'))
-    fs.removeSync(path.join(aliceRootPath, 'index.html'))
-    fs.removeSync(path.join(aliceRootPath, 'index.html.acl'))
-    fs.removeSync(path.join(bobRootPath, 'index.html'))
-    fs.removeSync(path.join(bobRootPath, 'index.html.acl'))
+    cleanDir(aliceRootPath)
+    cleanDir(bobRootPath)
   })
 
   describe('Login page (GET /login)', () => {
@@ -206,8 +205,8 @@ describe('Authentication API (OIDC)', () => {
               })
           })
 
-          it('Returns 403 but should it?', () => {
-            expect(response).to.have.property('status', 403)
+          it('Returns 200 but should it?', () => {
+            expect(response).to.have.property('status', 200)
           })
         })
 

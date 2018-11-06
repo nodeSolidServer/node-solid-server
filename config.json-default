@@ -6,8 +6,15 @@
   "mount": "/",
   "configPath": "./config",
   "dbPath": "./.db",
-  "sslKey": "./cert.key",
-  "sslCert": "./cert.pem",
+  "sslKey": "./privkey.pem",
+  "sslCert": "./fullchain.pem",
   "multiuser": true,
-  "corsProxy": "/proxy"
+  "corsProxy": "/proxy",
+  "server": {
+    "name": "",
+    "description": "",
+    "logo": ""
+  },
+  "enforceToc": true,
+  "tocUri": "https://your-toc"
 }

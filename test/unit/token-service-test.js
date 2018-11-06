@@ -6,7 +6,7 @@ const dirtyChai = require('dirty-chai')
 chai.use(dirtyChai)
 chai.should()
 
-const TokenService = require('../../lib/models/token-service')
+const TokenService = require('../../lib/services/token-service')
 
 describe('TokenService', () => {
   describe('constructor()', () => {
@@ -21,8 +21,8 @@ describe('TokenService', () => {
     it('should generate a new token and return a token key', () => {
       let service = new TokenService()
 
-      let token = service.generate()
-      let value = service.tokens[token]
+      let token = service.generate('test')
+      let value = service.tokens.test[token]
 
       expect(token).to.exist()
       expect(value).to.have.property('exp')
@@ -33,27 +33,36 @@ describe('TokenService', () => {
     it('should return false for expired tokens', () => {
       let service = new TokenService()
 
-      let token = service.generate()
+      let token = service.generate('foo')
 
-      service.tokens[token].exp = new Date(Date.now() - 1000)
+      service.tokens.foo[token].exp = new Date(Date.now() - 1000)
 
-      expect(service.verify(token)).to.be.false()
+      expect(service.verify('foo', token)).to.be.false()
     })
 
     it('should return false for non-existent tokens', () => {
       let service = new TokenService()
 
+      service.generate('foo') // to have generated the domain
       let token = 'invalid token 123'
 
-      expect(service.verify(token)).to.be.false()
+      expect(service.verify('foo', token)).to.be.false()
     })
 
     it('should return the token value if token not expired', () => {
       let service = new TokenService()
 
-      let token = service.generate()
+      let token = service.generate('foo')
 
-      expect(service.verify(token)).to.be.ok()
+      expect(service.verify('foo', token)).to.be.ok()
+    })
+
+    it('should throw error if invalid domain', () => {
+      let service = new TokenService()
+
+      let token = service.generate('foo')
+
+      expect(() => service.verify('bar', token)).to.throw()
     })
   })
 
@@ -61,11 +70,19 @@ describe('TokenService', () => {
     it('should remove a generated token from the service', () => {
       let service = new TokenService()
 
-      let token = service.generate()
+      let token = service.generate('bar')
 
-      service.remove(token)
+      service.remove('bar', token)
 
-      expect(service.tokens[token]).to.not.exist()
+      expect(service.tokens.bar[token]).to.not.exist()
+    })
+
+    it('should throw an error if invalid domain', () => {
+      let service = new TokenService()
+
+      let token = service.generate('foo')
+
+      expect(() => service.remove('bar', token)).to.throw()
     })
   })
 })

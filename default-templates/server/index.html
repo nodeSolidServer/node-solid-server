@@ -5,35 +5,79 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Welcome to Solid</title>
   <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/common/css/solid.css">
 </head>
 <body>
 <div class="container">
-  <h3>Welcome to the Solid Prototype</h3>
-</div>
-<div class="container">
-  <div class="row">
-    <div class="col-md-12">
-      <p style="margin-top: 3em; margin-bottom: 3em;">
-	This is a prototype implementation of a Solid server.
+  <div class="page-header">
+    <div class="pull-right">
+      <a href="/register" class="btn btn-primary">Register</a>
 
-	It is a fully functional server, but there are no security or stability guarantees.
+      <a onclick="login()" class="btn btn-success">Login</a>
+    </div>
 
-	If you have not already done so, please create an account.
-      </p>
-    </div>
+    <h1>Welcome to the Solid Prototype</h1>
   </div>
-  <div class="row">
-    <div class="col-md-2">
-      <form method="get" action="/register">
-        <button type="submit" class="btn btn-primary" id="register">Register</button>
-      </form>
-    </div>
-    <div class="col-md-10">
-      <form method="get" action="/login">
-        <button type="submit" class="btn btn-primary" id="login">Login</button>
-      </form>
-    </div>
-  </div>
+
+  <p class="lead">
+    This is a prototype implementation of a Solid server.
+
+    It is a fully functional server, but there are no security or stability guarantees.
+
+    If you have not already done so, please create an account.
+  </p>
+
+  <p class="lead hidden" id="loggedIn">
+    You are logged in as
+    <a href="#" id="profileLink"></a>.
+  </p>
+
+  <section>
+    {{#if serverLogo}}
+    <img src="{{serverLogo}}" />
+    {{/if}}
+    <h2>Server info</h2>
+    <dl>
+      <dt>Name</dt>
+      <dd>{{serverName}}</dd>
+      {{#if serverDescription}}
+      <dt>Description</dt>
+      <dd>{{serverDescription}}</dd>
+      {{/if}}
+      <dt>Details</dt>
+      <dd>Running on <a href="https://solid.mit.edu/">Solid {{serverVersion}}</a> (<a href="https://solid.inrupt.com/docs">Documentation</a>)</dd>
+    </dl>
+  </section>
 </div>
+<script src="/common/js/solid-auth-client.bundle.js"></script>
+<script>
+  const elements = {};
+  ['loggedIn', 'profileLink'].forEach(id => {
+    elements[id] = document.getElementById(id)
+  })
+
+  async function login () {
+    const session = await solid.auth.popupLogin()
+    if (session) {
+      // Make authenticated request to the server to establish a session cookie
+      const {status} = await solid.auth.fetch(location)
+      if (status === 401) {
+        alert(`Invalid login.`)
+        await solid.auth.logout()
+      }
+    }
+  }
+
+  solid.auth.trackSession(async session => {
+    if (!session) {
+      elements.loggedIn.classList.add('hidden')
+    }
+    else {
+      elements.loggedIn.classList.remove('hidden')
+      elements.profileLink.innerText = session.webId
+      elements.profileLink.href = session.webId
+    }
+  })
+</script>
 </body>
 </html>

@@ -13,11 +13,23 @@ module.exports = function (program, server) {
   options
     .filter((option) => !option.hide)
     .forEach((option) => {
+      const configName = option.name.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase())
+      const snakeCaseName = configName.replace(/([A-Z])/g, '_$1')
+      const envName = `SOLID_${snakeCaseName.toUpperCase()}`
+
       let name = '--' + option.name
       if (!option.flag) {
         name += ' [value]'
       }
-      start.option(name, option.help)
+
+      if (process.env[envName]) {
+        const raw = process.env[envName]
+        const envValue = /^(true|false)$/.test(raw) ? raw === 'true' : raw
+
+        start.option(name, option.help, envValue)
+      } else {
+        start.option(name, option.help)
+      }
     })
 
   start.option('-v, --verbose', 'Print the logs to console')
