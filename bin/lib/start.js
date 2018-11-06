@@ -32,7 +32,7 @@ module.exports = function (program, server) {
       }
     })
 
-  start.option('-v, --verbose', 'Print the logs to console')
+  start.option('-s, --silent', 'Do not print the logs to console')
 
   start.action((opts) => {
     let argv = extend({}, opts, { version: program.version() })
@@ -76,7 +76,7 @@ function bin (argv, server) {
   argv.live = !argv.noLive
 
   // Set up debug environment
-  if (argv.verbose) {
+  if (!argv.silent) {
     process.env.DEBUG = 'solid:*'
   }
 
