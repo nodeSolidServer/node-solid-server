@@ -71,13 +71,15 @@
             </span>
           </div>
 
-          {{#if (and enforceToc tocUri)}}
-            <div class="checkbox">
-              <label>
-                <input type="checkbox" name="acceptToc">
-                I agree to the <a href="{{tocUri}}" target="_blank">Terms &amp; Conditions</a> of this service
-              </label>
-            </div>
+          {{#if enforceToc}}
+            {{#if tocUri}}
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" name="acceptToc">
+                  I agree to the <a href="{{tocUri}}" target="_blank">Terms &amp; Conditions</a> of this service
+                </label>
+              </div>
+            {{/if}}
           {{/if}}
 
 
