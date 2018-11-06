@@ -205,8 +205,8 @@ describe('Authentication API (OIDC)', () => {
               })
           })
 
-          it('Returns 200 but should it?', () => {
-            expect(response).to.have.property('status', 200)
+          it('Returns 403 but should it?', () => {
+            expect(response).to.have.property('status', 403)
           })
         })
 
