@@ -32,7 +32,7 @@ module.exports = function (program, server) {
       }
     })
 
-  start.option('-s, --silent', 'Do not print the logs to console')
+  start.option('-q, --quiet', 'Do not print the logs to console')
 
   start.action((opts) => {
     let argv = extend({}, opts, { version: program.version() })
