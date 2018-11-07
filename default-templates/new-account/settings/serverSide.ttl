@@ -6,7 +6,7 @@
 <>
   a pim:ConfigurationFile;
 
-  dct:description "Administrative settings for the server that are only readable to the user." .
+  dct:description "Administrative settings for the POD that the user can only read." .
 
 </>
     solid:storageQuota "25"^^unit:megabyte .
