@@ -101,7 +101,8 @@
     "snyk": "^1.88.2",
     "standard": "^8.6.0",
     "supertest": "^3.0.0",
-    "whatwg-url": "^6.1.0"
+    "whatwg-url": "^6.1.0",
+    "randombytes": "^2.0.1"
   },
   "main": "index.js",
   "scripts": {

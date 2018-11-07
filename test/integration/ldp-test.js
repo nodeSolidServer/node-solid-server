@@ -4,6 +4,7 @@ var ns = require('solid-namespace')($rdf)
 var LDP = require('../../lib/ldp')
 var path = require('path')
 var stringToStream = require('../../lib/utils').stringToStream
+var randomBytes = require('randombytes')
 
 // Helper functions for the FS
 var rm = require('./../utils').rm
@@ -15,6 +16,7 @@ var fs = require('fs')
 describe('LDP', function () {
   var ldp = new LDP({
     root: path.join(__dirname, '..'),
+    serverUri: 'https://localhost',
     webid: false
   })
 
@@ -130,6 +132,23 @@ describe('LDP', function () {
       var stream = stringToStream('hello world')
       ldp.put('localhost', '/resources/', stream, function (err) {
         assert.equal(err.status, 409)
+        done()
+      })
+    })
+
+    it('Write a larger file', function (done) {
+      var randstream = stringToStream(randomBytes(2100))
+      ldp.put('localhost', '/resources/testQuota.txt', randstream, function (err) {
+        console.log(err)
+        assert.notOk(err)
+        done()
+      })
+    })
+    it('should fail if a over quota', function (done) {
+      var hellostream = stringToStream('hello world')
+      ldp.put('localhost', '/resources/testOverQuota.txt', hellostream, function (err) {
+        console.log(err)
+        assert.equal(err.status, 413)
         done()
       })
     })
