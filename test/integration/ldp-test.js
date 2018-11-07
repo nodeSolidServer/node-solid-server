@@ -4,7 +4,7 @@ var ns = require('solid-namespace')($rdf)
 var LDP = require('../../lib/ldp')
 var path = require('path')
 var stringToStream = require('../../lib/utils').stringToStream
-var randomBytes = require('randombytes')
+// var randomBytes = require('randombytes')
 
 // Helper functions for the FS
 var rm = require('./../utils').rm
@@ -16,7 +16,7 @@ var fs = require('fs')
 describe('LDP', function () {
   var ldp = new LDP({
     root: path.join(__dirname, '..'),
-    serverUri: 'https://localhost',
+//    serverUri: 'https://localhost',
     webid: false
   })
 
@@ -136,7 +136,7 @@ describe('LDP', function () {
       })
     })
 
-    it('Write a larger file', function (done) {
+/*    it('Write a larger file', function (done) {
       var randstream = stringToStream(randomBytes(2100))
       ldp.put('localhost', '/resources/testQuota.txt', randstream, function (err) {
         console.log(err)
@@ -151,7 +151,7 @@ describe('LDP', function () {
         assert.equal(err.status, 413)
         done()
       })
-    })
+    }) */
   })
 
   describe('delete', function () {
