@@ -20,14 +20,14 @@ const fileRename = util.promisify(fs.rename)
 
 module.exports = function (program) {
   program
-    .command('blacklist')
-    .option('--notify', 'Will notify users with usernames that are blacklisted')
-    .option('--delete', 'Will delete users with usernames that are blacklisted')
-    .description('Manage usernames that are blacklisted')
+    .command('invalidusernames')
+    .option('--notify', 'Will notify users with usernames that are invalid')
+    .option('--delete', 'Will delete users with usernames that are invalid')
+    .description('Manage usernames that are invalid')
     .action(async (options) => {
       const config = await loadConfig(program, options)
       if (!config.multiuser) {
-        return console.error('You are running a single user server, no need to check for blacklisted users')
+        return console.error('You are running a single user server, no need to check for invalid usernames')
       }
 
       const invalidUsernames = await getInvalidUsernames(config)

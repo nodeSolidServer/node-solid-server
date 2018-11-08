@@ -1,7 +1,7 @@
 const program = require('commander')
 const loadInit = require('./init')
 const loadStart = require('./start')
-const loadBlacklist = require('./blacklist')
+const loadInvalidUsernames = require('./invalidUsernames')
 const { spawnSync } = require('child_process')
 const path = require('path')
 
@@ -10,7 +10,7 @@ module.exports = function startCli (server) {
 
   loadInit(program)
   loadStart(program, server)
-  loadBlacklist(program)
+  loadInvalidUsernames(program)
 
   program.parse(process.argv)
   if (program.args.length === 0) program.help()
