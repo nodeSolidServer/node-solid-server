@@ -72,14 +72,17 @@ Solid requires SSL certificates to be valid, so you cannot use self-signed certi
 You need an SSL certificate from a _certificate authority_, such as your domain provider or [Let's Encrypt!](https://letsencrypt.org/getting-started/).
 
 For testing purposes, you can use `bin/solid-test` with a _self-signed_ certificate, generated as follows:
+
 ```
-$ openssl genrsa 2048 > ../localhost.key
-$ openssl req -new -x509 -nodes -sha256 -days 3650 -key ../localhost.key -subj '/CN=*.localhost' > ../localhost.cert
+$ openssl req -outform PEM -keyform PEM -new -x509 -sha256 -newkey rsa:2048 -nodes -keyout ../privkey.pem -days 365 -out ../fullchain.pem
+
 ```
 
-Note that this example creates the `localhost.cert` and `localhost.key` files
+Note that this example creates the `fullchain.pem` and `privkey.pem` files
 in a directory one level higher from the current, so that you don't
 accidentally commit your certificates to `solid` while you're developing.
+
+If you would like to get rid of the browser warnings, import your fullchain.pem certificate into your 'Trusted Root Certificate' store.
 
 ### Run multi-user server (intermediate)
 
@@ -168,6 +171,7 @@ $ solid start --help
     --webid                       Enable WebID authentication and access control (uses HTTPS)
     --mount [value]               Serve on a specific URL path (default: '/')
     --config-path [value]
+    --config-file [value]
     --db-path [value]
     --auth [value]                Pick an authentication strategy for WebID: `tls` or `oidc`
     --owner [value]               Set the owner of the storage (overwrites the root ACL file)
@@ -194,8 +198,19 @@ $ solid start --help
     --email-auth-pass [value]     Password of your email service
     --useApiApps                  Do you want to load your default apps on /api/apps?
     --api-apps [value]            Path to the folder to mount on /api/apps
+    --redirect-http-from [value]  HTTP port or ','-separated ports to redirect to the solid server port (e.g. "80,8080").
+    --server-name [value]         A name for your server (not required, but will be presented on your server's frontpage)
+    --server-description [value]  A description of your server (not required)
+    --server-logo [value]         A logo that represents you, your brand, or your server (not required)
     -v, --verbose                 Print the logs to console
+    -h, --help                    output usage information
  ```
+
+Instead of using flags, these same options can also be configured via environment variables taking the form of `SOLID_` followed by the `SNAKE_CASE` of the flag. For example `--api-apps` can be set via the `SOLID_API_APPS`environment variable, and `--serverUri` can be set with `SOLID_SERVER_URI`.
+
+CLI flags take precedence over Environment variables, which take precedence over entries in the config file.
+
+Configuring Solid via the config file can be a concise and convenient method and is the generally recommended approach. CLI flags can be useful when you would like to override a single configuration parameter, and using environment variables can be helpful in situations where you wish to deploy a single generic Docker image to multiple environments.
 
 ## Use Docker
 
@@ -360,6 +375,12 @@ In order to test a single component, you can run
 npm run test-(acl|formats|params|patch)
 ```
 
+## Blacklisted usernames
+
+By default Solid will not allow [certain usernames as they might cause
+confusion or allow vulnerabilies for social engineering](https://github.com/marteinn/The-Big-Username-Blacklist).
+This list is configurable via `config/usernames-blacklist.json`. Solid does not
+blacklist profanities by default.
 
 ## Contributing
 

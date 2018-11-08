@@ -7,12 +7,14 @@ const sinonChai = require('sinon-chai')
 chai.use(sinonChai)
 chai.should()
 const HttpMocks = require('node-mocks-http')
+const blacklist = require('the-big-username-blacklist')
 
 const LDP = require('../../lib/ldp')
 const AccountManager = require('../../lib/models/account-manager')
 const SolidHost = require('../../lib/models/solid-host')
 const defaults = require('../../config/defaults')
 const { CreateAccountRequest } = require('../../lib/requests/create-account-request')
+const blacklistService = require('../../lib/services/blacklist-service')
 
 describe('CreateAccountRequest', () => {
   let host, store, accountManager
@@ -83,6 +85,88 @@ describe('CreateAccountRequest', () => {
           expect(err.status).to.equal(400)
           done()
         })
+    })
+
+    it('should return a 400 error if a username is invalid', () => {
+      let accountManager = AccountManager.from({ host })
+      let locals = { authMethod: defaults.auth, accountManager, oidc: { users: {} } }
+
+      accountManager.accountExists = sinon.stub().returns(Promise.resolve(false))
+
+      const invalidUsernames = [
+        '-',
+        '-a',
+        'a-',
+        '9-',
+        'alice--bob',
+        'alice bob',
+        'alice.bob'
+      ]
+
+      let invalidUsernamesCount = 0
+
+      const requests = invalidUsernames.map((username) => {
+        let aliceData = {
+          username: username, password: '1234'
+        }
+
+        let req = HttpMocks.createRequest({ app: { locals }, body: aliceData })
+        let request = CreateAccountRequest.fromParams(req, res)
+
+        return request.createAccount()
+          .then(() => {
+            throw new Error('should not happen')
+          })
+          .catch(err => {
+            invalidUsernamesCount++
+            expect(err.message).to.match(/Invalid username/)
+            expect(err.status).to.equal(400)
+          })
+      })
+
+      return Promise.all(requests)
+        .then(() => {
+          expect(invalidUsernamesCount).to.eq(invalidUsernames.length)
+        })
+    })
+
+    describe('Blacklisted usernames', () => {
+      const invalidUsernames = [...blacklist.list, 'foo']
+
+      before(() => {
+        const accountManager = AccountManager.from({ host })
+        accountManager.accountExists = sinon.stub().returns(Promise.resolve(false))
+        blacklistService.addWord('foo')
+      })
+
+      after(() => blacklistService.reset())
+
+      it('should return a 400 error if a username is blacklisted', async () => {
+        const locals = { authMethod: defaults.auth, accountManager, oidc: { users: {} } }
+
+        let invalidUsernamesCount = 0
+
+        const requests = invalidUsernames.map((username) => {
+          let req = HttpMocks.createRequest({
+            app: { locals },
+            body: { username, password: '1234' }
+          })
+          let request = CreateAccountRequest.fromParams(req, res)
+
+          return request.createAccount()
+            .then(() => {
+              throw new Error('should not happen')
+            })
+            .catch(err => {
+              invalidUsernamesCount++
+              expect(err.message).to.match(/Invalid username/)
+              expect(err.status).to.equal(400)
+            })
+        })
+
+        await Promise.all(requests)
+        expect(invalidUsernamesCount).to.eq(invalidUsernames.length)
+      })
     })
   })
 })

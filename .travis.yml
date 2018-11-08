@@ -1,8 +1,9 @@
 sudo: false
 language: node_js
 node_js:
-  - "8.0"
-  - "10.0"
+  - "8"
+  - "10"
+  - "lts/*"
   - "node"
 
 addons:
@@ -12,14 +13,20 @@ addons:
     - nicola.localhost
 
 before_install:
+  - echo "No GitHub dependencies allowed" &&
+    ! grep '"github:' package-lock.json
   - npm install -g npm@latest
 
 install:
   - npm ci
 
 script:
+  # Test the code
   - npm run standard
   - npm run nyc
+  # Test global install of the package
+  - npm pack .
+  - npm install -g solid-server-*.tgz
 
 after_success:
   - snyk monitor

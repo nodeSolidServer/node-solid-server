@@ -368,6 +368,23 @@ describe('HTTP APIs', function () {
   })
 
   describe('HEAD API', function () {
+    it('should return content-type turtle by default', function (done) {
+      server.head('/sampleContainer/blank')
+        .expect('Content-Type', 'text/turtle; charset=utf-8')
+        .end(done)
+    })
+    it('should have set content-type for turtle files',
+      function (done) {
+        server.head('/sampleContainer/example1.ttl')
+          .expect('Content-Type', 'text/turtle; charset=utf-8')
+          .end(done)
+      })
+    it('should have set content-type for image files',
+      function (done) {
+        server.head('/sampleContainer/solid.png')
+          .expect('Content-Type', 'image/png; charset=utf-8')
+          .end(done)
+      })
     it('should have Access-Control-Allow-Origin as Origin', function (done) {
       server.head('/sampleContainer/example1.ttl')
         .set('Origin', 'http://example.com')

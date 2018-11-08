@@ -18,7 +18,6 @@
     solid:account </> ;  # link to the account uri
     pim:storage </> ;    # root storage
 
-    solid:inbox </inbox/> ;
     ldp:inbox </inbox/> ;
 
     pim:preferencesFile </settings/prefs.ttl> ;  # private settings/preferences

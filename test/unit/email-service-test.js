@@ -1,4 +1,4 @@
-const EmailService = require('../../lib/models/email-service')
+const EmailService = require('../../lib/services/email-service')
 const path = require('path')
 const sinon = require('sinon')
 const chai = require('chai')

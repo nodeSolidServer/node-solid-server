@@ -10,7 +10,7 @@ chai.should()
 
 const SolidHost = require('../../lib/models/solid-host')
 const AccountManager = require('../../lib/models/account-manager')
-const EmailService = require('../../lib/models/email-service')
+const EmailService = require('../../lib/services/email-service')
 
 const templatePath = path.join(__dirname, '../../default-templates/emails')
 
