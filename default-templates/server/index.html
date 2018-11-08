@@ -13,7 +13,7 @@
     <div class="pull-right">
       <a href="/register" class="btn btn-primary">Register</a>
 
-      <a onclick="login()" class="btn btn-success">Login</a>
+      <button id="session-action" type="button" class="session-action btn btn-default">Loading...</button>
     </div>
 
     <h1>Welcome to the Solid Prototype</h1>
@@ -34,33 +34,35 @@
 </div>
 <script src="/common/js/solid-auth-client.bundle.js"></script>
 <script>
-  const elements = {};
-  ['loggedIn', 'profileLink'].forEach(id => {
-    elements[id] = document.getElementById(id)
-  })
+  (function () {
+    const elements = {};
+    ['loggedIn', 'profileLink'].forEach(id => {
+      elements[id] = document.getElementById(id)
+    })
+    var button = document.getElementById('session-action')
+    var loggedIn = false
 
-  async function login () {
-    const session = await solid.auth.popupLogin()
-    if (session) {
-      // Make authenticated request to the server to establish a session cookie
-      const {status} = await solid.auth.fetch(location)
-      if (status === 401) {
-        alert(`Invalid login.`)
-        await solid.auth.logout()
+    solid.auth.trackSession(async session => {
+      loggedIn = !!session;
+      button.innerText = loggedIn ? 'Log out' : 'Log in';
+      button.classList.remove('btn-default');
+      button.classList.remove('btn-danger');
+      button.classList.remove('btn-success');
+      button.classList.add(loggedIn ? 'btn-danger' : 'btn-success');
+      if (!session) {
+        elements.loggedIn.classList.add('hidden')
       }
-    }
-  }
+      else {
+        elements.loggedIn.classList.remove('hidden')
+        elements.profileLink.innerText = session.webId
+        elements.profileLink.href = session.webId
+      }
+    })
 
-  solid.auth.trackSession(async session => {
-    if (!session) {
-      elements.loggedIn.classList.add('hidden')
-    }
-    else {
-      elements.loggedIn.classList.remove('hidden')
-      elements.profileLink.innerText = session.webId
-      elements.profileLink.href = session.webId
-    }
-  })
+    button.addEventListener('click', function () {
+      loggedIn ? solid.auth.logout() : solid.auth.popupLogin()
+    })
+  })();
 </script>
 </body>
 </html>
