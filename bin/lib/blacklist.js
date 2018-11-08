@@ -66,7 +66,7 @@ async function notifyUsers (usernames, config) {
   })
   const twoWeeksFromNow = Date.now() + 14 * 24 * 60 * 60 * 1000
   const dateOfRemoval = (new Date(twoWeeksFromNow)).toLocaleDateString()
-  const supportEmail = 'support@inrupt.com'
+  const { supportEmail } = config
 
   await updateIndexFiles(usernames, accountManager, dateOfRemoval, supportEmail)
   await sendEmails(config, usernames, accountManager, dateOfRemoval, supportEmail)
@@ -121,6 +121,7 @@ async function sendEmails (config, usernames, accountManager, dateOfRemoval, sup
       }))
     const emailsSent = await Promise.all(sendingEmails)
     console.info(`${emailsSent.length} emails sent to users with invalid usernames`)
+    return
   }
   console.info('You have not configured an email service.')
   console.info('Please set it up to send users email about their accounts')
