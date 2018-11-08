@@ -360,7 +360,8 @@ module.exports = [
         return 'Must be a valid email'
       }
       return true
-    }
+    },
+    when: answers => answers.multiuser
   }
 ]
 
