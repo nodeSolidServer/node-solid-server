@@ -33,7 +33,7 @@
     const session = await solid.auth.popupLogin()
     if (session) {
       // Make authenticated request to the server to establish a session cookie
-      const {status} = await solid.auth.fetch(location)
+      const {status} = await solid.auth.fetch(location, { method: 'HEAD' })
       if (status === 401) {
         alert(`Invalid login.\n\nDid you set ${session.idp} as your OIDC provider in your profile ${session.webId}?`)
         await solid.auth.logout()
