@@ -1,5 +1,10 @@
+const fs = require('fs')
+const util = require('util')
+const { URL } = require('url')
+
 const { loadConfig } = require('./common')
 const blacklistService = require('../../lib/services/blacklist-service')
+
 const AccountManager = require('../../lib/models/account-manager')
 const LDP = require('../../lib/ldp')
 const SolidHost = require('../../lib/models/solid-host')
@@ -15,7 +20,10 @@ module.exports = function (program) {
       if (!config.multiuser) {
         return console.error('You are running a single user server, no need to check for blacklisted users')
       }
+
       const host = SolidHost.from({ port: config.port, serverUri: config.serverUri })
+      const invalidUsernames = await getInvalidUsernames(config)
+      console.log(invalidUsernames)
 
       const ldp = new LDP(config)
       const accountManager = AccountManager.from({
@@ -33,6 +41,15 @@ module.exports = function (program) {
       }
       console.log(`These blacklisted usernames were found:${blacklistedUsernames.map(username => `\n- ${username}`)}`)
     })
+}
+
+async function getInvalidUsernames (config) {
+  const files = await util.promisify(fs.readdir)(config.root)
+  const hostname = new URL(config.serverUri).hostname
+  const isUserDirectory = new RegExp(`.${hostname}$`)
+  return files
+    .filter(file => isUserDirectory.test(file))
+    .map(userDirectory => userDirectory.substr(0, userDirectory.length - hostname.length - 1))
 }
 
 async function getBlacklistedUsernames (accountManager) {
