@@ -3,11 +3,12 @@ const util = require('util')
 const { URL } = require('url')
 
 const { loadConfig } = require('./common')
+const { isValidUsername } = require('../../lib/common/user-utils')
 const blacklistService = require('../../lib/services/blacklist-service')
 
-const AccountManager = require('../../lib/models/account-manager')
-const LDP = require('../../lib/ldp')
-const SolidHost = require('../../lib/models/solid-host')
+// const AccountManager = require('../../lib/models/account-manager')
+// const LDP = require('../../lib/ldp')
+// const SolidHost = require('../../lib/models/solid-host')
 
 module.exports = function (program) {
   program
@@ -21,25 +22,29 @@ module.exports = function (program) {
         return console.error('You are running a single user server, no need to check for blacklisted users')
       }
 
-      const host = SolidHost.from({ port: config.port, serverUri: config.serverUri })
+      // const host = SolidHost.from({ port: config.port, serverUri: config.serverUri })
       const invalidUsernames = await getInvalidUsernames(config)
-      console.log(invalidUsernames)
 
-      const ldp = new LDP(config)
-      const accountManager = AccountManager.from({
-        // authMethod: argv.auth,
-        // emailService: app.locals.emailService,
-        // tokenService: app.locals.tokenService,
-        host,
-        // accountTemplatePath: argv.templates.account,
-        store: ldp,
-        multiuser: config.multiuser
-      })
-      const blacklistedUsernames = await getBlacklistedUsernames(accountManager)
-      if (blacklistedUsernames.length === 0) {
-        console.log('No blacklisted username was found')
+      // const ldp = new LDP(config)
+      // const accountManager = AccountManager.from({
+      //   // authMethod: argv.auth,
+      //   // emailService: app.locals.emailService,
+      //   // tokenService: app.locals.tokenService,
+      //   host,
+      //   // accountTemplatePath: argv.templates.account,
+      //   store: ldp,
+      //   multiuser: config.multiuser
+      // })
+      // const blacklistedUsernames = await getBlacklistedUsernames(accountManager)
+      // if (blacklistedUsernames.length === 0) {
+      //   console.log('No blacklisted username was found')
+      // }
+      // console.log(`These blacklisted usernames were found:${blacklistedUsernames.map(username => `\n- ${username}`)}`)
+
+      if (invalidUsernames.length === 0) {
+        console.log('No invalid username was found')
       }
-      console.log(`These blacklisted usernames were found:${blacklistedUsernames.map(username => `\n- ${username}`)}`)
+      console.log(`${invalidUsernames.length} invalid usernames were found:${invalidUsernames.map(username => `\n- ${username}`)}`)
     })
 }
 
@@ -50,15 +55,16 @@ async function getInvalidUsernames (config) {
   return files
     .filter(file => isUserDirectory.test(file))
     .map(userDirectory => userDirectory.substr(0, userDirectory.length - hostname.length - 1))
+    .filter(username => !isValidUsername(username) || !blacklistService.validate(username))
 }
 
-async function getBlacklistedUsernames (accountManager) {
-  const blacklistedUsernames = []
-  await Promise.all(blacklistService.list.map(async (word) => {
-    const accountExists = await accountManager.accountExists(word)
-    if (accountExists) {
-      blacklistedUsernames.push(word)
-    }
-  }))
-  return blacklistedUsernames
-}
+// async function getBlacklistedUsernames (accountManager) {
+//   const blacklistedUsernames = []
+//   await Promise.all(blacklistService.list.map(async (word) => {
+//     const accountExists = await accountManager.accountExists(word)
+//     if (accountExists) {
+//       blacklistedUsernames.push(word)
+//     }
+//   }))
+//   return blacklistedUsernames
+// }
