@@ -73,7 +73,7 @@ describe('LDP', function () {
   })
 
   describe('getGraph', () => {
-    it('should read and parse an existing file', () => {
+    it.skip('should read and parse an existing file', () => {
       let uri = 'https://localhost:8443/resources/sampleContainer/example1.ttl'
       return ldp.getGraph(uri)
         .then(graph => {
