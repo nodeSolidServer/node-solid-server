@@ -114,7 +114,7 @@ describe('AccountManager (OIDC account creation tests)', function () {
     it('should not create WebID if T&C is not accepted', (done) => {
       let subdomain = supertest('https://nicola.' + host)
       subdomain.post('/api/accounts/new')
-        .send('username=nicola&password=12345&acceptToc=false')
+        .send('username=nicola&password=12345&acceptToc=')
         .expect(400, done)
     })
 
