@@ -1,14 +1,21 @@
 const fs = require('fs')
-const util = require('util')
+const Handlebars = require('handlebars')
+const path = require('path')
 const { URL } = require('url')
+const util = require('util')
 
 const { loadConfig } = require('./common')
 const { isValidUsername } = require('../../lib/common/user-utils')
 const blacklistService = require('../../lib/services/blacklist-service')
+const { initConfigDir, initTemplateDirs } = require('../../lib/server-config')
 
-// const AccountManager = require('../../lib/models/account-manager')
-// const LDP = require('../../lib/ldp')
-// const SolidHost = require('../../lib/models/solid-host')
+const AccountManager = require('../../lib/models/account-manager')
+const EmailService = require('../../lib/services/email-service')
+const LDP = require('../../lib/ldp')
+const SolidHost = require('../../lib/models/solid-host')
+
+const fileExists = util.promisify(fs.exists)
+const fileRename = util.promisify(fs.rename)
 
 module.exports = function (program) {
   program
@@ -22,29 +29,13 @@ module.exports = function (program) {
         return console.error('You are running a single user server, no need to check for blacklisted users')
       }
 
-      // const host = SolidHost.from({ port: config.port, serverUri: config.serverUri })
       const invalidUsernames = await getInvalidUsernames(config)
 
-      // const ldp = new LDP(config)
-      // const accountManager = AccountManager.from({
-      //   // authMethod: argv.auth,
-      //   // emailService: app.locals.emailService,
-      //   // tokenService: app.locals.tokenService,
-      //   host,
-      //   // accountTemplatePath: argv.templates.account,
-      //   store: ldp,
-      //   multiuser: config.multiuser
-      // })
-      // const blacklistedUsernames = await getBlacklistedUsernames(accountManager)
-      // if (blacklistedUsernames.length === 0) {
-      //   console.log('No blacklisted username was found')
-      // }
-      // console.log(`These blacklisted usernames were found:${blacklistedUsernames.map(username => `\n- ${username}`)}`)
-
-      if (invalidUsernames.length === 0) {
-        console.log('No invalid username was found')
+      if (options.notify) {
+        return notifyUsers(invalidUsernames, config)
       }
-      console.log(`${invalidUsernames.length} invalid usernames were found:${invalidUsernames.map(username => `\n- ${username}`)}`)
+
+      listUsernames(listUsernames)
     })
 }
 
@@ -58,13 +49,79 @@ async function getInvalidUsernames (config) {
     .filter(username => !isValidUsername(username) || !blacklistService.validate(username))
 }
 
-// async function getBlacklistedUsernames (accountManager) {
-//   const blacklistedUsernames = []
-//   await Promise.all(blacklistService.list.map(async (word) => {
-//     const accountExists = await accountManager.accountExists(word)
-//     if (accountExists) {
-//       blacklistedUsernames.push(word)
-//     }
-//   }))
-//   return blacklistedUsernames
-// }
+function listUsernames (usernames) {
+  if (usernames.length === 0) {
+    console.info('No invalid usernames was found')
+  }
+  console.info(`${usernames.length} invalid usernames were found:${usernames.map(username => `\n- ${username}`)}`)
+}
+
+async function notifyUsers (usernames, config) {
+  const ldp = new LDP(config)
+  const host = SolidHost.from({ port: config.port, serverUri: config.serverUri })
+  const accountManager = AccountManager.from({
+    host,
+    store: ldp,
+    multiuser: config.multiuser
+  })
+  const twoWeeksFromNow = Date.now() + 14 * 24 * 60 * 60 * 1000
+  const dateOfRemoval = (new Date(twoWeeksFromNow)).toLocaleDateString()
+  const supportEmail = 'support@inrupt.com'
+
+  await updateIndexFiles(usernames, accountManager, dateOfRemoval, supportEmail)
+  await sendEmails(config, usernames, accountManager, dateOfRemoval, supportEmail)
+}
+
+async function updateIndexFiles (usernames, accountManager, dateOfRemoval, supportEmail) {
+  const invalidUsernameFilePath = path.join(process.cwd(), 'default-views/account/invalid-username.hbs')
+  const fileOptions = {
+    encoding: 'utf-8'
+  }
+  const source = fs.readFileSync(invalidUsernameFilePath, fileOptions)
+  const invalidUsernameTemplate = Handlebars.compile(source)
+  const updatingFiles = usernames.map(username => createNewIndex(username, accountManager, invalidUsernameTemplate, dateOfRemoval, supportEmail, fileOptions))
+  return Promise.all(updatingFiles)
+}
+
+async function createNewIndex (username, accountManager, invalidUsernameTemplate, dateOfRemoval, supportEmail, fileOptions) {
+  const userDirectory = accountManager.accountDirFor(username)
+  const currentIndex = path.join(userDirectory, 'index.html')
+  const currentIndexExists = await fileExists(currentIndex)
+  const backupIndex = path.join(userDirectory, 'index.backup.html')
+  const backupIndexExists = await fileExists(backupIndex)
+  if (currentIndexExists && !backupIndexExists) {
+    await fileRename(currentIndex, backupIndex)
+    const newIndexSource = invalidUsernameTemplate({
+      username,
+      dateOfRemoval,
+      supportEmail
+    })
+    fs.writeFileSync(currentIndex, newIndexSource, fileOptions)
+    console.info(`index.html updated for user ${username}`)
+  }
+}
+
+async function sendEmails (config, usernames, accountManager, dateOfRemoval, supportEmail) {
+  if (config.email && config.email.host) {
+    const configPath = initConfigDir(config)
+    const templates = initTemplateDirs(configPath)
+    const users = await Promise.all(await usernames.map(async username => {
+      const emailAddress = await accountManager.loadAccountRecoveryEmail({ username })
+      const accountUri = accountManager.accountUriFor(username)
+      return { username, emailAddress, accountUri }
+    }))
+    const emailService = new EmailService(templates.email, config.email)
+    const sendingEmails = await users
+      .filter(user => !!user.emailAddress)
+      .map(async user => await emailService.sendWithTemplate('invalid-username', {
+        to: user.emailAddress,
+        accountUri: user.accountUri,
+        dateOfRemoval,
+        supportEmail
+      }))
+    const emailsSent = await Promise.all(sendingEmails)
+    console.info(`${emailsSent.length} emails sent to users with invalid usernames`)
+  }
+  console.info('You have not configured an email service.')
+  console.info('Please set it up to send users email about their accounts')
+}
