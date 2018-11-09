@@ -42,25 +42,35 @@ module.exports = function (program) {
     })
 }
 
-function createNewIndexFile (username, accountManager, invalidUsernameTemplate, dateOfRemoval, supportEmail, fileOptions) {
+function backupIndexFile (username, accountManager, invalidUsernameTemplate, dateOfRemoval, supportEmail) {
   const userDirectory = accountManager.accountDirFor(username)
   const currentIndex = path.join(userDirectory, 'index.html')
   const currentIndexExists = fs.existsSync(currentIndex)
-  const currentIndexAcl = path.join(userDirectory, 'index.html.acl')
   const backupIndex = path.join(userDirectory, 'index.backup.html')
   const backupIndexExists = fs.existsSync(backupIndex)
-  const backupIndexAcl = path.join(userDirectory, 'index.backup.html.acl')
   if (currentIndexExists && !backupIndexExists) {
     fs.renameSync(currentIndex, backupIndex)
-    fs.copyFileSync(currentIndexAcl, backupIndexAcl)
-    const newIndexSource = invalidUsernameTemplate({
-      username,
-      dateOfRemoval,
-      supportEmail
-    })
-    fs.writeFileSync(currentIndex, newIndexSource, fileOptions)
+    createNewIndexAcl(userDirectory)
+    createNewIndex(username, invalidUsernameTemplate, dateOfRemoval, supportEmail, currentIndex)
     console.info(`index.html updated for user ${username}`)
   }
+}
+
+function createNewIndex (username, invalidUsernameTemplate, dateOfRemoval, supportEmail, currentIndex) {
+  const newIndexSource = invalidUsernameTemplate({
+    username,
+    dateOfRemoval,
+    supportEmail
+  })
+  fs.writeFileSync(currentIndex, newIndexSource, 'utf-8')
+}
+
+function createNewIndexAcl (userDirectory) {
+  const currentIndexAcl = path.join(userDirectory, 'index.html.acl')
+  const backupIndexAcl = path.join(userDirectory, 'index.backup.html.acl')
+  const currentIndexSource = fs.readFileSync(currentIndexAcl, 'utf-8')
+  const backupIndexSource = currentIndexSource.replace(/index.html/g, 'index.backup.html')
+  fs.writeFileSync(backupIndexAcl, backupIndexSource, 'utf-8')
 }
 
 async function deleteUsers (usernames, accountManager, config, host) {
@@ -149,10 +159,7 @@ async function sendEmails (config, usernames, accountManager, dateOfRemoval, sup
 
 function updateIndexFiles (usernames, accountManager, dateOfRemoval, supportEmail) {
   const invalidUsernameFilePath = path.join(process.cwd(), 'default-views', 'account', 'invalid-username.hbs')
-  const fileOptions = {
-    encoding: 'utf-8'
-  }
-  const source = fs.readFileSync(invalidUsernameFilePath, fileOptions)
+  const source = fs.readFileSync(invalidUsernameFilePath, 'utf-8')
   const invalidUsernameTemplate = Handlebars.compile(source)
-  usernames.forEach(username => createNewIndexFile(username, accountManager, invalidUsernameTemplate, dateOfRemoval, supportEmail, fileOptions))
+  usernames.forEach(username => backupIndexFile(username, accountManager, invalidUsernameTemplate, dateOfRemoval, supportEmail))
 }
