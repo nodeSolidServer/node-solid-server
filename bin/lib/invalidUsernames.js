@@ -2,7 +2,6 @@ const fs = require('fs-extra')
 const Handlebars = require('handlebars')
 const path = require('path')
 const { URL } = require('url')
-const util = require('util')
 
 const { loadConfig } = require('./common')
 const { isValidUsername } = require('../../lib/common/user-utils')
@@ -15,9 +14,6 @@ const EmailService = require('../../lib/services/email-service')
 const LDP = require('../../lib/ldp')
 const SolidHost = require('../../lib/models/solid-host')
 
-const fileExists = util.promisify(fs.exists)
-const fileRename = util.promisify(fs.rename)
-
 module.exports = function (program) {
   program
     .command('invalidusernames')
@@ -25,12 +21,12 @@ module.exports = function (program) {
     .option('--delete', 'Will delete users with usernames that are invalid')
     .description('Manage usernames that are invalid')
     .action(async (options) => {
-      const config = await loadConfig(program, options)
+      const config = loadConfig(program, options)
       if (!config.multiuser) {
         return console.error('You are running a single user server, no need to check for invalid usernames')
       }
 
-      const invalidUsernames = await getInvalidUsernames(config)
+      const invalidUsernames = getInvalidUsernames(config)
       const host = SolidHost.from({ port: config.port, serverUri: config.serverUri })
       const accountManager = getAccountManager(config, host)
 
@@ -42,18 +38,21 @@ module.exports = function (program) {
         return deleteUsers(invalidUsernames, accountManager, config, host)
       }
 
-      listUsernames(listUsernames)
+      listUsernames(invalidUsernames)
     })
 }
 
-async function createNewIndexFile (username, accountManager, invalidUsernameTemplate, dateOfRemoval, supportEmail, fileOptions) {
+function createNewIndexFile (username, accountManager, invalidUsernameTemplate, dateOfRemoval, supportEmail, fileOptions) {
   const userDirectory = accountManager.accountDirFor(username)
   const currentIndex = path.join(userDirectory, 'index.html')
-  const currentIndexExists = await fileExists(currentIndex)
+  const currentIndexExists = fs.existsSync(currentIndex)
+  const currentIndexAcl = path.join(userDirectory, 'index.html.acl')
   const backupIndex = path.join(userDirectory, 'index.backup.html')
-  const backupIndexExists = await fileExists(backupIndex)
+  const backupIndexExists = fs.existsSync(backupIndex)
+  const backupIndexAcl = path.join(userDirectory, 'index.backup.html.acl')
   if (currentIndexExists && !backupIndexExists) {
-    await fileRename(currentIndex, backupIndex)
+    fs.renameSync(currentIndex, backupIndex)
+    fs.copyFileSync(currentIndexAcl, backupIndexAcl)
     const newIndexSource = invalidUsernameTemplate({
       username,
       dateOfRemoval,
@@ -96,8 +95,8 @@ function getAccountManager (config, host) {
   })
 }
 
-async function getInvalidUsernames (config) {
-  const files = await util.promisify(fs.readdir)(config.root)
+function getInvalidUsernames (config) {
+  const files = fs.readdirSync(config.root)
   const hostname = new URL(config.serverUri).hostname
   const isUserDirectory = new RegExp(`.${hostname}$`)
   return files
@@ -108,7 +107,7 @@ async function getInvalidUsernames (config) {
 
 function listUsernames (usernames) {
   if (usernames.length === 0) {
-    console.info('No invalid usernames was found')
+    return console.info('No invalid usernames was found')
   }
   console.info(`${usernames.length} invalid usernames were found:${usernames.map(username => `\n- ${username}`)}`)
 }
@@ -118,7 +117,7 @@ async function notifyUsers (usernames, accountManager, config) {
   const dateOfRemoval = (new Date(twoWeeksFromNow)).toLocaleDateString()
   const { supportEmail } = config
 
-  await updateIndexFiles(usernames, accountManager, dateOfRemoval, supportEmail)
+  updateIndexFiles(usernames, accountManager, dateOfRemoval, supportEmail)
   await sendEmails(config, usernames, accountManager, dateOfRemoval, supportEmail)
 }
 
@@ -132,9 +131,9 @@ async function sendEmails (config, usernames, accountManager, dateOfRemoval, sup
       return { username, emailAddress, accountUri }
     }))
     const emailService = new EmailService(templates.email, config.email)
-    const sendingEmails = await users
+    const sendingEmails = users
       .filter(user => !!user.emailAddress)
-      .map(async user => await emailService.sendWithTemplate('invalid-username', {
+      .map(user => emailService.sendWithTemplate('invalid-username', {
         to: user.emailAddress,
         accountUri: user.accountUri,
         dateOfRemoval,
@@ -148,13 +147,12 @@ async function sendEmails (config, usernames, accountManager, dateOfRemoval, sup
   console.info('Please set it up to send users email about their accounts')
 }
 
-async function updateIndexFiles (usernames, accountManager, dateOfRemoval, supportEmail) {
-  const invalidUsernameFilePath = path.join(process.cwd(), 'default-views/account/invalid-username.hbs')
+function updateIndexFiles (usernames, accountManager, dateOfRemoval, supportEmail) {
+  const invalidUsernameFilePath = path.join(process.cwd(), 'default-views', 'account', 'invalid-username.hbs')
   const fileOptions = {
     encoding: 'utf-8'
   }
   const source = fs.readFileSync(invalidUsernameFilePath, fileOptions)
   const invalidUsernameTemplate = Handlebars.compile(source)
-  const updatingFiles = usernames.map(username => createNewIndexFile(username, accountManager, invalidUsernameTemplate, dateOfRemoval, supportEmail, fileOptions))
-  return Promise.all(updatingFiles)
+  usernames.forEach(username => createNewIndexFile(username, accountManager, invalidUsernameTemplate, dateOfRemoval, supportEmail, fileOptions))
 }
