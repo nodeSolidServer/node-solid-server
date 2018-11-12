@@ -12,6 +12,7 @@ your copy.
 $ git clone git@github.com:your_username/node-solid-server.git
 $ cd node-solid-server
 $ git remote add upstream git://github.com/solid/node-solid-server.git
+$ npm install
 ```
 
 
