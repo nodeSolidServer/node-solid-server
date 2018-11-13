@@ -202,7 +202,8 @@ $ solid start --help
     --server-name [value]         A name for your server (not required, but will be presented on your server's frontpage)
     --server-description [value]  A description of your server (not required)
     --server-logo [value]         A logo that represents you, your brand, or your server (not required)
-    -v, --verbose                 Print the logs to console
+    -q, --quiet                  Do not print the logs to console
+    -v, --verbose                 DEPRECATED: Print the logs to console.  
     -h, --help                    output usage information
  ```
 
