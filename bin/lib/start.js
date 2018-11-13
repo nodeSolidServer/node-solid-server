@@ -76,7 +76,7 @@ function bin (argv, server) {
   argv.live = !argv.noLive
 
   // Set up debug environment
-  if (!argv.silent) {
+  if (!argv.quiet) {
     process.env.DEBUG = 'solid:*'
   }
 
