@@ -48,3 +48,7 @@
 .progress .level-4{
     width: 100%;
 }
+
+.xs-header {
+    margin-top: 0;
+}
