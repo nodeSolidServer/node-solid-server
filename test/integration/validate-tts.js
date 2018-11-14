@@ -10,50 +10,35 @@ const server = setupSuperServer({
   webid: false
 })
 
-describe('Validate HTTP requests with Turtle syntax', function () {
-  describe('PUT API', function () {
-    const putRequestBody = fs.readFileSync(path.join(__dirname, '../resources/sampleContainer/invalid.ttl'), {
-      'encoding': 'utf8'
-    })
-    it('should return 400', function (done) {
-      server.put('/put-resource-1.ttl')
-        .send(putRequestBody)
+const invalidTurtleBody = fs.readFileSync(path.join(__dirname, '../resources/invalid1.ttl'), {
+  'encoding': 'utf8'
+})
+
+describe('HTTP requests with invalid Turtle syntax', () => {
+  describe('PUT API', () => {
+    it('should return 400', (done) => {
+      server.put('/should-not-be-created.ttl')
+        .send(invalidTurtleBody)
         .set('content-type', 'text/turtle')
         .expect(400, done)
     })
   })
 
-  // describe('POST (multipart)', function () {
-  //   it('should create as many files as the ones passed in multipart',
-  //     function (done) {
-  //       server.post('/sampleContainer/')
-  //         .attach('timbl', path.join(__dirname, '../resources/timbl.jpg'))
-  //         .attach('nicola', path.join(__dirname, '../resources/nicola.jpg'))
-  //         .expect(200)
-  //         .end(function (err) {
-  //           if (err) return done(err)
-  //
-  //           var sizeNicola = fs.statSync(path.join(__dirname,
-  //             '../resources/nicola.jpg')).size
-  //           var sizeTim = fs.statSync(path.join(__dirname, '../resources/timbl.jpg')).size
-  //           var sizeNicolaLocal = fs.statSync(path.join(__dirname,
-  //             '../resources/sampleContainer/nicola.jpg')).size
-  //           var sizeTimLocal = fs.statSync(path.join(__dirname,
-  //             '../resources/sampleContainer/timbl.jpg')).size
-  //
-  //           if (sizeNicola === sizeNicolaLocal && sizeTim === sizeTimLocal) {
-  //             return done()
-  //           } else {
-  //             return done(new Error('Either the size (remote/local) don\'t match or files are not stored'))
-  //           }
-  //         })
-  //     })
-  //   after(function () {
-  //     // Clean up after POST (multipart) API tests
-  //     return Promise.all([
-  //       rm('/sampleContainer/nicola.jpg'),
-  //       rm('/sampleContainer/timbl.jpg')
-  //     ])
-  //   })
-  // })
+  describe.skip('PATCH API', () => {
+    it('should return 400', (done) => { // TODO: This returns 415 right now
+      server.patch('/patch-1-initial.ttl')
+        .send(invalidTurtleBody)
+        .set('content-type', 'text/turtle')
+        .expect(400, done)
+    })
+  })
+
+  describe.skip('POST API (multipart)', () => { // TODO: Is this something we should validate?
+    it('should create as many files as the ones passed in multipart', (done) => {
+      server.post('/')
+        .attach('timbl', path.join(__dirname, '../resources/invalid1.ttl'))
+        .attach('nicola', path.join(__dirname, '../resources/invalid2.ttl'))
+        .expect(400, done)
+    })
+  })
 })
