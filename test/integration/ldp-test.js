@@ -1,4 +1,6 @@
-var assert = require('chai').assert
+var chai = require('chai')
+var assert = chai.assert
+chai.use(require('chai-as-promised'))
 var $rdf = require('rdflib')
 var ns = require('solid-namespace')($rdf)
 var LDP = require('../../lib/ldp')
@@ -153,21 +155,67 @@ describe('LDP', function () {
   })
 
   describe('delete', function () {
-    it.skip('should delete a file in an existing dir', function (done) {
+    it('should error when deleting a non-existing file', () => {
+      return assert.isRejected(ldp.delete('/resources/testPut.txt'))
+    })
+
+    it.skip('should delete a file in an existing dir', async () => {
+      // First create a dummy file
       var stream = stringToStream('hello world')
-      ldp.put('/resources/testPut.txt', stream).then(() => {
-        fs.stat(ldp.root + '/resources/testPut.txt', function (err) {
-          if (err) {
-            return done(err)
-          }
-          ldp.delete('localhost', '/resources/testPut.txt', function (err) {
-            if (err) done(err)
-            fs.stat(ldp.root + '/resources/testPut.txt', function (err) {
-              return done(err ? null : new Error('file still exists'))
-            })
-          })
-        })
+      await ldp.put('/resources/testPut.txt', stream)
+      // Make sure it exists
+      fs.stat(ldp.root + '/resources/testPut.txt', function (err) {
+        if (err) {
+          throw err
+        }
       })
+
+      // Now delete the dummy file
+      await ldp.delete('/resources/testPut.txt')
+      // Make sure it does not exist anymore
+      fs.stat(ldp.root + '/resources/testPut.txt', function (err, s) {
+        if (!err) {
+          throw new Error('file still exists')
+        }
+      })
+    })
+
+    it.skip('should fail to delete a non-empty folder', async () => {
+      // First create a dummy file
+      var stream = stringToStream('hello world')
+      await ldp.put('/resources/dummy/testPutBlocking.txt', stream)
+      // Make sure it exists
+      fs.stat(ldp.root + '/resources/dummy/testPutBlocking.txt', function (err) {
+        if (err) {
+          throw err
+        }
+      })
+
+      // Now try to delete its folder
+      return assert.isRejected(ldp.delete('/resources/dummy/'))
+    })
+
+    it.skip('should fail to delete nested non-empty folders', async () => {
+      // First create a dummy file
+      var stream = stringToStream('hello world')
+      await ldp.put('/resources/dummy/dummy2/testPutBlocking.txt', stream)
+      // Make sure it exists
+      fs.stat(ldp.root + '/resources/dummy/dummy2/testPutBlocking.txt', function (err) {
+        if (err) {
+          throw err
+        }
+      })
+
+      // Now try to delete its parent folder
+      return assert.isRejected(ldp.delete('/resources/dummy/'))
+    })
+
+    after(async function () {
+      // Clean up after delete tests
+      await ldp.delete('/resources/dummy/testPutBlocking.txt')
+      await ldp.delete('/resources/dummy/dummy2/testPutBlocking.txt')
+      await ldp.delete('/resources/dummy/dummy2/')
+      await ldp.delete('/resources/dummy/')
     })
   })
   describe('listContainer', function () {
