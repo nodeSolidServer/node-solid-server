@@ -118,22 +118,19 @@ describe('LDP', function () {
   })
 
   describe('put', function () {
-    it.skip('should write a file in an existing dir', function (done) {
+    it.skip('should write a file in an existing dir', () => {
       var stream = stringToStream('hello world')
-      ldp.put('localhost', '/resources/testPut.txt', stream, function (err) {
-        assert.notOk(err)
+      return ldp.put('/resources/testPut.txt', stream).then(() => {
         var found = read('testPut.txt')
         rm('testPut.txt')
         assert.equal(found, 'hello world')
-        done()
       })
     })
 
-    it('should fail if a trailing `/` is passed', function (done) {
+    it('should fail if a trailing `/` is passed', () => {
       var stream = stringToStream('hello world')
-      ldp.put('localhost', '/resources/', stream, function (err) {
+      return ldp.put('/resources/', stream).catch(err => {
         assert.equal(err.status, 409)
-        done()
       })
     })
 
@@ -158,8 +155,7 @@ describe('LDP', function () {
   describe('delete', function () {
     it.skip('should delete a file in an existing dir', function (done) {
       var stream = stringToStream('hello world')
-      ldp.put('localhost', '/resources/testPut.txt', stream, function (err) {
-        assert.notOk(err)
+      ldp.put('/resources/testPut.txt', stream).then(() => {
         fs.stat(ldp.root + '/resources/testPut.txt', function (err) {
           if (err) {
             return done(err)
