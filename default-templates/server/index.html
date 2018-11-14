@@ -11,9 +11,9 @@
 <div class="container">
   <div class="page-header">
     <div class="pull-right">
-      <a href="/register" class="btn btn-primary">Register</a>
-
-      <button id="session-action" type="button" class="session-action btn btn-default">Loading...</button>
+      <button id="register" type="button" class="btn btn-primary">Register</button>
+      <button id="login"    type="button" class="hidden btn btn-default btn-success">Log in</button>
+      <button id="logout"   type="button" class="hidden btn btn-danger">Log out</button>
     </div>
 
     <h1>Welcome to the Solid Prototype</h1>
@@ -50,36 +50,6 @@
   </section>
 </div>
 <script src="/common/js/solid-auth-client.bundle.js"></script>
-<script>
-  (function () {
-    const elements = {};
-    ['loggedIn', 'profileLink'].forEach(id => {
-      elements[id] = document.getElementById(id)
-    })
-    var button = document.getElementById('session-action')
-    var loggedIn = false
-
-    solid.auth.trackSession(async session => {
-      loggedIn = !!session;
-      button.innerText = loggedIn ? 'Log out' : 'Log in';
-      button.classList.remove('btn-default');
-      button.classList.remove('btn-danger');
-      button.classList.remove('btn-success');
-      button.classList.add(loggedIn ? 'btn-danger' : 'btn-success');
-      if (!session) {
-        elements.loggedIn.classList.add('hidden')
-      }
-      else {
-        elements.loggedIn.classList.remove('hidden')
-        elements.profileLink.innerText = session.webId
-        elements.profileLink.href = session.webId
-      }
-    })
-
-    button.addEventListener('click', function () {
-      loggedIn ? solid.auth.logout() : solid.auth.popupLogin()
-    })
-  })();
-</script>
+<script src="/common/js/auth-buttons.js"></script>
 </body>
 </html>
