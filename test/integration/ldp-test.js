@@ -212,10 +212,14 @@ describe('LDP', function () {
 
     after(async function () {
       // Clean up after delete tests
-      await ldp.delete('/resources/dummy/testPutBlocking.txt')
-      await ldp.delete('/resources/dummy/dummy2/testPutBlocking.txt')
-      await ldp.delete('/resources/dummy/dummy2/')
-      await ldp.delete('/resources/dummy/')
+      try {
+        await ldp.delete('/resources/dummy/testPutBlocking.txt')
+        await ldp.delete('/resources/dummy/dummy2/testPutBlocking.txt')
+        await ldp.delete('/resources/dummy/dummy2/')
+        await ldp.delete('/resources/dummy/')
+      } catch (err) {
+
+      }
     })
   })
   describe('listContainer', function () {
