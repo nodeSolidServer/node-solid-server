@@ -35,7 +35,7 @@ module.exports = function (program, server) {
   start.option('-v, --verbose', 'Print the logs to console')
 
   start.action(async (options) => {
-    const config = await loadConfig(program, options)
+    const config = loadConfig(program, options)
     bin(config, server)
   })
 }
