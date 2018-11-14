@@ -49,6 +49,10 @@
     width: 100%;
 }
 
+.login-up-form .form-group {
+    margin-bottom: 5px;
+}
+
 .xs-header {
-    margin-top: 0;
+    margin-top: 0px;
 }
