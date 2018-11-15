@@ -473,10 +473,10 @@ describe('HTTP APIs', function () {
         .expect(hasHeader('acl', 'baz.ttl' + suffixAcl))
         .expect(201, done)
     })
-    it('should return 409 code when trying to put to a container',
+    it('should fail when trying to put to a container',
       function (done) {
         server.put('/')
-          .expect(409, done)
+          .expect(405, done)
       }
     )
     // Cleanup
