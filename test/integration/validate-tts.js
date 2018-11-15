@@ -16,29 +16,36 @@ const invalidTurtleBody = fs.readFileSync(path.join(__dirname, '../resources/inv
 
 describe('HTTP requests with invalid Turtle syntax', () => {
   describe('PUT API', () => {
-    it('should return 400', (done) => {
-      server.put('/should-not-be-created.ttl')
+    it('is allowed with invalid TTL files', (done) => {
+      server.put('/invalid1.ttl')
+        .send(invalidTurtleBody)
+        .set('content-type', 'text/turtle')
+        .expect(201, done)
+    })
+
+    it('is not allowed with invalid ACL files', (done) => {
+      server.put('/invalid1.ttl.acl')
         .send(invalidTurtleBody)
         .set('content-type', 'text/turtle')
         .expect(400, done)
     })
   })
 
-  describe.skip('PATCH API', () => {
-    it('should return 400', (done) => { // TODO: This returns 415 right now
+  describe('PATCH API', () => {
+    it('does not support patching of TTL files', (done) => {
       server.patch('/patch-1-initial.ttl')
         .send(invalidTurtleBody)
         .set('content-type', 'text/turtle')
-        .expect(400, done)
+        .expect(415, done)
     })
   })
 
-  describe.skip('POST API (multipart)', () => { // TODO: Is this something we should validate?
-    it('should create as many files as the ones passed in multipart', (done) => {
+  describe('POST API (multipart)', () => {
+    it('does not validate files that are posted', (done) => {
       server.post('/')
-        .attach('timbl', path.join(__dirname, '../resources/invalid1.ttl'))
-        .attach('nicola', path.join(__dirname, '../resources/invalid2.ttl'))
-        .expect(400, done)
+        .attach('invalid1', path.join(__dirname, '../resources/invalid1.ttl'))
+        .attach('invalid2', path.join(__dirname, '../resources/invalid2.ttl'))
+        .expect(200, done)
     })
   })
 })
