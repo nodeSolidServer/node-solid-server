@@ -1,8 +1,8 @@
 const fs = require('fs')
 const path = require('path')
-const { setupSuperServer } = require('../utils')
+const { setupSupertestServer } = require('../utils')
 
-const server = setupSuperServer({
+const server = setupSupertestServer({
   live: true,
   dataBrowserPath: 'default',
   root: path.join(__dirname, '../resources'),
