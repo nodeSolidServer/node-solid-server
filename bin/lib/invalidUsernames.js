@@ -2,7 +2,7 @@ const fs = require('fs-extra')
 const Handlebars = require('handlebars')
 const path = require('path')
 
-const { getAccountManager, loadConfig, loadUsernames } = require('./common')
+const { getAccountManager, loadConfig, loadUsernames } = require('./cli-utils')
 const { isValidUsername } = require('../../lib/common/user-utils')
 const blacklistService = require('../../lib/services/blacklist-service')
 const { initConfigDir, initTemplateDirs } = require('../../lib/server-config')
