@@ -45,6 +45,7 @@
     "busboy": "^0.2.12",
     "cached-path-relative": "^1.0.2",
     "camelize": "^1.0.0",
+    "cheerio": "^1.0.0-rc.2",
     "colorette": "^1.0.5",
     "commander": "^2.9.0",
     "cors": "^2.7.1",

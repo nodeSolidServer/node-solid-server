@@ -18,7 +18,7 @@ module.exports.loadUsernames = loadUsernames
  * @returns {AccountManager}
  */
 function getAccountManager (config, options = {}) {
-  const ldp = new LDP(config)
+  const ldp = options.ldp || new LDP(config)
   const host = options.host || SolidHost.from({ port: config.port, serverUri: config.serverUri })
   return AccountManager.from({
     host,
