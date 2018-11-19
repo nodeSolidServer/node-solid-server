@@ -9,6 +9,7 @@ chai.should()
 const LDP = require('../../lib/ldp')
 const SolidHost = require('../../lib/models/solid-host')
 const AccountManager = require('../../lib/models/account-manager')
+const LegacyResourceMapper = require('../../lib/legacy-resource-mapper')
 
 const testAccountsDir = path.join(__dirname, '../resources/accounts')
 const accountTemplatePath = path.join(__dirname, '../../default-templates/new-account')
@@ -29,7 +30,10 @@ describe('AccountManager', () => {
 
     describe('in multi user mode', () => {
       let multiuser = true
-      let store = new LDP({ root: testAccountsDir, multiuser })
+      let resourceMapper = new LegacyResourceMapper({
+        includeHost: multiuser
+      })
+      let store = new LDP({ multiuser, resourceMapper })
       let options = { multiuser, store, host }
       let accountManager = AccountManager.from(options)
 
@@ -54,9 +58,13 @@ describe('AccountManager', () => {
       let multiuser = false
 
       it('resolves to true if root .acl exists in root storage', () => {
+        let resourceMapper = new LegacyResourceMapper({
+          includeHost: multiuser,
+          rootPath: path.join(testAccountsDir, 'tim.localhost')
+        })
         let store = new LDP({
-          root: path.join(testAccountsDir, 'tim.localhost'),
-          multiuser
+          multiuser,
+          resourceMapper
         })
         let options = { multiuser, store, host }
         let accountManager = AccountManager.from(options)
@@ -68,9 +76,13 @@ describe('AccountManager', () => {
       })
 
       it('resolves to false if root .acl does not exist in root storage', () => {
+        let resourceMapper = new LegacyResourceMapper({
+          includeHost: multiuser,
+          rootPath: testAccountsDir
+        })
         let store = new LDP({
-          root: testAccountsDir,
-          multiuser
+          multiuser,
+          resourceMapper
         })
         let options = { multiuser, store, host }
         let accountManager = AccountManager.from(options)
@@ -86,7 +98,11 @@ describe('AccountManager', () => {
   describe('createAccountFor()', () => {
     it('should create an account directory', () => {
       let multiuser = true
-      let store = new LDP({ root: testAccountsDir, multiuser })
+      let resourceMapper = new LegacyResourceMapper({
+        includeHost: multiuser,
+        rootPath: testAccountsDir
+      })
+      let store = new LDP({ multiuser, resourceMapper })
       let options = { host, multiuser, store, accountTemplatePath }
       let accountManager = AccountManager.from(options)
 

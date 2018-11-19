@@ -24,7 +24,6 @@ describe('LDP', function () {
   })
 
   var ldp = new LDP({
-    root: path.join(__dirname, '..'),
     resourceMapper,
     serverUri: 'https://localhost',
     multiuser: true,
@@ -164,7 +163,7 @@ describe('LDP', function () {
       var stream = stringToStream('hello world')
       await ldp.put('/resources/testPut.txt', stream)
       // Make sure it exists
-      fs.stat(ldp.root + '/resources/testPut.txt', function (err) {
+      fs.stat(ldp.resourceMapper._rootPath + '/resources/testPut.txt', function (err) {
         if (err) {
           throw err
         }
@@ -173,7 +172,7 @@ describe('LDP', function () {
       // Now delete the dummy file
       await ldp.delete('/resources/testPut.txt')
       // Make sure it does not exist anymore
-      fs.stat(ldp.root + '/resources/testPut.txt', function (err, s) {
+      fs.stat(ldp.resourceMapper._rootPath + '/resources/testPut.txt', function (err, s) {
         if (!err) {
           throw new Error('file still exists')
         }
@@ -185,7 +184,7 @@ describe('LDP', function () {
       var stream = stringToStream('hello world')
       await ldp.put('/resources/dummy/testPutBlocking.txt', stream)
       // Make sure it exists
-      fs.stat(ldp.root + '/resources/dummy/testPutBlocking.txt', function (err) {
+      fs.stat(ldp.resourceMapper._rootPath + '/resources/dummy/testPutBlocking.txt', function (err) {
         if (err) {
           throw err
         }
@@ -200,7 +199,7 @@ describe('LDP', function () {
       var stream = stringToStream('hello world')
       await ldp.put('/resources/dummy/dummy2/testPutBlocking.txt', stream)
       // Make sure it exists
-      fs.stat(ldp.root + '/resources/dummy/dummy2/testPutBlocking.txt', function (err) {
+      fs.stat(ldp.resourceMapper._rootPath + '/resources/dummy/dummy2/testPutBlocking.txt', function (err) {
         if (err) {
           throw err
         }
