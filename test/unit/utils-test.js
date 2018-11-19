@@ -21,18 +21,6 @@ describe('Utility functions', function () {
     })
   })
 
-  describe('uriToFilename', function () {
-    it('should decode hex-encoded space', function () {
-      assert.equal(utils.uriToFilename('uri%20', 'base/'), 'base/uri ')
-    })
-    it('should decode hex-encoded at sign', function () {
-      assert.equal(utils.uriToFilename('film%4011', 'base/'), 'base/film@11')
-    })
-    it('should decode hex-encoded single quote', function () {
-      assert.equal(utils.uriToFilename('quote%27', 'base/'), 'base/quote\'')
-    })
-  })
-
   describe('stripLineEndings()', () => {
     it('should pass through falsy string arguments', () => {
       assert.equal(utils.stripLineEndings(''), '')
