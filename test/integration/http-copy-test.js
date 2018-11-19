@@ -8,7 +8,7 @@ var rm = require('./../utils').rm
 var solidServer = require('../../index')
 
 describe('HTTP COPY API', function () {
-  var address = 'https://localhost:3456'
+  var address = 'https://localhost:8443'
 
   var ldpHttpsServer
   var ldp = solidServer.createServer({
@@ -19,7 +19,7 @@ describe('HTTP COPY API', function () {
   })
 
   before(function (done) {
-    ldpHttpsServer = ldp.listen(3456, done)
+    ldpHttpsServer = ldp.listen(8443, done)
   })
 
   after(function () {
