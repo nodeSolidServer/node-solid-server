@@ -261,7 +261,7 @@ describe('LDP', function () {
       })
     })
 */
-    it('should not inherit type of BasicContainer/Container if type is File', function (done) {
+    it('should not inherit type of BasicContainer/Container if type is File', () => {
       write('@prefix dcterms: <http://purl.org/dc/terms/>.' +
         '@prefix o: <http://example.org/ontology>.' +
         '<> a <http://www.w3.org/ns/ldp#Container> ;' +
@@ -274,62 +274,64 @@ describe('LDP', function () {
         '   dcterms:title "This is a container" ;' +
         '   o:limit 500000.00 .', 'sampleContainer/basicContainerFile.ttl')
 
-      ldp.listContainer(path.join(__dirname, '../resources/sampleContainer/'), 'https://server.tld/resources/sampleContainer/', 'https://server.tld', '', 'text/turtle', function (err, data) {
-        if (err) done(err)
-        var graph = $rdf.graph()
-        $rdf.parse(
-          data,
-          graph,
-          'https://server.tld/sampleContainer',
-          'text/turtle')
+      return ldp.listContainer(path.join(__dirname, '../resources/sampleContainer/'), 'https://server.tld/resources/sampleContainer/', 'https://server.tld', '', 'text/turtle')
+        .then(data => {
+          var graph = $rdf.graph()
+          $rdf.parse(
+            data,
+            graph,
+            'https://server.tld/sampleContainer',
+            'text/turtle')
 
-        var basicContainerStatements = graph
-          .each(
-            $rdf.sym('https://server.tld/basicContainerFile.ttl'),
-            ns.rdf('type'),
-            undefined
-          )
-          .map(d => { return d.uri })
+          var basicContainerStatements = graph
+            .each(
+              $rdf.sym('https://server.tld/basicContainerFile.ttl'),
+              ns.rdf('type'),
+              undefined
+            )
+            .map(d => { return d.uri })
 
-        let expectedStatements = [
-          'http://www.w3.org/ns/iana/media-types/text/turtle#Resource',
-          'http://www.w3.org/ns/ldp#Resource'
-        ]
-        assert.deepEqual(basicContainerStatements.sort(), expectedStatements)
+          let expectedStatements = [
+            'http://www.w3.org/ns/iana/media-types/text/turtle#Resource',
+            'http://www.w3.org/ns/ldp#Resource'
+          ]
+          assert.deepEqual(basicContainerStatements.sort(), expectedStatements)
 
-        var containerStatements = graph
-          .each(
-            $rdf.sym('https://server.tld/containerFile.ttl'),
-            ns.rdf('type'),
-          undefined
-          )
-          .map(d => { return d.uri })
+          var containerStatements = graph
+            .each(
+              $rdf.sym('https://server.tld/containerFile.ttl'),
+              ns.rdf('type'),
+              undefined
+            )
+            .map(d => { return d.uri })
 
-        assert.deepEqual(containerStatements.sort(), expectedStatements)
+          assert.deepEqual(containerStatements.sort(), expectedStatements)
 
-        rm('sampleContainer/containerFile.ttl')
-        rm('sampleContainer/basicContainerFile.ttl')
-        done()
-      })
+          rm('sampleContainer/containerFile.ttl')
+          rm('sampleContainer/basicContainerFile.ttl')
+        })
     })
 
-    it('should ldp:contains the same files in dir', function (done) {
-      ldp.listContainer(path.join(__dirname, '../resources/sampleContainer/'), 'https://server.tld/resources/sampleContainer/', 'https://server.tld', '', 'text/turtle', function (err, data) {
-        if (err) done(err)
-        fs.readdir(path.join(__dirname, '../resources/sampleContainer/'), function (err, expectedFiles) {
-          const graph = $rdf.graph()
-          $rdf.parse(data, graph, 'https://server.tld/sampleContainer/', 'text/turtle')
-          const statements = graph.match(null, ns.ldp('contains'), null)
-          const files = statements
-            .map(s => s.object.value.replace(/.*\//, ''))
-            .map(decodeURIComponent)
+    it('should ldp:contains the same files in dir', () => {
+      ldp.listContainer(path.join(__dirname, '../resources/sampleContainer/'), 'https://server.tld/resources/sampleContainer/', 'https://server.tld', '', 'text/turtle')
+        .then(data => {
+          fs.readdir(path.join(__dirname, '../resources/sampleContainer/'), function (err, expectedFiles) {
+            if (err) {
+              return Promise.reject(err)
+            }
 
-          files.sort()
-          expectedFiles.sort()
-          assert.deepEqual(files, expectedFiles)
-          done(err)
+            const graph = $rdf.graph()
+            $rdf.parse(data, graph, 'https://server.tld/sampleContainer/', 'text/turtle')
+            const statements = graph.match(null, ns.ldp('contains'), null)
+            const files = statements
+              .map(s => s.object.value.replace(/.*\//, ''))
+              .map(decodeURIComponent)
+
+            files.sort()
+            expectedFiles.sort()
+            assert.deepEqual(files, expectedFiles)
+          })
         })
-      })
     })
   })
 })
