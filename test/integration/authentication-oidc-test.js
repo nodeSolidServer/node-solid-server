@@ -132,7 +132,7 @@ describe('Authentication API (OIDC)', () => {
       })
 
       it('should set the cookie', () => {
-        expect(cookie).to.match(/connect.sid=/)
+        expect(cookie).to.match(/connect.sid=\S{65,100}/)
       })
 
       it('should set the cookie with HttpOnly', () => {
@@ -143,7 +143,12 @@ describe('Authentication API (OIDC)', () => {
         expect(cookie).to.match(/Secure/)
       })
 
+      /* Reflecting https://github.com/solid/web-access-control-spec#referring-to-origins-ie-web-apps
+       where the cookie implies that the user is logged in
+       */
+
       describe('and performing a subsequent request', () => {
+        // If the user is not logged on, then fail 401 Unauthenticated
         describe('without that cookie', () => {
           let response
           before(done => {
@@ -159,23 +164,9 @@ describe('Authentication API (OIDC)', () => {
           })
         })
 
-        describe('with that cookie and a non-matching origin', () => {
-          let response
-          before(done => {
-            alice.get('/')
-              .set('Cookie', cookie)
-              .set('Origin', bobServerUri)
-              .end((err, res) => {
-                response = res
-                done(err)
-              })
-          })
+        // TODO User not authorized test here
 
-          it('should return a 401', () => {
-            expect(response).to.have.property('status', 401)
-          })
-        })
-
+        // If the Origin header is not present, the succeed 200 OK
         describe('with that cookie but without origin', () => {
           let response
           before(done => {
@@ -192,8 +183,26 @@ describe('Authentication API (OIDC)', () => {
           })
         })
 
-        // TODO: Are the next two tests correct?
-        describe('with that cookie and a this origin', () => {
+        // How Mallory might set their cookie:
+        describe('with malicious cookie but without origin', () => {
+          let response
+          before(done => {
+            var malcookie = cookie.replace(/connect\.sid=(\S+)/, 'connect.sid=l33th4x0rzp0wn4g3;')
+            alice.get('/')
+              .set('Cookie', malcookie)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 401', () => {
+            expect(response).to.have.property('status', 401)
+          })
+        })
+
+        // Our origin isn't trusted by default
+        describe('with that cookie and our origin', () => {
           let response
           before(done => {
             alice.get('/')
@@ -205,12 +214,13 @@ describe('Authentication API (OIDC)', () => {
               })
           })
 
-          it('Returns 403 but should it?', () => {
+          it('should return a 403', () => {
             expect(response).to.have.property('status', 403)
           })
         })
 
-        describe('without that cookie but with a this origin', () => {
+        // Our own origin, no agent auth
+        describe('without that cookie but with our origin', () => {
           let response
           before(done => {
             alice.get('/')
@@ -221,10 +231,67 @@ describe('Authentication API (OIDC)', () => {
               })
           })
 
-          it('Should return a 401', () => {
+          it('should return a 401', () => {
             expect(response).to.have.property('status', 401)
           })
         })
+
+        // Configuration for originsAllowed
+        describe('with that cookie but with globally configured origin', () => {
+          let response
+          before(done => {
+            alice.get('/')
+              .set('Cookie', cookie)
+              .set('Origin', 'https://test.apps.solid.invalid')
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 200', () => {
+            expect(response).to.have.property('status', 200)
+          })
+        })
+
+        // Configuration for originsAllowed but no auth
+        describe('without that cookie but with globally configured origin', () => {
+          let response
+          before(done => {
+            alice.get('/')
+              .set('Origin', 'https://test.apps.solid.invalid')
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 401', () => {
+            expect(response).to.have.property('status', 401)
+          })
+        })
+
+        // Configuration for originsAllowed with malicious cookie
+        describe('with malicious cookie but with globally configured origin', () => {
+          let response
+          before(done => {
+            var malcookie = cookie.replace(/connect\.sid=(\S+)/, 'connect.sid=l33th4x0rzp0wn4g3;')
+            alice.get('/')
+              .set('Cookie', malcookie)
+              .set('Origin', 'https://test.apps.solid.invalid')
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 401', () => {
+            expect(response).to.have.property('status', 401)
+          })
+        })
+
+        // Not authenticated but also wrong origin,
+        // 403 because authenticating wouldn't help, since the Origin is wrong
         describe('without that cookie and a matching origin', () => {
           let response
           before(done => {
@@ -236,8 +303,45 @@ describe('Authentication API (OIDC)', () => {
               })
           })
 
-          it('should return a 401', () => {
-            expect(response).to.have.property('status', 401)
+          it('should return a 403', () => {
+            expect(response).to.have.property('status', 403)
+          })
+        })
+
+        // Authenticated but origin not OK
+        describe('with that cookie and a non-matching origin', () => {
+          let response
+          before(done => {
+            alice.get('/')
+              .set('Cookie', cookie)
+              .set('Origin', bobServerUri)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 403', () => {
+            expect(response).to.have.property('status', 403)
+          })
+        })
+
+        // Authenticated but origin not OK
+        describe('with malicious cookie and a non-matching origin', () => {
+          let response
+          before(done => {
+            var malcookie = cookie.replace(/connect\.sid=(\S+)/, 'connect.sid=l33th4x0rzp0wn4g3;')
+            alice.get('/')
+              .set('Cookie', malcookie)
+              .set('Origin', bobServerUri)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 403', () => {
+            expect(response).to.have.property('status', 403)
           })
         })
       })

@@ -16,8 +16,8 @@
     acl:agentGroup <group-listing.ttl#folks>;
     acl:default tes:;
     acl:mode acl:Read, acl:Write.
-:errors
-    a acl:Authorization;
-    acl:accessTo <some-other-file.txt>;
-    acl:agentGroup <group-listing-error.ttl#folks>;
-    acl:mode acl:Read, acl:Write.
+#:errors
+#    a acl:Authorization;
+#    acl:accessTo <some-other-file.txt>;
+#    acl:agentGroup <group-listing-error.ttl#folks>;
+#    acl:mode acl:Read, acl:Write.
