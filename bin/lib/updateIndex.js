@@ -3,10 +3,11 @@ const path = require('path')
 const cheerio = require('cheerio')
 const LDP = require('../../lib/ldp')
 const { URL } = require('url')
+const debug = require('../../lib/debug')
 
 const { compileTemplate, writeTemplate } = require('../../lib/common/template-utils')
 const { getAccountManager, loadConfig, loadUsernames } = require('./cli-utils')
-const { getWebId } = require('../../lib/common/user-utils')
+const { getName, getWebId } = require('../../lib/common/user-utils')
 const { initConfigDir, initTemplateDirs } = require('../../lib/server-config')
 
 module.exports = function (program) {
@@ -22,18 +23,23 @@ module.exports = function (program) {
       const ldp = new LDP(config)
       const accountManager = getAccountManager(config, { ldp })
       const usernames = loadUsernames(config)
-      const usersProcessed = usernames.map(async name => {
-        const accountDirectory = accountManager.accountDirFor(name)
+      const usersProcessed = usernames.map(async username => {
+        const accountDirectory = accountManager.accountDirFor(username)
         const indexFilePath = path.join(accountDirectory, 'index.html')
         if (!isUpdateAllowed(indexFilePath)) {
           return
         }
-        const accountUrl = getAccountUrl(name, config)
-        const webId = await getWebId(accountDirectory, accountUrl, { ldp })
-        writeTemplate(indexFilePath, indexTemplate, { name, webId })
+        const accountUrl = getAccountUrl(username, config)
+        try {
+          const webId = await getWebId(accountDirectory, accountUrl, { ldp })
+          const name = await getName(webId, { ldp })
+          writeTemplate(indexFilePath, indexTemplate, { name, webId })
+        } catch (err) {
+          debug.errors(`Failed to create new index for ${username}: ${JSON.stringify(err, null, 2)}`)
+        }
       })
       await Promise.all(usersProcessed)
-      console.log(`Processed ${usersProcessed.length} users`)
+      debug.accounts(`Processed ${usersProcessed.length} users`)
     })
 }
 
