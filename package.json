@@ -74,7 +74,7 @@
     "rdflib": "^0.17.1",
     "recursive-readdir": "^2.1.0",
     "rimraf": "^2.5.0",
-    "solid-auth-client": "^2.2.9",
+    "solid-auth-client": "^2.2.12",
     "solid-namespace": "^0.1.0",
     "solid-permissions": "^0.6.0",
     "solid-ws": "^0.2.3",
@@ -83,6 +83,7 @@
     "ulid": "^0.1.0",
     "uuid": "^3.0.0",
     "valid-url": "^1.0.9",
+    "validator": "^10.9.0",
     "vhost": "^3.0.2",
     "webid": "^0.3.11"
   },
