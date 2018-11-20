@@ -192,6 +192,54 @@ describe('ResourceMapper', () => {
         contentType: 'text/html'
       })
 
+    itMapsUrl(mapper, 'a URL ending with a slash to an index file when index.html is available',
+      {
+        url: 'http://localhost/space/'
+      },
+      [
+        `${rootPath}space/index.html`,
+        `${rootPath}space/index$.ttl`
+      ],
+      {
+        path: `${rootPath}space/index.html`,
+        contentType: 'text/html'
+      })
+
+    itMapsUrl(mapper, 'a URL ending with a slash to an index file when index$.html is available',
+      {
+        url: 'http://localhost/space/'
+      },
+      [
+        `${rootPath}space/index$.html`,
+        `${rootPath}space/index$.ttl`
+      ],
+      {
+        path: `${rootPath}space/index$.html`,
+        contentType: 'text/html'
+      })
+
+    itMapsUrl(mapper, 'a URL ending with a slash to an index file for text/html when index.html not is available',
+      {
+        url: 'http://localhost/space/',
+        contentType: 'text/html',
+        createIfNotExists: true
+      },
+      {
+        path: `${rootPath}space/index.html`,
+        contentType: 'text/html'
+      })
+
+    itMapsUrl(mapper, 'a URL ending with a slash to an index file for text/turtle when index.ttl not is available',
+      {
+        url: 'http://localhost/space/',
+        contentType: 'text/turtle',
+        createIfNotExists: true
+      },
+      {
+        path: `${rootPath}space/index.ttl`,
+        contentType: 'text/turtle'
+      })
+
     // Security cases
 
     itMapsUrl(mapper, 'a URL with an unknown content type',
@@ -448,7 +496,7 @@ function mapsUrl (it, mapper, label, options, files, expected) {
   // Mock filesystem
   function mockReaddir () {
     mapper._readdir = async (path) => {
-      expect(path).to.equal(`${rootPath}space/`)
+      expect(path.startsWith(`${rootPath}space/`)).to.equal(true)
       return files.map(f => f.replace(/.*\//, ''))
     }
   }
