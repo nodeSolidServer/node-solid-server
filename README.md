@@ -202,7 +202,8 @@ $ solid start --help
     --server-name [value]         A name for your server (not required, but will be presented on your server's frontpage)
     --server-description [value]  A description of your server (not required)
     --server-logo [value]         A logo that represents you, your brand, or your server (not required)
-    -v, --verbose                 Print the logs to console
+    -q, --quiet                  Do not print the logs to console
+    -v, --verbose                 DEPRECATED: Print the logs to console.  
     -h, --help                    output usage information
  ```
 
@@ -381,6 +382,17 @@ By default Solid will not allow [certain usernames as they might cause
 confusion or allow vulnerabilies for social engineering](https://github.com/marteinn/The-Big-Username-Blacklist).
 This list is configurable via `config/usernames-blacklist.json`. Solid does not
 blacklist profanities by default.
+
+## Quota
+
+By default, a file `serverSide.ttl` will be installed to new PODs. Its
+current function is to set a quota for disk usage of just 25 MB, which
+is what we can be sure the current prototype can tolerate under
+load. This file is not writeable to users, but as server administrator
+you can remove it if you don't want to impose a quota. It is currently
+adviceable to remove it rather than set a large quota, because the
+current implementation will impair write performance if there is a lot
+of data.
 
 ## Contributing
 
