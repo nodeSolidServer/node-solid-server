@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Invalid username</title>
+  <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+  <h4>Invalid username</h4>
+</div>
+<div class="container">
+  <p>We're sorry to inform you that this account's username ({{username}}) is not allowed after changes to username policy.</p>
+  <p>This account has been set to be deleted at {{dateOfRemoval}}.</p>
+  {{#if supportEmail}}
+  <p>Please contact {{supportEmail}} if you want to move your account.</p>
+  {{/if}}
+  <p>If you had an email address connected to this account, you should have received an email about this.</p>
+</div>
+</body>
+</html>

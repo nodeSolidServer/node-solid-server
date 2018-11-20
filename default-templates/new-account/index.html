@@ -15,7 +15,8 @@
         <a href="/" class="navbar-brand">{{#if name}}{{name}} &ndash; {{/if}}Solid Home</a>
       </div>
       <div class="nav navbar-right navbar-form">
-        <button id="session-action" type="button" class="session-action btn btn-default navbar-btn">Loading...</button>
+        <button id="login"  type="button" class="hidden btn btn-default btn-success">Log in</button>
+        <button id="logout" type="button" class="hidden btn btn-danger">Log out</button>
       </div>
     </div>
   </nav>
@@ -69,37 +70,6 @@
 </div>
 
 <script src="/common/js/solid-auth-client.bundle.js"></script>
-<script type="text/javascript">
-  (function () {
-    'use strict';
-    var button = document.getElementById('session-action');
-    var loggedIn = false;
-    var accountSettings = document.getElementById('account-settings');
-
-    solid.auth.trackSession(function(session) {
-      loggedIn = !!session;
-      button.innerText = loggedIn ? 'Log out' : 'Log in';
-      button.classList.remove('btn-default');
-      button.classList.add(loggedIn ? 'btn-danger' : 'btn-primary');
-      if (loggedIn) {
-        var sessionOrigin = getOriginFromWebId(session.webId);
-        var isOwner = sessionOrigin === location.origin;
-        accountSettings.classList.toggle('hidden', !isOwner);
-      }
-    });
-
-    button.addEventListener('click', function () {
-      loggedIn ? solid.auth.logout() : solid.auth.popupLogin();
-    });
-
-    function getOriginFromWebId(webId) {
-      if (window.URL.prototype) {
-        return new URL(webId).origin;
-      }
-      var uriParts = webId.split('/');
-      return uriParts[0] + '//' + uriParts[2];
-    }
-  })();
-</script>
+<script src="/common/js/auth-buttons.js"></script>
 </body>
 </html>

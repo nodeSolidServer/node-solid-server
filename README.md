@@ -383,6 +383,17 @@ confusion or allow vulnerabilies for social engineering](https://github.com/mart
 This list is configurable via `config/usernames-blacklist.json`. Solid does not
 blacklist profanities by default.
 
+## Quota
+
+By default, a file `serverSide.ttl` will be installed to new PODs. Its
+current function is to set a quota for disk usage of just 25 MB, which
+is what we can be sure the current prototype can tolerate under
+load. This file is not writeable to users, but as server administrator
+you can remove it if you don't want to impose a quota. It is currently
+adviceable to remove it rather than set a large quota, because the
+current implementation will impair write performance if there is a lot
+of data.
+
 ## Contributing
 
 `solid` is has been made possible due to contributions from many individuals, these are some of the key contributors:
