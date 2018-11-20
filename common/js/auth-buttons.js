@@ -1,4 +1,5 @@
 /* Provide functionality for authentication buttons */
+/* global URL, location, alert, solid */
 
 (({ auth }) => {
   // Wire up DOM elements
@@ -8,6 +9,7 @@
   loginButton.addEventListener('click', login)
   logoutButton.addEventListener('click', logout)
   registerButton.addEventListener('click', register)
+  document.addEventListener('DOMContentLoaded', getAccountInfo)
 
   // Track authentication status and update UI
   auth.trackSession(session => {
@@ -45,5 +47,11 @@
     const registration = new URL('/register', location)
     registration.searchParams.set('returnToUrl', location)
     location.href = registration
+  }
+
+  async function getAccountInfo () {
+    const account = new URL('/account', location)
+    const response = await auth.fetch(account)
+    console.log('test3', response)
   }
 })(solid)
