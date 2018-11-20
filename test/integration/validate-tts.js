@@ -16,7 +16,7 @@ const invalidTurtleBody = fs.readFileSync(path.join(__dirname, '../resources/inv
 
 describe('HTTP requests with invalid Turtle syntax', () => {
   describe('PUT API', () => {
-    it('is allowed with invalid TTL files', (done) => {
+    it('is allowed with invalid TTL files in general', (done) => {
       server.put('/invalid1.ttl')
         .send(invalidTurtleBody)
         .set('content-type', 'text/turtle')
