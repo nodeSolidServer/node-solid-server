@@ -54,6 +54,7 @@
     "extend": "^3.0.0",
     "from2": "^2.1.0",
     "fs-extra": "^2.1.0",
+    "get-folder-size": "^2.0.0",
     "glob": "^7.1.1",
     "global-tunnel-ng": "^2.1.0",
     "handlebars": "^4.0.6",
@@ -102,7 +103,8 @@
     "snyk": "^1.88.2",
     "standard": "^8.6.0",
     "supertest": "^3.0.0",
-    "whatwg-url": "^6.1.0"
+    "whatwg-url": "^6.1.0",
+    "randombytes": "^2.0.1"
   },
   "main": "index.js",
   "scripts": {
