@@ -7,27 +7,27 @@ chai.use(require('chai-as-promised'))
 const options = { fetch: (url, callback) => {} }
 
 describe('ACLChecker unit test', () => {
-  let acl
+  // let acl
 
-  beforeEach(() => {
-    acl = new ACLChecker('http://ex.com/.acl', options)
-  })
+  // beforeEach(() => {
+  //   acl = new ACLChecker('http://ex.com/.acl', options)
+  // })
 
-  describe('checkAccess', () => {
-    it('should callback with null on grant success', () => {
-      let acls = { checkAccess: () => Promise.resolve(true) }
-      return expect(acl.checkAccess(acls)).to.eventually.be.true
-    })
-    it('should callback with error on grant failure', () => {
-      let acls = { checkAccess: () => Promise.resolve(false) }
-      return expect(acl.checkAccess(acls))
-      .to.be.rejectedWith('ACL file found but no matching policy found')
-    })
-    it('should callback with error on grant error', () => {
-      let acls = { checkAccess: () => Promise.reject(new Error('my error')) }
-      return expect(acl.checkAccess(acls)).to.be.rejectedWith('my error')
-    })
-  })
+  // describe('checkAccess', () => {
+  //   it('should callback with null on grant success', () => {
+  //     let acls = { checkAccess: () => Promise.resolve(true) }
+  //     return expect(acl.checkAccess(acls)).to.eventually.be.true
+  //   })
+  //   it('should callback with error on grant failure', () => {
+  //     let acls = { checkAccess: () => Promise.resolve(false) }
+  //     return expect(acl.checkAccess(acls))
+  //     .to.be.rejectedWith('ACL file found but no matching policy found')
+  //   })
+  //   it('should callback with error on grant error', () => {
+  //     let acls = { checkAccess: () => Promise.reject(new Error('my error')) }
+  //     return expect(acl.checkAccess(acls)).to.be.rejectedWith('my error')
+  //   })
+  // })
 
   describe('getPossibleACLs', () => {
     it('returns all possible ACLs of the root', () => {
