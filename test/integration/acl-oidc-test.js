@@ -127,7 +127,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
     // })
   })
 
-  describe.only('empty .acl', function () {
+  describe('empty .acl', function () {
     describe('with no default in parent path', function () {
       it('should give no access', function (done) {
         var options = createOptions('/empty-acl/test-folder', 'user1')
