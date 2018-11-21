@@ -109,11 +109,11 @@ describe('ACL with WebID+OIDC over HTTP', function () {
   }
 
   describe('no ACL', function () {
-    it('should return 403 for any resource', function (done) {
+    it('Should return 500 since no ACL is a server misconfig', function (done) {
       var options = createOptions('/no-acl/', 'user1')
       request(options, function (error, response, body) {
         assert.equal(error, null)
-        assert.equal(response.statusCode, 403)
+        assert.equal(response.statusCode, 500)
         done()
       })
     })
