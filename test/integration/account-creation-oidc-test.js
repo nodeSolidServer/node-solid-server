@@ -183,31 +183,40 @@ describe('AccountManager (OIDC account creation tests)', function () {
         })
     }).timeout(20000)
 
-    it('should create a private settings container', function (done) {
-      var subdomain = supertest('https://nicola.' + host)
-      subdomain.head('/settings/')
-        .expect(401)
-        .end(function (err) {
-          done(err)
-        })
-    })
+    describe('after setting up account', () => {
+      beforeEach(done => {
+        var subdomain = supertest('https://nicola.' + host)
+        subdomain.post('/api/accounts/new')
+          .send('username=nicola&password=12345&acceptToc=true')
+          .end(done)
+      })
 
-    it('should create a private prefs file in the settings container', function (done) {
-      var subdomain = supertest('https://nicola.' + host)
-      subdomain.head('/inbox/prefs.ttl')
-        .expect(401)
-        .end(function (err) {
-          done(err)
-        })
-    })
+      it('should create a private settings container', function (done) {
+        var subdomain = supertest('https://nicola.' + host)
+        subdomain.head('/settings/')
+          .expect(401)
+          .end(function (err) {
+            done(err)
+          })
+      })
 
-    it('should create a private inbox container', function (done) {
-      var subdomain = supertest('https://nicola.' + host)
-      subdomain.head('/inbox/')
-        .expect(401)
-        .end(function (err) {
-          done(err)
-        })
+      it('should create a private prefs file in the settings container', function (done) {
+        var subdomain = supertest('https://nicola.' + host)
+        subdomain.head('/inbox/prefs.ttl')
+          .expect(401)
+          .end(function (err) {
+            done(err)
+          })
+      })
+
+      it('should create a private inbox container', function (done) {
+        var subdomain = supertest('https://nicola.' + host)
+        subdomain.head('/inbox/')
+          .expect(401)
+          .end(function (err) {
+            done(err)
+          })
+      })
     })
   })
 })
@@ -215,7 +224,7 @@ describe('AccountManager (OIDC account creation tests)', function () {
 describe('Single User signup page', () => {
   const serverUri = 'https://localhost:7457'
   const port = 7457
-  var ldpHttpsServer
+  let ldpHttpsServer
   const rootDir = path.join(__dirname, '../resources/accounts/single-user/')
   const configPath = path.join(__dirname, '../resources/config')
   const ldp = ldnode.createServer({
@@ -231,7 +240,9 @@ describe('Single User signup page', () => {
   const server = supertest(serverUri)
 
   before(function (done) {
-    ldpHttpsServer = ldp.listen(port, done)
+    ldpHttpsServer = ldp.listen(port, () => server.post('/api/accounts/new')
+      .send('username=foo&password=12345&acceptToc=true')
+      .end(done))
   })
 
   after(function () {
