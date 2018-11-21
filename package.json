@@ -1,7 +1,7 @@
 {
   "name": "solid-server",
   "description": "Solid server on top of the file-system",
-  "version": "4.3.1",
+  "version": "4.4.0",
   "author": {
     "name": "Tim Berners-Lee",
     "email": "timbl@w3.org"
@@ -54,6 +54,7 @@
     "extend": "^3.0.0",
     "from2": "^2.1.0",
     "fs-extra": "^2.1.0",
+    "get-folder-size": "^2.0.0",
     "glob": "^7.1.1",
     "global-tunnel-ng": "^2.1.0",
     "handlebars": "^4.0.6",
@@ -73,7 +74,7 @@
     "rdflib": "^0.17.1",
     "recursive-readdir": "^2.1.0",
     "rimraf": "^2.5.0",
-    "solid-auth-client": "^2.2.9",
+    "solid-auth-client": "^2.2.12",
     "solid-namespace": "^0.1.0",
     "solid-permissions": "^0.7.0-beta.0",
     "solid-ws": "^0.2.3",
@@ -82,6 +83,7 @@
     "ulid": "^0.1.0",
     "uuid": "^3.0.0",
     "valid-url": "^1.0.9",
+    "validator": "^10.9.0",
     "vhost": "^3.0.2",
     "webid": "^0.3.11"
   },
@@ -101,7 +103,8 @@
     "snyk": "^1.88.2",
     "standard": "^8.6.0",
     "supertest": "^3.0.0",
-    "whatwg-url": "^6.1.0"
+    "whatwg-url": "^6.1.0",
+    "randombytes": "^2.0.1"
   },
   "main": "index.js",
   "scripts": {

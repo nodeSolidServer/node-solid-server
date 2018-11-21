@@ -16,5 +16,6 @@
     "logo": ""
   },
   "enforceToc": true,
-  "tocUri": "https://your-toc"
+  "tocUri": "https://your-toc",
+  "supportEmail": "Your support email address"
 }

@@ -2,8 +2,8 @@
 
 const options = require('./options')
 const fs = require('fs')
-const extend = require('extend')
-const { cyan, red, bold } = require('colorette')
+const { loadConfig } = require('./common')
+const { red, bold } = require('colorette')
 
 module.exports = function (program, server) {
   const start = program
@@ -32,26 +32,11 @@ module.exports = function (program, server) {
       }
     })
 
-  start.option('-v, --verbose', 'Print the logs to console')
+  start.option('-q, --quiet', 'Do not print the logs to console')
 
-  start.action((opts) => {
-    let argv = extend({}, opts, { version: program.version() })
-    let configFile = argv['configFile'] || './config.json'
-
-    fs.readFile(configFile, (err, file) => {
-      // No file exists, not a problem
-      if (err) {
-        console.log(cyan(bold('TIP')), 'create a config.json: `$ solid init`')
-      } else {
-        // Use flags with priority over config file
-        const config = JSON.parse(file)
-        Object.keys(config).forEach((option) => {
-          argv[option] = argv[option] || config[option]
-        })
-      }
-
-      bin(argv, server)
-    })
+  start.action(async (options) => {
+    const config = loadConfig(program, options)
+    bin(config, server)
   })
 }
 
@@ -76,7 +61,7 @@ function bin (argv, server) {
   argv.live = !argv.noLive
 
   // Set up debug environment
-  if (argv.verbose) {
+  if (!argv.quiet) {
     process.env.DEBUG = 'solid:*'
   }
 
