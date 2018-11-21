@@ -173,7 +173,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
           done()
         })
       })
-      it('should allow creation of new files', function (done) {
+      it('should fail creation of new files', function (done) {
         var options = createOptions('/write-acl/empty-acl/test-file', 'user1')
         options.body = ''
         request.put(options, function (error, response, body) {
@@ -182,7 +182,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
           done()
         })
       })
-      it('should allow creation of new files in deeper paths', function (done) {
+      it('should fail creation of new files in deeper paths', function (done) {
         var options = createOptions('/write-acl/empty-acl/test-folder/test-file', 'user1')
         options.body = ''
         request.put(options, function (error, response, body) {
@@ -191,7 +191,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
           done()
         })
       })
-      it('Should create empty acl file', function (done) {
+      it('Should not create empty acl file', function (done) {
         var options = createOptions('/write-acl/empty-acl/another-empty-folder/test-file.acl', 'user1')
         options.body = ''
         request.put(options, function (error, response, body) {
