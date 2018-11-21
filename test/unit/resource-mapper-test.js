@@ -218,6 +218,15 @@ describe('ResourceMapper', () => {
         contentType: 'text/html'
       })
 
+    itMapsUrl(mapper, 'a URL ending with a slash to a folder when no index is available',
+      {
+        url: 'http://localhost/space/'
+      },
+      {
+        path: `${rootPath}space/`,
+        contentType: 'application/octet-stream'
+      })
+
     itMapsUrl(mapper, 'a URL ending with a slash to an index file for text/html when index.html not is available',
       {
         url: 'http://localhost/space/',
