@@ -17,7 +17,7 @@ const AccountManager = require('../../lib/models/account-manager')
 const UserAccount = require('../../lib/models/user-account')
 const TokenService = require('../../lib/services/token-service')
 const WebIdTlsCertificate = require('../../lib/models/webid-tls-certificate')
-const LegacyResourceMapper = require('../../lib/legacy-resource-mapper')
+const ResourceMapper = require('../../lib/resource-mapper')
 
 const testAccountsDir = path.join(__dirname, '../resources/accounts')
 
@@ -103,7 +103,7 @@ describe('AccountManager', () => {
   describe('accountDirFor()', () => {
     it('should match the solid root dir config, in single user mode', () => {
       let multiuser = false
-      let resourceMapper = new LegacyResourceMapper({
+      let resourceMapper = new ResourceMapper({
         includeHost: multiuser,
         rootPath: testAccountsDir
       })
@@ -117,7 +117,7 @@ describe('AccountManager', () => {
 
     it('should compose the account dir in multi user mode', () => {
       let multiuser = true
-      let resourceMapper = new LegacyResourceMapper({
+      let resourceMapper = new ResourceMapper({
         includeHost: multiuser,
         rootPath: testAccountsDir
       })
@@ -311,7 +311,7 @@ describe('AccountManager', () => {
 
   describe('rootAclFor()', () => {
     it('should return the server root .acl in single user mode', () => {
-      let resourceMapper = new LegacyResourceMapper({
+      let resourceMapper = new ResourceMapper({
         includeHost: false
       })
       let store = new LDP({ suffixAcl: '.acl', multiuser: false, resourceMapper })
@@ -326,7 +326,7 @@ describe('AccountManager', () => {
     })
 
     it('should return the profile root .acl in multi user mode', () => {
-      let resourceMapper = new LegacyResourceMapper({
+      let resourceMapper = new ResourceMapper({
         includeHost: true
       })
       let store = new LDP({ suffixAcl: '.acl', multiuser: true, resourceMapper })
