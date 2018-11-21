@@ -228,12 +228,11 @@ describe('ACL with WebID+OIDC over HTTP', function () {
           done()
         })
       })
-      it("should access test file's acl file", function (done) {
+      it("should not access test file's new empty acl file", function (done) {
         var options = createOptions('/write-acl/test-file.acl', 'user1')
         request.get(options, function (error, response, body) {
           assert.equal(error, null)
-          assert.equal(response.statusCode, 200)
-          assert.match(response.headers['content-type'], /text\/turtle/)
+          assert.equal(response.statusCode, 403)
           done()
         })
       })
