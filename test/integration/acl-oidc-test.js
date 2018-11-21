@@ -92,12 +92,12 @@ describe('ACL with WebID+OIDC over HTTP', function () {
   const origin1 = 'http://example.org/'
   const origin2 = 'http://example.com/'
 
-  function createOptions (path, user) {
+  function createOptions (path, user, contentType = 'text/plain') {
     const options = {
       url: timAccountUri + path,
       headers: {
         'accept': 'text/turtle',
-        'content-type': 'text/plain'
+        'content-type': contentType
       }
     }
     if (user) {
@@ -220,7 +220,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         })
       })
       it("should create test file's acl file", function (done) {
-        var options = createOptions('/write-acl/test-file.acl', 'user1')
+        var options = createOptions('/write-acl/test-file.acl', 'user1', 'text/turtle')
         options.body = ''
         request.put(options, function (error, response, body) {
           assert.equal(error, null)
@@ -254,7 +254,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
     })
 
     it('should PUT new ACL file', function (done) {
-      var options = createOptions('/origin/test-folder/.acl', 'user1')
+      var options = createOptions('/origin/test-folder/.acl', 'user1', 'text/turtle')
       options.body = '<#Owner> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
         ' <http://www.w3.org/ns/auth/acl#accessTo> <https://localhost:3456/origin/test-folder/.acl>;\n' +
         ' <http://www.w3.org/ns/auth/acl#agent> <' + user1 + '>;\n' +
@@ -362,7 +362,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       })
     })
     it('user1 should be able to modify ACL file', function (done) {
-      var options = createOptions('/read-acl/.acl', 'user1')
+      var options = createOptions('/read-acl/.acl', 'user1', 'text/turtle')
       options.body = body
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
@@ -387,7 +387,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       })
     })
     it('user2 should not be able to modify ACL file', function (done) {
-      var options = createOptions('/read-acl/.acl', 'user2')
+      var options = createOptions('/read-acl/.acl', 'user2', 'text/turtle')
       options.body = '<d> <e> <f> .'
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
@@ -404,7 +404,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       })
     })
     it('agent should not be able to modify ACL file', function (done) {
-      var options = createOptions('/read-acl/.acl')
+      var options = createOptions('/read-acl/.acl', null, 'text/turtle')
       options.body = '<d> <e> <f> .'
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
@@ -434,6 +434,16 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
+    it('user1 should be able to PATCH an existing resource', function (done) {
+      var options = createOptions('/append-inherited/test.ttl', 'user1')
+      options.body = 'INSERT DATA { :test  :hello 789 .}'
+      options.headers['content-type'] = 'application/sparql-update'
+      request.patch(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 200)
+        done()
+      })
+    })
     it('user1 should be able to access test file', function (done) {
       var options = createOptions('/append-acl/abc.ttl', 'user1')
       request.head(options, function (error, response, body) {
@@ -444,7 +454,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
     })
     // TODO POST instead of PUT
     it('user1 should be able to modify test file', function (done) {
-      var options = createOptions('/append-acl/abc.ttl', 'user1')
+      var options = createOptions('/append-acl/abc.ttl', 'user1', 'text/turtle')
       options.body = '<a> <b> <c> .\n'
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
@@ -453,7 +463,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       })
     })
     it("user2 should not be able to access test file's ACL file", function (done) {
-      var options = createOptions('/append-acl/abc.ttl.acl', 'user2')
+      var options = createOptions('/append-acl/abc.ttl.acl', 'user2', 'text/turtle')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 403)
@@ -461,7 +471,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       })
     })
     it('user2 should not be able to access test file', function (done) {
-      var options = createOptions('/append-acl/abc.ttl', 'user2')
+      var options = createOptions('/append-acl/abc.ttl', 'user2', 'text/turtle')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 403)
@@ -469,7 +479,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       })
     })
     it('user2 (with append permission) cannot use PUT to append', function (done) {
-      var options = createOptions('/append-acl/abc.ttl', 'user2')
+      var options = createOptions('/append-acl/abc.ttl', 'user2', 'text/turtle')
       options.body = '<d> <e> <f> .\n'
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
@@ -486,7 +496,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       })
     })
     it('agent (with append permissions) should not PUT', function (done) {
-      var options = createOptions('/append-acl/abc.ttl')
+      var options = createOptions('/append-acl/abc.ttl', null, 'text/turtle')
       options.body = '<g> <h> <i> .\n'
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
@@ -540,7 +550,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
     })
     it.skip('user2 should be able to write a file in the test directory',
       function (done) {
-        var options = createOptions('/group/test-folder/test.ttl', 'user2')
+        var options = createOptions('/group/test-folder/test.ttl', 'user2', 'text/turtle')
         options.body = '<#Dahut> a <https://dbpedia.org/resource/Category:French_legendary_creatures>.\n'
 
         request.put(options, function (error, response, body) {
@@ -550,7 +560,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         })
       })
     it.skip('user1 should be able to get the file', function (done) {
-      var options = createOptions('/group/test-folder/test.ttl', 'user1')
+      var options = createOptions('/group/test-folder/test.ttl', 'user1', 'text/turtle')
 
       request.get(options, function (error, response, body) {
         assert.equal(error, null)
@@ -560,7 +570,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
     })
     it.skip('user2 should not be able to write to the ACL',
       function (done) {
-        var options = createOptions('/group/test-folder/.acl', 'user2')
+        var options = createOptions('/group/test-folder/.acl', 'user2', 'text/turtle')
         options.body = '<#Dahut> a <https://dbpedia.org/resource/Category:French_legendary_creatures>.\n'
 
         request.put(options, function (error, response, body) {
@@ -570,7 +580,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         })
       })
     it.skip('user1 should be able to delete the file', function (done) {
-      var options = createOptions('/group/test-folder/test.ttl', 'user1')
+      var options = createOptions('/group/test-folder/test.ttl', 'user1', 'text/turtle')
 
       request.delete(options, function (error, response, body) {
         assert.equal(error, null)
@@ -610,7 +620,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       ' <http://www.w3.org/ns/auth/acl#agent> <' + user2 + '>;\n' +
       ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>.\n'
     it("user1 should be able to modify test file's ACL file", function (done) {
-      var options = createOptions('/append-acl/abc2.ttl.acl', 'user1')
+      var options = createOptions('/append-acl/abc2.ttl.acl', 'user1', 'text/turtle')
       options.body = body
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
@@ -619,7 +629,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       })
     })
     it("user1 should be able to access test file's ACL file", function (done) {
-      var options = createOptions('/append-acl/abc2.ttl.acl', 'user1')
+      var options = createOptions('/append-acl/abc2.ttl.acl', 'user1', 'text/turtle')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 200)
@@ -627,7 +637,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       })
     })
     it('user1 should be able to access test file', function (done) {
-      var options = createOptions('/append-acl/abc2.ttl', 'user1')
+      var options = createOptions('/append-acl/abc2.ttl', 'user1', 'text/turtle')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 200)
@@ -635,7 +645,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       })
     })
     it('user1 should be able to modify test file', function (done) {
-      var options = createOptions('/append-acl/abc2.ttl', 'user1')
+      var options = createOptions('/append-acl/abc2.ttl', 'user1', 'text/turtle')
       options.body = '<a> <b> <c> .\n'
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
@@ -660,7 +670,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       })
     })
     it('user2 should be able to modify test file', function (done) {
-      var options = createOptions('/append-acl/abc2.ttl', 'user2')
+      var options = createOptions('/append-acl/abc2.ttl', 'user2', 'text/turtle')
       options.body = '<d> <e> <f> .\n'
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
@@ -677,7 +687,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       })
     })
     it('agent should not be able to modify test file', function (done) {
-      var options = createOptions('/append-acl/abc2.ttl')
+      var options = createOptions('/append-acl/abc2.ttl', null, 'text/turtle')
       options.body = '<d> <e> <f> .\n'
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
@@ -704,7 +714,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       ' <http://www.w3.org/ns/auth/acl#agentClass> <http://xmlns.com/foaf/0.1/Agent>;\n' +
       ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read> .\n'
     it("user1 should be able to modify test directory's ACL file", function (done) {
-      var options = createOptions('/write-acl/default-for-new/.acl', 'user1')
+      var options = createOptions('/write-acl/default-for-new/.acl', 'user1', 'text/turtle')
       options.body = body
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
@@ -721,7 +731,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       })
     })
     it('user1 should be able to create new test file', function (done) {
-      var options = createOptions('/write-acl/default-for-new/test-file.ttl', 'user1')
+      var options = createOptions('/write-acl/default-for-new/test-file.ttl', 'user1', 'text/turtle')
       options.body = '<a> <b> <c> .\n'
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
@@ -754,7 +764,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       })
     })
     it('user2 should not be able to modify new test file', function (done) {
-      var options = createOptions('/write-acl/default-for-new/test-file.ttl', 'user2')
+      var options = createOptions('/write-acl/default-for-new/test-file.ttl', 'user2', 'text/turtle')
       options.body = '<d> <e> <f> .\n'
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
@@ -771,7 +781,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       })
     })
     it('agent should not be able to modify new test file', function (done) {
-      var options = createOptions('/write-acl/default-for-new/test-file.ttl')
+      var options = createOptions('/write-acl/default-for-new/test-file.ttl', null, 'text/turtle')
       options.body = '<d> <e> <f> .\n'
       request.put(options, function (error, response, body) {
         assert.equal(error, null)

@@ -13,7 +13,7 @@ const LDP = require('../../lib/ldp')
 const SolidHost = require('../../lib/models/solid-host')
 const AccountManager = require('../../lib/models/account-manager')
 const testAccountsDir = path.join(__dirname, '..', 'resources', 'accounts')
-var LegacyResourceMapper = require('../../lib/legacy-resource-mapper')
+var ResourceMapper = require('../../lib/resource-mapper')
 
 const api = require('../../lib/api/accounts/user-accounts')
 
@@ -27,7 +27,7 @@ describe('api/accounts/user-accounts', () => {
   describe('newCertificate()', () => {
     describe('in multi user mode', () => {
       let multiuser = true
-      let resourceMapper = new LegacyResourceMapper({
+      let resourceMapper = new ResourceMapper({
         rootUrl: 'https://localhost:8443/',
         includeHost: multiuser,
         rootPath: testAccountsDir,

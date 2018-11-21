@@ -9,7 +9,7 @@ chai.should()
 const LDP = require('../../lib/ldp')
 const SolidHost = require('../../lib/models/solid-host')
 const AccountManager = require('../../lib/models/account-manager')
-const LegacyResourceMapper = require('../../lib/legacy-resource-mapper')
+const ResourceMapper = require('../../lib/resource-mapper')
 
 const testAccountsDir = path.join(__dirname, '../resources/accounts')
 const accountTemplatePath = path.join(__dirname, '../../default-templates/new-account')
@@ -30,7 +30,7 @@ describe('AccountManager', () => {
 
     describe('in multi user mode', () => {
       let multiuser = true
-      let resourceMapper = new LegacyResourceMapper({
+      let resourceMapper = new ResourceMapper({
         rootUrl: 'https://localhost:8443/',
         rootPath: process.cwd(),
         includeHost: multiuser,
@@ -61,7 +61,7 @@ describe('AccountManager', () => {
       let multiuser = false
 
       it('resolves to true if root .acl exists in root storage', () => {
-        let resourceMapper = new LegacyResourceMapper({
+        let resourceMapper = new ResourceMapper({
           rootUrl: 'https://localhost:8443/',
           includeHost: multiuser,
           rootPath: path.join(testAccountsDir, 'tim.localhost'),
@@ -81,7 +81,7 @@ describe('AccountManager', () => {
       })
 
       it('resolves to false if root .acl does not exist in root storage', () => {
-        let resourceMapper = new LegacyResourceMapper({
+        let resourceMapper = new ResourceMapper({
           rootUrl: 'https://localhost:8443/',
           includeHost: multiuser,
           rootPath: testAccountsDir,
@@ -105,7 +105,7 @@ describe('AccountManager', () => {
   describe('createAccountFor()', () => {
     it('should create an account directory', () => {
       let multiuser = true
-      let resourceMapper = new LegacyResourceMapper({
+      let resourceMapper = new ResourceMapper({
         rootUrl: 'https://localhost:8443/',
         includeHost: multiuser,
         rootPath: testAccountsDir,

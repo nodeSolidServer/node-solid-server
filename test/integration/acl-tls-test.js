@@ -272,7 +272,7 @@ describe('ACL with WebID+TLS', function () {
     })
 
     it('should PUT new ACL file', function (done) {
-      var options = createOptions('/acl-tls/origin/test-folder/.acl', 'user1')
+      var options = createOptions('/acl-tls/origin/test-folder/.acl', 'user1', 'text/turtle')
       options.headers = {
         'content-type': 'text/turtle'
       }
@@ -370,7 +370,7 @@ describe('ACL with WebID+TLS', function () {
     })
 
     it('should PUT new ACL file', function (done) {
-      var options = createOptions('/acl-tls/origin/test-folder/.acl', 'user1')
+      var options = createOptions('/acl-tls/origin/test-folder/.acl', 'user1', 'text/turtle')
       options.headers = {
         'content-type': 'text/turtle'
       }
