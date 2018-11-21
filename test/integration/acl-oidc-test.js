@@ -127,14 +127,14 @@ describe('ACL with WebID+OIDC over HTTP', function () {
     // })
   })
 
-  describe('empty .acl', function () {
+  describe.only('empty .acl', function () {
     describe('with no default in parent path', function () {
       it('should give no access', function (done) {
         var options = createOptions('/empty-acl/test-folder', 'user1')
         options.body = ''
         request.put(options, function (error, response, body) {
           assert.equal(error, null)
-          assert.equal(response.statusCode, 500)
+          assert.equal(response.statusCode, 403)
           done()
         })
       })
@@ -143,7 +143,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         options.body = ''
         request.put(options, function (error, response, body) {
           assert.equal(error, null)
-          assert.equal(response.statusCode, 500)
+          assert.equal(response.statusCode, 403)
           done()
         })
       })
@@ -151,7 +151,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         var options = createOptions('/empty-acl/.acl', 'user1')
         request.get(options, function (error, response, body) {
           assert.equal(error, null)
-          assert.equal(response.statusCode, 500)
+          assert.equal(response.statusCode, 403)
           done()
         })
       })
@@ -179,7 +179,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         options.body = ''
         request.put(options, function (error, response, body) {
           assert.equal(error, null)
-          assert.equal(response.statusCode, 201)
+          assert.equal(response.statusCode, 403)
           done()
         })
       })
@@ -188,7 +188,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         options.body = ''
         request.put(options, function (error, response, body) {
           assert.equal(error, null)
-          assert.equal(response.statusCode, 201)
+          assert.equal(response.statusCode, 403)
           done()
         })
       })
@@ -197,7 +197,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         options.body = ''
         request.put(options, function (error, response, body) {
           assert.equal(error, null)
-          assert.equal(response.statusCode, 201)
+          assert.equal(response.statusCode, 403)
           done()
         })
       })
