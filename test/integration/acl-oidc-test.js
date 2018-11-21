@@ -339,19 +339,6 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         })
       })
 
-    it('agent should not be able to access test directory when origin is invalid even with user',
-      function (done) {
-        var options = createOptions('/origin/test-folder/', 'user1')
-        options.headers.origin = origin2
-
-        request.head(options, function (error, response, body) {
-          assert.equal(error, null)
-          assert.equal(response.statusCode, 403)
-          assert.equal(response.statusMessage, 'Origin Unauthorized')
-          done()
-        })
-      })
-
     after(function () {
       rm('/accounts-acl/tim.localhost/origin/test-folder/.acl')
     })
