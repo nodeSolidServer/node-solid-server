@@ -225,13 +225,20 @@ Run with:
 docker run -p 8443:8443 --name solid node-solid-server
 ```
 
-Modify the config as follows:
+This will enable you to login to solid on https://localhost:8443 and then create a new account
+but not yet use that account. After a new account is made you will need to create an entry for 
+it in your local (/etc/)hosts file in line with the account and subdomain i.e. 
+
+127.0.0.1	newsoliduser.localhost
+
+Then you'll be able to use solid as intended.
+
+You can modify the config within the docker container as follows:
 
  - Copy the config to the current directory with: `docker cp solid:/usr/src/app/config.json .`
  - Edit the `config.json` file
  - Copy the file back with `docker cp config.json solid:/usr/src/app/`
  - Restart the server with `docker restart solid`
-
 
 ## Library Usage
 
