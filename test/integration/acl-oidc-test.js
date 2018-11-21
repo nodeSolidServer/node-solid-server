@@ -96,7 +96,8 @@ describe('ACL with WebID+OIDC over HTTP', function () {
     const options = {
       url: timAccountUri + path,
       headers: {
-        accept: 'text/turtle'
+        'accept': 'text/turtle',
+        'content-type': 'text/plain'
       }
     }
     if (user) {

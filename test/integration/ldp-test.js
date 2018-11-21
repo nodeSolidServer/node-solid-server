@@ -118,7 +118,7 @@ describe('LDP', function () {
   describe('put', function () {
     it('should write a file in an existing dir', () => {
       var stream = stringToStream('hello world')
-      return ldp.put('/resources/testPut.txt', stream).then(() => {
+      return ldp.put('/resources/testPut.txt', stream, 'text/plain').then(() => {
         var found = read('testPut.txt')
         rm('testPut.txt')
         assert.equal(found, 'hello world')
@@ -127,8 +127,22 @@ describe('LDP', function () {
 
     it('should fail if a trailing `/` is passed', () => {
       var stream = stringToStream('hello world')
-      return ldp.put('/resources/', stream).catch(err => {
+      return ldp.put('/resources/', stream, 'text/plain').catch(err => {
         assert.equal(err.status, 409)
+      })
+    })
+
+    it('should fail if a trailing `/` is passed without content type', () => {
+      var stream = stringToStream('hello world')
+      return ldp.put('/resources/', stream, null).catch(err => {
+        assert.equal(err.status, 409)
+      })
+    })
+
+    it('should fail if no content type is passed', () => {
+      var stream = stringToStream('hello world')
+      return ldp.put('/resources/testPut.txt', stream, null).catch(err => {
+        assert.equal(err.status, 415)
       })
     })
   })
@@ -141,7 +155,7 @@ describe('LDP', function () {
     it('should delete a file in an existing dir', async () => {
       // First create a dummy file
       var stream = stringToStream('hello world')
-      await ldp.put('/resources/testPut.txt', stream)
+      await ldp.put('/resources/testPut.txt', stream, 'text/plain')
       // Make sure it exists
       fs.stat(ldp.resourceMapper._rootPath + '/resources/testPut.txt', function (err) {
         if (err) {
@@ -162,7 +176,7 @@ describe('LDP', function () {
     it('should fail to delete a non-empty folder', async () => {
       // First create a dummy file
       var stream = stringToStream('hello world')
-      await ldp.put('/resources/dummy/testPutBlocking.txt', stream)
+      await ldp.put('/resources/dummy/testPutBlocking.txt', stream, 'text/plain')
       // Make sure it exists
       fs.stat(ldp.resourceMapper._rootPath + '/resources/dummy/testPutBlocking.txt', function (err) {
         if (err) {
@@ -177,7 +191,7 @@ describe('LDP', function () {
     it('should fail to delete nested non-empty folders', async () => {
       // First create a dummy file
       var stream = stringToStream('hello world')
-      await ldp.put('/resources/dummy/dummy2/testPutBlocking.txt', stream)
+      await ldp.put('/resources/dummy/dummy2/testPutBlocking.txt', stream, 'text/plain')
       // Make sure it exists
       fs.stat(ldp.resourceMapper._rootPath + '/resources/dummy/dummy2/testPutBlocking.txt', function (err) {
         if (err) {

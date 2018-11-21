@@ -77,7 +77,8 @@ describe('ACL with WebID+TLS', function () {
     var options = {
       url: address + path,
       headers: {
-        accept: 'text/turtle'
+        accept: 'text/turtle',
+        'content-type': 'text/plain'
       }
     }
     if (user) {
