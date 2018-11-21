@@ -98,6 +98,28 @@ describe('ResourceMapper', () => {
         contentType: 'image/jpeg'
       })
 
+    itMapsUrl(mapper, 'a URL with an overridden extension that matches the content type',
+      {
+        url: 'http://localhost/space/foo.acl',
+        contentType: 'text/turtle',
+        createIfNotExists: true
+      },
+      {
+        path: `${rootPath}space/foo.acl`,
+        contentType: 'text/turtle'
+      })
+
+    itMapsUrl(mapper, 'a URL with an alternative overridden extension that matches the content type',
+      {
+        url: 'http://localhost/space/foo.acl',
+        contentType: 'text/n3',
+        createIfNotExists: true
+      },
+      {
+        path: `${rootPath}space/foo.acl$.n3`,
+        contentType: 'text/n3'
+      })
+
     // GET/HEAD/POST/DELETE/PATCH base cases
 
     itMapsUrl(mapper, 'a URL of a non-existing file',
@@ -190,6 +212,30 @@ describe('ResourceMapper', () => {
       {
         path: `${rootPath}space/foo bar bar.html`,
         contentType: 'text/html'
+      })
+
+    itMapsUrl(mapper, 'a URL of an existing .acl file',
+      {
+        url: 'http://localhost/space/.acl'
+      },
+      [
+        `${rootPath}space/.acl`
+      ],
+      {
+        path: `${rootPath}space/.acl`,
+        contentType: 'text/turtle'
+      })
+
+    itMapsUrl(mapper, 'a URL of an existing .acl file with a different content type',
+      {
+        url: 'http://localhost/space/.acl'
+      },
+      [
+        `${rootPath}space/.acl$.n3`
+      ],
+      {
+        path: `${rootPath}space/.acl$.n3`,
+        contentType: 'text/n3'
       })
 
     itMapsUrl(mapper, 'a URL ending with a slash to an index file when index.html is available',
@@ -287,6 +333,13 @@ describe('ResourceMapper', () => {
       { path: `${rootPath}space/foo.ttl` },
       {
         url: 'http://localhost/space/foo.ttl',
+        contentType: 'text/turtle'
+      })
+
+    itMapsFile(mapper, 'an ACL file',
+      { path: `${rootPath}space/.acl` },
+      {
+        url: 'http://localhost/space/.acl',
         contentType: 'text/turtle'
       })
 
