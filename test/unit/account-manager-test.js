@@ -104,8 +104,10 @@ describe('AccountManager', () => {
     it('should match the solid root dir config, in single user mode', () => {
       let multiuser = false
       let resourceMapper = new LegacyResourceMapper({
+        rootUrl: 'https://localhost:8443/',
         includeHost: multiuser,
-        rootPath: testAccountsDir
+        rootPath: testAccountsDir,
+        defaultContentType: 'application/octet-stream'
       })
       let store = new LDP({ multiuser, resourceMapper })
       let options = { multiuser, store, host }
@@ -118,8 +120,10 @@ describe('AccountManager', () => {
     it('should compose the account dir in multi user mode', () => {
       let multiuser = true
       let resourceMapper = new LegacyResourceMapper({
+        rootUrl: 'https://localhost:8443/',
         includeHost: multiuser,
-        rootPath: testAccountsDir
+        rootPath: testAccountsDir,
+        defaultContentType: 'application/octet-stream'
       })
       let store = new LDP({ multiuser, resourceMapper })
       let host = SolidHost.from({ serverUri: 'https://localhost' })
@@ -312,6 +316,9 @@ describe('AccountManager', () => {
   describe('rootAclFor()', () => {
     it('should return the server root .acl in single user mode', () => {
       let resourceMapper = new LegacyResourceMapper({
+        rootUrl: 'https://localhost:8443/',
+        rootPath: process.cwd(),
+        defaultContentType: 'application/octet-stream',
         includeHost: false
       })
       let store = new LDP({ suffixAcl: '.acl', multiuser: false, resourceMapper })
@@ -327,6 +334,9 @@ describe('AccountManager', () => {
 
     it('should return the profile root .acl in multi user mode', () => {
       let resourceMapper = new LegacyResourceMapper({
+        rootUrl: 'https://localhost:8443/',
+        rootPath: process.cwd(),
+        defaultContentType: 'application/octet-stream',
         includeHost: true
       })
       let store = new LDP({ suffixAcl: '.acl', multiuser: true, resourceMapper })

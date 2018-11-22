@@ -31,7 +31,10 @@ describe('AccountManager', () => {
     describe('in multi user mode', () => {
       let multiuser = true
       let resourceMapper = new LegacyResourceMapper({
-        includeHost: multiuser
+        rootUrl: 'https://localhost:8443/',
+        rootPath: process.cwd(),
+        includeHost: multiuser,
+        defaultContentType: 'text/turtle'
       })
       let store = new LDP({ multiuser, resourceMapper })
       let options = { multiuser, store, host }
@@ -59,8 +62,10 @@ describe('AccountManager', () => {
 
       it('resolves to true if root .acl exists in root storage', () => {
         let resourceMapper = new LegacyResourceMapper({
+          rootUrl: 'https://localhost:8443/',
           includeHost: multiuser,
-          rootPath: path.join(testAccountsDir, 'tim.localhost')
+          rootPath: path.join(testAccountsDir, 'tim.localhost'),
+          defaultContentType: 'text/turtle'
         })
         let store = new LDP({
           multiuser,
@@ -77,8 +82,10 @@ describe('AccountManager', () => {
 
       it('resolves to false if root .acl does not exist in root storage', () => {
         let resourceMapper = new LegacyResourceMapper({
+          rootUrl: 'https://localhost:8443/',
           includeHost: multiuser,
-          rootPath: testAccountsDir
+          rootPath: testAccountsDir,
+          defaultContentType: 'text/turtle'
         })
         let store = new LDP({
           multiuser,
@@ -99,8 +106,10 @@ describe('AccountManager', () => {
     it('should create an account directory', () => {
       let multiuser = true
       let resourceMapper = new LegacyResourceMapper({
+        rootUrl: 'https://localhost:8443/',
         includeHost: multiuser,
-        rootPath: testAccountsDir
+        rootPath: testAccountsDir,
+        defaultContentType: 'text/turtle'
       })
       let store = new LDP({ multiuser, resourceMapper })
       let options = { host, multiuser, store, accountTemplatePath }

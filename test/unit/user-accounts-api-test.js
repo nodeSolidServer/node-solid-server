@@ -28,8 +28,10 @@ describe('api/accounts/user-accounts', () => {
     describe('in multi user mode', () => {
       let multiuser = true
       let resourceMapper = new LegacyResourceMapper({
+        rootUrl: 'https://localhost:8443/',
         includeHost: multiuser,
-        rootPath: testAccountsDir
+        rootPath: testAccountsDir,
+        defaultContentType: 'text/turtle'
       })
       let store = new LDP({ multiuser, resourceMapper })
 

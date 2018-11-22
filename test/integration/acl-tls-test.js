@@ -589,7 +589,7 @@ describe('ACL with WebID+TLS', function () {
         done()
       })
     })
-    it('user1 should be able to PATCH a resource', function (done) {
+    it.skip('user1 should be able to PATCH a resource', function (done) {
       var options = createOptions('/acl-tls/append-inherited/test.ttl', 'user1')
       options.headers = {
         'content-type': 'application/sparql-update'

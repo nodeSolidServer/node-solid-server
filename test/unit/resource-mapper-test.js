@@ -11,7 +11,12 @@ const itMapsFile = asserter(mapsFile)
 
 describe('ResourceMapper', () => {
   describe('A ResourceMapper instance for a single-host setup', () => {
-    const mapper = new ResourceMapper({ rootUrl, rootPath })
+    const mapper = new ResourceMapper({
+      rootUrl,
+      rootPath,
+      includeHost: false,
+      defaultContentType: 'application/octet-stream'
+    })
 
     // PUT base cases from https://www.w3.org/DesignIssues/HTTPFilenameMapping.html
 

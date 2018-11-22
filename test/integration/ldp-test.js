@@ -20,7 +20,10 @@ describe('LDP', function () {
   var root = path.join(__dirname, '..')
 
   var resourceMapper = new LegacyResourceMapper({
-    rootPath: root
+    rootUrl: 'https://localhost:8443/',
+    rootPath: root,
+    includeHost: false,
+    defaultContentType: 'text/turtle'
   })
 
   var ldp = new LDP({
