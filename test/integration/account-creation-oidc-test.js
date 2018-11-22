@@ -166,7 +166,7 @@ describe('AccountManager (OIDC account creation tests)', function () {
               }
               var graph = $rdf.graph()
               $rdf.parse(
-                data.body.toString(),
+                data.text,
                 graph,
                 'https://nicola.' + host + '/.meta',
                 'text/turtle')
