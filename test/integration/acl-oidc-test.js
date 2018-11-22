@@ -209,6 +209,14 @@ describe('ACL with WebID+OIDC over HTTP', function () {
           done()
         })
       })
+      it('should fail as acl:default it used to try to authorize', function (done) {
+        var options = createOptions('/write-acl/bad-acl-access/.acl', 'user1')
+        request.get(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 403)
+          done()
+        })
+      })
       it('should create test file', function (done) {
         var options = createOptions('/write-acl/test-file', 'user1')
         options.body = '<a> <b> <c> .'
@@ -331,7 +339,6 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         options.headers.origin = origin2
 
         request.head(options, function (error, response, body) {
-          // console.log(response)
           assert.equal(error, null)
           assert.equal(response.statusCode, 403)
           assert.equal(response.statusMessage, 'Origin Unauthorized')
