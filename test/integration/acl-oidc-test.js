@@ -247,7 +247,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
     })
   })
 
-  describe('Origin', function () {
+  describe.only('Origin', function () {
     before(function () {
       rm('/accounts-acl/tim.localhost/origin/test-folder/.acl')
     })
@@ -332,6 +332,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         options.headers.origin = origin2
 
         request.head(options, function (error, response, body) {
+          console.log(response)
           assert.equal(error, null)
           assert.equal(response.statusCode, 403)
           assert.equal(response.statusMessage, 'Origin Unauthorized')
