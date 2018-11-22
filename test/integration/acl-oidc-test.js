@@ -424,6 +424,39 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
+    it('user1 should be able to access deep test directory ACL', function (done) {
+      var options = createOptions('/read-acl/deeper-tree/.acl', 'user1')
+      request.head(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 200)
+        done()
+      })
+    })
+    it('user1 should not be able to access deep test dir', function (done) {
+      var options = createOptions('/read-acl/deeper-tree/', 'user1')
+      request.head(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 403)
+        assert.equal(response.statusMessage, 'User Unauthorized')
+        done()
+      })
+    })
+    it('user1 should able to access even deeper test directory', function (done) {
+      var options = createOptions('/read-acl/deeper-tree/acls-only-on-top/', 'user1')
+      request.head(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 200)
+        done()
+      })
+    })
+    it('user1 should able to access even deeper test file', function (done) {
+      var options = createOptions('/read-acl/deeper-tree/acls-only-on-top/example.ttl', 'user1')
+      request.head(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 200)
+        done()
+      })
+    })
   })
 
   describe('Append-only', function () {
