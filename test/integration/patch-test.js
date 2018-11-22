@@ -90,7 +90,7 @@ describe('PATCH', () => {
                  solid:inserts { <x> <y> <z>. }.`
     }, { // expected:
       status: 403,
-      text: 'Forbidden'
+      text: 'No permission'
     }))
 
     describe('on a resource with append-only access', describePatch({
@@ -133,7 +133,7 @@ describe('PATCH', () => {
                  solid:where   { ?a <b> <c>. }.`
     }, { // expected:
       status: 403,
-      text: 'Forbidden'
+      text: 'No permission'
     }))
 
     describe('on a resource with append-only access', describePatch({
@@ -223,7 +223,7 @@ describe('PATCH', () => {
                  solid:deletes { <a> <b> <c>. }.`
     }, { // expected:
       status: 403,
-      text: 'Forbidden'
+      text: 'No permission'
     }))
 
     describe('on a resource with append-only access', describePatch({
@@ -318,7 +318,7 @@ describe('PATCH', () => {
                  solid:deletes { <a> <b> <c>. }.`
     }, { // expected:
       status: 403,
-      text: 'Forbidden'
+      text: 'No permission'
     }))
 
     describe('on a resource with append-only access', describePatch({
