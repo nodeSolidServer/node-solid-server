@@ -34,7 +34,7 @@ describe('AccountManager', () => {
         rootUrl: 'https://localhost:8443/',
         rootPath: process.cwd(),
         includeHost: multiuser,
-        defaultContentType: 'text/turtle'
+        defaultContentType: 'application/octet-stream'
       })
       let store = new LDP({ multiuser, resourceMapper })
       let options = { multiuser, store, host }
@@ -65,7 +65,7 @@ describe('AccountManager', () => {
           rootUrl: 'https://localhost:8443/',
           includeHost: multiuser,
           rootPath: path.join(testAccountsDir, 'tim.localhost'),
-          defaultContentType: 'text/turtle'
+          defaultContentType: 'application/octet-stream'
         })
         let store = new LDP({
           multiuser,
@@ -85,7 +85,7 @@ describe('AccountManager', () => {
           rootUrl: 'https://localhost:8443/',
           includeHost: multiuser,
           rootPath: testAccountsDir,
-          defaultContentType: 'text/turtle'
+          defaultContentType: 'application/octet-stream'
         })
         let store = new LDP({
           multiuser,
@@ -109,7 +109,7 @@ describe('AccountManager', () => {
         rootUrl: 'https://localhost:8443/',
         includeHost: multiuser,
         rootPath: testAccountsDir,
-        defaultContentType: 'text/turtle'
+        defaultContentType: 'application/octet-stream'
       })
       let store = new LDP({ multiuser, resourceMapper })
       let options = { host, multiuser, store, accountTemplatePath }

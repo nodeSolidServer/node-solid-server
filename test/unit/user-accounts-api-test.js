@@ -31,7 +31,7 @@ describe('api/accounts/user-accounts', () => {
         rootUrl: 'https://localhost:8443/',
         includeHost: multiuser,
         rootPath: testAccountsDir,
-        defaultContentType: 'text/turtle'
+        defaultContentType: 'application/octet-stream'
       })
       let store = new LDP({ multiuser, resourceMapper })
 

@@ -389,9 +389,9 @@ describe('HTTP APIs', function () {
   })
 
   describe('HEAD API', function () {
-    it('should return content-type turtle by default', function (done) {
+    it('should return content-type application/octet-stream by default', function (done) {
       server.head('/sampleContainer/blank')
-        .expect('Content-Type', 'text/turtle; charset=utf-8')
+        .expect('Content-Type', 'application/octet-stream; charset=utf-8')
         .end(done)
     })
     it('should have set content-type for turtle files',

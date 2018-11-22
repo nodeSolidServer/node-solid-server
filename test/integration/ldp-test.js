@@ -244,7 +244,7 @@ describe('LDP', function () {
         '   dcterms:title "This is a magic type" ;' +
         '   o:limit 500000.00 .', 'sampleContainer/magicType.ttl')
 
-      ldp.listContainer(path.join(__dirname, '../resources/sampleContainer/'), 'https://server.tld/resources/sampleContainer/', 'https://server.tld', '', 'text/turtle', function (err, data) {
+      ldp.listContainer(path.join(__dirname, '../resources/sampleContainer/'), 'https://server.tld/resources/sampleContainer/', 'https://server.tld', '', 'application/octet-stream', function (err, data) {
         if (err) done(err)
         var graph = $rdf.graph()
         $rdf.parse(
