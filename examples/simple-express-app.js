@@ -6,7 +6,7 @@ var app = express()
 
 // My routes
 app.get('/', function (req, res) {
-  console.log(req)
+  // console.log(req)
   res.send('Welcome to my server!')
 })
 
