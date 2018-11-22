@@ -169,7 +169,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         options.body = ''
         request.put(options, function (error, response, body) {
           assert.equal(error, null)
-          assert.equal(response.statusCode, 409)
+          assert.equal(response.statusCode, 409) // TODO
           done()
         })
       })
@@ -307,7 +307,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
 
         request.head(options, function (error, response, body) {
           assert.equal(error, null)
-          assert.equal(response.statusCode, 403)
+          assert.equal(response.statusCode, 403) // TODO
           assert.equal(response.statusMessage, 'Origin Unauthorized')
           done()
         })
