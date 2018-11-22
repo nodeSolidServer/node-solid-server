@@ -74,7 +74,7 @@ describe('LDP', function () {
   })
 
   describe('getGraph', () => {
-    it.skip('should read and parse an existing file', () => {
+    it('should read and parse an existing file', () => {
       let uri = 'https://localhost:8443/resources/sampleContainer/example1.ttl'
       return ldp.getGraph(uri)
         .then(graph => {
@@ -135,20 +135,16 @@ describe('LDP', function () {
       })
     })
 
-    it.skip('with a larger file to exceed allowed quota', function (done) {
+    it.skip('with a larger file to exceed allowed quota', function () {
       var randstream = stringToStream(randomBytes(2100))
-      ldp.put('localhost', '/resources/testQuota.txt', randstream, function (err) {
-        console.log(err)
+      return ldp.put('localhost', '/resources/testQuota.txt', randstream).catch((err) => {
         assert.notOk(err)
-        done()
       })
     })
-    it.skip('should fail if a over quota', function (done) {
+    it('should fail if a over quota', function () {
       var hellostream = stringToStream('hello world')
-      ldp.put('localhost', '/resources/testOverQuota.txt', hellostream, function (err) {
-        console.log(err)
+      return ldp.put('localhost', '/resources/testOverQuota.txt', hellostream).catch((err) => {
         assert.equal(err.status, 413)
-        done()
       })
     })
   })
