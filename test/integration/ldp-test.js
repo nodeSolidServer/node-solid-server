@@ -1,10 +1,13 @@
-var assert = require('chai').assert
+var chai = require('chai')
+var assert = chai.assert
+chai.use(require('chai-as-promised'))
 var $rdf = require('rdflib')
 var ns = require('solid-namespace')($rdf)
 var LDP = require('../../lib/ldp')
 var path = require('path')
 var stringToStream = require('../../lib/utils').stringToStream
 var randomBytes = require('randombytes')
+var LegacyResourceMapper = require('../../lib/legacy-resource-mapper')
 
 // Helper functions for the FS
 var rm = require('./../utils').rm
@@ -14,66 +17,67 @@ var read = require('./../utils').read
 var fs = require('fs')
 
 describe('LDP', function () {
+  var root = path.join(__dirname, '..')
+
+  var resourceMapper = new LegacyResourceMapper({
+    rootUrl: 'https://localhost:8443/',
+    rootPath: root,
+    includeHost: false,
+    defaultContentType: 'text/turtle'
+  })
+
   var ldp = new LDP({
-    root: path.join(__dirname, '..'),
+    resourceMapper,
     serverUri: 'https://localhost',
     multiuser: true,
     webid: false
   })
 
-  describe('readFile', function () {
-    it('return 404 if file does not exist', function (done) {
-      ldp.readFile('resources/unexistent.ttl', function (err) {
+  describe('readResource', function () {
+    it('return 404 if file does not exist', () => {
+      return ldp.readResource('/resources/unexistent.ttl').catch(err => {
         assert.equal(err.status, 404)
-        done()
       })
     })
 
-    it('return file if file exists', function (done) {
+    it('return file if file exists', () => {
       // file can be empty as well
       write('hello world', 'fileExists.txt')
-      ldp.readFile(path.join(__dirname, '../resources/fileExists.txt'), function (err, file) {
+      return ldp.readResource('/resources/fileExists.txt').then(file => {
         rm('fileExists.txt')
-        assert.notOk(err)
         assert.equal(file, 'hello world')
-        done()
       })
     })
   })
 
-  describe('readContainerMeta', function () {
-    it('should return 404 if .meta is not found', function (done) {
-      ldp.readContainerMeta('resources/', function (err) {
+  describe('readContainerMeta', () => {
+    it('should return 404 if .meta is not found', () => {
+      return ldp.readContainerMeta('/resources/').catch(err => {
         assert.equal(err.status, 404)
-        done()
       })
     })
 
-    it('should return content if metaFile exists', function (done) {
+    it('should return content if metaFile exists', () => {
       // file can be empty as well
       write('This function just reads this, does not parse it', '.meta')
-      ldp.readContainerMeta(path.join(__dirname, '../resources/'), function (err, metaFile) {
+      return ldp.readContainerMeta('/resources/').then(metaFile => {
         rm('.meta')
-        assert.notOk(err)
         assert.equal(metaFile, 'This function just reads this, does not parse it')
-        done()
       })
     })
 
-    it('should work also if trailing `/` is not passed', function (done) {
+    it('should work also if trailing `/` is not passed', () => {
       // file can be empty as well
       write('This function just reads this, does not parse it', '.meta')
-      ldp.readContainerMeta(path.join(__dirname, '../resources'), function (err, metaFile) {
+      return ldp.readContainerMeta('/resources').then(metaFile => {
         rm('.meta')
-        assert.notOk(err)
         assert.equal(metaFile, 'This function just reads this, does not parse it')
-        done()
       })
     })
   })
 
   describe('getGraph', () => {
-    it.skip('should read and parse an existing file', () => {
+    it('should read and parse an existing file', () => {
       let uri = 'https://localhost:8443/resources/sampleContainer/example1.ttl'
       return ldp.getGraph(uri)
         .then(graph => {
@@ -118,60 +122,102 @@ describe('LDP', function () {
   })
 
   describe('put', function () {
-    it.skip('should write a file in an existing dir', function (done) {
+    it.skip('should write a file in an existing dir', () => {
       var stream = stringToStream('hello world')
-      ldp.put('localhost', '/resources/testPut.txt', stream, function (err) {
-        assert.notOk(err)
+      return ldp.put('/resources/testPut.txt', stream).then(() => {
         var found = read('testPut.txt')
         rm('testPut.txt')
         assert.equal(found, 'hello world')
-        done()
       })
     })
 
-    it('should fail if a trailing `/` is passed', function (done) {
+    it('should fail if a trailing `/` is passed', () => {
       var stream = stringToStream('hello world')
-      ldp.put('localhost', '/resources/', stream, function (err) {
+      return ldp.put('/resources/', stream).catch(err => {
         assert.equal(err.status, 409)
-        done()
       })
     })
 
-    it.skip('with a larger file to exceed allowed quota', function (done) {
+    it.skip('with a larger file to exceed allowed quota', function () {
       var randstream = stringToStream(randomBytes(2100))
-      ldp.put('localhost', '/resources/testQuota.txt', randstream, function (err) {
-        console.log(err)
+      return ldp.put('localhost', '/resources/testQuota.txt', randstream).catch((err) => {
         assert.notOk(err)
-        done()
       })
     })
-    it.skip('should fail if a over quota', function (done) {
+    it('should fail if a over quota', function () {
       var hellostream = stringToStream('hello world')
-      ldp.put('localhost', '/resources/testOverQuota.txt', hellostream, function (err) {
-        console.log(err)
+      return ldp.put('localhost', '/resources/testOverQuota.txt', hellostream).catch((err) => {
         assert.equal(err.status, 413)
-        done()
       })
     })
   })
 
   describe('delete', function () {
-    it.skip('should delete a file in an existing dir', function (done) {
+    it('should error when deleting a non-existing file', () => {
+      return assert.isRejected(ldp.delete('/resources/testPut.txt'))
+    })
+
+    it.skip('should delete a file in an existing dir', async () => {
+      // First create a dummy file
       var stream = stringToStream('hello world')
-      ldp.put('localhost', '/resources/testPut.txt', stream, function (err) {
-        assert.notOk(err)
-        fs.stat(ldp.root + '/resources/testPut.txt', function (err) {
-          if (err) {
-            return done(err)
-          }
-          ldp.delete('localhost', '/resources/testPut.txt', function (err) {
-            if (err) done(err)
-            fs.stat(ldp.root + '/resources/testPut.txt', function (err) {
-              return done(err ? null : new Error('file still exists'))
-            })
-          })
-        })
+      await ldp.put('/resources/testPut.txt', stream)
+      // Make sure it exists
+      fs.stat(ldp.resourceMapper._rootPath + '/resources/testPut.txt', function (err) {
+        if (err) {
+          throw err
+        }
       })
+
+      // Now delete the dummy file
+      await ldp.delete('/resources/testPut.txt')
+      // Make sure it does not exist anymore
+      fs.stat(ldp.resourceMapper._rootPath + '/resources/testPut.txt', function (err, s) {
+        if (!err) {
+          throw new Error('file still exists')
+        }
+      })
+    })
+
+    it.skip('should fail to delete a non-empty folder', async () => {
+      // First create a dummy file
+      var stream = stringToStream('hello world')
+      await ldp.put('/resources/dummy/testPutBlocking.txt', stream)
+      // Make sure it exists
+      fs.stat(ldp.resourceMapper._rootPath + '/resources/dummy/testPutBlocking.txt', function (err) {
+        if (err) {
+          throw err
+        }
+      })
+
+      // Now try to delete its folder
+      return assert.isRejected(ldp.delete('/resources/dummy/'))
+    })
+
+    it.skip('should fail to delete nested non-empty folders', async () => {
+      // First create a dummy file
+      var stream = stringToStream('hello world')
+      await ldp.put('/resources/dummy/dummy2/testPutBlocking.txt', stream)
+      // Make sure it exists
+      fs.stat(ldp.resourceMapper._rootPath + '/resources/dummy/dummy2/testPutBlocking.txt', function (err) {
+        if (err) {
+          throw err
+        }
+      })
+
+      // Now try to delete its parent folder
+      return assert.isRejected(ldp.delete('/resources/dummy/'))
+    })
+
+    after(async function () {
+      // Clean up after delete tests
+      try {
+        await ldp.delete('/resources/dummy/testPutBlocking.txt')
+        await ldp.delete('/resources/dummy/dummy2/testPutBlocking.txt')
+        await ldp.delete('/resources/dummy/dummy2/')
+        await ldp.delete('/resources/dummy/')
+      } catch (err) {
+
+      }
     })
   })
   describe('listContainer', function () {
@@ -213,7 +259,7 @@ describe('LDP', function () {
       })
     })
 */
-    it('should not inherit type of BasicContainer/Container if type is File', function (done) {
+    it('should not inherit type of BasicContainer/Container if type is File', () => {
       write('@prefix dcterms: <http://purl.org/dc/terms/>.' +
         '@prefix o: <http://example.org/ontology>.' +
         '<> a <http://www.w3.org/ns/ldp#Container> ;' +
@@ -226,62 +272,64 @@ describe('LDP', function () {
         '   dcterms:title "This is a container" ;' +
         '   o:limit 500000.00 .', 'sampleContainer/basicContainerFile.ttl')
 
-      ldp.listContainer(path.join(__dirname, '../resources/sampleContainer/'), 'https://server.tld/resources/sampleContainer/', 'https://server.tld', '', 'text/turtle', function (err, data) {
-        if (err) done(err)
-        var graph = $rdf.graph()
-        $rdf.parse(
-          data,
-          graph,
-          'https://server.tld/sampleContainer',
-          'text/turtle')
+      return ldp.listContainer(path.join(__dirname, '../resources/sampleContainer/'), 'https://server.tld/resources/sampleContainer/', 'https://server.tld', '', 'text/turtle')
+        .then(data => {
+          var graph = $rdf.graph()
+          $rdf.parse(
+            data,
+            graph,
+            'https://server.tld/sampleContainer',
+            'text/turtle')
 
-        var basicContainerStatements = graph
-          .each(
-            $rdf.sym('https://server.tld/basicContainerFile.ttl'),
-            ns.rdf('type'),
-            undefined
-          )
-          .map(d => { return d.uri })
+          var basicContainerStatements = graph
+            .each(
+              $rdf.sym('https://server.tld/basicContainerFile.ttl'),
+              ns.rdf('type'),
+              undefined
+            )
+            .map(d => { return d.uri })
 
-        let expectedStatements = [
-          'http://www.w3.org/ns/iana/media-types/text/turtle#Resource',
-          'http://www.w3.org/ns/ldp#Resource'
-        ]
-        assert.deepEqual(basicContainerStatements.sort(), expectedStatements)
+          let expectedStatements = [
+            'http://www.w3.org/ns/iana/media-types/text/turtle#Resource',
+            'http://www.w3.org/ns/ldp#Resource'
+          ]
+          assert.deepEqual(basicContainerStatements.sort(), expectedStatements)
 
-        var containerStatements = graph
-          .each(
-            $rdf.sym('https://server.tld/containerFile.ttl'),
-            ns.rdf('type'),
-          undefined
-          )
-          .map(d => { return d.uri })
+          var containerStatements = graph
+            .each(
+              $rdf.sym('https://server.tld/containerFile.ttl'),
+              ns.rdf('type'),
+              undefined
+            )
+            .map(d => { return d.uri })
 
-        assert.deepEqual(containerStatements.sort(), expectedStatements)
+          assert.deepEqual(containerStatements.sort(), expectedStatements)
 
-        rm('sampleContainer/containerFile.ttl')
-        rm('sampleContainer/basicContainerFile.ttl')
-        done()
-      })
+          rm('sampleContainer/containerFile.ttl')
+          rm('sampleContainer/basicContainerFile.ttl')
+        })
     })
 
-    it('should ldp:contains the same files in dir', function (done) {
-      ldp.listContainer(path.join(__dirname, '../resources/sampleContainer/'), 'https://server.tld/resources/sampleContainer/', 'https://server.tld', '', 'text/turtle', function (err, data) {
-        if (err) done(err)
-        fs.readdir(path.join(__dirname, '../resources/sampleContainer/'), function (err, expectedFiles) {
-          const graph = $rdf.graph()
-          $rdf.parse(data, graph, 'https://server.tld/sampleContainer/', 'text/turtle')
-          const statements = graph.match(null, ns.ldp('contains'), null)
-          const files = statements
-            .map(s => s.object.value.replace(/.*\//, ''))
-            .map(decodeURIComponent)
+    it('should ldp:contains the same files in dir', () => {
+      ldp.listContainer(path.join(__dirname, '../resources/sampleContainer/'), 'https://server.tld/resources/sampleContainer/', 'https://server.tld', '', 'text/turtle')
+        .then(data => {
+          fs.readdir(path.join(__dirname, '../resources/sampleContainer/'), function (err, expectedFiles) {
+            if (err) {
+              return Promise.reject(err)
+            }
 
-          files.sort()
-          expectedFiles.sort()
-          assert.deepEqual(files, expectedFiles)
-          done(err)
+            const graph = $rdf.graph()
+            $rdf.parse(data, graph, 'https://server.tld/sampleContainer/', 'text/turtle')
+            const statements = graph.match(null, ns.ldp('contains'), null)
+            const files = statements
+              .map(s => s.object.value.replace(/.*\//, ''))
+              .map(decodeURIComponent)
+
+            files.sort()
+            expectedFiles.sort()
+            assert.deepEqual(files, expectedFiles)
+          })
         })
-      })
     })
   })
 })

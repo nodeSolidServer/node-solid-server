@@ -17,6 +17,7 @@ const AccountManager = require('../../lib/models/account-manager')
 const UserAccount = require('../../lib/models/user-account')
 const TokenService = require('../../lib/services/token-service')
 const WebIdTlsCertificate = require('../../lib/models/webid-tls-certificate')
+const LegacyResourceMapper = require('../../lib/legacy-resource-mapper')
 
 const testAccountsDir = path.join(__dirname, '../resources/accounts')
 
@@ -102,17 +103,29 @@ describe('AccountManager', () => {
   describe('accountDirFor()', () => {
     it('should match the solid root dir config, in single user mode', () => {
       let multiuser = false
-      let store = new LDP({ root: testAccountsDir, multiuser })
+      let resourceMapper = new LegacyResourceMapper({
+        rootUrl: 'https://localhost:8443/',
+        includeHost: multiuser,
+        rootPath: testAccountsDir,
+        defaultContentType: 'application/octet-stream'
+      })
+      let store = new LDP({ multiuser, resourceMapper })
       let options = { multiuser, store, host }
       let accountManager = AccountManager.from(options)
 
       let accountDir = accountManager.accountDirFor('alice')
-      expect(accountDir).to.equal(store.root)
+      expect(accountDir).to.equal(store.resourceMapper._rootPath)
     })
 
     it('should compose the account dir in multi user mode', () => {
       let multiuser = true
-      let store = new LDP({ root: testAccountsDir, multiuser })
+      let resourceMapper = new LegacyResourceMapper({
+        rootUrl: 'https://localhost:8443/',
+        includeHost: multiuser,
+        rootPath: testAccountsDir,
+        defaultContentType: 'application/octet-stream'
+      })
+      let store = new LDP({ multiuser, resourceMapper })
       let host = SolidHost.from({ serverUri: 'https://localhost' })
       let options = { multiuser, store, host }
       let accountManager = AccountManager.from(options)
@@ -302,7 +315,13 @@ describe('AccountManager', () => {
 
   describe('rootAclFor()', () => {
     it('should return the server root .acl in single user mode', () => {
-      let store = new LDP({ suffixAcl: '.acl', multiuser: false })
+      let resourceMapper = new LegacyResourceMapper({
+        rootUrl: 'https://localhost:8443/',
+        rootPath: process.cwd(),
+        defaultContentType: 'application/octet-stream',
+        includeHost: false
+      })
+      let store = new LDP({ suffixAcl: '.acl', multiuser: false, resourceMapper })
       let options = { host, multiuser: false, store }
       let accountManager = AccountManager.from(options)
 
@@ -314,7 +333,13 @@ describe('AccountManager', () => {
     })
 
     it('should return the profile root .acl in multi user mode', () => {
-      let store = new LDP({ suffixAcl: '.acl', multiuser: true })
+      let resourceMapper = new LegacyResourceMapper({
+        rootUrl: 'https://localhost:8443/',
+        rootPath: process.cwd(),
+        defaultContentType: 'application/octet-stream',
+        includeHost: true
+      })
+      let store = new LDP({ suffixAcl: '.acl', multiuser: true, resourceMapper })
       let options = { host, multiuser: true, store }
       let accountManager = AccountManager.from(options)
 

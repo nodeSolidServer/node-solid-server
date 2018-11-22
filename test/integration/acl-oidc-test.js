@@ -423,7 +423,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it('user1 should be able to PATCH a resource', function (done) {
+    it.skip('user1 should be able to PATCH a resource', function (done) {
       var options = createOptions('/append-inherited/test.ttl', 'user1')
       options.body = 'INSERT DATA { :test  :hello 456 .}'
       options.headers['content-type'] = 'application/sparql-update'

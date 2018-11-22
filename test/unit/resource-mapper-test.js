@@ -11,7 +11,12 @@ const itMapsFile = asserter(mapsFile)
 
 describe('ResourceMapper', () => {
   describe('A ResourceMapper instance for a single-host setup', () => {
-    const mapper = new ResourceMapper({ rootUrl, rootPath })
+    const mapper = new ResourceMapper({
+      rootUrl,
+      rootPath,
+      includeHost: false,
+      defaultContentType: 'application/octet-stream'
+    })
 
     // PUT base cases from https://www.w3.org/DesignIssues/HTTPFilenameMapping.html
 
@@ -298,6 +303,34 @@ describe('ResourceMapper', () => {
     itMapsUrl(mapper, 'a URL with a host',
       {
         url: 'http://example.org/space/foo.html',
+        contentType: 'text/html',
+        createIfNotExists: true
+      },
+      {
+        path: `${rootPath}example.org/space/foo.html`,
+        contentType: 'text/html'
+      })
+
+    itMapsUrl(mapper, 'a URL with a host specified as a URL object',
+      {
+        url: {
+          hostname: 'example.org',
+          path: '/space/foo.html'
+        },
+        contentType: 'text/html',
+        createIfNotExists: true
+      },
+      {
+        path: `${rootPath}example.org/space/foo.html`,
+        contentType: 'text/html'
+      })
+
+    itMapsUrl(mapper, 'a URL with a host specified as an Express request object',
+      {
+        url: {
+          hostname: 'example.org',
+          pathname: '/space/foo.html'
+        },
         contentType: 'text/html',
         createIfNotExists: true
       },
