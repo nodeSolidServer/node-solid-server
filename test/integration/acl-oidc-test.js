@@ -628,7 +628,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         request.put(options, function (error, response, body) {
           assert.equal(error, null)
           assert.equal(response.statusCode, 403)
-          assert.equal(response.statusMessage, 'User Unauthorized')
+          assert.equal(response.statusMessage, 'Forbidden')
           done()
         })
       })
