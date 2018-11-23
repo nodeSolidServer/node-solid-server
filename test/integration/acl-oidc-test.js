@@ -424,7 +424,8 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it('user1 should be able to access deep test directory ACL', function (done) {
+    // Deep acl:accessTo inheritance is not supported yet #963
+    it.skip('user1 should be able to access deep test directory ACL', function (done) {
       var options = createOptions('/read-acl/deeper-tree/.acl', 'user1')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
@@ -432,7 +433,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it('user1 should not be able to access deep test dir', function (done) {
+    it.skip('user1 should not be able to access deep test dir', function (done) {
       var options = createOptions('/read-acl/deeper-tree/', 'user1')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
@@ -441,7 +442,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it('user1 should able to access even deeper test directory', function (done) {
+    it.skip('user1 should able to access even deeper test directory', function (done) {
       var options = createOptions('/read-acl/deeper-tree/acls-only-on-top/', 'user1')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
@@ -449,7 +450,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it('user1 should able to access even deeper test file', function (done) {
+    it.skip('user1 should able to access even deeper test file', function (done) {
       var options = createOptions('/read-acl/deeper-tree/acls-only-on-top/example.ttl', 'user1')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
