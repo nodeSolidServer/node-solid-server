@@ -7,7 +7,7 @@ var LDP = require('../../lib/ldp')
 var path = require('path')
 var stringToStream = require('../../lib/utils').stringToStream
 var randomBytes = require('randombytes')
-var LegacyResourceMapper = require('../../lib/legacy-resource-mapper')
+var ResourceMapper = require('../../lib/resource-mapper')
 
 // Helper functions for the FS
 var rm = require('./../utils').rm
@@ -19,11 +19,10 @@ var fs = require('fs')
 describe('LDP', function () {
   var root = path.join(__dirname, '..')
 
-  var resourceMapper = new LegacyResourceMapper({
+  var resourceMapper = new ResourceMapper({
     rootUrl: 'https://localhost:8443/',
     rootPath: root,
-    includeHost: false,
-    defaultContentType: 'text/turtle'
+    includeHost: false
   })
 
   var ldp = new LDP({
@@ -124,7 +123,7 @@ describe('LDP', function () {
   describe('put', function () {
     it.skip('should write a file in an existing dir', () => {
       var stream = stringToStream('hello world')
-      return ldp.put('/resources/testPut.txt', stream).then(() => {
+      return ldp.put('/resources/testPut.txt', stream, 'text/plain').then(() => {
         var found = read('testPut.txt')
         rm('testPut.txt')
         assert.equal(found, 'hello world')
@@ -133,7 +132,7 @@ describe('LDP', function () {
 
     it('should fail if a trailing `/` is passed', () => {
       var stream = stringToStream('hello world')
-      return ldp.put('/resources/', stream).catch(err => {
+      return ldp.put('/resources/', stream, 'text/plain').catch(err => {
         assert.equal(err.status, 409)
       })
     })
@@ -150,6 +149,20 @@ describe('LDP', function () {
         assert.equal(err.status, 413)
       })
     })
+
+    it('should fail if a trailing `/` is passed without content type', () => {
+      var stream = stringToStream('hello world')
+      return ldp.put('/resources/', stream, null).catch(err => {
+        assert.equal(err.status, 409)
+      })
+    })
+
+    it('should fail if no content type is passed', () => {
+      var stream = stringToStream('hello world')
+      return ldp.put('/resources/testPut.txt', stream, null).catch(err => {
+        assert.equal(err.status, 415)
+      })
+    })
   })
 
   describe('delete', function () {
@@ -160,7 +173,7 @@ describe('LDP', function () {
     it.skip('should delete a file in an existing dir', async () => {
       // First create a dummy file
       var stream = stringToStream('hello world')
-      await ldp.put('/resources/testPut.txt', stream)
+      await ldp.put('/resources/testPut.txt', stream, 'text/plain')
       // Make sure it exists
       fs.stat(ldp.resourceMapper._rootPath + '/resources/testPut.txt', function (err) {
         if (err) {
@@ -181,7 +194,7 @@ describe('LDP', function () {
     it.skip('should fail to delete a non-empty folder', async () => {
       // First create a dummy file
       var stream = stringToStream('hello world')
-      await ldp.put('/resources/dummy/testPutBlocking.txt', stream)
+      await ldp.put('/resources/dummy/testPutBlocking.txt', stream, 'text/plain')
       // Make sure it exists
       fs.stat(ldp.resourceMapper._rootPath + '/resources/dummy/testPutBlocking.txt', function (err) {
         if (err) {
@@ -196,7 +209,7 @@ describe('LDP', function () {
     it.skip('should fail to delete nested non-empty folders', async () => {
       // First create a dummy file
       var stream = stringToStream('hello world')
-      await ldp.put('/resources/dummy/dummy2/testPutBlocking.txt', stream)
+      await ldp.put('/resources/dummy/dummy2/testPutBlocking.txt', stream, 'text/plain')
       // Make sure it exists
       fs.stat(ldp.resourceMapper._rootPath + '/resources/dummy/dummy2/testPutBlocking.txt', function (err) {
         if (err) {
@@ -229,7 +242,7 @@ describe('LDP', function () {
         '   dcterms:title "This is a magic type" ;' +
         '   o:limit 500000.00 .', 'sampleContainer/magicType.ttl')
 
-      ldp.listContainer(path.join(__dirname, '../resources/sampleContainer/'), 'https://server.tld/resources/sampleContainer/', 'https://server.tld', '', 'text/turtle', function (err, data) {
+      ldp.listContainer(path.join(__dirname, '../resources/sampleContainer/'), 'https://server.tld/resources/sampleContainer/', 'https://server.tld', '', 'application/octet-stream', function (err, data) {
         if (err) done(err)
         var graph = $rdf.graph()
         $rdf.parse(

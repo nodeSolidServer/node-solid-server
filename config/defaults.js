@@ -13,8 +13,7 @@ module.exports = {
   'webid': true,
   'strictOrigin': true,
   'originsAllowed': ['https://apps.solid.invalid'],
-  'dataBrowserPath': 'default',
-  'defaultContentType': 'text/turtle'
+  'dataBrowserPath': 'default'
 
   // For use in Enterprises to configure a HTTP proxy for all outbound HTTP requests from the SOLID server (we use
   // https://www.npmjs.com/package/global-tunnel-ng).
