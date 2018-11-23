@@ -1,20 +1,25 @@
 @prefix : <#>.
 @prefix acl: <http://www.w3.org/ns/auth/acl#>.
-@prefix tes: <./>.
 @prefix c: <https://tim.localhost:7777/profile/card#>.
 @prefix foaf: <http://xmlns.com/foaf/0.1/>.
 
 :owner
     a acl:Authorization;
-    acl:accessTo tes:;
+    acl:accessTo <./> ;
     acl:agent c:me;
-    acl:default tes:;
+    acl:default <./> ;
     acl:mode acl:Control, acl:Read, acl:Write.
+:public
+    a acl:Authorization;
+    acl:agentClass foaf:Agent;
+    acl:accessTo <./> ;
+    acl:defaultForNew <./> ;
+    acl:mode acl:Read.
 :folks
     a acl:Authorization;
-    acl:accessTo tes:;
+    acl:accessTo <./> ;
     acl:agentGroup <group-listing.ttl#folks>;
-    acl:default tes:;
+    acl:default <./> ;
     acl:mode acl:Read, acl:Write.
 #:errors
 #    a acl:Authorization;
