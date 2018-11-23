@@ -128,7 +128,7 @@ describe('AccountManager', () => {
           expect(found).to.be.true
         })
         .then(() => {
-          let profile = fs.readFileSync(path.join(accountDir, '/profile/card'), 'utf8')
+          let profile = fs.readFileSync(path.join(accountDir, '/profile/card$.ttl'), 'utf8')
           expect(profile).to.include('"Alice Q."')
 
           let rootAcl = fs.readFileSync(path.join(accountDir, '.acl'), 'utf8')
