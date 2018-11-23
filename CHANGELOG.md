@@ -2,17 +2,18 @@
 
 #### 5.0.0 Upgrade Notes
 
-- Deprecating support for extensionless files. (**Intervention needed when updating from < 5.0.0!**)
+- As of v5.0.0, all Turtle files need an extension. (**Intervention needed when updating from < 5.0.0!**)
     - **How to upgrade?**
-        1. Update node-solid-server to 5.0.0
-        2. Make a backup of your `data/` folder
-        3. Invoke `solid migrate-legacy-resources -v`
+        1. Stop the server.
+        2. Update node-solid-server to 5.0.0.
+        3. Make a backup of your `data/` and `config/` folders.
+        4. Invoke `solid migrate-legacy-resources -v`.
            This makes the files in your `data/` and `config/` folders
            automatically compatible with the new system.
            You only need to do this once.
            Different data folders can be migrated as well with the `-p` option:
            `solid migrate-legacy-resources -p my/custom/data/folder -v`
-        4. You can now start the server again as usual
+        5. You can now start the server again as usual.
     - **Why?**
     Before version 5.0.0, `https://pod.example/profile/card`
     would map to `file:///solid/profile/card`, with the _assumption_
