@@ -106,8 +106,7 @@ describe('AccountManager', () => {
       let resourceMapper = new ResourceMapper({
         rootUrl: 'https://localhost:8443/',
         includeHost: multiuser,
-        rootPath: testAccountsDir,
-        defaultContentType: 'application/octet-stream'
+        rootPath: testAccountsDir
       })
       let store = new LDP({ multiuser, resourceMapper })
       let options = { multiuser, store, host }
@@ -122,8 +121,7 @@ describe('AccountManager', () => {
       let resourceMapper = new ResourceMapper({
         rootUrl: 'https://localhost:8443/',
         includeHost: multiuser,
-        rootPath: testAccountsDir,
-        defaultContentType: 'application/octet-stream'
+        rootPath: testAccountsDir
       })
       let store = new LDP({ multiuser, resourceMapper })
       let host = SolidHost.from({ serverUri: 'https://localhost' })
@@ -318,7 +316,6 @@ describe('AccountManager', () => {
       let resourceMapper = new ResourceMapper({
         rootUrl: 'https://localhost:8443/',
         rootPath: process.cwd(),
-        defaultContentType: 'application/octet-stream',
         includeHost: false
       })
       let store = new LDP({ suffixAcl: '.acl', multiuser: false, resourceMapper })
@@ -336,7 +333,6 @@ describe('AccountManager', () => {
       let resourceMapper = new ResourceMapper({
         rootUrl: 'https://localhost:8443/',
         rootPath: process.cwd(),
-        defaultContentType: 'application/octet-stream',
         includeHost: true
       })
       let store = new LDP({ suffixAcl: '.acl', multiuser: true, resourceMapper })

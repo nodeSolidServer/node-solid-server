@@ -22,8 +22,7 @@ describe('LDP', function () {
   var resourceMapper = new ResourceMapper({
     rootUrl: 'https://localhost:8443/',
     rootPath: root,
-    includeHost: false,
-    defaultContentType: 'text/turtle'
+    includeHost: false
   })
 
   var ldp = new LDP({

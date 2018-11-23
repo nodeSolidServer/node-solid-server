@@ -30,8 +30,7 @@ describe('api/accounts/user-accounts', () => {
       let resourceMapper = new ResourceMapper({
         rootUrl: 'https://localhost:8443/',
         includeHost: multiuser,
-        rootPath: testAccountsDir,
-        defaultContentType: 'application/octet-stream'
+        rootPath: testAccountsDir
       })
       let store = new LDP({ multiuser, resourceMapper })
 

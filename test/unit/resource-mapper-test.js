@@ -14,8 +14,7 @@ describe('ResourceMapper', () => {
     const mapper = new ResourceMapper({
       rootUrl,
       rootPath,
-      includeHost: false,
-      defaultContentType: 'application/octet-stream'
+      includeHost: false
     })
 
     // PUT base cases from https://www.w3.org/DesignIssues/HTTPFilenameMapping.html
