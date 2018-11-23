@@ -20,13 +20,15 @@ module.exports = function (program) {
     .action(async (opts) => {
       const verbose = opts.verbose
       const suffix = opts.suffix || '$.ttl'
-      let path = opts.path || 'data'
-      path = path.startsWith(Path.sep) ? path : Path.join(process.cwd(), path)
-      if (verbose) {
-        console.log(`Migrating files in ${path}`)
-      }
+      let paths = opts.path ? [ opts.path ] : [ 'data', 'config/templates' ]
+      paths = paths.map(path => path.startsWith(Path.sep) ? path : Path.join(process.cwd(), path))
       try {
-        await migrate(path, suffix, verbose)
+        for (const path of paths) {
+          if (verbose) {
+            console.log(`Migrating files in ${path}`)
+          }
+          await migrate(path, suffix, verbose)
+        }
       } catch (err) {
         console.error(err)
       }
