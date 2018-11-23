@@ -581,7 +581,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
     //     done()
     //   })
     // })
-    it.only('user1 should be able to access test directory', function (done) {
+    it('user1 should be able to access test directory', function (done) {
       var options = createOptions('/group/test-folder/', 'user1')
 
       request.head(options, function (error, response, body) {
