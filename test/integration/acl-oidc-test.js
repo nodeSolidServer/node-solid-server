@@ -570,7 +570,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
     //     done()
     //   })
     // })
-    it.only('user1 should be able to access test directory', function (done) {
+    it('user1 should be able to access test directory', function (done) {
       var options = createOptions('/group/test-folder/', 'user1')
 
       request.head(options, function (error, response, body) {
@@ -588,7 +588,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it('user2 should be able to write a file in the test directory',
+    it.only('user2 should be able to write a file in the test directory',
       function (done) {
         var options = createOptions('/group/test-folder/test.ttl', 'user2')
         options.body = '<#Dahut> a <https://dbpedia.org/resource/Category:French_legendary_creatures>.\n'
