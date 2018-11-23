@@ -560,7 +560,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
     })
   })
 
-  describe('Group', function () {
+  describe.only('Group', function () {
     // before(function () {
     //   rm('/accounts-acl/tim.localhost/group/test-folder/.acl')
     // })
@@ -581,7 +581,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
     //     done()
     //   })
     // })
-    it('user1 should be able to access test directory', function (done) {
+    it.only('user1 should be able to access test directory', function (done) {
       var options = createOptions('/group/test-folder/', 'user1')
 
       request.head(options, function (error, response, body) {
@@ -652,7 +652,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
           done()
         })
       })
-    it.skip('We should have a 404 for non-existent file',
+    it('We should have a 404 for non-existent file',
       function (done) {
         var options = createOptions('/group/test-folder/nothere.txt', 'user2')
 
