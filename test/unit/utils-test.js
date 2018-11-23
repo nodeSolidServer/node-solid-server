@@ -70,4 +70,18 @@ describe('Utility functions', function () {
       assert.equal(utils.fullUrlForReq(req), 'https://example.com/resource1?sort=desc')
     })
   })
+
+  describe('getContentType()', () => {
+    it('should default to text/plain', () => {
+      assert.equal(utils.getContentType({}), 'text/plain')
+    })
+
+    it('should get a basic content type', () => {
+      assert.equal(utils.getContentType({ 'content-type': 'text/html' }), 'text/html')
+    })
+
+    it('should get a content type without its charset', () => {
+      assert.equal(utils.getContentType({ 'content-type': 'text/html; charset=us-ascii' }), 'text/html')
+    })
+  })
 })
