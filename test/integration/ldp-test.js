@@ -137,7 +137,6 @@ describe('LDP', function () {
       })
     })
 
-
     it.skip('with a larger file to exceed allowed quota', function () {
       var randstream = stringToStream(randomBytes(2100))
       return ldp.put('localhost', '/resources/testQuota.txt', randstream).catch((err) => {
