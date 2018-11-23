@@ -31,6 +31,10 @@ script:
 after_success:
   - snyk monitor
 
+cache:
+  directories:
+    - node_modules
+
 notifications:
   email:
   - solid@janeirodigital.com
