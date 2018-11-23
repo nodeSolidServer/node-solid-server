@@ -1,6 +1,9 @@
 const fs = require('fs')
 const Path = require('path')
 const promisify = require('util').promisify
+const readdir = promisify(fs.readdir)
+const lstat = promisify(fs.lstat)
+const rename = promisify(fs.rename)
 
 /* Converts the old (pre-5.0.0) extensionless files to $-based files _with_ extensions
  * to make them work in the new resource mapper (post-5.0.0).
@@ -11,9 +14,9 @@ module.exports = function (program) {
   program
     .command('migrate-legacy-resources')
     .option('-p, --path <path>', 'Path to the data folder, defaults to \'data/\'')
-    .option('-s, --suffix <path>', 'The suffix to add, defaults to \'$.ttl\'')
+    .option('-s, --suffix <path>', 'The suffix to add to extensionless files, defaults to \'$.ttl\'')
     .option('-v, --verbose', 'Path to the data folder')
-    .description('Migrate extensionless data files pre-5.0.0 to turtle-based data files post-5.0.0')
+    .description('Migrate the data folder from node-solid-server 4 to node-solid-server 5')
     .action(async (opts) => {
       const verbose = opts.verbose
       const suffix = opts.suffix || '$.ttl'
@@ -31,17 +34,17 @@ module.exports = function (program) {
 }
 
 async function migrate (path, suffix, verbose) {
-  const files = await promisify(fs.readdir)(path)
+  const files = await readdir(path)
   for (const file of files) {
     const fullFilePath = Path.join(path, file)
-    const stat = await promisify(fs.lstat)(fullFilePath)
+    const stat = await lstat(fullFilePath)
     if (stat.isFile()) {
       if (shouldMigrateFile(file)) {
         const newFullFilePath = getNewFileName(fullFilePath, suffix)
         if (verbose) {
           console.log(`${fullFilePath}\n  => ${newFullFilePath}`)
         }
-        await promisify(fs.rename)(fullFilePath, newFullFilePath)
+        await rename(fullFilePath, newFullFilePath)
       }
     } else {
       if (shouldMigrateFolder(file)) {
@@ -60,5 +63,5 @@ function shouldMigrateFile (filename) {
 }
 
 function shouldMigrateFolder (foldername) {
-  return foldername.indexOf('.') !== 0
+  return foldername[0] !== '.'
 }
