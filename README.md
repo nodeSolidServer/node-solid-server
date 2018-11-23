@@ -167,7 +167,7 @@ $ solid start --help
 
     --root [value]                Root folder to serve (default: './data')
     --port [value]                SSL port to use
-    --serverUri [value]           Solid server uri (default: 'https://localhost:8443')
+    --server-uri [value]          Solid server uri (default: 'https://localhost:8443')
     --webid                       Enable WebID authentication and access control (uses HTTPS)
     --mount [value]               Serve on a specific URL path (default: '/')
     --config-path [value]
@@ -182,7 +182,7 @@ $ solid start --help
     --idp [value]                 Obsolete; use --multiuser
     --no-live                     Disable live support through WebSockets
     --proxy [value]               Obsolete; use --corsProxy
-    --corsProxy [value]           Serve the CORS proxy on this path
+    --cors-proxy [value]          Serve the CORS proxy on this path
     --suppress-data-browser       Suppress provision of a data browser
     --data-browser-path [value]   An HTML file which is sent to allow users to browse the data (eg using mashlib.js)
     --suffix-acl [value]          Suffix for acl files (default: '.acl')
@@ -191,19 +191,21 @@ $ solid start --help
     --error-pages [value]         Folder from which to look for custom error pages files (files must be named <error-code>.html -- eg. 500.html)
     --force-user [value]          Force a WebID to always be logged in (useful when offline)
     --strict-origin               Enforce same origin policy in the ACL
-    --useEmail                    Do you want to set up an email service?
+    --use-email                   Do you want to set up an email service?
     --email-host [value]          Host of your email service
     --email-port [value]          Port of your email service
     --email-auth-user [value]     User of your email service
     --email-auth-pass [value]     Password of your email service
-    --useApiApps                  Do you want to load your default apps on /api/apps?
+    --use-api-apps                Do you want to load your default apps on /api/apps?
     --api-apps [value]            Path to the folder to mount on /api/apps
     --redirect-http-from [value]  HTTP port or ','-separated ports to redirect to the solid server port (e.g. "80,8080").
     --server-name [value]         A name for your server (not required, but will be presented on your server's frontpage)
     --server-description [value]  A description of your server (not required)
     --server-logo [value]         A logo that represents you, your brand, or your server (not required)
-    -q, --quiet                  Do not print the logs to console
-    -v, --verbose                 DEPRECATED: Print the logs to console.  
+    --enforce-toc                 Do you want to enforce Terms & Conditions for your service?
+    --toc-uri [value]             URI to your Terms & Conditions
+    --support-email [value]       The support email you provide for your users (not required)
+    -q, --quiet                   Do not print the logs to console
     -h, --help                    output usage information
  ```
 
