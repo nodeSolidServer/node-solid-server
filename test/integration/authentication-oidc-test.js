@@ -237,7 +237,7 @@ describe('Authentication API (OIDC)', () => {
         })
 
         // Configuration for originsAllowed
-        describe('with that cookie but with globally configured origin', () => {
+        describe.only('with that cookie but with globally configured origin', () => {
           let response
           before(done => {
             alice.get('/')
@@ -266,8 +266,8 @@ describe('Authentication API (OIDC)', () => {
               })
           })
 
-          it('should return a 401', () => {
-            expect(response).to.have.property('status', 401)
+          it('should return a 403', () => {
+            expect(response).to.have.property('status', 403) // TODO: Should be 401?
           })
         })
 
@@ -285,10 +285,8 @@ describe('Authentication API (OIDC)', () => {
               })
           })
 
-          it('should return a 401', () => {
-            // TODO: this should return a 403 - but we check for 401 because
-            // solidHost.allowsSessionFor should handle userId a bit different
-            expect(response).to.have.property('status', 401)
+          it('should return a 403', () => {
+            expect(response).to.have.property('status', 403)
           })
         })
 
@@ -305,10 +303,8 @@ describe('Authentication API (OIDC)', () => {
               })
           })
 
-          it('should return a 401', () => {
-            // TODO: this should return a 403 - but we check for 401 because
-            // solidHost.allowsSessionFor should handle userId a bit different
-            expect(response).to.have.property('status', 401)
+          it('should return a 403', () => {
+            expect(response).to.have.property('status', 403)
           })
         })
 
@@ -325,10 +321,8 @@ describe('Authentication API (OIDC)', () => {
               })
           })
 
-          it('should return a 401', () => {
-            // TODO: this should return a 403 - but we check for 401 because
-            // solidHost.allowsSessionFor should handle userId a bit different
-            expect(response).to.have.property('status', 401)
+          it('should return a 403', () => {
+            expect(response).to.have.property('status', 403)
           })
         })
 
@@ -346,10 +340,8 @@ describe('Authentication API (OIDC)', () => {
               })
           })
 
-          it('should return a 401', () => {
-            // TODO: this should return a 403 - but we check for 401 because
-            // solidHost.allowsSessionFor should handle userId a bit different
-            expect(response).to.have.property('status', 401)
+          it('should return a 403', () => {
+            expect(response).to.have.property('status', 403)
           })
         })
       })
