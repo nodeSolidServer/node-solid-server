@@ -1,5 +1,28 @@
 # History
 
+#### 5.0.0 Upgrade Notes
+
+- As of v5.0.0, all Turtle files need an extension. (**Intervention needed when updating from < 5.0.0!**)
+    - **How to upgrade?**
+        1. Stop the server.
+        2. Update node-solid-server to 5.0.0.
+        3. Make a backup of your `data/` and `config/` folders.
+        4. Invoke `solid migrate-legacy-resources -v`.
+           This makes the files in your `data/` and `config/` folders
+           automatically compatible with the new system.
+           You only need to do this once.
+           Different data folders can be migrated as well with the `-p` option:
+           `solid migrate-legacy-resources -p my/custom/data/folder -v`
+        5. You can now start the server again as usual.
+    - **Why?**
+    Before version 5.0.0, `https://pod.example/profile/card`
+    would map to `file:///solid/profile/card`, with the _assumption_
+    that it uses content-type `text/turtle`.
+    Now, this URL will map to `file:///solid/profile/card$.ttl` instead,
+    which makes the content-type automatically detectable.
+    This fixes many of the old Content-Type-related bugs.
+    _More information: https://www.w3.org/DesignIssues/HTTPFilenameMapping.html_
+
 ## 4.1.0
 
 - Add support for Group Access Control Lists.
