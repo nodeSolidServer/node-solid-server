@@ -1,5 +1,4 @@
 const fs = require('fs-extra')
-const extend = require('extend')
 const { cyan, bold } = require('colorette')
 const { URL } = require('url')
 const LDP = require('../../lib/ldp')
@@ -28,7 +27,10 @@ function getAccountManager (config, options = {}) {
 }
 
 function loadConfig (program, options) {
-  let argv = extend({}, options, { version: program.version() })
+  let argv = {
+    ...options,
+    version: program.version()
+  }
   let configFile = argv['configFile'] || './config.json'
 
   try {
@@ -36,9 +38,7 @@ function loadConfig (program, options) {
 
     // Use flags with priority over config file
     const config = JSON.parse(file)
-    Object.keys(config).forEach((option) => {
-      argv[option] = argv[option] || config[option]
-    })
+    argv = { ...config, ...argv }
   } catch (err) {
     // No file exists, not a problem
     console.log(cyan(bold('TIP')), 'create a config.json: `$ solid init`')
