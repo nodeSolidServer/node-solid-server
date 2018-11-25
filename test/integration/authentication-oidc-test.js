@@ -246,7 +246,7 @@ describe('Authentication API (OIDC)', () => {
         })
 
         // Configuration for originsAllowed
-        describe.only('with that cookie but with globally configured origin', () => {
+        describe('with that cookie but with globally configured origin', () => {
           let response
           before(done => {
             alice.get('/')
