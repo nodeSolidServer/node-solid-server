@@ -16,24 +16,22 @@ describe('user-utils', () => {
     })
 
     it('should return name from graph', async () => {
-      const returnedName = await userUtils.getName(webId, { ldp })
+      const returnedName = await userUtils.getName(webId, ldp.fetchGraph)
       expect(returnedName).to.equal(name)
     })
   })
 
   describe('getWebId', () => {
-    let ldp
+    let fetchGraph
     const webId = 'https://test.localhost:8443/profile/card#me'
+    const suffixMeta = '.meta'
 
     beforeEach(() => {
-      ldp = {
-        readContainerMeta: () => Promise.resolve(`<${webId}> <http://www.w3.org/ns/solid/terms#account> </>.`),
-        suffixMeta: '.meta'
-      }
+      fetchGraph = () => Promise.resolve(`<${webId}> <http://www.w3.org/ns/solid/terms#account> </>.`)
     })
 
     it('should return webId from meta file', async () => {
-      const returnedWebId = await userUtils.getWebId('foo', 'https://bar/', { ldp })
+      const returnedWebId = await userUtils.getWebId('foo', 'https://bar/', suffixMeta, fetchGraph)
       expect(returnedWebId).to.equal(webId)
     })
   })

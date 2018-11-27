@@ -4,9 +4,10 @@ const cheerio = require('cheerio')
 const LDP = require('../../lib/ldp')
 const { URL } = require('url')
 const debug = require('../../lib/debug')
+const { readFile } = require('../../lib/common/fs-utils')
 
 const { compileTemplate, writeTemplate } = require('../../lib/common/template-utils')
-const { getAccountManager, loadConfig, loadUsernames } = require('./cli-utils')
+const { loadConfig, loadAccounts } = require('./cli-utils')
 const { getName, getWebId } = require('../../lib/common/user-utils')
 const { initConfigDir, initTemplateDirs } = require('../../lib/server-config')
 
@@ -21,21 +22,20 @@ module.exports = function (program) {
       const indexTemplatePath = path.join(templates.account, 'index.html')
       const indexTemplate = await compileTemplate(indexTemplatePath)
       const ldp = new LDP(config)
-      const accountManager = getAccountManager(config, { ldp })
-      const usernames = loadUsernames(config)
-      const usersProcessed = usernames.map(async username => {
-        const accountDirectory = accountManager.accountDirFor(username)
-        const indexFilePath = path.join(accountDirectory, 'index.html')
+      const accounts = loadAccounts(config)
+      const usersProcessed = accounts.map(async account => {
+        const accountDirectory = path.join(config.root, account)
+        const indexFilePath = path.join(accountDirectory, '/index.html')
         if (!isUpdateAllowed(indexFilePath)) {
           return
         }
-        const accountUrl = getAccountUrl(username, config)
+        const accountUrl = getAccountUrl(account, config)
         try {
-          const webId = await getWebId(accountDirectory, accountUrl, { ldp })
-          const name = await getName(webId, { ldp })
+          const webId = await getWebId(accountDirectory, accountUrl, ldp.suffixMeta, (filePath) => readFile(filePath))
+          const name = await getName(webId, ldp.fetchGraph)
           writeTemplate(indexFilePath, indexTemplate, { name, webId })
         } catch (err) {
-          debug.errors(`Failed to create new index for ${username}: ${JSON.stringify(err, null, 2)}`)
+          debug.errors(`Failed to create new index for ${account}: ${JSON.stringify(err, null, 2)}`)
         }
       })
       await Promise.all(usersProcessed)

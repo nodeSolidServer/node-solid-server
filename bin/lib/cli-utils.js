@@ -6,6 +6,7 @@ const AccountManager = require('../../lib/models/account-manager')
 const SolidHost = require('../../lib/models/solid-host')
 
 module.exports.getAccountManager = getAccountManager
+module.exports.loadAccounts = loadAccounts
 module.exports.loadConfig = loadConfig
 module.exports.loadUsernames = loadUsernames
 
@@ -47,11 +48,23 @@ function loadConfig (program, options) {
   return argv
 }
 
-function loadUsernames (config) {
-  const files = fs.readdirSync(config.root)
-  const hostname = new URL(config.serverUri).hostname
+/**
+ *
+ * @param root
+ * @param [serverUri] If not set, hostname must be set
+ * @param [hostname] If not set, serverUri must be set
+ * @returns {*}
+ */
+function loadAccounts ({ root, serverUri, hostname }) {
+  const files = fs.readdirSync(root)
+  hostname = hostname || new URL(serverUri).hostname
   const isUserDirectory = new RegExp(`.${hostname}$`)
   return files
     .filter(file => isUserDirectory.test(file))
+}
+
+function loadUsernames ({ root, serverUri }) {
+  const hostname = new URL(serverUri).hostname
+  return loadAccounts({ root, hostname })
     .map(userDirectory => userDirectory.substr(0, userDirectory.length - hostname.length - 1))
 }
