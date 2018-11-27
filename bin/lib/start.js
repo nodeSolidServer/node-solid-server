@@ -2,7 +2,7 @@
 
 const options = require('./options')
 const fs = require('fs')
-const { loadConfig } = require('./common')
+const { loadConfig } = require('./cli-utils')
 const { red, bold } = require('colorette')
 
 module.exports = function (program, server) {
