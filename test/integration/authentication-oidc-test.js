@@ -171,8 +171,8 @@ describe('Authentication API (OIDC)', () => {
               })
           })
 
-          it('should return a 401', () => {
-            expect(response).to.have.property('status', 401)
+          it('should return a 403', () => {
+            expect(response).to.have.property('status', 403)
           })
         })
 
@@ -330,8 +330,8 @@ describe('Authentication API (OIDC)', () => {
               })
           })
 
-          it('should return a 401', () => {
-            expect(response).to.have.property('status', 401)
+          it('should return a 403', () => {
+            expect(response).to.have.property('status', 403)
           })
         })
 
