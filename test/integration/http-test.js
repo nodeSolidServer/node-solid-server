@@ -1,21 +1,19 @@
-var supertest = require('supertest')
 var fs = require('fs')
 var li = require('li')
-var ldnode = require('../../index')
 var rm = require('./../utils').rm
 var path = require('path')
 const rdf = require('rdflib')
+const { setupSupertestServer } = require('../utils')
 
 var suffixAcl = '.acl'
 var suffixMeta = '.meta'
-var ldpServer = ldnode.createServer({
+var server = setupSupertestServer({
   live: true,
   dataBrowserPath: 'default',
   root: path.join(__dirname, '../resources'),
   auth: 'oidc',
   webid: false
 })
-var server = supertest(ldpServer)
 var { assert, expect } = require('chai')
 
 /**

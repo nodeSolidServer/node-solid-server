@@ -1,15 +1,13 @@
-var supertest = require('supertest')
-var ldnode = require('../../index')
 var path = require('path')
 const assert = require('chai').assert
+const { setupSupertestServer } = require('../utils')
 
 describe('formats', function () {
-  var ldp = ldnode.createServer({
+  const server = setupSupertestServer({
     root: path.join(__dirname, '../resources'),
     webid: false
   })
 
-  var server = supertest(ldp)
   describe('HTML', function () {
     it('should return HTML containing "Hello, World!" if Accept is set to text/html', function (done) {
       server.get('/hello.html')

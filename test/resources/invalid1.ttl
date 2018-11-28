@@ -1,0 +1,13 @@
+@prefix ldp: <http://www.w3.org/ns/ldp#>.
+@prefix o: <http://example.org/ontology#>.
+
+<http://example.org/netWorth/nw1/>
+   test o:NetWorth;
+   o:netWorthOf <http://example.org/users/JohnZSmith>;
+   o:asset
+      <assets/a1>,
+      <assets/a2>;
+   o:liability
+      <liabilities/l1>,
+      <liabilities/l2>,
+      <liabilities/l3>.

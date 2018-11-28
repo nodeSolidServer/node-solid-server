@@ -1,18 +1,14 @@
 var assert = require('chai').assert
-var supertest = require('supertest')
 var path = require('path')
 var nock = require('nock')
-var { checkDnsSettings } = require('../utils')
-
-var ldnode = require('../../index')
+var { checkDnsSettings, setupSupertestServer } = require('../utils')
 
 describe('CORS Proxy', () => {
-  var ldp = ldnode({
+  var server = setupSupertestServer({
     root: path.join(__dirname, '../resources'),
     corsProxy: '/proxy',
     webid: false
   })
-  var server = supertest(ldp)
 
   before(checkDnsSettings)
 
