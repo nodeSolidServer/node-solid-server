@@ -62,7 +62,7 @@ function bin (argv, server) {
 
   // Set up debug environment
   if (!argv.quiet) {
-    process.env.DEBUG = 'solid:*'
+    require('debug').enable('solid:*')
   }
 
   // Set up port
