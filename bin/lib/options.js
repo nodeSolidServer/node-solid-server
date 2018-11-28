@@ -324,7 +324,7 @@ module.exports = [
     name: 'server-name',
     help: 'A name for your server (not required, but will be presented on your server\'s frontpage)',
     prompt: true,
-    default: answers => new URL(answers.serverUri).hostname
+    default: answers => new URL(answers['server-uri']).hostname
   },
   {
     name: 'server-description',
