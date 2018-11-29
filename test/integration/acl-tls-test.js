@@ -89,6 +89,7 @@ describe('ACL with WebID+TLS', function () {
 
   describe('no ACL', function () {
     it('should return 500 for any resource', function (done) {
+      rm('.acl')
       var options = createOptions('/acl-tls/no-acl/', 'user1')
       request(options, function (error, response, body) {
         assert.equal(error, null)
@@ -98,6 +99,7 @@ describe('ACL with WebID+TLS', function () {
     })
 
     it('should have `User` set in the Response Header', function (done) {
+      rm('.acl')
       var options = createOptions('/acl-tls/no-acl/', 'user1')
       request(options, function (error, response, body) {
         assert.equal(error, null)
@@ -107,6 +109,7 @@ describe('ACL with WebID+TLS', function () {
     })
 
     it.skip('should return a 401 and WWW-Authenticate header without credentials', (done) => {
+      rm('.acl')
       let options = {
         url: address + '/acl-tls/no-acl/',
         headers: { accept: 'text/turtle' }

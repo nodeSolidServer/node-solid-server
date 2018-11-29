@@ -10,7 +10,7 @@ const localStorage = require('localstorage-memory')
 const URL = require('whatwg-url').URL
 global.URL = URL
 global.URLSearchParams = require('whatwg-url').URLSearchParams
-const { cleanDir } = require('../utils')
+const { cleanDir, cp } = require('../utils')
 
 const supertest = require('supertest')
 const chai = require('chai')
@@ -68,14 +68,16 @@ describe('Authentication API (OIDC)', () => {
     })
   }
 
-  before(() => {
-    return Promise.all([
+  before(async () => {
+    await Promise.all([
       startServer(alicePod, 7000),
       startServer(bobPod, 7001)
     ]).then(() => {
       alice = supertest(aliceServerUri)
       bob = supertest(bobServerUri)
     })
+    cp(path.join('accounts-scenario/alice', '.acl-override'), path.join('accounts-scenario/alice', '.acl'))
+    cp(path.join('accounts-scenario/bob', '.acl-override'), path.join('accounts-scenario/bob', '.acl'))
   })
 
   after(() => {
@@ -147,7 +149,7 @@ describe('Authentication API (OIDC)', () => {
         describe('without that cookie', () => {
           let response
           before(done => {
-            alice.get('/')
+            alice.get('/private-for-alice.txt')
               .end((err, res) => {
                 response = res
                 done(err)
@@ -197,7 +199,7 @@ describe('Authentication API (OIDC)', () => {
           let response
           before(done => {
             var malcookie = cookie.replace(/connect\.sid=(\S+)/, 'connect.sid=l33th4x0rzp0wn4g3;')
-            alice.get('/')
+            alice.get('/private-for-alice.txt')
               .set('Cookie', malcookie)
               .end((err, res) => {
                 response = res
@@ -267,7 +269,7 @@ describe('Authentication API (OIDC)', () => {
         describe('without that cookie but with globally configured origin', () => {
           let response
           before(done => {
-            alice.get('/')
+            alice.get('/private-for-alice.txt')
               .set('Origin', 'https://apps.solid.invalid')
               .end((err, res) => {
                 response = res
@@ -285,7 +287,7 @@ describe('Authentication API (OIDC)', () => {
           let response
           before(done => {
             var malcookie = cookie.replace(/connect\.sid=(\S+)/, 'connect.sid=l33th4x0rzp0wn4g3;')
-            alice.get('/')
+            alice.get('/private-for-alice.txt')
               .set('Cookie', malcookie)
               .set('Origin', 'https://apps.solid.invalid')
               .end((err, res) => {
