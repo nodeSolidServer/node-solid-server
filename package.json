@@ -39,7 +39,7 @@
   "bugs": "https://github.com/solid/node-solid-server/issues",
   "dependencies": {
     "@solid/oidc-auth-manager": "^0.17.1",
-    "@solid/acl-check": "^0.1.0",
+    "@solid/acl-check": "^0.1.1",
     "body-parser": "^1.18.3",
     "bootstrap": "^3.3.7",
     "busboy": "^0.2.12",
