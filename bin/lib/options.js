@@ -341,7 +341,7 @@ module.exports = [
     help: 'Do you want to enforce Terms & Conditions for your service?',
     flag: true,
     prompt: true,
-    default: true,
+    default: false,
     when: answers => answers.multiuser
   },
   {
