@@ -10,7 +10,7 @@ const localStorage = require('localstorage-memory')
 const URL = require('whatwg-url').URL
 global.URL = URL
 global.URLSearchParams = require('whatwg-url').URLSearchParams
-const { cleanDir } = require('../utils')
+const { cleanDir, cp } = require('../utils')
 
 const supertest = require('supertest')
 const chai = require('chai')
@@ -68,14 +68,16 @@ describe('Authentication API (OIDC)', () => {
     })
   }
 
-  before(() => {
-    return Promise.all([
+  before(async () => {
+    await Promise.all([
       startServer(alicePod, 7000),
       startServer(bobPod, 7001)
     ]).then(() => {
       alice = supertest(aliceServerUri)
       bob = supertest(bobServerUri)
     })
+    cp(path.join('accounts-scenario/alice', '.acl-override'), path.join('accounts-scenario/alice', '.acl'))
+    cp(path.join('accounts-scenario/bob', '.acl-override'), path.join('accounts-scenario/bob', '.acl'))
   })
 
   after(() => {

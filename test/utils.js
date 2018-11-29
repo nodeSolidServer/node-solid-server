@@ -12,6 +12,7 @@ exports.rm = function (file) {
 
 exports.cleanDir = function (dirPath) {
   fs.removeSync(path.join(dirPath, '.well-known/.acl'))
+  fs.removeSync(path.join(dirPath, '.acl'))
   fs.removeSync(path.join(dirPath, 'favicon.ico'))
   fs.removeSync(path.join(dirPath, 'favicon.ico.acl'))
   fs.removeSync(path.join(dirPath, 'index.html'))
