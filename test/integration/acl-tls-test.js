@@ -88,11 +88,15 @@ describe('ACL with WebID+TLS', function () {
   }
 
   describe('no ACL', function () {
-    it('should return 500 for any resource', function (done) {
+    before(() => {
+      rm(path.join(rootPath, '.acl'))
+    })
+
+    it('should return 403 for any resource', function (done) {
       var options = createOptions('/acl-tls/no-acl/', 'user1')
       request(options, function (error, response, body) {
         assert.equal(error, null)
-        assert.equal(response.statusCode, 500)
+        assert.equal(response.statusCode, 403)
         done()
       })
     })
