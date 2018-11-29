@@ -147,7 +147,7 @@ describe('Authentication API (OIDC)', () => {
         describe('without that cookie', () => {
           let response
           before(done => {
-            alice.get('/')
+            alice.get('/private-for-alice.txt')
               .end((err, res) => {
                 response = res
                 done(err)
@@ -197,7 +197,7 @@ describe('Authentication API (OIDC)', () => {
           let response
           before(done => {
             var malcookie = cookie.replace(/connect\.sid=(\S+)/, 'connect.sid=l33th4x0rzp0wn4g3;')
-            alice.get('/')
+            alice.get('/private-for-alice.txt')
               .set('Cookie', malcookie)
               .end((err, res) => {
                 response = res
@@ -267,7 +267,7 @@ describe('Authentication API (OIDC)', () => {
         describe('without that cookie but with globally configured origin', () => {
           let response
           before(done => {
-            alice.get('/')
+            alice.get('/private-for-alice.txt')
               .set('Origin', 'https://apps.solid.invalid')
               .end((err, res) => {
                 response = res
@@ -285,7 +285,7 @@ describe('Authentication API (OIDC)', () => {
           let response
           before(done => {
             var malcookie = cookie.replace(/connect\.sid=(\S+)/, 'connect.sid=l33th4x0rzp0wn4g3;')
-            alice.get('/')
+            alice.get('/private-for-alice.txt')
               .set('Cookie', malcookie)
               .set('Origin', 'https://apps.solid.invalid')
               .end((err, res) => {
