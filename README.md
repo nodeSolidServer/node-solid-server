@@ -283,7 +283,7 @@ for more complex ones
 
 ##### Simple Example
 
-You can create an `solid` server ready to use using `solid.createServer(opts)`
+You can create a `solid` server ready to use using `solid.createServer(opts)`
 
 ```javascript
 var solid = require('solid-server')
