@@ -436,7 +436,7 @@ describe('PATCH', () => {
       before((done) => {
         request.patch(path)
                .set('Content-Type', contentType)
-               .send(`@prefix solid: <http://www.w3.org/ns/solid/terms#>.\n${patch}`)
+               .send(`@prefix solid: <https://www.w3.org/ns/solid/terms#>.\n${patch}`)
                .then(res => { response = res })
                .then(done, done)
       })

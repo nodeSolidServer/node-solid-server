@@ -27,7 +27,7 @@ describe('user-utils', () => {
     const suffixMeta = '.meta'
 
     beforeEach(() => {
-      fetchGraph = () => Promise.resolve(`<${webId}> <http://www.w3.org/ns/solid/terms#account> </>.`)
+      fetchGraph = () => Promise.resolve(`<${webId}> <https://www.w3.org/ns/solid/terms#account> </>.`)
     })
 
     it('should return webId from meta file', async () => {

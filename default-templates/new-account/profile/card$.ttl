@@ -1,4 +1,4 @@
-@prefix solid: <http://www.w3.org/ns/solid/terms#>.
+@prefix solid: <https://www.w3.org/ns/solid/terms#>.
 @prefix foaf: <http://xmlns.com/foaf/0.1/>.
 @prefix pim: <http://www.w3.org/ns/pim/space#>.
 @prefix schema: <http://schema.org/>.

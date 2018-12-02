@@ -172,7 +172,7 @@ describe('AccountManager (OIDC account creation tests)', function () {
                 'text/turtle')
               var statements = graph.statementsMatching(
                 undefined,
-                $rdf.sym('http://www.w3.org/ns/solid/terms#account'),
+                $rdf.sym('https://www.w3.org/ns/solid/terms#account'),
                 undefined)
               if (statements.length === 1) {
                 done()
