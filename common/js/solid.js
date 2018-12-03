@@ -45,6 +45,8 @@
   PasswordValidator.prototype.fetchDomNodes = function () {
     this.form = this.passwordField.closest('form')
 
+    this.disablePasswordChecks = this.passwordField.classList.contains('disable-password-checks')
+
     this.passwordGroup = this.passwordField.closest('.form-group')
     this.passwordFeedback = this.passwordGroup.querySelector('.form-control-feedback')
     this.passwordStrengthMeter = this.passwordGroup.querySelector('.progress-bar')
@@ -69,8 +71,10 @@
     this.errors = []
     this.resetValidation(this.passwordGroup)
     this.resetFeedbackIcon(this.passwordFeedback)
-    this.displayPasswordErrors()
-    this.instantFeedbackForPassword()
+    if (!this.disablePasswordChecks) {
+      this.displayPasswordErrors()
+      this.instantFeedbackForPassword()
+    }
   }
 
   /**
@@ -99,14 +103,17 @@
   PasswordValidator.prototype.validatePassword = function () {
     this.errors = []
     const password = this.passwordField.value
-    const passwordStrength = this.getPasswordStrength(password)
-    this.currentStrengthLevel = this.getStrengthLevel(passwordStrength)
 
-    if (passwordStrength.errors) {
-      this.addPasswordError(passwordStrength.errors)
+    if (!this.disablePasswordChecks) {
+      const passwordStrength = this.getPasswordStrength(password)
+      this.currentStrengthLevel = this.getStrengthLevel(passwordStrength)
+
+      if (passwordStrength.errors) {
+        this.addPasswordError(passwordStrength.errors)
+      }
+
+      this.checkLeakedPassword(password).then(this.handleLeakedPasswordResponse.bind(this))
     }
-
-    this.checkLeakedPassword(password).then(this.handleLeakedPasswordResponse.bind(this))
 
     this.setPasswordFeedback()
   }
