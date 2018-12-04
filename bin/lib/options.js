@@ -102,7 +102,7 @@ module.exports = [
       return true
     },
     when: function (answers) {
-      return answers.useOwner
+      return answers['use-owner']
     }
   },
   {
@@ -163,7 +163,7 @@ module.exports = [
     name: 'cors-proxy',
     help: 'Serve the CORS proxy on this path',
     when: function (answers) {
-      return answers.useCorsProxy
+      return answers['use-cors-proxy']
     },
     default: '/proxy',
     prompt: true
@@ -253,7 +253,7 @@ module.exports = [
     prompt: true,
     default: 'smtp.gmail.com',
     when: (answers) => {
-      return answers.useEmail
+      return answers['use-email']
     }
   },
   {
@@ -262,7 +262,7 @@ module.exports = [
     prompt: true,
     default: '465',
     when: (answers) => {
-      return answers.useEmail
+      return answers['use-email']
     }
   },
   {
@@ -270,7 +270,7 @@ module.exports = [
     help: 'User of your email service',
     prompt: true,
     when: (answers) => {
-      return answers.useEmail
+      return answers['use-email']
     },
     validate: (value) => {
       if (!value) {
@@ -285,7 +285,7 @@ module.exports = [
     type: 'password',
     prompt: true,
     when: (answers) => {
-      return answers.useEmail
+      return answers['use-email']
     }
   },
   {
@@ -301,7 +301,7 @@ module.exports = [
     prompt: true,
     validate: validPath,
     when: (answers) => {
-      return answers.useApiApps
+      return answers['use-api-apps']
     }
   },
   { // copied from name: 'owner'
@@ -349,7 +349,7 @@ module.exports = [
     help: 'URI to your Terms & Conditions',
     prompt: true,
     validate: validUri,
-    when: answers => answers.enforceToc
+    when: answers => answers['enforce-toc']
   },
   {
     name: 'support-email',
