@@ -15,6 +15,7 @@
     const isOwner = loggedIn && new URL(session.webId).origin === location.origin
     loginButton.classList.toggle('hidden', loggedIn)
     logoutButton.classList.toggle('hidden', !loggedIn)
+    registerButton.classList.toggle('hidden', loggedIn)
     accountSettings.classList.toggle('hidden', !isOwner)
   })
 
