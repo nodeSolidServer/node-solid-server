@@ -352,6 +352,14 @@ module.exports = [
     when: answers => answers['enforce-toc']
   },
   {
+    name: 'disable-password-checks',
+    help: 'Do you want to disable password strength checking?',
+    flag: true,
+    prompt: true,
+    default: false,
+    when: answers => answers.multiuser
+  },
+  {
     name: 'support-email',
     help: 'The support email you provide for your users (not required)',
     prompt: true,
