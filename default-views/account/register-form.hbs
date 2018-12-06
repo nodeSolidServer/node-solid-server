@@ -36,7 +36,7 @@
 
           <div class="form-group has-feedback">
             <label class="control-label" for="password">Password*</label>
-            <input type="password" class="form-control control-progress" name="password" id="password" required/>
+            <input type="password" class="form-control control-progress{{#if disablePasswordStrengthCheck}} disable-password-strength-check{{/if}}" name="password" id="password" required/>
             <span class="glyphicon glyphicon-remove form-control-feedback hidden" aria-hidden="true"></span>
             <div class="progress">
               <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="4"></div>

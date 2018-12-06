@@ -285,18 +285,18 @@ describe('LDP', function () {
         '   dcterms:title "This is a container" ;' +
         '   o:limit 500000.00 .', 'sampleContainer/basicContainerFile.ttl')
 
-      return ldp.listContainer(path.join(__dirname, '../resources/sampleContainer/'), 'https://server.tld/resources/sampleContainer/', 'https://server.tld', '', 'text/turtle')
+      return ldp.listContainer(path.join(__dirname, '../resources/sampleContainer/'), 'https://server.tld/resources/sampleContainer/', '', 'server.tld')
         .then(data => {
           var graph = $rdf.graph()
           $rdf.parse(
             data,
             graph,
-            'https://server.tld/sampleContainer',
+            'https://localhost:8443/resources/sampleContainer',
             'text/turtle')
 
           var basicContainerStatements = graph
             .each(
-              $rdf.sym('https://server.tld/basicContainerFile.ttl'),
+              $rdf.sym('https://localhost:8443/resources/sampleContainer/basicContainerFile.ttl'),
               ns.rdf('type'),
               undefined
             )
@@ -310,7 +310,7 @@ describe('LDP', function () {
 
           var containerStatements = graph
             .each(
-              $rdf.sym('https://server.tld/containerFile.ttl'),
+              $rdf.sym('https://localhost:8443/resources/sampleContainer/containerFile.ttl'),
               ns.rdf('type'),
               undefined
             )
@@ -324,15 +324,18 @@ describe('LDP', function () {
     })
 
     it('should ldp:contains the same files in dir', () => {
-      ldp.listContainer(path.join(__dirname, '../resources/sampleContainer/'), 'https://server.tld/resources/sampleContainer/', 'https://server.tld', '', 'text/turtle')
+      ldp.listContainer(path.join(__dirname, '../resources/sampleContainer/'), 'https://server.tld/resources/sampleContainer/', '', 'server.tld')
         .then(data => {
           fs.readdir(path.join(__dirname, '../resources/sampleContainer/'), function (err, expectedFiles) {
+            // Strip dollar extension
+            expectedFiles = expectedFiles.map(ldp.resourceMapper._removeDollarExtension)
+
             if (err) {
               return Promise.reject(err)
             }
 
             const graph = $rdf.graph()
-            $rdf.parse(data, graph, 'https://server.tld/sampleContainer/', 'text/turtle')
+            $rdf.parse(data, graph, 'https://localhost:8443/resources/sampleContainer/', 'text/turtle')
             const statements = graph.match(null, ns.ldp('contains'), null)
             const files = statements
               .map(s => s.object.value.replace(/.*\//, ''))
