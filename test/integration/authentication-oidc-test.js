@@ -212,13 +212,31 @@ describe('Authentication API (OIDC)', () => {
           })
         })
 
-        // Our origin isn't trusted by default
+        // Our origin is trusted by default
         describe('with that cookie and our origin', () => {
           let response
           before(done => {
             alice.get('/')
               .set('Cookie', cookie)
               .set('Origin', aliceServerUri)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 200', () => {
+            expect(response).to.have.property('status', 200)
+          })
+        })
+
+        // Another origin isn't trusted by default
+        describe('with that cookie and our origin', () => {
+          let response
+          before(done => {
+            alice.get('/')
+              .set('Cookie', cookie)
+              .set('Origin', 'https://some.other.domain.com')
               .end((err, res) => {
                 response = res
                 done(err)
