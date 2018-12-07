@@ -104,7 +104,7 @@ $ solid start
 Otherwise, if you want to use flags, this would be the equivalent
 
 ```bash
-$ solid --multiuser --port 8443 --cert /path/to/cert --key /path/to/key --root ./data
+$ solid start --multiuser --port 8443 --cert /path/to/cert --key /path/to/key --root ./data
 ```
 
 Your users will have a dedicated folder under `./data` at `./data/<username>.<yourdomain.tld>`. Also, your root domain's website will be in `./data/<yourdomain.tld>`. New users can create accounts on `/api/accounts/new` and create new certificates on `/api/accounts/cert`. An easy-to-use sign-up tool is found on `/api/accounts`.
@@ -226,8 +226,8 @@ docker run -p 8443:8443 --name solid node-solid-server
 ```
 
 This will enable you to login to solid on https://localhost:8443 and then create a new account
-but not yet use that account. After a new account is made you will need to create an entry for 
-it in your local (/etc/)hosts file in line with the account and subdomain i.e. 
+but not yet use that account. After a new account is made you will need to create an entry for
+it in your local (/etc/)hosts file in line with the account and subdomain i.e.
 
 127.0.0.1	newsoliduser.localhost
 
