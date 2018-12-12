@@ -11,7 +11,8 @@
 - DELETE operations on a resource now require that the user has write permissions on
   the file's container
 - Improved support for logout ensures users can use different
-  identities.      
+  identities.
+- The profile container is now public readable by default.
 
 #### 5.0.0 Upgrade Notes
 
