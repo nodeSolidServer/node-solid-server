@@ -5,6 +5,9 @@
 - Changes to vocabulary use:
     - `solid:inbox` is deprecated in favour of `ldp:inbox`.
     - `acl:defaultForNew` is deprecated in favour of `ack:default`.
+- Terms of Service may be added and enforced for new registrations,
+  but is disabled by default.    	
+
 
 #### 5.0.0 Upgrade Notes
 
