@@ -2,6 +2,7 @@
 
 ## 5.0.0
 
+- Node versions greater than 8 are supported.
 - Changes to vocabulary use:
     - `solid:inbox` is deprecated in favour of `ldp:inbox`.
     - `acl:defaultForNew` is deprecated in favour of `ack:default`.
@@ -10,8 +11,7 @@
 - DELETE operations on a resource now require that the user has write permissions on
   the file's container
 - Improved support for logout ensures users can use different
-  identities.
-      
+  identities.      
 
 #### 5.0.0 Upgrade Notes
 
