@@ -21,6 +21,8 @@
     - The browser-reported `Origin` header will now be checked by
       default, and the ACL system can be used to restrict access
       to applications for added security.
+- Logging is now verbose by default so the `-v` option has been
+  removed and a `--quiet` option has been added to mute the log.
 
 
 #### 5.0.0 Upgrade Notes
