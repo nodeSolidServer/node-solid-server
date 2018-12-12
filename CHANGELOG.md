@@ -13,6 +13,15 @@
 - Improved support for logout ensures users can use different
   identities.
 - The profile container is now public readable by default.
+- Access Control: 
+    - The Access Control List system has undergone extensive
+      changes. Security has been tightened, and some unsafe practices that
+      where web apps was authorized access in the past are now not
+      permitted. 
+    - The browser-reported `Origin` header will now be checked by
+      default, and the ACL system can be used to restrict access
+      to applications for added security.
+
 
 #### 5.0.0 Upgrade Notes
 
