@@ -9,7 +9,9 @@
   but is disabled by default.    	
 - DELETE operations on a resource now require that the user has write permissions on
   the file's container
-
+- Improved support for logout ensures users can use different
+  identities.
+      
 
 #### 5.0.0 Upgrade Notes
 
