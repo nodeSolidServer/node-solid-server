@@ -24,6 +24,7 @@
 - Logging is now verbose by default so the `-v` option has been
   removed and a `--quiet` option has been added to mute the log.
 - Config options are now kebab-cased rather than camelCased.
+- Many smaller fixes.
 
 #### 5.0.0 Upgrade Notes
 
