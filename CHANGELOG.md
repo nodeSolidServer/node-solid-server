@@ -1,5 +1,11 @@
 # History
 
+## 5.0.0
+
+- Changes to vocabulary use:
+    - `solid:inbox` is deprecated in favour of `ldp:inbox`.
+    - `acl:defaultForNew` is deprecated in favour of `ack:default`.
+
 #### 5.0.0 Upgrade Notes
 
 - As of v5.0.0, all Turtle files need an extension. (**Intervention needed when updating from < 5.0.0!**)
