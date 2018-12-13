@@ -23,7 +23,8 @@
       to applications for added security.
 - Logging is now verbose by default so the `-v` option has been
   removed and a `--quiet` option has been added to mute the log.
-- Config options are now kebab-cased rather than camelCased.
+- Command line options are now kebab-cased rather than camelCased,
+  config options may be both.
 - Many smaller fixes.
 
 #### 5.0.0 Upgrade Notes
