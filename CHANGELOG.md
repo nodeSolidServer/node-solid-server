@@ -1,5 +1,32 @@
 # History
 
+## 5.0.0
+
+- Node versions greater than 8 are supported.
+- Changes to vocabulary use:
+    - `solid:inbox` is deprecated in favour of `ldp:inbox`.
+    - `acl:defaultForNew` is deprecated in favour of `ack:default`.
+- Terms of Service may be added and enforced for new registrations,
+  but is disabled by default.    	
+- DELETE operations on a resource now require that the user has write permissions on
+  the file's container
+- Improved support for logout ensures users can use different
+  identities.
+- The profile container is now public readable by default.
+- Access Control: 
+    - The Access Control List system has undergone extensive
+      changes. Security has been tightened, and some unsafe practices that
+      where web apps was authorized access in the past are now not
+      permitted. 
+    - The browser-reported `Origin` header will now be checked by
+      default, and the ACL system can be used to restrict access
+      to applications for added security.
+- Logging is now verbose by default so the `-v` option has been
+  removed and a `--quiet` option has been added to mute the log.
+- Command line options are now kebab-cased rather than camelCased,
+  config options may be both.
+- Many smaller fixes.
+
 #### 5.0.0 Upgrade Notes
 
 - As of v5.0.0, all Turtle files need an extension. (**Intervention needed when updating from < 5.0.0!**)
