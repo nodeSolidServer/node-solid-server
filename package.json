@@ -81,6 +81,7 @@
     "text-encoder-lite": "^1.0.1",
     "the-big-username-blacklist": "^1.5.1",
     "ulid": "^0.1.0",
+    "urijs": "^1.19.1",
     "uuid": "^3.0.0",
     "valid-url": "^1.0.9",
     "validator": "^10.9.0",
@@ -92,6 +93,7 @@
     "@solid/solid-auth-oidc": "^0.3.0",
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
+    "cross-env": "^5.2.0",
     "dirty-chai": "^1.2.2",
     "localstorage-memory": "^1.0.2",
     "mocha": "^5.1.1",
@@ -110,8 +112,8 @@
   "scripts": {
     "solid": "node ./bin/solid",
     "standard": "standard '{bin,examples,lib,test}/**/*.js'",
-    "nyc": "NODE_TLS_REJECT_UNAUTHORIZED=0 nyc --reporter=text-summary mocha",
-    "mocha": "NODE_TLS_REJECT_UNAUTHORIZED=0 mocha",
+    "nyc": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 nyc --reporter=text-summary mocha",
+    "mocha": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 mocha",
     "test": "npm run standard && npm run nyc",
     "clean": "rimraf config/templates config/views"
   },
