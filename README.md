@@ -394,14 +394,13 @@ blacklist profanities by default.
 
 ## Quota
 
-By default, a file `serverSide.ttl` will be installed to new PODs. Its
-current function is to set a quota for disk usage of just 25 MB, which
-is what we can be sure the current prototype can tolerate under
-load. This file is not writeable to users, but as server administrator
-you can remove it if you don't want to impose a quota. It is currently
-adviceable to remove it rather than set a large quota, because the
-current implementation will impair write performance if there is a lot
-of data.
+By default, a file `serverSide.ttl.inactive` will be installed to new
+PODs. If you rename it to `serverSide.ttl`, it will currently set a
+quota for disk usage.  This file is not writeable to users, only
+server administrators who are authorized on the backend can modify
+it. It is currently adviceable to remove it or set it inactive rather
+than set a large quota, because the current implementation will impair
+write performance if there is a lot of data.
 
 ## Contributing
 
