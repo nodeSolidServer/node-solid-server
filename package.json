@@ -111,6 +111,7 @@
   "main": "index.js",
   "scripts": {
     "solid": "node ./bin/solid",
+    "solid-test": "./bin/solid-test",
     "standard": "standard '{bin,examples,lib,test}/**/*.js'",
     "nyc": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 nyc --reporter=text-summary mocha",
     "mocha": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 mocha",
