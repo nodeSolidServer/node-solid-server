@@ -290,6 +290,16 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
+    it('user2 should be able to access public test directory with wrong origin', function (done) {
+      var options = createOptions('/origin/test-folder/', 'user2')
+      options.headers.origin = origin2
+
+      request.head(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 200)
+        done()
+      })
+    })
     it('user1 should be able to access to test directory when origin is valid',
       function (done) {
         var options = createOptions('/origin/test-folder/', 'user1')
