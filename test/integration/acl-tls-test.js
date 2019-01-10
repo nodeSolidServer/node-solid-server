@@ -277,7 +277,7 @@ describe('ACL with WebID+TLS', function () {
         'content-type': 'text/turtle'
       }
       options.body = '<#Owner> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
-        ' <http://www.w3.org/ns/auth/acl#accessTo> <https://localhost:3456/test/acl-tls/origin/test-folder/.acl>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#accessTo> <https://localhost:3456/test/acl-tls/origin/test-folder/>;\n' +
         ' <http://www.w3.org/ns/auth/acl#agent> <' + user1 + '>;\n' +
         ' <http://www.w3.org/ns/auth/acl#origin> <' + origin1 + '>;\n' +
         ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Control> .\n' +
@@ -375,11 +375,11 @@ describe('ACL with WebID+TLS', function () {
         'content-type': 'text/turtle'
       }
       options.body = '<#Owner1> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
-        ' <http://www.w3.org/ns/auth/acl#accessTo> <https://localhost:3456/test/acl-tls/origin/test-folder/.acl>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#accessTo> <https://localhost:3456/test/acl-tls/origin/test-folder/>;\n' +
         ' <http://www.w3.org/ns/auth/acl#agent> <' + user1 + '>;\n' +
         ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Control> .\n' +
         '<#Owner2> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
-          ' <http://www.w3.org/ns/auth/acl#accessTo> <https://localhost:3456/test/acl-tls/origin/test-folder/.acl>;\n' +
+          ' <http://www.w3.org/ns/auth/acl#accessTo> <https://localhost:3456/test/acl-tls/origin/test-folder/>;\n' +
           ' <http://www.w3.org/ns/auth/acl#origin> <' + origin1 + '>;\n' +
           ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Control> .\n' +
         '<#Public> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
