@@ -283,7 +283,7 @@ describe('ACL with WebID+TLS', function () {
         ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Control> .\n' +
         '<#Public> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
         ' <http://www.w3.org/ns/auth/acl#accessTo> <./>;\n' +
-        ' <http://www.w3.org/ns/auth/acl#agentClass> <http://xmlns.com/foaf/0.1/Agent>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#agentClass> <http://www.w3.org/ns/auth/acl#AuthenticatedAgent>;\n' +
         ' <http://www.w3.org/ns/auth/acl#origin> <' + origin1 + '>;\n' +
         ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read> .\n'
       request.put(options, function (error, response, body) {
@@ -326,13 +326,13 @@ describe('ACL with WebID+TLS', function () {
           done()
         })
       })
-    it('agent should be able to access test directory', function (done) {
+    it('agent not should be able to access test directory', function (done) {
       var options = createOptions('/acl-tls/origin/test-folder/')
       options.headers.origin = origin1
 
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
+        assert.equal(response.statusCode, 403)
         done()
       })
     })
@@ -384,7 +384,7 @@ describe('ACL with WebID+TLS', function () {
           ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Control> .\n' +
         '<#Public> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
         ' <http://www.w3.org/ns/auth/acl#accessTo> <./>;\n' +
-        ' <http://www.w3.org/ns/auth/acl#agentClass> <http://xmlns.com/foaf/0.1/Agent>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#agentClass> <http://www.w3.org/ns/auth/acl#AuthenticatedAgent>;\n' +
         ' <http://www.w3.org/ns/auth/acl#origin> <' + origin1 + '>;\n' +
         ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read> .\n'
       request.put(options, function (error, response, body) {
@@ -427,13 +427,13 @@ describe('ACL with WebID+TLS', function () {
           done()
         })
       })
-    it('agent should be able to access test directory', function (done) {
+    it('agent should not be able to access test directory for logged in users', function (done) {
       var options = createOptions('/acl-tls/origin/test-folder/')
       options.headers.origin = origin1
 
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
+        assert.equal(response.statusCode, 403)
         done()
       })
     })
