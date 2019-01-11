@@ -255,7 +255,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
     })
   })
 
-  describe('Origin', function () {
+  describe.only('Origin', function () {
     before(function () {
       rm('/accounts-acl/tim.localhost/origin/test-folder/.acl')
     })
@@ -271,7 +271,13 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         ' <http://www.w3.org/ns/auth/acl#accessTo> <./>;\n' +
         ' <http://www.w3.org/ns/auth/acl#agentClass> <http://xmlns.com/foaf/0.1/Agent>;\n' +
         ' <http://www.w3.org/ns/auth/acl#origin> <' + origin1 + '>;\n' +
-        ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read> .\n'
+        ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read> .\n' +
+        '<#Somebody> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#accessTo> <./>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#agent> <' + user2 + '>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#default> <./>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#origin> <' + origin1 + '>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Write> .\n'
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 201)
@@ -354,9 +360,32 @@ describe('ACL with WebID+OIDC over HTTP', function () {
           done()
         })
       })
+    it('user2 should be able to write to test directory with correct origin', function (done) {
+      var options = createOptions('/origin/test-folder/test1.txt', 'user2', 'text/plain')
+      options.headers.origin = origin1
+      options.body = 'DAAAAAHUUUT'
+      request.put(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 201)
+        done()
+      })
+    })
+    it('user2 should not be able to write to test directory with wrong origin', function (done) {
+      var options = createOptions('/origin/test-folder/test2.txt', 'user2', 'text/plain')
+      options.headers.origin = origin2
+      options.body = 'ARRRRGH'
+      request.put(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 403)
+        assert.equal(response.statusMessage, 'Origin Unauthorized')
+        done()
+      })
+    })
 
     after(function () {
       rm('/accounts-acl/tim.localhost/origin/test-folder/.acl')
+      rm('/accounts-acl/tim.localhost/origin/test-folder/test1.txt')
+      rm('/accounts-acl/tim.localhost/origin/test-folder/test2.txt')
     })
   })
 
