@@ -255,7 +255,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
     })
   })
 
-  describe.only('Origin', function () {
+  describe('Origin', function () {
     before(function () {
       rm('/accounts-acl/tim.localhost/origin/test-folder/.acl')
     })
