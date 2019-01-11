@@ -2,7 +2,7 @@ const assert = require('chai').assert
 const fs = require('fs-extra')
 const request = require('request')
 const path = require('path')
-const { loadProvider, rm, checkDnsSettings, cleanDir } = require('../utils')
+const {loadProvider, rm, checkDnsSettings, cleanDir} = require('../utils')
 const IDToken = require('@solid/oidc-op/src/IDToken')
 
 const ldnode = require('../../index')
@@ -30,16 +30,15 @@ let userCredentials = {
 }
 
 function issueIdToken (oidcProvider, webId) {
-  return Promise.resolve()
-    .then(() => {
-      let jwt = IDToken.issue(oidcProvider, {
-        sub: webId,
-        aud: [ serverUri, 'client123' ],
-        azp: 'client123'
-      })
-
-      return jwt.encode()
+  return Promise.resolve().then(() => {
+    let jwt = IDToken.issue(oidcProvider, {
+      sub: webId,
+      aud: [serverUri, 'client123'],
+      azp: 'client123'
     })
+
+    return jwt.encode()
+  })
 }
 
 const argv = {
@@ -54,7 +53,7 @@ const argv = {
   multiuser: true,
   auth: 'oidc',
   strictOrigin: true,
-  host: { serverUri }
+  host: {serverUri}
 }
 
 describe('ACL with WebID+OIDC over HTTP', function () {
@@ -65,23 +64,19 @@ describe('ACL with WebID+OIDC over HTTP', function () {
   before(done => {
     ldp = ldnode.createServer(argv)
 
-    loadProvider(oidcProviderPath)
-      .then(provider => {
-        oidcProvider = provider
+    loadProvider(oidcProviderPath).then(provider => {
+      oidcProvider = provider
 
-        return Promise.all([
-          issueIdToken(oidcProvider, user1),
-          issueIdToken(oidcProvider, user2)
-        ])
-      })
-      .then(tokens => {
-        userCredentials.user1 = tokens[0]
-        userCredentials.user2 = tokens[1]
-      })
-      .then(() => {
-        ldpHttpsServer = ldp.listen(port, done)
-      })
-      .catch(console.error)
+      return Promise.all([
+        issueIdToken(oidcProvider, user1),
+        issueIdToken(oidcProvider, user2)
+      ])
+    }).then(tokens => {
+      userCredentials.user1 = tokens[0]
+      userCredentials.user2 = tokens[1]
+    }).then(() => {
+      ldpHttpsServer = ldp.listen(port, done)
+    }).catch(console.error)
   })
 
   after(() => {
@@ -227,7 +222,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
           done()
         })
       })
-      it("should create test file's acl file", function (done) {
+      it('should create test file\'s acl file', function (done) {
         var options = createOptions('/write-acl/test-file.acl', 'user1', 'text/turtle')
         options.body = ''
         request.put(options, function (error, response, body) {
@@ -236,7 +231,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
           done()
         })
       })
-      it("should not access test file's new empty acl file", function (done) {
+      it('should not access test file\'s new empty acl file', function (done) {
         var options = createOptions('/write-acl/test-file.acl', 'user1')
         request.get(options, function (error, response, body) {
           assert.equal(error, null)
@@ -276,8 +271,8 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         assert.equal(error, null)
         assert.equal(response.statusCode, 201)
         done()
-      // TODO triple header
-      // TODO user header
+        // TODO triple header
+        // TODO user header
       })
     })
     it('user1 should be able to access test directory', function (done) {
@@ -301,18 +296,17 @@ describe('ACL with WebID+OIDC over HTTP', function () {
           done()
         })
       })
-    it('user1 should not be able to access test directory when origin is invalid',
-      function (done) {
-        var options = createOptions('/origin/test-folder/', 'user1')
-        options.headers.origin = origin2
+    it('user1 should not be able to access test directory when origin is invalid', function (done) {
+      var options = createOptions('/origin/test-folder/', 'user1')
+      options.headers.origin = origin2
 
-        request.head(options, function (error, response, body) {
-          assert.equal(error, null)
-          assert.equal(response.statusCode, 403)
-          assert.equal(response.statusMessage, 'Forbidden') // TODO: Should be Origin Unauthorized
-          done()
-        })
+      request.head(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 403)
+        assert.equal(response.statusMessage, 'Origin Unauthorized')
+        done()
       })
+    })
     it('agent should be able to access test directory', function (done) {
       var options = createOptions('/origin/test-folder/')
       options.headers.origin = origin1
@@ -323,29 +317,27 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it('agent should be able to access to test directory when origin is valid',
-      function (done) {
-        var options = createOptions('/origin/test-folder/', 'user1')
-        options.headers.origin = origin1
+    it('agent should be able to access to test directory when origin is valid', function (done) {
+      var options = createOptions('/origin/test-folder/', 'user1')
+      options.headers.origin = origin1
 
-        request.head(options, function (error, response, body) {
-          assert.equal(error, null)
-          assert.equal(response.statusCode, 200)
-          done()
-        })
+      request.head(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 200)
+        done()
       })
-    it('agent should not be able to access test directory when origin is invalid',
-      function (done) {
-        var options = createOptions('/origin/test-folder/')
-        options.headers.origin = origin2
+    })
+    it('agent should not be able to access test directory when origin is invalid', function (done) {
+      var options = createOptions('/origin/test-folder/')
+      options.headers.origin = origin2
 
-        request.head(options, function (error, response, body) {
-          assert.equal(error, null)
-          assert.equal(response.statusCode, 403)
-          assert.equal(response.statusMessage, 'Forbidden') // TODO: Should be Origin Unauthorized
-          done()
-        })
+      request.head(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 403)
+        assert.equal(response.statusMessage, 'Origin Unauthorized')
+        done()
       })
+    })
 
     after(function () {
       rm('/accounts-acl/tim.localhost/origin/test-folder/.acl')
@@ -392,7 +384,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 403)
-        assert.equal(response.statusMessage, 'Forbidden') // TODO: Should be User Unauthorized
+        assert.equal(response.statusMessage, 'User Unauthorized')
         done()
       })
     })
@@ -402,7 +394,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 403)
-        assert.equal(response.statusMessage, 'Forbidden') // TODO: Should be User Unauthorized
+        assert.equal(response.statusMessage, 'User Unauthorized')
         done()
       })
     })
@@ -420,7 +412,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 401)
-        assert.equal(response.statusMessage, 'Unauthorized') // TODO: Should be Unauthenticated
+        assert.equal(response.statusMessage, 'Unauthenticated')
         done()
       })
     })
@@ -462,7 +454,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
 
   describe('Append-only', function () {
     // var body = fs.readFileSync(__dirname + '/resources/append-acl/abc.ttl.acl')
-    it("user1 should be able to access test file's ACL file", function (done) {
+    it('user1 should be able to access test file\'s ACL file', function (done) {
       var options = createOptions('/append-acl/abc.ttl.acl', 'user1')
       request.head(options, function (error, response) {
         assert.equal(error, null)
@@ -508,12 +500,12 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it("user2 should not be able to access test file's ACL file", function (done) {
+    it('user2 should not be able to access test file\'s ACL file', function (done) {
       var options = createOptions('/append-acl/abc.ttl.acl', 'user2', 'text/turtle')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 403)
-        assert.equal(response.statusMessage, 'Forbidden') // TODO: Should be User Unauthorized
+        assert.equal(response.statusMessage, 'User Unauthorized')
         done()
       })
     })
@@ -522,7 +514,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 403)
-        assert.equal(response.statusMessage, 'Forbidden') // TODO: Should be User Unauthorized
+        assert.equal(response.statusMessage, 'User Unauthorized')
         done()
       })
     })
@@ -532,7 +524,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 403)
-        assert.equal(response.statusMessage, 'Forbidden') // TODO: Should be User Unauthorized
+        assert.equal(response.statusMessage, 'User Unauthorized')
         done()
       })
     })
@@ -541,7 +533,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 401)
-        assert.equal(response.statusMessage, 'Unauthorized') // TODO: Should be Unauthenticated
+        assert.equal(response.statusMessage, 'Unauthenticated')
         done()
       })
     })
@@ -551,7 +543,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 401)
-        assert.equal(response.statusMessage, 'Unauthorized') // TODO: Should be Unauthenticated
+        assert.equal(response.statusMessage, 'Unauthenticated')
         done()
       })
     })
@@ -599,17 +591,16 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it('user2 should be able to write a file in the test directory',
-      function (done) {
-        var options = createOptions('/group/test-folder/test.ttl', 'user2', 'text/turtle')
-        options.body = '<#Dahut> a <https://dbpedia.org/resource/Category:French_legendary_creatures>.\n'
+    it('user2 should be able to write a file in the test directory', function (done) {
+      var options = createOptions('/group/test-folder/test.ttl', 'user2', 'text/turtle')
+      options.body = '<#Dahut> a <https://dbpedia.org/resource/Category:French_legendary_creatures>.\n'
 
-        request.put(options, function (error, response, body) {
-          assert.equal(error, null)
-          assert.equal(response.statusCode, 201)
-          done()
-        })
+      request.put(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 201)
+        done()
       })
+    })
 
     it('user1 should be able to get the file', function (done) {
       var options = createOptions('/group/test-folder/test.ttl', 'user1', 'text/turtle')
@@ -620,18 +611,17 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it('user2 should not be able to write to the ACL',
-      function (done) {
-        var options = createOptions('/group/test-folder/.acl', 'user2', 'text/turtle')
-        options.body = '<#Dahut> a <https://dbpedia.org/resource/Category:French_legendary_creatures>.\n'
+    it('user2 should not be able to write to the ACL', function (done) {
+      var options = createOptions('/group/test-folder/.acl', 'user2', 'text/turtle')
+      options.body = '<#Dahut> a <https://dbpedia.org/resource/Category:French_legendary_creatures>.\n'
 
-        request.put(options, function (error, response, body) {
-          assert.equal(error, null)
-          assert.equal(response.statusCode, 403)
-          assert.equal(response.statusMessage, 'Forbidden')
-          done()
-        })
+      request.put(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 403)
+        assert.equal(response.statusMessage, 'User Unauthorized')
+        done()
       })
+    })
 
     it('user1 should be able to delete the file', function (done) {
       var options = createOptions('/group/test-folder/test.ttl', 'user1', 'text/turtle')
@@ -642,26 +632,24 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it('We should have a 500 with invalid group listings',
-      function (done) {
-        var options = createOptions('/group/test-folder/some-other-file.txt', 'user2')
+    it('We should have a 500 with invalid group listings', function (done) {
+      var options = createOptions('/group/test-folder/some-other-file.txt', 'user2')
 
-        request.get(options, function (error, response, body) {
-          assert.equal(error, null)
-          assert.equal(response.statusCode, 500)
-          done()
-        })
+      request.get(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 500)
+        done()
       })
-    it('We should have a 404 for non-existent file',
-      function (done) {
-        var options = createOptions('/group/test-folder/nothere.txt', 'user2')
+    })
+    it('We should have a 404 for non-existent file', function (done) {
+      var options = createOptions('/group/test-folder/nothere.txt', 'user2')
 
-        request.get(options, function (error, response, body) {
-          assert.equal(error, null)
-          assert.equal(response.statusCode, 404)
-          done()
-        })
+      request.get(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 404)
+        done()
       })
+    })
   })
 
   describe('Restricted', function () {
@@ -673,7 +661,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       ' <http://www.w3.org/ns/auth/acl#accessTo> <./abc2.ttl>;\n' +
       ' <http://www.w3.org/ns/auth/acl#agent> <' + user2 + '>;\n' +
       ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>.\n'
-    it("user1 should be able to modify test file's ACL file", function (done) {
+    it('user1 should be able to modify test file\'s ACL file', function (done) {
       var options = createOptions('/append-acl/abc2.ttl.acl', 'user1', 'text/turtle')
       options.body = body
       request.put(options, function (error, response, body) {
@@ -682,7 +670,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it("user1 should be able to access test file's ACL file", function (done) {
+    it('user1 should be able to access test file\'s ACL file', function (done) {
       var options = createOptions('/append-acl/abc2.ttl.acl', 'user1', 'text/turtle')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
@@ -715,12 +703,12 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it("user2 should not be able to access test file's ACL file", function (done) {
+    it('user2 should not be able to access test file\'s ACL file', function (done) {
       var options = createOptions('/append-acl/abc2.ttl.acl', 'user2')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 403)
-        assert.equal(response.statusMessage, 'Forbidden') // TODO: Should be Unauthenticated
+        assert.equal(response.statusMessage, 'User Unauthorized')
         done()
       })
     })
@@ -738,7 +726,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 401)
-        assert.equal(response.statusMessage, 'Unauthorized') // TODO: Should be Unauthenticated
+        assert.equal(response.statusMessage, 'Unauthenticated')
         done()
       })
     })
@@ -748,7 +736,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 401)
-        assert.equal(response.statusMessage, 'Unauthorized') // TODO: Should be User Unauthorized
+        assert.equal(response.statusMessage, 'Unauthenticated')
         done()
       })
     })
@@ -770,7 +758,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       ' <http://www.w3.org/ns/auth/acl#default> <./>;\n' +
       ' <http://www.w3.org/ns/auth/acl#agentClass> <http://xmlns.com/foaf/0.1/Agent>;\n' +
       ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read> .\n'
-    it("user1 should be able to modify test directory's ACL file", function (done) {
+    it('user1 should be able to modify test directory\'s ACL file', function (done) {
       var options = createOptions('/write-acl/default-for-new/.acl', 'user1', 'text/turtle')
       options.body = body
       request.put(options, function (error, response, body) {
@@ -779,7 +767,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it("user1 should be able to access test direcotory's ACL file", function (done) {
+    it('user1 should be able to access test direcotory\'s ACL file', function (done) {
       var options = createOptions('/write-acl/default-for-new/.acl', 'user1')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
@@ -804,12 +792,12 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it("user2 should not be able to access test direcotory's ACL file", function (done) {
+    it('user2 should not be able to access test direcotory\'s ACL file', function (done) {
       var options = createOptions('/write-acl/default-for-new/.acl', 'user2')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 403)
-        assert.equal(response.statusMessage, 'Forbidden') // TODO: Should be User Unauthorized
+        assert.equal(response.statusMessage, 'User Unauthorized')
         done()
       })
     })
@@ -827,7 +815,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 403)
-        assert.equal(response.statusMessage, 'Forbidden') // TODO: Should be User Unauthorized
+        assert.equal(response.statusMessage, 'User Unauthorized')
         done()
       })
     })
@@ -845,7 +833,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 401)
-        assert.equal(response.statusMessage, 'Unauthorized') // TODO: Should be Unauthenticated
+        assert.equal(response.statusMessage, 'Unauthenticated')
         done()
       })
     })
