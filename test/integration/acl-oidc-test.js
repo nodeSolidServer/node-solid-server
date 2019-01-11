@@ -311,15 +311,14 @@ describe('ACL with WebID+OIDC over HTTP', function () {
           done()
         })
       })
-    it('user1 should not be able to access test directory when origin is invalid',
+    it('user1 should be able to access public test directory even when origin is invalid',
       function (done) {
         var options = createOptions('/origin/test-folder/', 'user1')
         options.headers.origin = origin2
 
         request.head(options, function (error, response, body) {
           assert.equal(error, null)
-          assert.equal(response.statusCode, 403)
-          assert.equal(response.statusMessage, 'Forbidden') // TODO: Should be Origin Unauthorized
+          assert.equal(response.statusCode, 200)
           done()
         })
       })
@@ -344,15 +343,14 @@ describe('ACL with WebID+OIDC over HTTP', function () {
           done()
         })
       })
-    it('agent should not be able to access test directory when origin is invalid',
+    it('agent should be able to access public test directory even when origin is invalid',
       function (done) {
         var options = createOptions('/origin/test-folder/')
         options.headers.origin = origin2
 
         request.head(options, function (error, response, body) {
           assert.equal(error, null)
-          assert.equal(response.statusCode, 403)
-          assert.equal(response.statusMessage, 'Forbidden') // TODO: Should be Origin Unauthorized
+          assert.equal(response.statusCode, 200)
           done()
         })
       })
