@@ -855,4 +855,15 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       rm('/accounts-acl/tim.localhost/write-acl/default-for-new/test-file.ttl')
     })
   })
+
+  describe('Wrongly set accessTo', function () {
+    it('user1 should be able to access test directory', function (done) {
+      var options = createOptions('/dot-acl/', 'user1')
+      request.head(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 403)
+        done()
+      })
+    })
+  })
 })
