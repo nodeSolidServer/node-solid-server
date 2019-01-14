@@ -301,27 +301,24 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it('user1 should be able to access to test directory when origin is valid',
-      function (done) {
-        var options = createOptions('/origin/test-folder/', 'user1')
-        options.headers.origin = origin1
+    it('user1 should be able to access to test directory when origin is valid', function (done) {
+      var options = createOptions('/origin/test-folder/', 'user1')
+      options.headers.origin = origin1
 
-        request.head(options, function (error, response, body) {
-          assert.equal(error, null)
-          assert.equal(response.statusCode, 200)
-          done()
-        })
+      request.head(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 200)
+        done()
       })
-    it('user1 should be able to access public test directory even when origin is invalid',
-      function (done) {
-        var options = createOptions('/origin/test-folder/', 'user1')
-        options.headers.origin = origin2
+    })
+    it('user1 should be able to access public test directory even when origin is invalid', function (done) {
+      var options = createOptions('/origin/test-folder/', 'user1')
+      options.headers.origin = origin2
 
-        request.head(options, function (error, response, body) {
-          assert.equal(error, null)
-          assert.equal(response.statusCode, 200)
-          done()
-        })
+      request.head(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 200)
+        done()
       })
     })
     it('agent should be able to access test directory', function (done) {
@@ -344,17 +341,16 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it('agent should be able to access public test directory even when origin is invalid',
-      function (done) {
-        var options = createOptions('/origin/test-folder/')
-        options.headers.origin = origin2
+    it('agent should be able to access public test directory even when origin is invalid', function (done) {
+      var options = createOptions('/origin/test-folder/')
+      options.headers.origin = origin2
 
-        request.head(options, function (error, response, body) {
-          assert.equal(error, null)
-          assert.equal(response.statusCode, 200)
-          done()
-        })
+      request.head(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 200)
+        done()
       })
+    })
     it('user2 should be able to write to test directory with correct origin', function (done) {
       var options = createOptions('/origin/test-folder/test1.txt', 'user2', 'text/plain')
       options.headers.origin = origin1
