@@ -28,6 +28,11 @@
       "name": "Kjetil Kjernsmo",
       "email": "kjetil@inrupt.com",
       "url": "http://kjetil.kjernsmo.net/"
+    },
+    {
+      "name": "Arne Hassel",
+      "email": "arne.hassel@inrupt.com",
+      "url": "https://icanhasweb.net/"
     }
   ],
   "license": "MIT",
