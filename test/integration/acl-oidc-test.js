@@ -301,27 +301,24 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it('user1 should be able to access to test directory when origin is valid',
-      function (done) {
-        var options = createOptions('/origin/test-folder/', 'user1')
-        options.headers.origin = origin1
+    it('user1 should be able to access to test directory when origin is valid', function (done) {
+      var options = createOptions('/origin/test-folder/', 'user1')
+      options.headers.origin = origin1
 
-        request.head(options, function (error, response, body) {
-          assert.equal(error, null)
-          assert.equal(response.statusCode, 200)
-          done()
-        })
+      request.head(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 200)
+        done()
       })
-    it('user1 should be able to access public test directory even when origin is invalid',
-      function (done) {
-        var options = createOptions('/origin/test-folder/', 'user1')
-        options.headers.origin = origin2
+    })
+    it('user1 should be able to access public test directory even when origin is invalid', function (done) {
+      var options = createOptions('/origin/test-folder/', 'user1')
+      options.headers.origin = origin2
 
-        request.head(options, function (error, response, body) {
-          assert.equal(error, null)
-          assert.equal(response.statusCode, 200)
-          done()
-        })
+      request.head(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 200)
+        done()
       })
     })
     it('agent should be able to access test directory', function (done) {
@@ -343,8 +340,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         assert.equal(response.statusCode, 200)
         done()
       })
-    it('agent should be able to access public test directory even when origin is invalid',
-      function (done) {
+      it('agent should be able to access public test directory even when origin is invalid', function (done) {
         var options = createOptions('/origin/test-folder/')
         options.headers.origin = origin2
 
@@ -354,532 +350,533 @@ describe('ACL with WebID+OIDC over HTTP', function () {
           done()
         })
       })
-    it('user2 should be able to write to test directory with correct origin', function (done) {
-      var options = createOptions('/origin/test-folder/test1.txt', 'user2', 'text/plain')
-      options.headers.origin = origin1
-      options.body = 'DAAAAAHUUUT'
-      request.put(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 201)
-        done()
+      it('user2 should be able to write to test directory with correct origin', function (done) {
+        var options = createOptions('/origin/test-folder/test1.txt', 'user2', 'text/plain')
+        options.headers.origin = origin1
+        options.body = 'DAAAAAHUUUT'
+        request.put(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 201)
+          done()
+        })
       })
-    })
-    it('user2 should not be able to write to test directory with wrong origin', function (done) {
-      var options = createOptions('/origin/test-folder/test2.txt', 'user2', 'text/plain')
-      options.headers.origin = origin2
-      options.body = 'ARRRRGH'
-      request.put(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 403)
-        assert.equal(response.statusMessage, 'Forbidden') // TODO: Should be Origin Unauthorized
-        done()
+      it('user2 should not be able to write to test directory with wrong origin', function (done) {
+        var options = createOptions('/origin/test-folder/test2.txt', 'user2', 'text/plain')
+        options.headers.origin = origin2
+        options.body = 'ARRRRGH'
+        request.put(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 403)
+          assert.equal(response.statusMessage, 'Forbidden') // TODO: Should be Origin Unauthorized
+          done()
+        })
+      })
+
+      after(function () {
+        rm('/accounts-acl/tim.localhost/origin/test-folder/.acl')
+        rm('/accounts-acl/tim.localhost/origin/test-folder/test1.txt')
+        rm('/accounts-acl/tim.localhost/origin/test-folder/test2.txt')
       })
     })
 
-    after(function () {
-      rm('/accounts-acl/tim.localhost/origin/test-folder/.acl')
-      rm('/accounts-acl/tim.localhost/origin/test-folder/test1.txt')
-      rm('/accounts-acl/tim.localhost/origin/test-folder/test2.txt')
-    })
-  })
-
-  describe('Read-only', function () {
-    var body = fs.readFileSync(path.join(rootPath, 'tim.localhost/read-acl/.acl'))
-    it('user1 should be able to access ACL file', function (done) {
-      var options = createOptions('/read-acl/.acl', 'user1')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
+    describe('Read-only', function () {
+      var body = fs.readFileSync(path.join(rootPath, 'tim.localhost/read-acl/.acl'))
+      it('user1 should be able to access ACL file', function (done) {
+        var options = createOptions('/read-acl/.acl', 'user1')
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 200)
+          done()
+        })
       })
-    })
-    it('user1 should be able to access test directory', function (done) {
-      var options = createOptions('/read-acl/', 'user1')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
+      it('user1 should be able to access test directory', function (done) {
+        var options = createOptions('/read-acl/', 'user1')
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 200)
+          done()
+        })
       })
-    })
-    it('user1 should be able to modify ACL file', function (done) {
-      var options = createOptions('/read-acl/.acl', 'user1', 'text/turtle')
-      options.body = body
-      request.put(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 201)
-        done()
+      it('user1 should be able to modify ACL file', function (done) {
+        var options = createOptions('/read-acl/.acl', 'user1', 'text/turtle')
+        options.body = body
+        request.put(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 201)
+          done()
+        })
       })
-    })
-    it('user2 should be able to access test directory', function (done) {
-      var options = createOptions('/read-acl/', 'user2')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
+      it('user2 should be able to access test directory', function (done) {
+        var options = createOptions('/read-acl/', 'user2')
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 200)
+          done()
+        })
       })
-    })
-    it('user2 should not be able to access ACL file', function (done) {
-      var options = createOptions('/read-acl/.acl', 'user2')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 403)
-        assert.equal(response.statusMessage, 'User Unauthorized')
-        done()
+      it('user2 should not be able to access ACL file', function (done) {
+        var options = createOptions('/read-acl/.acl', 'user2')
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 403)
+          assert.equal(response.statusMessage, 'User Unauthorized')
+          done()
+        })
       })
-    })
-    it('user2 should not be able to modify ACL file', function (done) {
-      var options = createOptions('/read-acl/.acl', 'user2', 'text/turtle')
-      options.body = '<d> <e> <f> .'
-      request.put(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 403)
-        assert.equal(response.statusMessage, 'User Unauthorized')
-        done()
+      it('user2 should not be able to modify ACL file', function (done) {
+        var options = createOptions('/read-acl/.acl', 'user2', 'text/turtle')
+        options.body = '<d> <e> <f> .'
+        request.put(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 403)
+          assert.equal(response.statusMessage, 'User Unauthorized')
+          done()
+        })
       })
-    })
-    it('agent should be able to access test direcotory', function (done) {
-      var options = createOptions('/read-acl/')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
+      it('agent should be able to access test direcotory', function (done) {
+        var options = createOptions('/read-acl/')
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 200)
+          done()
+        })
       })
-    })
-    it('agent should not be able to modify ACL file', function (done) {
-      var options = createOptions('/read-acl/.acl', null, 'text/turtle')
-      options.body = '<d> <e> <f> .'
-      request.put(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 401)
-        assert.equal(response.statusMessage, 'Unauthenticated')
-        done()
+      it('agent should not be able to modify ACL file', function (done) {
+        var options = createOptions('/read-acl/.acl', null, 'text/turtle')
+        options.body = '<d> <e> <f> .'
+        request.put(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 401)
+          assert.equal(response.statusMessage, 'Unauthenticated')
+          done()
+        })
       })
-    })
-    // Deep acl:accessTo inheritance is not supported yet #963
-    it.skip('user1 should be able to access deep test directory ACL', function (done) {
-      var options = createOptions('/read-acl/deeper-tree/.acl', 'user1')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
+      // Deep acl:accessTo inheritance is not supported yet #963
+      it.skip('user1 should be able to access deep test directory ACL', function (done) {
+        var options = createOptions('/read-acl/deeper-tree/.acl', 'user1')
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 200)
+          done()
+        })
       })
-    })
-    it.skip('user1 should not be able to access deep test dir', function (done) {
-      var options = createOptions('/read-acl/deeper-tree/', 'user1')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 403)
-        assert.equal(response.statusMessage, 'User Unauthorized')
-        done()
+      it.skip('user1 should not be able to access deep test dir', function (done) {
+        var options = createOptions('/read-acl/deeper-tree/', 'user1')
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 403)
+          assert.equal(response.statusMessage, 'User Unauthorized')
+          done()
+        })
       })
-    })
-    it.skip('user1 should able to access even deeper test directory', function (done) {
-      var options = createOptions('/read-acl/deeper-tree/acls-only-on-top/', 'user1')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
+      it.skip('user1 should able to access even deeper test directory', function (done) {
+        var options = createOptions('/read-acl/deeper-tree/acls-only-on-top/', 'user1')
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 200)
+          done()
+        })
       })
-    })
-    it.skip('user1 should able to access even deeper test file', function (done) {
-      var options = createOptions('/read-acl/deeper-tree/acls-only-on-top/example.ttl', 'user1')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
-      })
-    })
-  })
-
-  describe('Append-only', function () {
-    // var body = fs.readFileSync(__dirname + '/resources/append-acl/abc.ttl.acl')
-    it('user1 should be able to access test file\'s ACL file', function (done) {
-      var options = createOptions('/append-acl/abc.ttl.acl', 'user1')
-      request.head(options, function (error, response) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
-      })
-    })
-    it.skip('user1 should be able to PATCH a resource', function (done) {
-      var options = createOptions('/append-inherited/test.ttl', 'user1')
-      options.body = 'INSERT DATA { :test  :hello 456 .}'
-      options.headers['content-type'] = 'application/sparql-update'
-      request.patch(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
-      })
-    })
-    it('user1 should be able to PATCH an existing resource', function (done) {
-      var options = createOptions('/append-inherited/test.ttl', 'user1')
-      options.body = 'INSERT DATA { :test  :hello 789 .}'
-      options.headers['content-type'] = 'application/sparql-update'
-      request.patch(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
-      })
-    })
-    it('user1 should be able to access test file', function (done) {
-      var options = createOptions('/append-acl/abc.ttl', 'user1')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
-      })
-    })
-    // TODO POST instead of PUT
-    it('user1 should be able to modify test file', function (done) {
-      var options = createOptions('/append-acl/abc.ttl', 'user1', 'text/turtle')
-      options.body = '<a> <b> <c> .\n'
-      request.put(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 201)
-        done()
-      })
-    })
-    it('user2 should not be able to access test file\'s ACL file', function (done) {
-      var options = createOptions('/append-acl/abc.ttl.acl', 'user2', 'text/turtle')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 403)
-        assert.equal(response.statusMessage, 'User Unauthorized')
-        done()
-      })
-    })
-    it('user2 should not be able to access test file', function (done) {
-      var options = createOptions('/append-acl/abc.ttl', 'user2', 'text/turtle')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 403)
-        assert.equal(response.statusMessage, 'User Unauthorized')
-        done()
-      })
-    })
-    it('user2 (with append permission) cannot use PUT to append', function (done) {
-      var options = createOptions('/append-acl/abc.ttl', 'user2', 'text/turtle')
-      options.body = '<d> <e> <f> .\n'
-      request.put(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 403)
-        assert.equal(response.statusMessage, 'User Unauthorized')
-        done()
-      })
-    })
-    it('agent should not be able to access test file', function (done) {
-      var options = createOptions('/append-acl/abc.ttl')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 401)
-        assert.equal(response.statusMessage, 'Unauthenticated')
-        done()
-      })
-    })
-    it('agent (with append permissions) should not PUT', function (done) {
-      var options = createOptions('/append-acl/abc.ttl', null, 'text/turtle')
-      options.body = '<g> <h> <i> .\n'
-      request.put(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 401)
-        assert.equal(response.statusMessage, 'Unauthenticated')
-        done()
-      })
-    })
-    after(function () {
-      rm('/accounts-acl/tim.localhost/append-inherited/test.ttl')
-    })
-  })
-
-  describe('Group', function () {
-    // before(function () {
-    //   rm('/accounts-acl/tim.localhost/group/test-folder/.acl')
-    // })
-
-    // it('should PUT new ACL file', function (done) {
-    //   var options = createOptions('/group/test-folder/.acl', 'user1')
-    //   options.body = '<#Owner> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
-    //     ' <http://www.w3.org/ns/auth/acl#accessTo> <./.acl>;\n' +
-    //     ' <http://www.w3.org/ns/auth/acl#agent> <' + user1 + '>;\n' +
-    //     ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Control> .\n' +
-    //     '<#Public> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
-    //     ' <http://www.w3.org/ns/auth/acl#accessTo> <./>;\n' +
-    //     ' <http://www.w3.org/ns/auth/acl#agentGroup> <group-listing#folks>;\n' +
-    //     ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read> .\n'
-    //   request.put(options, function (error, response, body) {
-    //     assert.equal(error, null)
-    //     assert.equal(response.statusCode, 201)
-    //     done()
-    //   })
-    // })
-    it('user1 should be able to access test directory', function (done) {
-      var options = createOptions('/group/test-folder/', 'user1')
-
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
-      })
-    })
-    it('user2 should be able to access test directory', function (done) {
-      var options = createOptions('/group/test-folder/', 'user2')
-
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
-      })
-    })
-    it('user2 should be able to write a file in the test directory', function (done) {
-      var options = createOptions('/group/test-folder/test.ttl', 'user2', 'text/turtle')
-      options.body = '<#Dahut> a <https://dbpedia.org/resource/Category:French_legendary_creatures>.\n'
-
-      request.put(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 201)
-        done()
+      it.skip('user1 should able to access even deeper test file', function (done) {
+        var options = createOptions('/read-acl/deeper-tree/acls-only-on-top/example.ttl', 'user1')
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 200)
+          done()
+        })
       })
     })
 
-    it('user1 should be able to get the file', function (done) {
-      var options = createOptions('/group/test-folder/test.ttl', 'user1', 'text/turtle')
-
-      request.get(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
+    describe('Append-only', function () {
+      // var body = fs.readFileSync(__dirname + '/resources/append-acl/abc.ttl.acl')
+      it('user1 should be able to access test file\'s ACL file', function (done) {
+        var options = createOptions('/append-acl/abc.ttl.acl', 'user1')
+        request.head(options, function (error, response) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 200)
+          done()
+        })
       })
-    })
-    it('user2 should not be able to write to the ACL', function (done) {
-      var options = createOptions('/group/test-folder/.acl', 'user2', 'text/turtle')
-      options.body = '<#Dahut> a <https://dbpedia.org/resource/Category:French_legendary_creatures>.\n'
-
-      request.put(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 403)
-        assert.equal(response.statusMessage, 'User Unauthorized')
-        done()
+      it.skip('user1 should be able to PATCH a resource', function (done) {
+        var options = createOptions('/append-inherited/test.ttl', 'user1')
+        options.body = 'INSERT DATA { :test  :hello 456 .}'
+        options.headers['content-type'] = 'application/sparql-update'
+        request.patch(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 200)
+          done()
+        })
       })
-    })
-
-    it('user1 should be able to delete the file', function (done) {
-      var options = createOptions('/group/test-folder/test.ttl', 'user1', 'text/turtle')
-
-      request.delete(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200) // Should be 204, right?
-        done()
+      it('user1 should be able to PATCH an existing resource', function (done) {
+        var options = createOptions('/append-inherited/test.ttl', 'user1')
+        options.body = 'INSERT DATA { :test  :hello 789 .}'
+        options.headers['content-type'] = 'application/sparql-update'
+        request.patch(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 200)
+          done()
+        })
       })
-    })
-    it('We should have a 500 with invalid group listings', function (done) {
-      var options = createOptions('/group/test-folder/some-other-file.txt', 'user2')
-
-      request.get(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 500)
-        done()
+      it('user1 should be able to access test file', function (done) {
+        var options = createOptions('/append-acl/abc.ttl', 'user1')
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 200)
+          done()
+        })
       })
-    })
-    it('We should have a 404 for non-existent file', function (done) {
-      var options = createOptions('/group/test-folder/nothere.txt', 'user2')
-
-      request.get(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 404)
-        done()
+      // TODO POST instead of PUT
+      it('user1 should be able to modify test file', function (done) {
+        var options = createOptions('/append-acl/abc.ttl', 'user1', 'text/turtle')
+        options.body = '<a> <b> <c> .\n'
+        request.put(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 201)
+          done()
+        })
       })
-    })
-  })
-
-  describe('Restricted', function () {
-    var body = '<#Owner> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
-      ' <http://www.w3.org/ns/auth/acl#accessTo> <./abc2.ttl>;\n' +
-      ' <http://www.w3.org/ns/auth/acl#agent> <' + user1 + '>;\n' +
-      ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Control> .\n' +
-      '<#Restricted> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
-      ' <http://www.w3.org/ns/auth/acl#accessTo> <./abc2.ttl>;\n' +
-      ' <http://www.w3.org/ns/auth/acl#agent> <' + user2 + '>;\n' +
-      ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>.\n'
-    it('user1 should be able to modify test file\'s ACL file', function (done) {
-      var options = createOptions('/append-acl/abc2.ttl.acl', 'user1', 'text/turtle')
-      options.body = body
-      request.put(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 201)
-        done()
+      it('user2 should not be able to access test file\'s ACL file', function (done) {
+        var options = createOptions('/append-acl/abc.ttl.acl', 'user2', 'text/turtle')
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 403)
+          assert.equal(response.statusMessage, 'User Unauthorized')
+          done()
+        })
       })
-    })
-    it('user1 should be able to access test file\'s ACL file', function (done) {
-      var options = createOptions('/append-acl/abc2.ttl.acl', 'user1', 'text/turtle')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
+      it('user2 should not be able to access test file', function (done) {
+        var options = createOptions('/append-acl/abc.ttl', 'user2', 'text/turtle')
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 403)
+          assert.equal(response.statusMessage, 'User Unauthorized')
+          done()
+        })
       })
-    })
-    it('user1 should be able to access test file', function (done) {
-      var options = createOptions('/append-acl/abc2.ttl', 'user1', 'text/turtle')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
+      it('user2 (with append permission) cannot use PUT to append', function (done) {
+        var options = createOptions('/append-acl/abc.ttl', 'user2', 'text/turtle')
+        options.body = '<d> <e> <f> .\n'
+        request.put(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 403)
+          assert.equal(response.statusMessage, 'User Unauthorized')
+          done()
+        })
       })
-    })
-    it('user1 should be able to modify test file', function (done) {
-      var options = createOptions('/append-acl/abc2.ttl', 'user1', 'text/turtle')
-      options.body = '<a> <b> <c> .\n'
-      request.put(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 201)
-        done()
+      it('agent should not be able to access test file', function (done) {
+        var options = createOptions('/append-acl/abc.ttl')
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 401)
+          assert.equal(response.statusMessage, 'Unauthenticated')
+          done()
+        })
       })
-    })
-    it('user2 should be able to access test file', function (done) {
-      var options = createOptions('/append-acl/abc2.ttl', 'user2')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
+      it('agent (with append permissions) should not PUT', function (done) {
+        var options = createOptions('/append-acl/abc.ttl', null, 'text/turtle')
+        options.body = '<g> <h> <i> .\n'
+        request.put(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 401)
+          assert.equal(response.statusMessage, 'Unauthenticated')
+          done()
+        })
       })
-    })
-    it('user2 should not be able to access test file\'s ACL file', function (done) {
-      var options = createOptions('/append-acl/abc2.ttl.acl', 'user2')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 403)
-        assert.equal(response.statusMessage, 'User Unauthorized')
-        done()
-      })
-    })
-    it('user2 should be able to modify test file', function (done) {
-      var options = createOptions('/append-acl/abc2.ttl', 'user2', 'text/turtle')
-      options.body = '<d> <e> <f> .\n'
-      request.put(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 201)
-        done()
-      })
-    })
-    it('agent should not be able to access test file', function (done) {
-      var options = createOptions('/append-acl/abc2.ttl')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 401)
-        assert.equal(response.statusMessage, 'Unauthenticated')
-        done()
-      })
-    })
-    it('agent should not be able to modify test file', function (done) {
-      var options = createOptions('/append-acl/abc2.ttl', null, 'text/turtle')
-      options.body = '<d> <e> <f> .\n'
-      request.put(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 401)
-        assert.equal(response.statusMessage, 'Unauthenticated')
-        done()
-      })
-    })
-  })
-
-  describe('default', function () {
-    before(function () {
-      rm('/accounts-acl/tim.localhost/write-acl/default-for-new/.acl')
-      rm('/accounts-acl/tim.localhost/write-acl/default-for-new/test-file.ttl')
-    })
-
-    var body = '<#Owner> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
-      ' <http://www.w3.org/ns/auth/acl#accessTo> <./>;\n' +
-      ' <http://www.w3.org/ns/auth/acl#agent> <' + user1 + '>;\n' +
-      ' <http://www.w3.org/ns/auth/acl#default> <./>;\n' +
-      ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Control> .\n' +
-      '<#Default> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
-      ' <http://www.w3.org/ns/auth/acl#accessTo> <./>;\n' +
-      ' <http://www.w3.org/ns/auth/acl#default> <./>;\n' +
-      ' <http://www.w3.org/ns/auth/acl#agentClass> <http://xmlns.com/foaf/0.1/Agent>;\n' +
-      ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read> .\n'
-    it('user1 should be able to modify test directory\'s ACL file', function (done) {
-      var options = createOptions('/write-acl/default-for-new/.acl', 'user1', 'text/turtle')
-      options.body = body
-      request.put(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 201)
-        done()
-      })
-    })
-    it('user1 should be able to access test direcotory\'s ACL file', function (done) {
-      var options = createOptions('/write-acl/default-for-new/.acl', 'user1')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
-      })
-    })
-    it('user1 should be able to create new test file', function (done) {
-      var options = createOptions('/write-acl/default-for-new/test-file.ttl', 'user1', 'text/turtle')
-      options.body = '<a> <b> <c> .\n'
-      request.put(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 201)
-        done()
-      })
-    })
-    it('user1 should be able to access new test file', function (done) {
-      var options = createOptions('/write-acl/default-for-new/test-file.ttl', 'user1')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
-      })
-    })
-    it('user2 should not be able to access test direcotory\'s ACL file', function (done) {
-      var options = createOptions('/write-acl/default-for-new/.acl', 'user2')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 403)
-        assert.equal(response.statusMessage, 'User Unauthorized')
-        done()
-      })
-    })
-    it('user2 should be able to access new test file', function (done) {
-      var options = createOptions('/write-acl/default-for-new/test-file.ttl', 'user2')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
-      })
-    })
-    it('user2 should not be able to modify new test file', function (done) {
-      var options = createOptions('/write-acl/default-for-new/test-file.ttl', 'user2', 'text/turtle')
-      options.body = '<d> <e> <f> .\n'
-      request.put(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 403)
-        assert.equal(response.statusMessage, 'User Unauthorized')
-        done()
-      })
-    })
-    it('agent should be able to access new test file', function (done) {
-      var options = createOptions('/write-acl/default-for-new/test-file.ttl')
-      request.head(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
-        done()
-      })
-    })
-    it('agent should not be able to modify new test file', function (done) {
-      var options = createOptions('/write-acl/default-for-new/test-file.ttl', null, 'text/turtle')
-      options.body = '<d> <e> <f> .\n'
-      request.put(options, function (error, response, body) {
-        assert.equal(error, null)
-        assert.equal(response.statusCode, 401)
-        assert.equal(response.statusMessage, 'Unauthenticated')
-        done()
+      after(function () {
+        rm('/accounts-acl/tim.localhost/append-inherited/test.ttl')
       })
     })
 
-    after(function () {
-      rm('/accounts-acl/tim.localhost/write-acl/default-for-new/.acl')
-      rm('/accounts-acl/tim.localhost/write-acl/default-for-new/test-file.ttl')
+    describe('Group', function () {
+      // before(function () {
+      //   rm('/accounts-acl/tim.localhost/group/test-folder/.acl')
+      // })
+
+      // it('should PUT new ACL file', function (done) {
+      //   var options = createOptions('/group/test-folder/.acl', 'user1')
+      //   options.body = '<#Owner> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
+      //     ' <http://www.w3.org/ns/auth/acl#accessTo> <./.acl>;\n' +
+      //     ' <http://www.w3.org/ns/auth/acl#agent> <' + user1 + '>;\n' +
+      //     ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Control> .\n' +
+      //     '<#Public> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
+      //     ' <http://www.w3.org/ns/auth/acl#accessTo> <./>;\n' +
+      //     ' <http://www.w3.org/ns/auth/acl#agentGroup> <group-listing#folks>;\n' +
+      //     ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read> .\n'
+      //   request.put(options, function (error, response, body) {
+      //     assert.equal(error, null)
+      //     assert.equal(response.statusCode, 201)
+      //     done()
+      //   })
+      // })
+      it('user1 should be able to access test directory', function (done) {
+        var options = createOptions('/group/test-folder/', 'user1')
+
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 200)
+          done()
+        })
+      })
+      it('user2 should be able to access test directory', function (done) {
+        var options = createOptions('/group/test-folder/', 'user2')
+
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 200)
+          done()
+        })
+      })
+      it('user2 should be able to write a file in the test directory', function (done) {
+        var options = createOptions('/group/test-folder/test.ttl', 'user2', 'text/turtle')
+        options.body = '<#Dahut> a <https://dbpedia.org/resource/Category:French_legendary_creatures>.\n'
+
+        request.put(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 201)
+          done()
+        })
+      })
+
+      it('user1 should be able to get the file', function (done) {
+        var options = createOptions('/group/test-folder/test.ttl', 'user1', 'text/turtle')
+
+        request.get(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 200)
+          done()
+        })
+      })
+      it('user2 should not be able to write to the ACL', function (done) {
+        var options = createOptions('/group/test-folder/.acl', 'user2', 'text/turtle')
+        options.body = '<#Dahut> a <https://dbpedia.org/resource/Category:French_legendary_creatures>.\n'
+
+        request.put(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 403)
+          assert.equal(response.statusMessage, 'User Unauthorized')
+          done()
+        })
+      })
+
+      it('user1 should be able to delete the file', function (done) {
+        var options = createOptions('/group/test-folder/test.ttl', 'user1', 'text/turtle')
+
+        request.delete(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 200) // Should be 204, right?
+          done()
+        })
+      })
+      it('We should have a 500 with invalid group listings', function (done) {
+        var options = createOptions('/group/test-folder/some-other-file.txt', 'user2')
+
+        request.get(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 500)
+          done()
+        })
+      })
+      it('We should have a 404 for non-existent file', function (done) {
+        var options = createOptions('/group/test-folder/nothere.txt', 'user2')
+
+        request.get(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 404)
+          done()
+        })
+      })
+    })
+
+    describe('Restricted', function () {
+      var body = '<#Owner> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#accessTo> <./abc2.ttl>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#agent> <' + user1 + '>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Control> .\n' +
+        '<#Restricted> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#accessTo> <./abc2.ttl>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#agent> <' + user2 + '>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>.\n'
+      it('user1 should be able to modify test file\'s ACL file', function (done) {
+        var options = createOptions('/append-acl/abc2.ttl.acl', 'user1', 'text/turtle')
+        options.body = body
+        request.put(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 201)
+          done()
+        })
+      })
+      it('user1 should be able to access test file\'s ACL file', function (done) {
+        var options = createOptions('/append-acl/abc2.ttl.acl', 'user1', 'text/turtle')
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 200)
+          done()
+        })
+      })
+      it('user1 should be able to access test file', function (done) {
+        var options = createOptions('/append-acl/abc2.ttl', 'user1', 'text/turtle')
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 200)
+          done()
+        })
+      })
+      it('user1 should be able to modify test file', function (done) {
+        var options = createOptions('/append-acl/abc2.ttl', 'user1', 'text/turtle')
+        options.body = '<a> <b> <c> .\n'
+        request.put(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 201)
+          done()
+        })
+      })
+      it('user2 should be able to access test file', function (done) {
+        var options = createOptions('/append-acl/abc2.ttl', 'user2')
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 200)
+          done()
+        })
+      })
+      it('user2 should not be able to access test file\'s ACL file', function (done) {
+        var options = createOptions('/append-acl/abc2.ttl.acl', 'user2')
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 403)
+          assert.equal(response.statusMessage, 'User Unauthorized')
+          done()
+        })
+      })
+      it('user2 should be able to modify test file', function (done) {
+        var options = createOptions('/append-acl/abc2.ttl', 'user2', 'text/turtle')
+        options.body = '<d> <e> <f> .\n'
+        request.put(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 201)
+          done()
+        })
+      })
+      it('agent should not be able to access test file', function (done) {
+        var options = createOptions('/append-acl/abc2.ttl')
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 401)
+          assert.equal(response.statusMessage, 'Unauthenticated')
+          done()
+        })
+      })
+      it('agent should not be able to modify test file', function (done) {
+        var options = createOptions('/append-acl/abc2.ttl', null, 'text/turtle')
+        options.body = '<d> <e> <f> .\n'
+        request.put(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 401)
+          assert.equal(response.statusMessage, 'Unauthenticated')
+          done()
+        })
+      })
+    })
+
+    describe('default', function () {
+      before(function () {
+        rm('/accounts-acl/tim.localhost/write-acl/default-for-new/.acl')
+        rm('/accounts-acl/tim.localhost/write-acl/default-for-new/test-file.ttl')
+      })
+
+      var body = '<#Owner> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#accessTo> <./>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#agent> <' + user1 + '>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#default> <./>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Control> .\n' +
+        '<#Default> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#accessTo> <./>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#default> <./>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#agentClass> <http://xmlns.com/foaf/0.1/Agent>;\n' +
+        ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read> .\n'
+      it('user1 should be able to modify test directory\'s ACL file', function (done) {
+        var options = createOptions('/write-acl/default-for-new/.acl', 'user1', 'text/turtle')
+        options.body = body
+        request.put(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 201)
+          done()
+        })
+      })
+      it('user1 should be able to access test direcotory\'s ACL file', function (done) {
+        var options = createOptions('/write-acl/default-for-new/.acl', 'user1')
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 200)
+          done()
+        })
+      })
+      it('user1 should be able to create new test file', function (done) {
+        var options = createOptions('/write-acl/default-for-new/test-file.ttl', 'user1', 'text/turtle')
+        options.body = '<a> <b> <c> .\n'
+        request.put(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 201)
+          done()
+        })
+      })
+      it('user1 should be able to access new test file', function (done) {
+        var options = createOptions('/write-acl/default-for-new/test-file.ttl', 'user1')
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 200)
+          done()
+        })
+      })
+      it('user2 should not be able to access test direcotory\'s ACL file', function (done) {
+        var options = createOptions('/write-acl/default-for-new/.acl', 'user2')
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 403)
+          assert.equal(response.statusMessage, 'User Unauthorized')
+          done()
+        })
+      })
+      it('user2 should be able to access new test file', function (done) {
+        var options = createOptions('/write-acl/default-for-new/test-file.ttl', 'user2')
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 200)
+          done()
+        })
+      })
+      it('user2 should not be able to modify new test file', function (done) {
+        var options = createOptions('/write-acl/default-for-new/test-file.ttl', 'user2', 'text/turtle')
+        options.body = '<d> <e> <f> .\n'
+        request.put(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 403)
+          assert.equal(response.statusMessage, 'User Unauthorized')
+          done()
+        })
+      })
+      it('agent should be able to access new test file', function (done) {
+        var options = createOptions('/write-acl/default-for-new/test-file.ttl')
+        request.head(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 200)
+          done()
+        })
+      })
+      it('agent should not be able to modify new test file', function (done) {
+        var options = createOptions('/write-acl/default-for-new/test-file.ttl', null, 'text/turtle')
+        options.body = '<d> <e> <f> .\n'
+        request.put(options, function (error, response, body) {
+          assert.equal(error, null)
+          assert.equal(response.statusCode, 401)
+          assert.equal(response.statusMessage, 'Unauthenticated')
+          done()
+        })
+      })
+
+      after(function () {
+        rm('/accounts-acl/tim.localhost/write-acl/default-for-new/.acl')
+        rm('/accounts-acl/tim.localhost/write-acl/default-for-new/test-file.ttl')
+      })
     })
   })
 })
