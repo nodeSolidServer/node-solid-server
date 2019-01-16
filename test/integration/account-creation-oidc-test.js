@@ -250,7 +250,7 @@ describe('Single User signup page', () => {
     fs.removeSync(rootDir)
   })
 
-  it('should return a 406 not acceptable without accept text/html', done => {
+  it.skip('should return a 406 not acceptable without accept text/html', done => {
     server.get('/')
       .set('accept', 'text/plain')
       .expect(406)
