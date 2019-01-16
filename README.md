@@ -400,64 +400,12 @@ adviceable to remove it rather than set a large quota, because the
 current implementation will impair write performance if there is a lot
 of data.
 
-## Contributing
+## Contribute to Solid
 
-`solid` is has been made possible due to contributions from many individuals, these are some of the key contributors:
+Solid is only possible because of a large community of [contributors](https://github.com/solid/node-solid-server/blob/master/CONTRIBUTORS.md).
+A heartfelt thank you to everyone for all of your efforts!
 
-<table>
-  <tbody>
-    <tr>
-      <th align="left">Tim Berners-Lee</th>
-      <td><a href="https://github.com/timbl">GitHub/timbl</a></td>
-      <td><a href="http://twitter.com/timberners_lee">Twitter/@timberners_lee</a></td>
-      <td><a href="https://www.w3.org/People/Berners-Lee/card#i">WebID</a></td>
-    </tr>
-    <tr>
-      <th align="left">Nicola Greco</th>
-      <td><a href="https://github.com/nicola">GitHub/nicola</a></td>
-      <td><a href="http://twitter.com/nicolagreco">Twitter/@nicolagreco</a></td>
-      <td><a href="https://nicola.databox.me/profile/card#me">WebID</a></td>
-    </tr>
-    <tr>
-      <th align="left">Martin Martinez Rivera</th>
-      <td><a href="https://github.com/martinmr">GitHub/martinmr</a></td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th align="left">Andrei Sambra</th>
-      <td><a href="https://github.com/deiu">GitHub/deiu</a></td>
-      <td><a href="http://twitter.com/deiu">Twitter/@deiu</a></td>
-      <td><a href="https://deiu.me/profile#me">WebID</a></td>
-    </tr>
-    <tr>
-      <th align="left">Dmitri Zagidulin</th>
-      <td><a href="https://github.com/dmitrizagidulin/">GitHub/dmitrizagidulin</a></td>
-      <td><a href="https://twitter.com/codenamedmitri">Twitter/@codenamedmitri</a></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th align="left">Ruben Verborgh</th>
-      <td><a href="https://github.com/RubenVerborgh/">GitHub/RubenVerborgh</a></td>
-      <td><a href="https://twitter.com/RubenVerborgh">Twitter/@RubenVerborgh</a></td>
-      <td><a href="https://ruben.verborgh.org/profile/#me">WebID</a></td>
-    </tr>
-    <tr>
-      <th align="left">Kjetil Kjernsmo</th>
-      <td><a href="https://github.com/kjetilk">GitHub/kjetilk</a></td>
-      <td><a href="https://twitter.com/KKjernsmo">Twitter/@KKjernsmo</a></td>
-      <td><a href="https://solid.kjernsmo.net/profile/card#me">WebID</a></td>
-    </tr>
-    <tr>
-      <th align="left">Justin Bingham</th>
-      <td><a href="https://github.com/justinwb">GitHub/justinwb</a></td>
-      <td><a href="https://twitter.com/justinwb">Twitter/@justinwb</a></td>
-      <td><a href="https://justin.janeirodigital.exchange/profile/card#me">WebID</a></td>
-    </tr>
-  </tbody>
-</table>
-
-#### Do you want to contribute?
+You can help us too:
 
 - [Join us in Gitter](https://gitter.im/solid/chat) to help with development or to hang out with us :)
 - [Create a new issue](https://github.com/solid/node-solid-server/issues/new) to report bugs
