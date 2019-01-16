@@ -8,16 +8,29 @@
   },
   "contributors": [
     {
-      "name": "Martin Martinez Rivera",
-      "email": "martinmr@mit.edu"
+      "name": "Arne Hassel",
+      "url": "http://icanhasweb.net/"
     },
     {
       "name": "Nicola Greco",
       "email": "me@nicolagreco.com"
     },
     {
-      "name": "Dmitri Zagidulin",
-      "url": "https://github.com/dmitrizagidulin/"
+      "name": "Kjetil Kjernsmo",
+      "email": "kjetil@inrupt.com",
+      "url": "http://kjetil.kjernsmo.net/"
+    },
+    {
+      "name": "Martin Martinez Rivera",
+      "email": "martinmr@mit.edu"
+    },
+    {
+      "name": "Andrei Sambra",
+      "url": "https://deiu.me/"
+    },
+    {
+      "name": "Ruben Taelman",
+      "url": "https://www.rubensworks.net/"
     },
     {
       "name": "Ruben Verborgh",
@@ -25,9 +38,8 @@
       "url": "https://ruben.verborgh.org/"
     },
     {
-      "name": "Kjetil Kjernsmo",
-      "email": "kjetil@inrupt.com",
-      "url": "http://kjetil.kjernsmo.net/"
+      "name": "Dmitri Zagidulin",
+      "url": "https://github.com/dmitrizagidulin/"
     }
   ],
   "license": "MIT",
