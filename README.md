@@ -415,4 +415,4 @@ Have a look at [CONTRIBUTING.md](https://github.com/solid/node-solid-server/blob
 
 ## License
 
-MIT
+[The MIT License](https://github.com/solid/node-solid-server/blob/master/LICENSE.md)
