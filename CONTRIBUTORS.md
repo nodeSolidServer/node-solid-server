@@ -9,6 +9,7 @@ Please [let us know](https://github.com/solid/node-solid-server/edit/master/CONT
 - [Sarven Capadisli](http://csarven.ca/)
 - [Melvin Carvalho](https://melvincarvalho.com/)
 - [Nicola Greco](https://nicola.io/)
+- [Amy Guy](https://rhiaro.co.uk/)
 - [Arne Hassel](http://icanhasweb.net/)
 - [Kingsley Idehen](https://github.com/kidehen)
 - [Kjetil Kjernsmo](http://kjetil.kjernsmo.net/)
