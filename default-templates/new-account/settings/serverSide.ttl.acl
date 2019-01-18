@@ -11,3 +11,14 @@
 
     acl:mode acl:Read .
     
+
+<#ownerreadonly>
+    a acl:Authorization;
+
+    acl:agent
+        <{{webIReadOnly}}>;
+
+    acl:accessTo <./serverSide.ttl>;
+
+    acl:mode acl:Read .
+    

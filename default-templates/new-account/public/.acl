@@ -10,6 +10,13 @@
     acl:default <./>;
     acl:mode acl:Read, acl:Write, acl:Control.
 
+<#ownerreadonly>
+    a acl:Authorization;
+    acl:agent <{{webIdReadOnly}}>;
+    acl:accessTo <./>;
+    acl:defaultForNew <./>;
+    acl:mode acl:Read.
+
 # The public has read permissions
 <#public>
     a acl:Authorization;

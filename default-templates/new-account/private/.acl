@@ -8,3 +8,10 @@
     acl:accessTo <./>;
     acl:defaultForNew <./>;
     acl:mode acl:Read, acl:Write, acl:Control.
+
+<#ownerreadonly>
+    a acl:Authorization;
+    acl:agent <{{webIdReadOnly}}>;
+    acl:accessTo <./>;
+    acl:defaultForNew <./>;
+    acl:mode acl:Read.

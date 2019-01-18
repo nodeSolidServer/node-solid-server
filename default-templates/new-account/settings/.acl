@@ -17,4 +17,20 @@
     acl:mode
         acl:Read, acl:Write, acl:Control.
 
+<#ownerreadonly>
+    a acl:Authorization;
+
+    acl:agent
+        <{{webIdReadOnly}}>;
+
+    # Set the access to the root storage folder itself
+    acl:accessTo <./>;
+
+    # All settings resources will be private, by default, unless overridden
+    acl:defaultForNew <./>;
+
+    # The owner has all of the access modes allowed
+    acl:mode
+        acl:Read, acl:Append.
+
 # Private, no public access modes

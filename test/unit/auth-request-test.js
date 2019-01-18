@@ -82,16 +82,30 @@ describe('AuthRequest', () => {
   })
 
   describe('initUserSession()', () => {
-    it('should initialize the request session', () => {
+    it('should initialize the request session (full access)', () => {
       let webId = 'https://alice.example.com/#me'
       let alice = UserAccount.from({ username: 'alice', webId })
       let session = {}
 
       let request = new AuthRequest({ session })
 
-      request.initUserSession(alice)
+      request.initUserSession(alice, false)
 
       expect(request.session.userId).to.equal(webId)
+      let subject = request.session.subject
+      expect(subject['_id']).to.equal(webId)
+    })
+
+    it('should initialize the request session (read-only)', () => {
+      let webId = 'https://alice.example.com/#me'
+      let alice = UserAccount.from({ username: 'alice', webId })
+      let session = {}
+
+      let request = new AuthRequest({ session })
+
+      request.initUserSession(alice, true)
+
+      expect(request.session.userId).to.equal(webId + '-read-only')
       let subject = request.session.subject
       expect(subject['_id']).to.equal(webId)
     })
