@@ -72,7 +72,7 @@
       return
     }
 
-    // do stuff
+    // manipulate DOM to present data
     storagePanel.classList.remove('hidden')
     const quotaValue = quotaNode.value
     storageQuota.innerText = formatBytes(quotaValue)
