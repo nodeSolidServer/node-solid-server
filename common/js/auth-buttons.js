@@ -66,7 +66,8 @@
     const storagePanel = document.getElementById('StoragePanel')
     const storageQuota = document.getElementById('StorageQuota')
     const storageUsage = document.getElementById('StorageUsage')
-    if (!quotaNode || !usageNode || !storagePanel || !storageQuota || !storageUsage) {
+    const storageUsedBar = document.getElementById('StorageUsedBar')
+    if (!quotaNode || !usageNode || !storagePanel || !storageQuota || !storageUsage || !storageUsedBar) {
       // If anything of this is not available, we do not need to do anything more
       return
     }
@@ -77,6 +78,10 @@
     storageQuota.innerText = formatBytes(quotaValue)
     const usageValue = usageNode.value
     storageUsage.innerText = formatBytes(usageValue)
+    const usagePercent = Math.floor(usageValue / quotaValue * 1000) / 10
+    storageUsedBar.innerText = `${usagePercent}%`
+    storageUsedBar.setAttribute('aria-valuenow', usagePercent)
+    storageUsedBar.style.width = `${usagePercent}%`
   }
 
   function formatBytes (number, units = [
