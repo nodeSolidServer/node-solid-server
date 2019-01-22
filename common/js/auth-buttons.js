@@ -1,7 +1,7 @@
 /* Provide functionality for authentication buttons */
 /* global URL, location, alert, solid */
 
-(({ auth }) => {
+(({ auth }, $rdf) => {
   // Wire up DOM elements
   const [loginButton, logoutButton, registerButton, accountSettings] =
     ['login', 'logout', 'register', 'account-settings'].map(id =>
@@ -9,7 +9,9 @@
   loginButton.addEventListener('click', login)
   logoutButton.addEventListener('click', logout)
   registerButton.addEventListener('click', register)
-  document.addEventListener('DOMContentLoaded', getAccountInfo)
+  if ($rdf) {
+    document.addEventListener('DOMContentLoaded', getAccountInfo)
+  }
 
   // Track authentication status and update UI
   auth.trackSession(session => {
@@ -50,8 +52,30 @@
   }
 
   async function getAccountInfo () {
-    const account = new URL('/account', location)
-    const response = await auth.fetch(account)
-    console.log('test3', response)
+    const SOLID = $rdf.Namespace('http://www.w3.org/ns/solid/terms#')
+
+    // load data
+    const accountUrl = new URL('/account', location).href
+    const accountStore = $rdf.graph()
+    const accountFetcher = new $rdf.Fetcher(accountStore)
+    await accountFetcher.load(accountUrl)
+
+    // get DOM and data-dependencies
+    const quotaNode = accountStore.any($rdf.sym(accountUrl), SOLID('storageQuota'))
+    const usageNode = accountStore.any($rdf.sym(accountUrl), SOLID('storageUsage'))
+    const storagePanel = document.getElementById('StoragePanel')
+    const storageQuota = document.getElementById('StorageQuota')
+    const storageUsage = document.getElementById('StorageUsage')
+    if (!quotaNode || !usageNode || !storagePanel || !storageQuota || !storageUsage) {
+      // If anything of this is not available, we do not need to do anything more
+      return
+    }
+
+    // do stuff
+    storagePanel.classList.remove('hidden')
+    const quotaValue = quotaNode.value
+    storageQuota.innerText = quotaValue
+    const usageValue = usageNode.value
+    storageUsage.innerText = usageValue
   }
-})(solid)
+})(solid, window.$rdf)
