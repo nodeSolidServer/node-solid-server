@@ -74,8 +74,26 @@
     // do stuff
     storagePanel.classList.remove('hidden')
     const quotaValue = quotaNode.value
-    storageQuota.innerText = quotaValue
+    storageQuota.innerText = formatBytes(quotaValue)
     const usageValue = usageNode.value
-    storageUsage.innerText = usageValue
+    storageUsage.innerText = formatBytes(usageValue)
+  }
+
+  function formatBytes (number, units = [
+    'B',
+    'kB',
+    'MB',
+    'GB',
+    'TB',
+    'PB',
+    'EB',
+    'ZB',
+    'YB'
+  ]) {
+    const unit = units.shift()
+    if (number > 1000 && units.length > 0) {
+      return formatBytes(number / 1000, units)
+    }
+    return `${Math.round(number * 100) / 100} ${unit}`
   }
 })(solid, window.$rdf)
