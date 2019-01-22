@@ -43,8 +43,8 @@
   "homepage": "https://github.com/solid/node-solid-server",
   "bugs": "https://github.com/solid/node-solid-server/issues",
   "dependencies": {
-    "@solid/oidc-auth-manager": "^0.17.1",
     "@solid/acl-check": "^0.1.3",
+    "@solid/oidc-auth-manager": "^0.17.1",
     "body-parser": "^1.18.3",
     "bootstrap": "^3.3.7",
     "busboy": "^0.2.12",
@@ -70,6 +70,7 @@
     "ip-range-check": "0.0.2",
     "is-ip": "^2.0.0",
     "li": "^1.0.1",
+    "lru-cache": "^5.1.1",
     "mashlib": "^0.7.15",
     "mime-types": "^2.1.11",
     "negotiator": "^0.6.0",
