@@ -54,21 +54,25 @@
   async function getAccountInfo () {
     const SOLID = $rdf.Namespace('http://www.w3.org/ns/solid/terms#')
 
+    // get DOM and data-dependencies
+    const storagePanel = document.getElementById('StoragePanel')
+    const storageQuota = document.getElementById('StorageQuota')
+    const storageUsage = document.getElementById('StorageUsage')
+    const storageUsedBar = document.getElementById('StorageUsedBar')
+    if (!storagePanel || !storageQuota || !storageUsage || !storageUsedBar) {
+      // If anything of these elements are not available, we do not need to do anything more
+      return
+    }
+
     // load data
     const accountUrl = new URL('/account', location).href
     const accountStore = $rdf.graph()
     const accountFetcher = new $rdf.Fetcher(accountStore)
     await accountFetcher.load(accountUrl)
-
-    // get DOM and data-dependencies
     const quotaNode = accountStore.any($rdf.sym(accountUrl), SOLID('storageQuota'))
     const usageNode = accountStore.any($rdf.sym(accountUrl), SOLID('storageUsage'))
-    const storagePanel = document.getElementById('StoragePanel')
-    const storageQuota = document.getElementById('StorageQuota')
-    const storageUsage = document.getElementById('StorageUsage')
-    const storageUsedBar = document.getElementById('StorageUsedBar')
-    if (!quotaNode || !usageNode || !storagePanel || !storageQuota || !storageUsage || !storageUsedBar) {
-      // If anything of this is not available, we do not need to do anything more
+    if (!quotaNode || !usageNode) {
+      // If data is not available, we do not need to do anything more
       return
     }
 
