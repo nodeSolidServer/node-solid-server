@@ -129,7 +129,7 @@ describe('AccountManager', () => {
       let accountManager = AccountManager.from(options)
 
       let accountDir = accountManager.accountDirFor('alice')
-      expect(accountDir).to.equal(path.join(testAccountsDir, 'alice.localhost'))
+      expect(accountDir).to.equal(testAccountsDir + '/alice.localhost')
     })
   })
 
