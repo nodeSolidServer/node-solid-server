@@ -51,27 +51,31 @@ describe('SolidHost', () => {
     })
 
     it('should allow an empty userId and origin', () => {
-      expect(host.allowsSessionFor('', '')).to.be.true
+      expect(host.allowsSessionFor('', '', [])).to.be.true
     })
 
     it('should allow a userId with empty origin', () => {
-      expect(host.allowsSessionFor('https://user.own/profile/card#me', '')).to.be.true
+      expect(host.allowsSessionFor('https://user.own/profile/card#me', '', [])).to.be.true
     })
 
     it('should allow a userId with the user subdomain as origin', () => {
-      expect(host.allowsSessionFor('https://user.own/profile/card#me', 'https://user.own')).to.be.true
+      expect(host.allowsSessionFor('https://user.own/profile/card#me', 'https://user.own', [])).to.be.true
     })
 
     it('should allow a userId with the server domain as origin', () => {
-      expect(host.allowsSessionFor('https://user.own/profile/card#me', 'https://test.local')).to.be.true
+      expect(host.allowsSessionFor('https://user.own/profile/card#me', 'https://test.local', [])).to.be.true
     })
 
     it('should allow a userId with a server subdomain as origin', () => {
-      expect(host.allowsSessionFor('https://user.own/profile/card#me', 'https://other.test.local')).to.be.true
+      expect(host.allowsSessionFor('https://user.own/profile/card#me', 'https://other.test.local', [])).to.be.true
     })
 
     it('should disallow a userId from a different domain', () => {
-      expect(host.allowsSessionFor('https://user.own/profile/card#me', 'https://other.remote')).to.be.false
+      expect(host.allowsSessionFor('https://user.own/profile/card#me', 'https://other.remote', [])).to.be.false
+    })
+
+    it('should allow user from a trusted domain', () => {
+      expect(host.allowsSessionFor('https://user.own/profile/card#me', 'https://other.remote', ['https://other.remote'])).to.be.true
     })
   })
 

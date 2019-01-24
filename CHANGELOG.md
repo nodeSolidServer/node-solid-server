@@ -1,15 +1,63 @@
 # History
 
+## 5.0.0
+
+- Node versions greater than 8 are supported.
+- Changes to vocabulary use:
+    - `solid:inbox` is deprecated in favour of `ldp:inbox`.
+    - `acl:defaultForNew` is deprecated in favour of `ack:default`.
+- Terms of Service may be added and enforced for new registrations,
+  but is disabled by default.    	
+- DELETE operations on a resource now require that the user has write permissions on
+  the file's container
+- Improved support for logout ensures users can use different
+  identities.
+- The profile container is now public readable by default.
+- Access Control: 
+    - The Access Control List system has undergone extensive
+      changes. Security has been tightened, and some unsafe practices that
+      where web apps was authorized access in the past are now not
+      permitted. 
+    - The browser-reported `Origin` header will now be checked by
+      default, and the ACL system can be used to restrict access
+      to applications for added security.
+- Logging is now verbose by default so the `-v` option has been
+  removed and a `--quiet` option has been added to mute the log.
+- Command line options are now kebab-cased rather than camelCased,
+  config options may be both.
+- Many smaller fixes.
+
+#### 5.0.0 Upgrade Notes
+
+- As of v5.0.0, all Turtle files need an extension. (**Intervention needed when updating from < 5.0.0!**)
+    - **How to upgrade?**
+        1. Stop the server.
+        2. Update node-solid-server to 5.0.0.
+        3. Make a backup of your `data/` and `config/` folders.
+        4. Invoke `solid migrate-legacy-resources -v`.
+           This makes the files in your `data/` and `config/` folders
+           automatically compatible with the new system.
+           You only need to do this once.
+           Different data folders can be migrated as well with the `-p` option:
+           `solid migrate-legacy-resources -p my/custom/data/folder -v`
+        5. You can now start the server again as usual.
+    - **Why?**
+    Before version 5.0.0, `https://pod.example/profile/card`
+    would map to `file:///solid/profile/card`, with the _assumption_
+    that it uses content-type `text/turtle`.
+    Now, this URL will map to `file:///solid/profile/card$.ttl` instead,
+    which makes the content-type automatically detectable.
+    This fixes many of the old Content-Type-related bugs.
+    _More information: https://www.w3.org/DesignIssues/HTTPFilenameMapping.html_
+
 ## 4.4.0
 
 - Introduce a quota system. Delete the /settings/serverSide.ttl in the
   user's POD to disable, or edit to fit your resource constraints.
 
-
 #### Changelog is incomplete for much of the 4.x series
 
-
-## 4.1.0	
+## 4.1.0
 
 - Add support for Group Access Control Lists.
 - Fix `Vary` header.

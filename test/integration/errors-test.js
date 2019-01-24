@@ -1,30 +1,20 @@
-var supertest = require('supertest')
 var path = require('path')
-
-// Helper functions for the FS
-// var rm = require('./utils').rm
-// var write = require('./utils').write
-// var cp = require('./utils').cp
-var read = require('./../utils').read
-
-var ldnode = require('../../index')
+const { read, setupSupertestServer } = require('./../utils')
 
 describe('Error pages', function () {
   // LDP with error pages
-  var errorLdp = ldnode({
+  const errorServer = setupSupertestServer({
     root: path.join(__dirname, '../resources'),
     errorPages: path.join(__dirname, '../resources/errorPages'),
     webid: false
   })
-  var errorServer = supertest(errorLdp)
 
   // LDP with no error pages
-  var noErrorLdp = ldnode({
+  const noErrorServer = setupSupertestServer({
     root: path.join(__dirname, '../resources'),
     noErrorPages: true,
     webid: false
   })
-  var noErrorServer = supertest(noErrorLdp)
 
   function defaultErrorPage (filepath, expected) {
     var handler = function (res) {

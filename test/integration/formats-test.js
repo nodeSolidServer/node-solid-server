@@ -1,15 +1,13 @@
-var supertest = require('supertest')
-var ldnode = require('../../index')
 var path = require('path')
 const assert = require('chai').assert
+const { setupSupertestServer } = require('../utils')
 
 describe('formats', function () {
-  var ldp = ldnode.createServer({
+  const server = setupSupertestServer({
     root: path.join(__dirname, '../resources'),
     webid: false
   })
 
-  var server = supertest(ldp)
   describe('HTML', function () {
     it('should return HTML containing "Hello, World!" if Accept is set to text/html', function (done) {
       server.get('/hello.html')
@@ -95,8 +93,15 @@ describe('formats', function () {
         .expect(200, done)
     })
 
-    it('should return turtle when listing container', function (done) {
+    it('should return turtle when listing container with an index page', function (done) {
       server.get('/sampleContainer/')
+        .set('accept', 'application/rdf+xml;q=0.4, application/xhtml+xml;q=0.3, text/xml;q=0.2, application/xml;q=0.2, text/html;q=0.3, text/plain;q=0.1, text/turtle;q=1.0, application/n3;q=1')
+        .expect('content-type', /text\/html/)
+        .expect(200, done)
+    })
+
+    it('should return turtle when listing container without an index page', function (done) {
+      server.get('/sampleContainer2/')
         .set('accept', 'application/rdf+xml;q=0.4, application/xhtml+xml;q=0.3, text/xml;q=0.2, application/xml;q=0.2, text/html;q=0.3, text/plain;q=0.1, text/turtle;q=1.0, application/n3;q=1')
         .expect('content-type', /text\/turtle/)
         .expect(200, done)

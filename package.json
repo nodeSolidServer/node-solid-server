@@ -1,7 +1,7 @@
 {
   "name": "solid-server",
   "description": "Solid server on top of the file-system",
-  "version": "4.4.1",
+  "version": "5.0.0-beta.5",
   "author": {
     "name": "Tim Berners-Lee",
     "email": "timbl@w3.org"
@@ -40,6 +40,11 @@
     {
       "name": "Dmitri Zagidulin",
       "url": "https://github.com/dmitrizagidulin/"
+    },
+    {
+      "name": "Arne Hassel",
+      "email": "arne.hassel@inrupt.com",
+      "url": "https://icanhasweb.net/"
     }
   ],
   "license": "MIT",
@@ -51,11 +56,13 @@
   "bugs": "https://github.com/solid/node-solid-server/issues",
   "dependencies": {
     "@solid/oidc-auth-manager": "^0.17.1",
+    "@solid/acl-check": "^0.1.3",
     "body-parser": "^1.18.3",
     "bootstrap": "^3.3.7",
     "busboy": "^0.2.12",
     "cached-path-relative": "^1.0.2",
     "camelize": "^1.0.0",
+    "cheerio": "^1.0.0-rc.2",
     "colorette": "^1.0.5",
     "commander": "^2.9.0",
     "cors": "^2.7.1",
@@ -88,7 +95,6 @@
     "rimraf": "^2.5.0",
     "solid-auth-client": "^2.2.12",
     "solid-namespace": "^0.1.0",
-    "solid-permissions": "^0.6.0",
     "solid-ws": "^0.2.3",
     "text-encoder-lite": "^1.0.1",
     "the-big-username-blacklist": "^1.5.1",

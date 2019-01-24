@@ -26,7 +26,7 @@ module.exports = [
     prompt: true
   },
   {
-    name: 'serverUri',
+    name: 'server-uri',
     question: 'Solid server uri (with protocol, hostname and port)',
     help: "Solid server uri (default: 'https://localhost:8443')",
     default: 'https://localhost:8443',
@@ -84,7 +84,7 @@ module.exports = [
     }
   },
   {
-    name: 'useOwner',
+    name: 'use-owner',
     question: 'Do you already have a WebID?',
     type: 'confirm',
     default: false,
@@ -102,7 +102,7 @@ module.exports = [
       return true
     },
     when: function (answers) {
-      return answers.useOwner
+      return answers['use-owner']
     }
   },
   {
@@ -148,7 +148,7 @@ module.exports = [
   //   help: 'URI to use as a default app for resources (default: https://linkeddata.github.io/warp/#/list/)'
   // },
   {
-    name: 'useCorsProxy',
+    name: 'use-cors-proxy',
     help: 'Do you want to have a CORS proxy endpoint?',
     flag: true,
     default: false,
@@ -160,16 +160,16 @@ module.exports = [
     prompt: false
   },
   {
-    name: 'corsProxy',
+    name: 'cors-proxy',
     help: 'Serve the CORS proxy on this path',
     when: function (answers) {
-      return answers.useCorsProxy
+      return answers['use-cors-proxy']
     },
     default: '/proxy',
     prompt: true
   },
   {
-    name: 'authProxy',
+    name: 'auth-proxy',
     help: 'Object with path/server pairs to reverse proxy',
     default: {},
     prompt: false,
@@ -241,7 +241,7 @@ module.exports = [
     prompt: false
   },
   {
-    name: 'useEmail',
+    name: 'use-email',
     help: 'Do you want to set up an email service?',
     flag: true,
     prompt: true,
@@ -253,7 +253,7 @@ module.exports = [
     prompt: true,
     default: 'smtp.gmail.com',
     when: (answers) => {
-      return answers.useEmail
+      return answers['use-email']
     }
   },
   {
@@ -262,7 +262,7 @@ module.exports = [
     prompt: true,
     default: '465',
     when: (answers) => {
-      return answers.useEmail
+      return answers['use-email']
     }
   },
   {
@@ -270,7 +270,7 @@ module.exports = [
     help: 'User of your email service',
     prompt: true,
     when: (answers) => {
-      return answers.useEmail
+      return answers['use-email']
     },
     validate: (value) => {
       if (!value) {
@@ -285,11 +285,11 @@ module.exports = [
     type: 'password',
     prompt: true,
     when: (answers) => {
-      return answers.useEmail
+      return answers['use-email']
     }
   },
   {
-    name: 'useApiApps',
+    name: 'use-api-apps',
     help: 'Do you want to load your default apps on /api/apps?',
     flag: true,
     prompt: false,
@@ -301,7 +301,7 @@ module.exports = [
     prompt: true,
     validate: validPath,
     when: (answers) => {
-      return answers.useApiApps
+      return answers['use-api-apps']
     }
   },
   { // copied from name: 'owner'
@@ -324,7 +324,7 @@ module.exports = [
     name: 'server-name',
     help: 'A name for your server (not required, but will be presented on your server\'s frontpage)',
     prompt: true,
-    default: answers => new URL(answers.serverUri).hostname
+    default: answers => new URL(answers['server-uri']).hostname
   },
   {
     name: 'server-description',
@@ -337,19 +337,27 @@ module.exports = [
     prompt: true
   },
   {
-    name: 'enforceToc',
+    name: 'enforce-toc',
     help: 'Do you want to enforce Terms & Conditions for your service?',
     flag: true,
     prompt: true,
-    default: true,
+    default: false,
     when: answers => answers.multiuser
   },
   {
-    name: 'tocUri',
+    name: 'toc-uri',
     help: 'URI to your Terms & Conditions',
     prompt: true,
     validate: validUri,
-    when: answers => answers.enforceToc
+    when: answers => answers['enforce-toc']
+  },
+  {
+    name: 'disable-password-checks',
+    help: 'Do you want to disable password strength checking?',
+    flag: true,
+    prompt: true,
+    default: false,
+    when: answers => answers.multiuser
   },
   {
     name: 'support-email',

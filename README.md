@@ -167,7 +167,7 @@ $ solid start --help
 
     --root [value]                Root folder to serve (default: './data')
     --port [value]                SSL port to use
-    --serverUri [value]           Solid server uri (default: 'https://localhost:8443')
+    --server-uri [value]          Solid server uri (default: 'https://localhost:8443')
     --webid                       Enable WebID authentication and access control (uses HTTPS)
     --mount [value]               Serve on a specific URL path (default: '/')
     --config-path [value]
@@ -182,7 +182,7 @@ $ solid start --help
     --idp [value]                 Obsolete; use --multiuser
     --no-live                     Disable live support through WebSockets
     --proxy [value]               Obsolete; use --corsProxy
-    --corsProxy [value]           Serve the CORS proxy on this path
+    --cors-proxy [value]          Serve the CORS proxy on this path
     --suppress-data-browser       Suppress provision of a data browser
     --data-browser-path [value]   An HTML file which is sent to allow users to browse the data (eg using mashlib.js)
     --suffix-acl [value]          Suffix for acl files (default: '.acl')
@@ -191,18 +191,21 @@ $ solid start --help
     --error-pages [value]         Folder from which to look for custom error pages files (files must be named <error-code>.html -- eg. 500.html)
     --force-user [value]          Force a WebID to always be logged in (useful when offline)
     --strict-origin               Enforce same origin policy in the ACL
-    --useEmail                    Do you want to set up an email service?
+    --use-email                   Do you want to set up an email service?
     --email-host [value]          Host of your email service
     --email-port [value]          Port of your email service
     --email-auth-user [value]     User of your email service
     --email-auth-pass [value]     Password of your email service
-    --useApiApps                  Do you want to load your default apps on /api/apps?
+    --use-api-apps                Do you want to load your default apps on /api/apps?
     --api-apps [value]            Path to the folder to mount on /api/apps
     --redirect-http-from [value]  HTTP port or ','-separated ports to redirect to the solid server port (e.g. "80,8080").
     --server-name [value]         A name for your server (not required, but will be presented on your server's frontpage)
     --server-description [value]  A description of your server (not required)
     --server-logo [value]         A logo that represents you, your brand, or your server (not required)
-    -v, --verbose                 Print the logs to console
+    --enforce-toc                 Do you want to enforce Terms & Conditions for your service?
+    --toc-uri [value]             URI to your Terms & Conditions
+    --support-email [value]       The support email you provide for your users (not required)
+    -q, --quiet                   Do not print the logs to console
     -h, --help                    output usage information
  ```
 
@@ -226,8 +229,8 @@ docker run -p 8443:8443 --name solid node-solid-server
 ```
 
 This will enable you to login to solid on https://localhost:8443 and then create a new account
-but not yet use that account. After a new account is made you will need to create an entry for
-it in your local (/etc/)hosts file in line with the account and subdomain i.e.
+but not yet use that account. After a new account is made you will need to create an entry for 
+it in your local (/etc/)hosts file in line with the account and subdomain i.e. 
 
 127.0.0.1	newsoliduser.localhost
 
@@ -391,14 +394,13 @@ blacklist profanities by default.
 
 ## Quota
 
-By default, a file `serverSide.ttl` will be installed to new PODs. Its
-current function is to set a quota for disk usage of just 25 MB, which
-is what we can be sure the current prototype can tolerate under
-load. This file is not writeable to users, but as server administrator
-you can remove it if you don't want to impose a quota. It is currently
-adviceable to remove it rather than set a large quota, because the
-current implementation will impair write performance if there is a lot
-of data.
+By default, a file `serverSide.ttl.inactive` will be installed to new
+PODs. If you rename it to `serverSide.ttl`, it will currently set a
+quota for disk usage.  This file is not writeable to users, only
+server administrators who are authorized on the backend can modify
+it. It is currently adviceable to remove it or set it inactive rather
+than set a large quota, because the current implementation will impair
+write performance if there is a lot of data.
 
 ## Contribute to Solid
 

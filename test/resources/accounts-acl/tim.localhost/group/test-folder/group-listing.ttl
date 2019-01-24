@@ -3,7 +3,7 @@
 
 <> a acl:GroupListing.
 
-<#folks>
+<#us>
     a vcard:Group;
     vcard:hasUID <urn:uuid:8831CBAD-1111-2222-8563-F0F4787EG398:ABGroup> ;
     

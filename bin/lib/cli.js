@@ -2,6 +2,8 @@ const program = require('commander')
 const loadInit = require('./init')
 const loadStart = require('./start')
 const loadInvalidUsernames = require('./invalidUsernames')
+const loadMigrateLegacyResources = require('./migrateLegacyResources')
+const loadUpdateIndex = require('./updateIndex')
 const { spawnSync } = require('child_process')
 const path = require('path')
 
@@ -11,6 +13,8 @@ module.exports = function startCli (server) {
   loadInit(program)
   loadStart(program, server)
   loadInvalidUsernames(program)
+  loadMigrateLegacyResources(program)
+  loadUpdateIndex(program)
 
   program.parse(process.argv)
   if (program.args.length === 0) program.help()

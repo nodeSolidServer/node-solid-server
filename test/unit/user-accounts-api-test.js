@@ -13,6 +13,7 @@ const LDP = require('../../lib/ldp')
 const SolidHost = require('../../lib/models/solid-host')
 const AccountManager = require('../../lib/models/account-manager')
 const testAccountsDir = path.join(__dirname, '..', 'resources', 'accounts')
+var ResourceMapper = require('../../lib/resource-mapper')
 
 const api = require('../../lib/api/accounts/user-accounts')
 
@@ -26,7 +27,12 @@ describe('api/accounts/user-accounts', () => {
   describe('newCertificate()', () => {
     describe('in multi user mode', () => {
       let multiuser = true
-      let store = new LDP({ root: testAccountsDir, multiuser })
+      let resourceMapper = new ResourceMapper({
+        rootUrl: 'https://localhost:8443/',
+        includeHost: multiuser,
+        rootPath: testAccountsDir
+      })
+      let store = new LDP({ multiuser, resourceMapper })
 
       it('should throw a 400 error if spkac param is missing', done => {
         let options = { host, store, multiuser, authMethod: 'oidc' }

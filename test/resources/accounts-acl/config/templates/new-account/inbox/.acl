@@ -10,7 +10,7 @@
         <{{webId}}>;
 
     acl:accessTo <./>;
-    acl:defaultForNew <./>;
+    acl:default <./>;
 
     acl:mode
         acl:Read, acl:Write, acl:Control.

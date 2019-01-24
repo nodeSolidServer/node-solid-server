@@ -46,7 +46,7 @@ describe('AccountTemplate', () => {
           return template.processAccount(accountPath)
         })
         .then(() => {
-          let profile = fs.readFileSync(path.join(accountPath, '/profile/card'), 'utf8')
+          let profile = fs.readFileSync(path.join(accountPath, '/profile/card$.ttl'), 'utf8')
           expect(profile).to.include('"Alice Q."')
 
           let rootAcl = fs.readFileSync(path.join(accountPath, '.acl'), 'utf8')

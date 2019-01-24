@@ -36,7 +36,8 @@ describe('Auth Proxy', () => {
       rm('index.html.acl')
     })
 
-    describe('responding to /server/a', () => {
+    // Skipped tests due to not supported deep acl:accessTo #963
+    describe.skip('responding to /server/a', () => {
       let response
       before(() =>
         request(server).get('/server/a/')
@@ -49,7 +50,7 @@ describe('Auth Proxy', () => {
     })
 
     describe('responding to GET', () => {
-      describe('for a path with read permissions', () => {
+      describe.skip('for a path with read permissions', () => {
         let response
         before(() =>
           request(server).get('/server/a/r')
@@ -74,7 +75,7 @@ describe('Auth Proxy', () => {
     })
 
     describe('responding to OPTIONS', () => {
-      describe('for a path with read permissions', () => {
+      describe.skip('for a path with read permissions', () => {
         let response
         before(() =>
           request(server).options('/server/a/r')
@@ -99,7 +100,7 @@ describe('Auth Proxy', () => {
     })
 
     describe('responding to POST', () => {
-      describe('for a path with read and write permissions', () => {
+      describe.skip('for a path with read and write permissions', () => {
         let response
         before(() =>
           request(server).post('/server/a/rw')
