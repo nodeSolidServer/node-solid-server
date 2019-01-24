@@ -50,6 +50,13 @@
     This fixes many of the old Content-Type-related bugs.
     _More information: https://www.w3.org/DesignIssues/HTTPFilenameMapping.html_
 
+## 4.4.0
+
+- Introduce a quota system. Delete the /settings/serverSide.ttl in the
+  user's POD to disable, or edit to fit your resource constraints.
+
+#### Changelog is incomplete for much of the 4.x series
+
 ## 4.1.0
 
 - Add support for Group Access Control Lists.
