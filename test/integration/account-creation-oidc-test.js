@@ -80,21 +80,21 @@ describe('AccountManager (OIDC account creation tests)', function () {
     })
 
     it('should not create WebID if no username is given', (done) => {
-      let subdomain = supertest('https://nicola.' + host)
+      let subdomain = supertest('https://' + host)
       subdomain.post('/api/accounts/new')
         .send('username=&password=12345')
         .expect(400, done)
     })
 
     it('should not create WebID if no password is given', (done) => {
-      let subdomain = supertest('https://nicola.' + host)
+      let subdomain = supertest('https://' + host)
       subdomain.post('/api/accounts/new')
         .send('username=nicola&password=')
         .expect(400, done)
     })
 
     it('should not create a WebID if it already exists', function (done) {
-      var subdomain = supertest('https://nicola.' + host)
+      var subdomain = supertest('https://' + host)
       subdomain.post('/api/accounts/new')
         .send('username=nicola&password=12345&acceptToc=true')
         .expect(302)
@@ -112,14 +112,14 @@ describe('AccountManager (OIDC account creation tests)', function () {
     })
 
     it('should not create WebID if T&C is not accepted', (done) => {
-      let subdomain = supertest('https://nicola.' + host)
+      let subdomain = supertest('https://' + host)
       subdomain.post('/api/accounts/new')
         .send('username=nicola&password=12345&acceptToc=')
         .expect(400, done)
     })
 
     it('should create the default folders', function (done) {
-      var subdomain = supertest('https://nicola.' + host)
+      var subdomain = supertest('https://' + host)
       subdomain.post('/api/accounts/new')
         .send('username=nicola&password=12345&acceptToc=true')
         .expect(302)
@@ -150,14 +150,15 @@ describe('AccountManager (OIDC account creation tests)', function () {
     }).timeout(20000)
 
     it('should link WebID to the root account', function (done) {
-      var subdomain = supertest('https://nicola.' + host)
-      subdomain.post('/api/accounts/new')
+      const domain = supertest('https://' + host)
+      domain.post('/api/accounts/new')
         .send('username=nicola&password=12345&acceptToc=true')
         .expect(302)
         .end(function (err) {
           if (err) {
             return done(err)
           }
+          const subdomain = supertest('https://nicola.' + host)
           subdomain.get('/.meta')
             .expect(200)
             .end(function (err, data) {
@@ -185,7 +186,7 @@ describe('AccountManager (OIDC account creation tests)', function () {
 
     describe('after setting up account', () => {
       beforeEach(done => {
-        var subdomain = supertest('https://nicola.' + host)
+        var subdomain = supertest('https://' + host)
         subdomain.post('/api/accounts/new')
           .send('username=nicola&password=12345&acceptToc=true')
           .end(done)
@@ -294,7 +295,7 @@ describe('Signup page where Terms & Conditions are not being enforced', () => {
   })
 
   it('should not enforce T&C upon creating account', function (done) {
-    var subdomain = supertest('https://nicola.' + host)
+    var subdomain = supertest('https://' + host)
     subdomain.post('/api/accounts/new')
       .send('username=nicola&password=12345')
       .expect(302, done)
