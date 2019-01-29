@@ -5,7 +5,7 @@
 - Node versions greater than 8 are supported.
 - Changes to vocabulary use:
     - `solid:inbox` is deprecated in favour of `ldp:inbox`.
-    - `acl:defaultForNew` is deprecated in favour of `ack:default`.
+    - `acl:defaultForNew` is deprecated in favour of `acl:default`.
 - Terms of Service may be added and enforced for new registrations,
   but is disabled by default.    	
 - DELETE operations on a resource now require that the user has write permissions on
