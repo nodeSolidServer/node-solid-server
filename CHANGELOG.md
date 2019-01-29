@@ -23,6 +23,8 @@
       to applications for added security.
 - Logging is now verbose by default so the `-v` option has been
   removed and a `--quiet` option has been added to mute the log.
+- To be bug compliant with 4.x releases, if a rule for public readable
+  root / does not exist, it will check in /index.html.acl (see issue #1063)
 - Command line options are now kebab-cased rather than camelCased,
   config options may be both.
 - Many smaller fixes.
