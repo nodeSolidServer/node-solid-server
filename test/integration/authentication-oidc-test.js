@@ -164,7 +164,7 @@ describe('Authentication API (OIDC)', () => {
         describe('with that cookie and a non-matching origin', () => {
           let response
           before(done => {
-            alice.get('/')
+            alice.get('/private-for-owner.txt')
               .set('Cookie', cookie)
               .set('Origin', bobServerUri)
               .end((err, res) => {
@@ -234,7 +234,7 @@ describe('Authentication API (OIDC)', () => {
         describe('with that cookie and our origin', () => {
           let response
           before(done => {
-            alice.get('/')
+            alice.get('/private-for-owner.txt')
               .set('Cookie', cookie)
               .set('Origin', 'https://some.other.domain.com')
               .end((err, res) => {
@@ -252,7 +252,7 @@ describe('Authentication API (OIDC)', () => {
         describe('without that cookie but with our origin', () => {
           let response
           before(done => {
-            alice.get('/')
+            alice.get('/private-for-owner.txt')
               .set('Origin', aliceServerUri)
               .end((err, res) => {
                 response = res
@@ -324,7 +324,7 @@ describe('Authentication API (OIDC)', () => {
         describe('without that cookie and a matching origin', () => {
           let response
           before(done => {
-            alice.get('/')
+            alice.get('/private-for-owner.txt')
               .set('Origin', bobServerUri)
               .end((err, res) => {
                 response = res
@@ -341,7 +341,7 @@ describe('Authentication API (OIDC)', () => {
         describe('with that cookie and a non-matching origin', () => {
           let response
           before(done => {
-            alice.get('/')
+            alice.get('/private-for-owner.txt')
               .set('Cookie', cookie)
               .set('Origin', bobServerUri)
               .end((err, res) => {
@@ -360,7 +360,7 @@ describe('Authentication API (OIDC)', () => {
           let response
           before(done => {
             var malcookie = cookie.replace(/connect\.sid=(\S+)/, 'connect.sid=l33th4x0rzp0wn4g3;')
-            alice.get('/')
+            alice.get('/private-for-owner.txt')
               .set('Cookie', malcookie)
               .set('Origin', bobServerUri)
               .end((err, res) => {
