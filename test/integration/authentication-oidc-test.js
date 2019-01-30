@@ -271,7 +271,7 @@ describe('Authentication API (OIDC)', () => {
           before(done => {
             alice.get('/')
               .set('Cookie', cookie)
-              .set('Origin', 'https://apps.solid.invalid')
+              .set('Origin', 'https://app.solidproject.org')
               .end((err, res) => {
                 response = res
                 done(err)
