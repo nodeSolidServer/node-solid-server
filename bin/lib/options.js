@@ -321,18 +321,21 @@ module.exports = [
     }
   },
   {
-    name: 'server-name',
+    // This property is packaged into an object for the server property in config.json
+    name: 'server-info-name', // All properties with prefix server-info- will be removed from the config
     help: 'A name for your server (not required, but will be presented on your server\'s frontpage)',
     prompt: true,
     default: answers => new URL(answers['server-uri']).hostname
   },
   {
-    name: 'server-description',
+    // This property is packaged into an object for the server property in config.json
+    name: 'server-info-description', // All properties with prefix server-info- will be removed from the config
     help: 'A description of your server (not required)',
     prompt: true
   },
   {
-    name: 'server-logo',
+    // This property is packaged into an object for the server property in config.json
+    name: 'server-info-logo', // All properties with prefix server-info- will be removed from the config
     help: 'A logo that represents you, your brand, or your server (not required)',
     prompt: true
   },
