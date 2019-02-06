@@ -2,6 +2,7 @@
 
 const options = require('./options')
 const fs = require('fs')
+const path = require('path')
 const { loadConfig } = require('./cli-utils')
 const { red, bold } = require('colorette')
 
@@ -84,10 +85,7 @@ function bin (argv, server) {
 
   // Overwrite root .acl if owner is specified
   if (argv.owner) {
-    let rootPath = argv.root
-    if (!rootPath) {
-      rootPath = process.cwd()
-    }
+    let rootPath = path.resolve(argv.root || process.cwd())
     if (!(rootPath.endsWith('/'))) {
       rootPath += '/'
     }
