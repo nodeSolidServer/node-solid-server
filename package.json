@@ -118,21 +118,23 @@
     "nock": "^9.0.14",
     "node-mocks-http": "^1.7.0",
     "nyc": "^13.0.1",
+    "randombytes": "^2.0.1",
     "sinon": "^2.1.0",
     "sinon-chai": "^2.8.0",
     "snyk": "^1.88.2",
     "standard": "^8.6.0",
     "supertest": "^3.0.0",
-    "whatwg-url": "^6.1.0",
-    "randombytes": "^2.0.1"
+    "turtle-validator": "^1.0.2",
+    "whatwg-url": "^6.1.0"
   },
   "main": "index.js",
   "scripts": {
     "solid": "node ./bin/solid",
     "standard": "standard '{bin,examples,lib,test}/**/*.js'",
+    "validate": "node ./test/validate-turtle.js",
     "nyc": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 nyc --reporter=text-summary mocha",
     "mocha": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 mocha",
-    "test": "npm run standard && npm run nyc",
+    "test": "npm run standard && npm run validate && npm run nyc",
     "clean": "rimraf config/templates config/views"
   },
   "nyc": {
