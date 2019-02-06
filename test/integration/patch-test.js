@@ -213,8 +213,8 @@ describe('PATCH', () => {
       patch: `<> solid:patches <https://tim.localhost:7777/new.ttl>;
                  solid:deletes { <a> <b> <c>. }.`
     }, { // expected:
-      status: 409,
-      text: 'The patch could not be applied'
+      status: 404,
+      text: 'Resource not found'
     }))
 
     describe('on a resource with read-only access', describePatch({
