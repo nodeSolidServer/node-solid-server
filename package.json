@@ -135,7 +135,8 @@
     "nyc": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 nyc --reporter=text-summary mocha",
     "mocha": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 mocha",
     "test": "npm run standard && npm run validate && npm run nyc",
-    "clean": "rimraf config/templates config/views"
+    "clean": "rimraf config/templates config/views",
+    "reset": "rimraf .db data && npm run clean"
   },
   "nyc": {
     "reporter": [
