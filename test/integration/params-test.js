@@ -56,7 +56,7 @@ describe('LDNODE params', function () {
       var server = supertest(ldp)
 
       it('should fallback on current working directory', function () {
-        assert.equal(ldp.locals.ldp.resourceMapper._rootPath, './test/resources')
+        assert.equal(ldp.locals.ldp.resourceMapper._rootPath, path.resolve('./test/resources'))
       })
 
       it('should find resource in correct path', function (done) {
