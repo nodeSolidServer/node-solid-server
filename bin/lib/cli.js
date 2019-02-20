@@ -21,7 +21,11 @@ function getVersion () {
     // Obtain version from git
     const options = { cwd: __dirname, encoding: 'utf8' }
     const { stdout } = spawnSync('git', ['describe', '--tags'], options)
-    return stdout.trim()
+    const version = stdout.trim()
+    if (version === "") {
+      throw new Error("No git version here")
+    }
+    return version
   } catch (e) {
     // Obtain version from package.json
     const { version } = require(path.join(__dirname, '../../package.json'))
