@@ -19,23 +19,21 @@ chai.use(require('dirty-chai'))
 
 // In this test we always assume that we are Alice
 
-describe('Authentication API (OIDC)', () => {
+describe('Authentication API (OIDC) - With strict origins turned off', () => {
   let alice, bob
 
-  const aliceServerPort = 7000
+  const aliceServerPort = 7010
   const aliceServerUri = `https://localhost:${aliceServerPort}`
   const aliceWebId = `https://localhost:${aliceServerPort}/profile/card#me`
   let configPath = path.join(__dirname, '../resources/config')
-  let aliceDbPath = path.join(__dirname,
-    '../resources/accounts-scenario/alice/db')
+  let aliceDbPath = path.join(__dirname, '../resources/accounts-strict-origin-off/alice/db')
   let userStorePath = path.join(aliceDbPath, 'oidc/users')
   let aliceUserStore = UserStore.from({ path: userStorePath, saltRounds: 1 })
   aliceUserStore.initCollections()
 
-  const bobServerPort = 7001
+  const bobServerPort = 7011
   const bobServerUri = `https://localhost:${bobServerPort}`
-  let bobDbPath = path.join(__dirname,
-    '../resources/accounts-scenario/bob/db')
+  let bobDbPath = path.join(__dirname, '../resources/accounts-strict-origin-off/bob/db')
 
   const serverConfig = {
     sslKey: path.join(__dirname, '../keys/key.pem'),
@@ -44,10 +42,11 @@ describe('Authentication API (OIDC)', () => {
     dataBrowser: false,
     webid: true,
     multiuser: false,
-    configPath
+    configPath,
+    strictOrigin: false
   }
 
-  const aliceRootPath = path.join(__dirname, '../resources/accounts-scenario/alice')
+  const aliceRootPath = path.join(__dirname, '../resources/accounts-strict-origin-off/alice')
   const alicePod = Solid.createServer(
     Object.assign({
       root: aliceRootPath,
@@ -55,7 +54,7 @@ describe('Authentication API (OIDC)', () => {
       dbPath: aliceDbPath
     }, serverConfig)
   )
-  const bobRootPath = path.join(__dirname, '../resources/accounts-scenario/bob')
+  const bobRootPath = path.join(__dirname, '../resources/accounts-strict-origin-off/bob')
   const bobPod = Solid.createServer(
     Object.assign({
       root: bobRootPath,
@@ -78,8 +77,8 @@ describe('Authentication API (OIDC)', () => {
       alice = supertest(aliceServerUri)
       bob = supertest(bobServerUri)
     })
-    cp(path.join('accounts-scenario/alice', '.acl-override'), path.join('accounts-scenario/alice', '.acl'))
-    cp(path.join('accounts-scenario/bob', '.acl-override'), path.join('accounts-scenario/bob', '.acl'))
+    cp(path.join('accounts-strict-origin-off/alice', '.acl-override'), path.join('accounts-strict-origin-off/alice', '.acl'))
+    cp(path.join('accounts-strict-origin-off/bob', '.acl-override'), path.join('accounts-strict-origin-off/bob', '.acl'))
   })
 
   after(() => {
@@ -91,10 +90,7 @@ describe('Authentication API (OIDC)', () => {
   })
 
   describe('Login page (GET /login)', () => {
-    it('should load the user login form', () => {
-      return alice.get('/login')
-        .expect(200)
-    })
+    it('should load the user login form', () => alice.get('/login').expect(200))
   })
 
   describe('Login by Username and Password (POST /login/password)', () => {
@@ -252,7 +248,7 @@ describe('Authentication API (OIDC)', () => {
                    })
             })
 
-            it('should return a 403', () => expect(response).to.have.property('status', 403))
+            it('should return a 401', () => expect(response).to.have.property('status', 401))
           })
         })
 
