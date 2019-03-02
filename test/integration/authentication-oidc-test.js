@@ -217,7 +217,7 @@ describe('Authentication API (OIDC)', () => {
           })
           describe('and our origin', () => {
             before(done => {
-              alice.get('/')
+              alice.get('/private-for-alice.txt')
                    .set('Cookie', cookie)
                    .set('Origin', aliceServerUri)
                    .end((err, res) => {
@@ -276,7 +276,7 @@ describe('Authentication API (OIDC)', () => {
           })
           describe('and our origin', () => {
             before(done => {
-              alice.get('/')
+              alice.get('/private-for-alice.txt')
                    .set('Cookie', malcookie)
                    .set('Origin', aliceServerUri)
                    .end((err, res) => {
