@@ -37,6 +37,8 @@ describe('Authentication API (OIDC)', () => {
   let bobDbPath = path.join(__dirname,
     '../resources/accounts-scenario/bob/db')
 
+  const trustedAppUri = 'https://trusted.app'
+
   const serverConfig = {
     sslKey: path.join(__dirname, '../keys/key.pem'),
     sslCert: path.join(__dirname, '../keys/cert.pem'),
@@ -200,6 +202,18 @@ describe('Authentication API (OIDC)', () => {
 
             it('should return a 401', () => expect(response).to.have.property('status', 401))
           })
+          describe('and trusted app', () => {
+            before(done => {
+              alice.get('/private-for-alice.txt')
+                   .set('Origin', trustedAppUri)
+                   .end((err, res) => {
+                     response = res
+                     done(err)
+                   })
+            })
+
+            it('should return a 401', () => expect(response).to.have.property('status', 401))
+          })
         })
 
         describe('with cookie', () => {
@@ -254,6 +268,20 @@ describe('Authentication API (OIDC)', () => {
 
             it('should return a 403', () => expect(response).to.have.property('status', 403))
           })
+
+          describe('and trusted app', () => {
+            before(done => {
+              alice.get('/private-for-alice.txt')
+                   .set('Cookie', cookie)
+                   .set('Origin', trustedAppUri)
+                   .end((err, res) => {
+                     response = res
+                     done(err)
+                   })
+            })
+
+            it('should return a 200', () => expect(response).to.have.property('status', 200))
+          })
         })
 
         describe('with malicious cookie', () => {
@@ -291,7 +319,7 @@ describe('Authentication API (OIDC)', () => {
             before(done => {
               alice.get('/private-for-alice.txt')
                    .set('Cookie', malcookie)
-                   .set('Origin', 'https://apps.solid.invalid')
+                   .set('Origin', trustedAppUri)
                    .end((err, res) => {
                      response = res
                      done(err)
@@ -305,6 +333,20 @@ describe('Authentication API (OIDC)', () => {
               alice.get('/private-for-alice.txt')
                    .set('Cookie', malcookie)
                    .set('Origin', bobServerUri)
+                   .end((err, res) => {
+                     response = res
+                     done(err)
+                   })
+            })
+
+            it('should return a 401', () => expect(response).to.have.property('status', 401))
+          })
+
+          describe('and trusted app', () => {
+            before(done => {
+              alice.get('/private-for-alice.txt')
+                   .set('Cookie', malcookie)
+                   .set('Origin', trustedAppUri)
                    .end((err, res) => {
                      response = res
                      done(err)
