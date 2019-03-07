@@ -231,7 +231,7 @@ describe('ACL with WebID+TLS', function () {
           done()
         })
       })
-      it('should create test file\'s acl file', function (done) {
+      it("should create test file's acl file", function (done) {
         var options = createOptions('/acl-tls/write-acl/test-file.acl', 'user1')
         options.headers = {
           'content-type': 'text/turtle'
@@ -243,7 +243,7 @@ describe('ACL with WebID+TLS', function () {
           done()
         })
       })
-      it('should not access test file\'s acl file', function (done) {
+      it("should not access test file's acl file", function (done) {
         var options = createOptions('/acl-tls/write-acl/test-file.acl', 'user1')
         options.headers = {
           accept: 'text/turtle'
@@ -267,10 +267,12 @@ describe('ACL with WebID+TLS', function () {
   })
 
   describe('Origin', function () {
-    before(function (done) {
+    before(function () {
       rm('acl-tls/origin/test-folder/.acl')
+    })
 
-      const options = createOptions('/acl-tls/origin/test-folder/.acl', 'user1', 'text/turtle')
+    it('should PUT new ACL file', function (done) {
+      var options = createOptions('/acl-tls/origin/test-folder/.acl', 'user1', 'text/turtle')
       options.headers = {
         'content-type': 'text/turtle'
       }
@@ -292,7 +294,6 @@ describe('ACL with WebID+TLS', function () {
         // TODO user header
       })
     })
-
     it('user1 should be able to access test directory', function (done) {
       var options = createOptions('/acl-tls/origin/test-folder/', 'user1')
       options.headers.origin = origin1
@@ -364,9 +365,11 @@ describe('ACL with WebID+TLS', function () {
   })
 
   describe('Mixed statement Origin', function () {
-    before(function (done) {
+    before(function () {
       rm('acl-tls/origin/test-folder/.acl')
+    })
 
+    it('should PUT new ACL file', function (done) {
       var options = createOptions('/acl-tls/origin/test-folder/.acl', 'user1', 'text/turtle')
       options.headers = {
         'content-type': 'text/turtle'
@@ -392,7 +395,6 @@ describe('ACL with WebID+TLS', function () {
         // TODO user header
       })
     })
-
     it('user1 should be able to access test directory', function (done) {
       var options = createOptions('/acl-tls/origin/test-folder/', 'user1')
       options.headers.origin = origin1
@@ -580,7 +582,7 @@ describe('ACL with WebID+TLS', function () {
 
   describe('Append-only', function () {
     // var body = fs.readFileSync(__dirname + '/resources/acl-tls/append-acl/abc.ttl.acl')
-    it('user1 should be able to access test file\'s ACL file', function (done) {
+    it("user1 should be able to access test file's ACL file", function (done) {
       var options = createOptions('/acl-tls/append-acl/abc.ttl.acl', 'user1')
       request.head(options, function (error, response) {
         assert.equal(error, null)
@@ -621,7 +623,7 @@ describe('ACL with WebID+TLS', function () {
         done()
       })
     })
-    it('user2 should not be able to access test file\'s ACL file', function (done) {
+    it("user2 should not be able to access test file's ACL file", function (done) {
       var options = createOptions('/acl-tls/append-acl/abc.ttl.acl', 'user2')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
@@ -683,7 +685,7 @@ describe('ACL with WebID+TLS', function () {
       ' <http://www.w3.org/ns/auth/acl#accessTo> <./abc2.ttl>;\n' +
       ' <http://www.w3.org/ns/auth/acl#agent> <' + user2 + '>;\n' +
       ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>.\n'
-    it('user1 should be able to modify test file\'s ACL file', function (done) {
+    it("user1 should be able to modify test file's ACL file", function (done) {
       var options = createOptions('/acl-tls/append-acl/abc2.ttl.acl', 'user1')
       options.headers = {
         'content-type': 'text/turtle'
@@ -695,7 +697,7 @@ describe('ACL with WebID+TLS', function () {
         done()
       })
     })
-    it('user1 should be able to access test file\'s ACL file', function (done) {
+    it("user1 should be able to access test file's ACL file", function (done) {
       var options = createOptions('/acl-tls/append-acl/abc2.ttl.acl', 'user1')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
@@ -731,7 +733,7 @@ describe('ACL with WebID+TLS', function () {
         done()
       })
     })
-    it('user2 should not be able to access test file\'s ACL file', function (done) {
+    it("user2 should not be able to access test file's ACL file", function (done) {
       var options = createOptions('/acl-tls/append-acl/abc2.ttl.acl', 'user2')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
@@ -789,7 +791,7 @@ describe('ACL with WebID+TLS', function () {
       ' <http://www.w3.org/ns/auth/acl#default> <./>;\n' +
       ' <http://www.w3.org/ns/auth/acl#agentClass> <http://xmlns.com/foaf/0.1/Agent>;\n' +
       ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read> .\n'
-    it('user1 should be able to modify test directory\'s ACL file', function (done) {
+    it("user1 should be able to modify test directory's ACL file", function (done) {
       var options = createOptions('/acl-tls/write-acl/default-for-new/.acl', 'user1')
       options.headers = {
         'content-type': 'text/turtle'
@@ -801,7 +803,7 @@ describe('ACL with WebID+TLS', function () {
         done()
       })
     })
-    it('user1 should be able to access test direcotory\'s ACL file', function (done) {
+    it("user1 should be able to access test direcotory's ACL file", function (done) {
       var options = createOptions('/acl-tls/write-acl/default-for-new/.acl', 'user1')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
@@ -829,7 +831,7 @@ describe('ACL with WebID+TLS', function () {
         done()
       })
     })
-    it('user2 should not be able to access test direcotory\'s ACL file', function (done) {
+    it("user2 should not be able to access test direcotory's ACL file", function (done) {
       var options = createOptions('/acl-tls/write-acl/default-for-new/.acl', 'user2')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
