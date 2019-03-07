@@ -379,9 +379,9 @@ describe('ACL with WebID+TLS', function () {
         ' <http://www.w3.org/ns/auth/acl#agent> <' + user1 + '>;\n' +
         ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Control> .\n' +
         '<#Owner2> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
-        ' <http://www.w3.org/ns/auth/acl#accessTo> <https://localhost:3456/test/acl-tls/origin/test-folder/>;\n' +
-        ' <http://www.w3.org/ns/auth/acl#origin> <' + origin1 + '>;\n' +
-        ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Control> .\n' +
+          ' <http://www.w3.org/ns/auth/acl#accessTo> <https://localhost:3456/test/acl-tls/origin/test-folder/>;\n' +
+          ' <http://www.w3.org/ns/auth/acl#origin> <' + origin1 + '>;\n' +
+          ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Control> .\n' +
         '<#Public> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
         ' <http://www.w3.org/ns/auth/acl#accessTo> <./>;\n' +
         ' <http://www.w3.org/ns/auth/acl#agentClass> <http://www.w3.org/ns/auth/acl#AuthenticatedAgent>;\n' +

@@ -387,7 +387,7 @@ describe('Authentication API (OIDC)', () => {
         describe('with that cookie and a non-matching origin', () => {
           let response
           before(done => {
-            alice.get('/private-for-alice.txt')
+            alice.get('/private-for-owner.txt')
               .set('Cookie', cookie)
               .set('Origin', bobServerUri)
               .end((err, res) => {

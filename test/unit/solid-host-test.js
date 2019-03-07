@@ -58,6 +58,10 @@ describe('SolidHost', () => {
       expect(host.allowsSessionFor('https://user.own/profile/card#me', '', [])).to.be.true
     })
 
+    it('should allow a userId with the user subdomain as origin', () => {
+      expect(host.allowsSessionFor('https://user.own/profile/card#me', 'https://user.own', [])).to.be.true
+    })
+
     it('should allow a userId with the server domain as origin', () => {
       expect(host.allowsSessionFor('https://user.own/profile/card#me', 'https://test.local', [])).to.be.true
     })
