@@ -91,7 +91,7 @@ describe('Authentication API (OIDC)', () => {
   describe('Login page (GET /login)', () => {
     it('should load the user login form', () => {
       return alice.get('/login')
-                  .expect(200)
+        .expect(200)
     })
   })
 
@@ -104,7 +104,7 @@ describe('Authentication API (OIDC)', () => {
       aliceUserStore.initCollections()
 
       return aliceUserStore.createUser(aliceAccount, alicePassword)
-                           .catch(console.error.bind(console))
+        .catch(console.error.bind(console))
     })
 
     afterEach(() => {
@@ -117,14 +117,14 @@ describe('Authentication API (OIDC)', () => {
         aliceUserStore.initCollections()
         aliceUserStore.createUser(aliceAccount, alicePassword)
         alice.post('/login/password')
-             .type('form')
-             .send({ username: 'alice' })
-             .send({ password: alicePassword })
-             .end((err, res) => {
-               response = res
-               cookie = response.headers['set-cookie'][0]
-               done(err)
-             })
+          .type('form')
+          .send({ username: 'alice' })
+          .send({ password: alicePassword })
+          .end((err, res) => {
+            response = res
+            cookie = response.headers['set-cookie'][0]
+            done(err)
+          })
       })
 
       it('should redirect to /authorize', () => {
@@ -150,10 +150,10 @@ describe('Authentication API (OIDC)', () => {
           let response
           before(done => {
             alice.get('/private-for-alice.txt')
-                 .end((err, res) => {
-                   response = res
-                   done(err)
-                 })
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
           })
 
           it('should return a 401', () => {
@@ -165,12 +165,12 @@ describe('Authentication API (OIDC)', () => {
           let response
           before(done => {
             alice.get('/private-for-owner.txt')
-                 .set('Cookie', cookie)
-                 .set('Origin', bobServerUri)
-                 .end((err, res) => {
-                   response = res
-                   done(err)
-                 })
+              .set('Cookie', cookie)
+              .set('Origin', bobServerUri)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
           })
 
           it('should return a 403', () => {
@@ -182,12 +182,12 @@ describe('Authentication API (OIDC)', () => {
           let response
           before(done => {
             alice.get('/private-for-alice.txt')
-                 .set('Cookie', cookie)
-                 .set('Origin', bobServerUri)
-                 .end((err, res) => {
-                   response = res
-                   done(err)
-                 })
+              .set('Cookie', cookie)
+              .set('Origin', bobServerUri)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
           })
 
           it('should return a 403', () => {
@@ -199,11 +199,11 @@ describe('Authentication API (OIDC)', () => {
           let response
           before(done => {
             alice.get('/private-for-alice.txt')
-                 .set('Origin', bobServerUri)
-                 .end((err, res) => {
-                   response = res
-                   done(err)
-                 })
+              .set('Origin', bobServerUri)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
           })
 
           it('should return a 401', () => {
@@ -215,11 +215,11 @@ describe('Authentication API (OIDC)', () => {
           let response
           before(done => {
             alice.get('/')
-                 .set('Cookie', cookie)
-                 .end((err, res) => {
-                   response = res
-                   done(err)
-                 })
+              .set('Cookie', cookie)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
           })
 
           it('should return a 200', () => {
@@ -230,11 +230,11 @@ describe('Authentication API (OIDC)', () => {
         describe('with that cookie, private resource and no origin set', () => {
           before(done => {
             alice.get('/private-for-alice.txt')
-                 .set('Cookie', cookie)
-                 .end((err, res) => {
-                   response = res
-                   done(err)
-                 })
+              .set('Cookie', cookie)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
           })
 
           it('should return a 200', () => expect(response).to.have.property('status', 200))
@@ -246,11 +246,11 @@ describe('Authentication API (OIDC)', () => {
           before(done => {
             var malcookie = cookie.replace(/connect\.sid=(\S+)/, 'connect.sid=l33th4x0rzp0wn4g3;')
             alice.get('/private-for-alice.txt')
-                 .set('Cookie', malcookie)
-                 .end((err, res) => {
-                   response = res
-                   done(err)
-                 })
+              .set('Cookie', malcookie)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
           })
 
           it('should return a 401', () => {
@@ -263,12 +263,12 @@ describe('Authentication API (OIDC)', () => {
           let response
           before(done => {
             alice.get('/')
-                 .set('Cookie', cookie)
-                 .set('Origin', aliceServerUri)
-                 .end((err, res) => {
-                   response = res
-                   done(err)
-                 })
+              .set('Cookie', cookie)
+              .set('Origin', aliceServerUri)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
           })
 
           it('should return a 200', () => {
@@ -281,12 +281,12 @@ describe('Authentication API (OIDC)', () => {
           let response
           before(done => {
             alice.get('/private-for-owner.txt')
-                 .set('Cookie', cookie)
-                 .set('Origin', 'https://some.other.domain.com')
-                 .end((err, res) => {
-                   response = res
-                   done(err)
-                 })
+              .set('Cookie', cookie)
+              .set('Origin', 'https://some.other.domain.com')
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
           })
 
           it('should return a 403', () => {
@@ -299,11 +299,11 @@ describe('Authentication API (OIDC)', () => {
           let response
           before(done => {
             alice.get('/private-for-owner.txt')
-                 .set('Origin', aliceServerUri)
-                 .end((err, res) => {
-                   response = res
-                   done(err)
-                 })
+              .set('Origin', aliceServerUri)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
           })
 
           it('should return a 401', () => {
@@ -316,12 +316,12 @@ describe('Authentication API (OIDC)', () => {
           let response
           before(done => {
             alice.get('/')
-                 .set('Cookie', cookie)
-                 .set('Origin', 'https://apps.solid.invalid')
-                 .end((err, res) => {
-                   response = res
-                   done(err)
-                 })
+              .set('Cookie', cookie)
+              .set('Origin', 'https://apps.solid.invalid')
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
           })
 
           it('should return a 200', () => {
@@ -334,11 +334,11 @@ describe('Authentication API (OIDC)', () => {
           let response
           before(done => {
             alice.get('/private-for-alice.txt')
-                 .set('Origin', 'https://apps.solid.invalid')
-                 .end((err, res) => {
-                   response = res
-                   done(err)
-                 })
+              .set('Origin', 'https://apps.solid.invalid')
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
           })
 
           it('should return a 401', () => {
@@ -352,12 +352,12 @@ describe('Authentication API (OIDC)', () => {
           before(done => {
             var malcookie = cookie.replace(/connect\.sid=(\S+)/, 'connect.sid=l33th4x0rzp0wn4g3;')
             alice.get('/private-for-alice.txt')
-                 .set('Cookie', malcookie)
-                 .set('Origin', 'https://apps.solid.invalid')
-                 .end((err, res) => {
-                   response = res
-                   done(err)
-                 })
+              .set('Cookie', malcookie)
+              .set('Origin', 'https://apps.solid.invalid')
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
           })
 
           it('should return a 401', () => {
@@ -371,11 +371,11 @@ describe('Authentication API (OIDC)', () => {
           let response
           before(done => {
             alice.get('/private-for-owner.txt')
-                 .set('Origin', bobServerUri)
-                 .end((err, res) => {
-                   response = res
-                   done(err)
-                 })
+              .set('Origin', bobServerUri)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
           })
 
           it('should return a 401', () => {
@@ -388,12 +388,12 @@ describe('Authentication API (OIDC)', () => {
           let response
           before(done => {
             alice.get('/private-for-alice.txt')
-                 .set('Cookie', cookie)
-                 .set('Origin', bobServerUri)
-                 .end((err, res) => {
-                   response = res
-                   done(err)
-                 })
+              .set('Cookie', cookie)
+              .set('Origin', bobServerUri)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
           })
 
           it('should return a 403', () => {
@@ -406,12 +406,12 @@ describe('Authentication API (OIDC)', () => {
           before(done => {
             var malcookie = cookie.replace(/connect\.sid=(\S+)/, 'connect.sid=l33th4x0rzp0wn4g3;')
             alice.get('/private-for-alice.txt')
-                 .set('Cookie', malcookie)
-                 .set('Origin', aliceServerUri)
-                 .end((err, res) => {
-                   response = res
-                   done(err)
-                 })
+              .set('Cookie', malcookie)
+              .set('Origin', aliceServerUri)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
           })
 
           it('should return a 401', () => {
@@ -424,12 +424,12 @@ describe('Authentication API (OIDC)', () => {
           before(done => {
             var malcookie = cookie.replace(/connect\.sid=(\S+)/, 'connect.sid=l33th4x0rzp0wn4g3;')
             alice.get('/private-for-owner.txt')
-                 .set('Cookie', malcookie)
-                 .set('Origin', bobServerUri)
-                 .end((err, res) => {
-                   response = res
-                   done(err)
-                 })
+              .set('Cookie', malcookie)
+              .set('Origin', bobServerUri)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
           })
 
           it('should return a 401', () => {
@@ -441,35 +441,35 @@ describe('Authentication API (OIDC)', () => {
 
     it('should throw a 400 if no username is provided', (done) => {
       alice.post('/login/password')
-           .type('form')
-           .send({ password: alicePassword })
-           .expect(400, done)
+        .type('form')
+        .send({ password: alicePassword })
+        .expect(400, done)
     })
 
     it('should throw a 400 if no password is provided', (done) => {
       alice.post('/login/password')
-           .type('form')
-           .send({ username: 'alice' })
-           .expect(400, done)
+        .type('form')
+        .send({ username: 'alice' })
+        .expect(400, done)
     })
 
     it('should throw a 400 if user is found but no password match', (done) => {
       alice.post('/login/password')
-           .type('form')
-           .send({ username: 'alice' })
-           .send({ password: 'wrongpassword' })
-           .expect(400, done)
+        .type('form')
+        .send({ username: 'alice' })
+        .send({ password: 'wrongpassword' })
+        .expect(400, done)
     })
   })
 
   describe('Browser login workflow', () => {
     it('401 Unauthorized asking the user to log in', (done) => {
       bob.get('/shared-with-alice.txt')
-         .end((err, { status, text }) => {
-           expect(status).to.equal(401)
-           expect(text).to.contain('Log in')
-           done(err)
-         })
+        .end((err, { status, text }) => {
+          expect(status).to.equal(401)
+          expect(text).to.contain('Log in')
+          done(err)
+        })
     })
   })
 
@@ -491,12 +491,12 @@ describe('Authentication API (OIDC)', () => {
       aliceUserStore.initCollections()
 
       return aliceUserStore.createUser(aliceAccount, alicePassword)
-                           .then(() => {
-                             return auth.registerClient(aliceServerUri, appOptions)
-                           })
-                           .then(registeredClient => {
-                             auth.currentClient = registeredClient
-                           })
+        .then(() => {
+          return auth.registerClient(aliceServerUri, appOptions)
+        })
+        .then(registeredClient => {
+          auth.currentClient = registeredClient
+        })
     })
 
     after(() => {
@@ -524,11 +524,11 @@ describe('Authentication API (OIDC)', () => {
     //   an authorization uri for that provider
     it('should determine the authorization uri for a preferred provider', () => {
       return auth.currentClient.createRequest({}, auth.store)
-                 .then(authUri => {
-                   authorizationUri = authUri
+        .then(authUri => {
+          authorizationUri = authUri
 
-                   expect(authUri.startsWith(aliceServerUri + '/authorize')).to.be.true()
-                 })
+          expect(authUri.startsWith(aliceServerUri + '/authorize')).to.be.true()
+        })
     })
 
     // Step 3: App redirects user to the authorization uri for login
@@ -608,28 +608,28 @@ describe('Authentication API (OIDC)', () => {
       let protectedResourcePath = bobServerUri + '/shared-with-alice.txt'
 
       return auth.initUserFromResponse(auth.currentClient)
-                 .then(webId => {
-                   expect(webId).to.equal(aliceWebId)
+        .then(webId => {
+          expect(webId).to.equal(aliceWebId)
 
-                   return auth.issuePoPTokenFor(bobServerUri, auth.session)
-                 })
-                 .then(popToken => {
-                   bearerToken = popToken
+          return auth.issuePoPTokenFor(bobServerUri, auth.session)
+        })
+        .then(popToken => {
+          bearerToken = popToken
 
-                   return fetch(protectedResourcePath, {
-                     headers: {
-                       'Authorization': 'Bearer ' + bearerToken
-                     }
-                   })
-                 })
-                 .then(res => {
-                   expect(res.status).to.equal(200)
+          return fetch(protectedResourcePath, {
+            headers: {
+              'Authorization': 'Bearer ' + bearerToken
+            }
+          })
+        })
+        .then(res => {
+          expect(res.status).to.equal(200)
 
-                   return res.text()
-                 })
-                 .then(contents => {
-                   expect(contents).to.equal('protected contents\n')
-                 })
+          return res.text()
+        })
+        .then(contents => {
+          expect(contents).to.equal('protected contents\n')
+        })
     })
 
     it('should not be able to reuse the bearer token for bob server on another server', () => {
@@ -651,7 +651,7 @@ describe('Authentication API (OIDC)', () => {
   describe('Post-logout page (GET /goodbye)', () => {
     it('should load the post-logout page', () => {
       return alice.get('/goodbye')
-                  .expect(200)
+        .expect(200)
     })
   })
 })
