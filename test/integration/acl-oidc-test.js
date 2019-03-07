@@ -251,11 +251,11 @@ describe('ACL with WebID+OIDC over HTTP', function () {
   })
 
   describe('Origin', function () {
-    let _error, _response
-
-    before(function (done) {
+    before(function () {
       rm('/accounts-acl/tim.localhost/origin/test-folder/.acl')
+    })
 
+    it('should PUT new ACL file', function (done) {
       var options = createOptions('/origin/test-folder/.acl', 'user1', 'text/turtle')
       options.body = '<#Owner> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
         ' <http://www.w3.org/ns/auth/acl#accessTo> <https://localhost:3456/origin/test-folder/.acl>;\n' +
@@ -274,15 +274,13 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         ' <http://www.w3.org/ns/auth/acl#origin> <' + origin1 + '>;\n' +
         ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Write> .\n'
       request.put(options, function (error, response, body) {
-        _error = error
-        _response = response
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 201)
         done()
+        // TODO triple header
+        // TODO user header
       })
     })
-
-    it('should be no error', () => assert.equal(_error, null))
-    it('should return 200', () => assert.equal(_response.statusCode, 201))
-
     it('user1 should be able to access test directory', function (done) {
       var options = createOptions('/origin/test-folder/', 'user1')
       options.headers.origin = origin1
