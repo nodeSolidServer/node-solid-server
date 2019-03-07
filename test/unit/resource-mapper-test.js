@@ -286,12 +286,38 @@ describe('ResourceMapper', () => {
         contentType: 'application/octet-stream'
       })
 
+    itMapsUrl(mapper, 'a URL of that has an accompanying acl file, but no actual file',
+      {
+        url: 'http://localhost/space/'
+      },
+      [
+        `${rootPath}space/index.acl`
+      ],
+      {
+        path: `${rootPath}space/`,
+        contentType: 'application/octet-stream'
+      })
+
     itMapsUrl(mapper, 'a URL ending with a slash to an index file for text/html when index.html not is available',
       {
         url: 'http://localhost/space/',
         contentType: 'text/html',
         createIfNotExists: true
       },
+      {
+        path: `${rootPath}space/index.html`,
+        contentType: 'text/html'
+      })
+
+    itMapsUrl(mapper, 'a URL of that has an accompanying meta file, but no actual file',
+      {
+        url: 'http://localhost/space/',
+        contentType: 'text/html',
+        createIfNotExists: true
+      },
+      [
+        `${rootPath}space/index.meta`
+      ],
       {
         path: `${rootPath}space/index.html`,
         contentType: 'text/html'
