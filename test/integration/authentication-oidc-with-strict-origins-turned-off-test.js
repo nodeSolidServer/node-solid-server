@@ -228,7 +228,7 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
             before(done => {
               alice.get('/')
                    .set('Cookie', cookie)
-                   .set('Origin', 'https://apps.solid.invalid')
+                   .set('Origin', 'https://apps.solid.invalid') // TODO: Should we configure the server with that? Should it matter?
                    .end((err, res) => {
                      response = res
                      done(err)
