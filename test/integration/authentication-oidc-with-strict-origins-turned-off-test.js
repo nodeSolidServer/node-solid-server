@@ -248,7 +248,7 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
                    })
             })
 
-            it('should return a 401', () => expect(response).to.have.property('status', 401))
+            it('should return a 200', () => expect(response).to.have.property('status', 200)) // TODO: If origin checking is disabled, then this should return 200, right?
           })
         })
 
