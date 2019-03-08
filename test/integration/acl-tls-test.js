@@ -332,7 +332,7 @@ describe('ACL with WebID+TLS', function () {
 
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
-        assert.equal(response.statusCode, 401)
+        assert.equal(response.statusCode, 403)
         done()
       })
     })
@@ -354,7 +354,7 @@ describe('ACL with WebID+TLS', function () {
 
         request.head(options, function (error, response, body) {
           assert.equal(error, null)
-          assert.equal(response.statusCode, 401)
+          assert.equal(response.statusCode, 403)
           done()
         })
       })
@@ -433,7 +433,7 @@ describe('ACL with WebID+TLS', function () {
 
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
-        assert.equal(response.statusCode, 401)
+        assert.equal(response.statusCode, 403)
         done()
       })
     })
@@ -455,7 +455,7 @@ describe('ACL with WebID+TLS', function () {
 
         request.head(options, function (error, response, body) {
           assert.equal(error, null)
-          assert.equal(response.statusCode, 401)
+          assert.equal(response.statusCode, 403)
           done()
         })
       })

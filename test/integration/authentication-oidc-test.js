@@ -179,39 +179,6 @@ describe('Authentication API (OIDC)', () => {
           })
         })
 
-        describe('with that cookie and a non-matching origin', () => {
-          let response
-          before(done => {
-            alice.get('/private-for-alice.txt')
-              .set('Cookie', cookie)
-              .set('Origin', bobServerUri)
-              .end((err, res) => {
-                response = res
-                done(err)
-              })
-          })
-
-          it('should return a 403', () => {
-            expect(response).to.have.property('status', 403)
-          })
-        })
-
-        describe('without that cookie and a non-matching origin', () => {
-          let response
-          before(done => {
-            alice.get('/private-for-alice.txt')
-              .set('Origin', bobServerUri)
-              .end((err, res) => {
-                response = res
-                done(err)
-              })
-          })
-
-          it('should return a 401', () => {
-            expect(response).to.have.property('status', 401)
-          })
-        })
-
         describe('with that cookie but without origin', () => {
           let response
           before(done => {
@@ -226,19 +193,6 @@ describe('Authentication API (OIDC)', () => {
           it('should return a 200', () => {
             expect(response).to.have.property('status', 200)
           })
-        })
-
-        describe('with that cookie, private resource and no origin set', () => {
-          before(done => {
-            alice.get('/private-for-alice.txt')
-              .set('Cookie', cookie)
-              .end((err, res) => {
-                response = res
-                done(err)
-              })
-          })
-
-          it('should return a 200', () => expect(response).to.have.property('status', 200))
         })
 
         // How Mallory might set their cookie:
@@ -342,8 +296,8 @@ describe('Authentication API (OIDC)', () => {
               })
           })
 
-          it('should return a 401', () => {
-            expect(response).to.have.property('status', 401)
+          it('should return a 403', () => {
+            expect(response).to.have.property('status', 403) // TODO: Should be 401?
           })
         })
 
@@ -361,8 +315,8 @@ describe('Authentication API (OIDC)', () => {
               })
           })
 
-          it('should return a 401', () => {
-            expect(response).to.have.property('status', 401)
+          it('should return a 403', () => {
+            expect(response).to.have.property('status', 403)
           })
         })
 
@@ -379,8 +333,8 @@ describe('Authentication API (OIDC)', () => {
               })
           })
 
-          it('should return a 401', () => {
-            expect(response).to.have.property('status', 401)
+          it('should return a 403', () => {
+            expect(response).to.have.property('status', 403)
           })
         })
 
@@ -402,24 +356,7 @@ describe('Authentication API (OIDC)', () => {
           })
         })
 
-        describe('with malicious cookie and our origin', () => {
-          let response
-          before(done => {
-            var malcookie = cookie.replace(/connect\.sid=(\S+)/, 'connect.sid=l33th4x0rzp0wn4g3;')
-            alice.get('/private-for-alice.txt')
-              .set('Cookie', malcookie)
-              .set('Origin', aliceServerUri)
-              .end((err, res) => {
-                response = res
-                done(err)
-              })
-          })
-
-          it('should return a 401', () => {
-            expect(response).to.have.property('status', 401)
-          })
-        })
-
+        // Authenticated but origin not OK
         describe('with malicious cookie and a non-matching origin', () => {
           let response
           before(done => {
@@ -433,8 +370,8 @@ describe('Authentication API (OIDC)', () => {
               })
           })
 
-          it('should return a 401', () => {
-            expect(response).to.have.property('status', 401)
+          it('should return a 403', () => {
+            expect(response).to.have.property('status', 403)
           })
         })
       })
