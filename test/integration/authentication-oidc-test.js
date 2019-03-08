@@ -42,7 +42,8 @@ describe('Authentication API (OIDC)', () => {
     dataBrowser: false,
     webid: true,
     multiuser: false,
-    configPath
+    configPath,
+    trustedOrigins: ['https://apps.solid.invalid']
   }
 
   const aliceRootPath = path.join(__dirname, '../resources/accounts-scenario/alice')
