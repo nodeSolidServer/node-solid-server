@@ -235,7 +235,7 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
                    })
             })
 
-            it('should return a 200', () => expect(response).to.have.property('status', 200)) // FIXME: shouldn't this be 401 like below?
+            it('should return a 401', () => expect(response).to.have.property('status', 401))
           })
           describe('and untrusted origin', () => {
             before(done => {
