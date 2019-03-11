@@ -235,7 +235,7 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
                    })
             })
 
-            it('should return a 200', () => expect(response).to.have.property('status', 200))
+            it('should return a 401', () => expect(response).to.have.property('status', 401))
           })
           describe('and untrusted origin', () => {
             before(done => {
@@ -248,7 +248,8 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
                    })
             })
 
-            it('should return a 200', () => expect(response).to.have.property('status', 200)) // TODO: If origin checking is disabled, then this should return 200, right?
+            // Even if origin checking is disabled, then this should return a 401 because cookies should not be trusted cross-origin
+            it('should return a 401', () => expect(response).to.have.property('status', 401))
           })
         })
 
@@ -476,7 +477,7 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
 
     // Step 6: Web App extracts tokens from the uri hash fragment, uses
     //  them to access protected resource
-    it('should use id token from the callback uri to access shared resource', () => {
+    it('should use id token from the callback uri to access shared resource (no origin)', () => {
       auth.window.location.href = callbackUri
 
       let protectedResourcePath = bobServerUri + '/shared-with-alice.txt'
@@ -493,6 +494,36 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
           return fetch(protectedResourcePath, {
             headers: {
               'Authorization': 'Bearer ' + bearerToken
+            }
+          })
+        })
+        .then(res => {
+          expect(res.status).to.equal(200)
+
+          return res.text()
+        })
+        .then(contents => {
+          expect(contents).to.equal('protected contents\n')
+        })
+    })
+    it('should use id token from the callback uri to access shared resource (untrusted origin)', () => {
+      auth.window.location.href = callbackUri
+
+      let protectedResourcePath = bobServerUri + '/shared-with-alice.txt'
+
+      return auth.initUserFromResponse(auth.currentClient)
+        .then(webId => {
+          expect(webId).to.equal(aliceWebId)
+
+          return auth.issuePoPTokenFor(bobServerUri, auth.session)
+        })
+        .then(popToken => {
+          bearerToken = popToken
+
+          return fetch(protectedResourcePath, {
+            headers: {
+              'Authorization': 'Bearer ' + bearerToken,
+              'Origin': 'https://untrusted.example.com' // shouldn't matter if strictOrigin is set to false
             }
           })
         })

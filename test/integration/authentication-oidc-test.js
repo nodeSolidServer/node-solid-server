@@ -603,7 +603,7 @@ describe('Authentication API (OIDC)', () => {
 
     // Step 6: Web App extracts tokens from the uri hash fragment, uses
     //  them to access protected resource
-    it('should use id token from the callback uri to access shared resource', () => {
+    it('should use id token from the callback uri to access shared resource (no origin)', () => {
       auth.window.location.href = callbackUri
 
       let protectedResourcePath = bobServerUri + '/shared-with-alice.txt'
@@ -630,6 +630,32 @@ describe('Authentication API (OIDC)', () => {
         })
         .then(contents => {
           expect(contents).to.equal('protected contents\n')
+        })
+    })
+
+    it('should use id token from the callback uri to access shared resource (untrusted origin)', () => {
+      auth.window.location.href = callbackUri
+
+      let protectedResourcePath = bobServerUri + '/shared-with-alice.txt'
+
+      return auth.initUserFromResponse(auth.currentClient)
+        .then(webId => {
+          expect(webId).to.equal(aliceWebId)
+
+          return auth.issuePoPTokenFor(bobServerUri, auth.session)
+        })
+        .then(popToken => {
+          bearerToken = popToken
+
+          return fetch(protectedResourcePath, {
+            headers: {
+              'Authorization': 'Bearer ' + bearerToken,
+              'Origin': 'https://untrusted.example.com' // shouldn't be allowed if strictOrigin is set to true
+            }
+          })
+        })
+        .then(res => {
+          expect(res.status).to.equal(403)
         })
     })
 
