@@ -3,10 +3,10 @@ const path = require('path')
 const fs = require('fs-extra')
 const { UserStore } = require('@solid/oidc-auth-manager')
 const UserAccount = require('../../lib/models/user-account')
-const SolidAuthOIDC = require('@solid/solid-auth-oidc')
+// const SolidAuthOIDC = require('@solid/solid-auth-oidc')
 
-const fetch = require('node-fetch')
-const localStorage = require('localstorage-memory')
+// const fetch = require('node-fetch')
+// const localStorage = require('localstorage-memory')
 const URL = require('whatwg-url').URL
 global.URL = URL
 global.URLSearchParams = require('whatwg-url').URLSearchParams
@@ -20,7 +20,7 @@ chai.use(require('dirty-chai'))
 // In this test we always assume that we are Alice
 
 describe('Authentication API (OIDC)', () => {
-  let alice, bob
+  let alice, bob // eslint-disable-line no-unused-vars
 
   let aliceServerUri = 'https://localhost:7000'
   let aliceWebId = 'https://localhost:7000/profile/card#me'
