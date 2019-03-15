@@ -21,12 +21,17 @@
     - The browser-reported `Origin` header will now be checked by
       default, and the ACL system can be used to restrict access
       to applications for added security.
+    - Users can add `trustedApp` entries to their profile using a new databrowser pane.
+      You will see an 'A' icon added while you view a Person's profile URL
+      with the data browser (might have to hit refresh in your browser and make sure you
+      are viewing a WebId URL like https://localhost:8443/profile/card#me).
 - Logging is now verbose by default so the `-v` option has been
   removed and a `--quiet` option has been added to mute the log.
 - To be bug compliant with 4.x releases, if a rule for public readable
   root / does not exist, it will check in /index.html.acl (see issue #1063)
 - Command line options are now kebab-cased rather than camelCased,
   config options may be both.
+- Resource with no extension now have '$.ttl' appended in the filename (see upgrades notes below).
 - Many smaller fixes.
 
 #### 5.0.0 Upgrade Notes
