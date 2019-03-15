@@ -7,16 +7,24 @@ const defaults = require('../../config/defaults')
 
 describe('SolidHost', () => {
   describe('from()', () => {
-    it('should init with port, serverUri and hostname', () => {
+    it('should init with provided params', () => {
       let config = {
         port: 3000,
-        serverUri: 'https://localhost:3000'
+        serverUri: 'https://localhost:3000',
+        live: true,
+        root: '/data/solid/',
+        multiuser: true,
+        webid: true
       }
       let host = SolidHost.from(config)
 
       expect(host.port).to.equal(3000)
       expect(host.serverUri).to.equal('https://localhost:3000')
       expect(host.hostname).to.equal('localhost')
+      expect(host.live).to.be.true
+      expect(host.root).to.equal('/data/solid/')
+      expect(host.multiuser).to.be.true
+      expect(host.webid).to.be.true
     })
 
     it('should init to default port and serverUri values', () => {
