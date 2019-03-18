@@ -1,7 +1,7 @@
 const supertest = require('supertest')
 const ldnode = require('../../index')
 const path = require('path')
-const { cleanDir } = require('../utils')
+const { cleanDir, cp } = require('../utils')
 const expect = require('chai').expect
 
 describe('OIDC error handling', function () {
@@ -25,7 +25,10 @@ describe('OIDC error handling', function () {
   })
 
   before(function (done) {
-    ldpHttpsServer = ldp.listen(3457, done)
+    ldpHttpsServer = ldp.listen(3457, () => {
+      cp(path.join('accounts/errortests', '.acl-override'), path.join('accounts/errortests', '.acl'))
+      done()
+    })
   })
 
   after(function () {

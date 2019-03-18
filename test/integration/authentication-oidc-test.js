@@ -10,7 +10,7 @@ const localStorage = require('localstorage-memory')
 const URL = require('whatwg-url').URL
 global.URL = URL
 global.URLSearchParams = require('whatwg-url').URLSearchParams
-const { cleanDir } = require('../utils')
+const { cleanDir, cp } = require('../utils')
 
 const supertest = require('supertest')
 const chai = require('chai')
@@ -20,7 +20,7 @@ chai.use(require('dirty-chai'))
 // In this test we always assume that we are Alice
 
 describe('Authentication API (OIDC)', () => {
-  let alice, bob
+  let alice, bob // eslint-disable-line no-unused-vars
 
   let aliceServerUri = 'https://localhost:7000'
   let aliceWebId = 'https://localhost:7000/profile/card#me'
@@ -35,6 +35,8 @@ describe('Authentication API (OIDC)', () => {
   let bobDbPath = path.join(__dirname,
     '../resources/accounts-scenario/bob/db')
 
+  const trustedAppUri = 'https://trusted.app'
+
   const serverConfig = {
     sslKey: path.join(__dirname, '../keys/key.pem'),
     sslCert: path.join(__dirname, '../keys/cert.pem'),
@@ -42,7 +44,8 @@ describe('Authentication API (OIDC)', () => {
     dataBrowser: false,
     webid: true,
     multiuser: false,
-    configPath
+    configPath,
+    trustedOrigins: ['https://apps.solid.invalid']
   }
 
   const aliceRootPath = path.join(__dirname, '../resources/accounts-scenario/alice')
@@ -68,14 +71,16 @@ describe('Authentication API (OIDC)', () => {
     })
   }
 
-  before(() => {
-    return Promise.all([
+  before(async () => {
+    await Promise.all([
       startServer(alicePod, 7000),
       startServer(bobPod, 7001)
     ]).then(() => {
       alice = supertest(aliceServerUri)
       bob = supertest(bobServerUri)
     })
+    cp(path.join('accounts-scenario/alice', '.acl-override'), path.join('accounts-scenario/alice', '.acl'))
+    cp(path.join('accounts-scenario/bob', '.acl-override'), path.join('accounts-scenario/bob', '.acl'))
   })
 
   after(() => {
@@ -132,7 +137,7 @@ describe('Authentication API (OIDC)', () => {
       })
 
       it('should set the cookie', () => {
-        expect(cookie).to.match(/connect.sid=/)
+        expect(cookie).to.match(/connect.sid=\S{65,100}/)
       })
 
       it('should set the cookie with HttpOnly', () => {
@@ -147,7 +152,7 @@ describe('Authentication API (OIDC)', () => {
         describe('without that cookie', () => {
           let response
           before(done => {
-            alice.get('/')
+            alice.get('/private-for-alice.txt')
               .end((err, res) => {
                 response = res
                 done(err)
@@ -162,8 +167,41 @@ describe('Authentication API (OIDC)', () => {
         describe('with that cookie and a non-matching origin', () => {
           let response
           before(done => {
-            alice.get('/')
+            alice.get('/private-for-owner.txt')
               .set('Cookie', cookie)
+              .set('Origin', bobServerUri)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 403', () => {
+            expect(response).to.have.property('status', 403)
+          })
+        })
+
+        describe('with that cookie and a non-matching origin', () => {
+          let response
+          before(done => {
+            alice.get('/private-for-alice.txt')
+              .set('Cookie', cookie)
+              .set('Origin', bobServerUri)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 403', () => {
+            expect(response).to.have.property('status', 403)
+          })
+        })
+
+        describe('without that cookie and a non-matching origin', () => {
+          let response
+          before(done => {
+            alice.get('/private-for-alice.txt')
               .set('Origin', bobServerUri)
               .end((err, res) => {
                 response = res
@@ -192,7 +230,39 @@ describe('Authentication API (OIDC)', () => {
           })
         })
 
-        describe('with that cookie and a matching origin', () => {
+        describe('with that cookie, private resource and no origin set', () => {
+          before(done => {
+            alice.get('/private-for-alice.txt')
+              .set('Cookie', cookie)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 200', () => expect(response).to.have.property('status', 200))
+        })
+
+        // How Mallory might set their cookie:
+        describe('with malicious cookie but without origin', () => {
+          let response
+          before(done => {
+            var malcookie = cookie.replace(/connect\.sid=(\S+)/, 'connect.sid=l33th4x0rzp0wn4g3;')
+            alice.get('/private-for-alice.txt')
+              .set('Cookie', malcookie)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 401', () => {
+            expect(response).to.have.property('status', 401)
+          })
+        })
+
+        // Our origin is trusted by default
+        describe('with that cookie and our origin', () => {
           let response
           before(done => {
             alice.get('/')
@@ -207,6 +277,209 @@ describe('Authentication API (OIDC)', () => {
           it('should return a 200', () => {
             expect(response).to.have.property('status', 200)
           })
+        })
+
+        // Another origin isn't trusted by default
+        describe('with that cookie and our origin', () => {
+          let response
+          before(done => {
+            alice.get('/private-for-owner.txt')
+              .set('Cookie', cookie)
+              .set('Origin', 'https://some.other.domain.com')
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 403', () => {
+            expect(response).to.have.property('status', 403)
+          })
+        })
+
+        // Our own origin, no agent auth
+        describe('without that cookie but with our origin', () => {
+          let response
+          before(done => {
+            alice.get('/private-for-owner.txt')
+              .set('Origin', aliceServerUri)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 401', () => {
+            expect(response).to.have.property('status', 401)
+          })
+        })
+
+        // Configuration for originsAllowed
+        describe('with that cookie but with globally configured origin', () => {
+          let response
+          before(done => {
+            alice.get('/')
+              .set('Cookie', cookie)
+              .set('Origin', 'https://apps.solid.invalid')
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 200', () => {
+            expect(response).to.have.property('status', 200)
+          })
+        })
+
+        // Configuration for originsAllowed but no auth
+        describe('without that cookie but with globally configured origin', () => {
+          let response
+          before(done => {
+            alice.get('/private-for-alice.txt')
+              .set('Origin', 'https://apps.solid.invalid')
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 401', () => {
+            expect(response).to.have.property('status', 401)
+          })
+        })
+
+        // Configuration for originsAllowed with malicious cookie
+        describe('with malicious cookie but with globally configured origin', () => {
+          let response
+          before(done => {
+            var malcookie = cookie.replace(/connect\.sid=(\S+)/, 'connect.sid=l33th4x0rzp0wn4g3;')
+            alice.get('/private-for-alice.txt')
+              .set('Cookie', malcookie)
+              .set('Origin', 'https://apps.solid.invalid')
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 401', () => {
+            expect(response).to.have.property('status', 401)
+          })
+        })
+
+        // Not authenticated but also wrong origin,
+        // 403 because authenticating wouldn't help, since the Origin is wrong
+        describe('without that cookie and a matching origin', () => {
+          let response
+          before(done => {
+            alice.get('/private-for-owner.txt')
+              .set('Origin', bobServerUri)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 401', () => {
+            expect(response).to.have.property('status', 401)
+          })
+        })
+
+        // Authenticated but origin not OK
+        describe('with that cookie and a non-matching origin', () => {
+          let response
+          before(done => {
+            alice.get('/private-for-owner.txt')
+              .set('Cookie', cookie)
+              .set('Origin', bobServerUri)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 403', () => {
+            expect(response).to.have.property('status', 403)
+          })
+        })
+
+        describe('with malicious cookie and our origin', () => {
+          let response
+          before(done => {
+            var malcookie = cookie.replace(/connect\.sid=(\S+)/, 'connect.sid=l33th4x0rzp0wn4g3;')
+            alice.get('/private-for-alice.txt')
+              .set('Cookie', malcookie)
+              .set('Origin', aliceServerUri)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 401', () => {
+            expect(response).to.have.property('status', 401)
+          })
+        })
+
+        describe('with malicious cookie and a non-matching origin', () => {
+          let response
+          before(done => {
+            var malcookie = cookie.replace(/connect\.sid=(\S+)/, 'connect.sid=l33th4x0rzp0wn4g3;')
+            alice.get('/private-for-owner.txt')
+              .set('Cookie', malcookie)
+              .set('Origin', bobServerUri)
+              .end((err, res) => {
+                response = res
+                done(err)
+              })
+          })
+
+          it('should return a 401', () => {
+            expect(response).to.have.property('status', 401)
+          })
+        })
+
+        describe('with trusted app and no cookie', () => {
+          before(done => {
+            alice.get('/private-for-alice.txt')
+                 .set('Origin', trustedAppUri)
+                 .end((err, res) => {
+                   response = res
+                   done(err)
+                 })
+          })
+
+          it('should return a 401', () => expect(response).to.have.property('status', 401))
+        })
+
+        describe('with trusted app and malicious cookie', () => {
+          before(done => {
+            var malcookie = cookie.replace(/connect\.sid=(\S+)/, 'connect.sid=l33th4x0rzp0wn4g3;')
+            alice.get('/private-for-alice.txt')
+                 .set('Cookie', malcookie)
+                 .set('Origin', trustedAppUri)
+                 .end((err, res) => {
+                   response = res
+                   done(err)
+                 })
+          })
+
+          it('should return a 401', () => expect(response).to.have.property('status', 401))
+        })
+
+        describe('with trusted app and correct cookie', () => {
+          before(done => {
+            alice.get('/private-for-alice.txt')
+                 .set('Cookie', cookie)
+                 .set('Origin', trustedAppUri)
+                 .end((err, res) => {
+                   response = res
+                   done(err)
+                 })
+          })
+
+          it('should return a 200', () => expect(response).to.have.property('status', 200))
         })
       })
     })
@@ -237,9 +510,9 @@ describe('Authentication API (OIDC)', () => {
   describe('Browser login workflow', () => {
     it('401 Unauthorized asking the user to log in', (done) => {
       bob.get('/shared-with-alice.txt')
-        .expect(401)
-        .end((err, res) => {
-          expect(res.text).to.contain('Log in')
+        .end((err, { status, text }) => {
+          expect(status).to.equal(401)
+          expect(text).to.contain('Log in')
           done(err)
         })
     })
@@ -374,7 +647,7 @@ describe('Authentication API (OIDC)', () => {
 
     // Step 6: Web App extracts tokens from the uri hash fragment, uses
     //  them to access protected resource
-    it('should use id token from the callback uri to access shared resource', () => {
+    it('should use id token from the callback uri to access shared resource (no origin)', () => {
       auth.window.location.href = callbackUri
 
       let protectedResourcePath = bobServerUri + '/shared-with-alice.txt'
@@ -401,6 +674,32 @@ describe('Authentication API (OIDC)', () => {
         })
         .then(contents => {
           expect(contents).to.equal('protected contents\n')
+        })
+    })
+
+    it('should use id token from the callback uri to access shared resource (untrusted origin)', () => {
+      auth.window.location.href = callbackUri
+
+      let protectedResourcePath = bobServerUri + '/shared-with-alice.txt'
+
+      return auth.initUserFromResponse(auth.currentClient)
+        .then(webId => {
+          expect(webId).to.equal(aliceWebId)
+
+          return auth.issuePoPTokenFor(bobServerUri, auth.session)
+        })
+        .then(popToken => {
+          bearerToken = popToken
+
+          return fetch(protectedResourcePath, {
+            headers: {
+              'Authorization': 'Bearer ' + bearerToken,
+              'Origin': 'https://untrusted.example.com' // shouldn't be allowed if strictOrigin is set to true
+            }
+          })
+        })
+        .then(res => {
+          expect(res.status).to.equal(403)
         })
     })
 

@@ -7,16 +7,24 @@ const defaults = require('../../config/defaults')
 
 describe('SolidHost', () => {
   describe('from()', () => {
-    it('should init with port, serverUri and hostname', () => {
+    it('should init with provided params', () => {
       let config = {
         port: 3000,
-        serverUri: 'https://localhost:3000'
+        serverUri: 'https://localhost:3000',
+        live: true,
+        root: '/data/solid/',
+        multiuser: true,
+        webid: true
       }
       let host = SolidHost.from(config)
 
       expect(host.port).to.equal(3000)
       expect(host.serverUri).to.equal('https://localhost:3000')
       expect(host.hostname).to.equal('localhost')
+      expect(host.live).to.be.true
+      expect(host.root).to.equal('/data/solid/')
+      expect(host.multiuser).to.be.true
+      expect(host.webid).to.be.true
     })
 
     it('should init to default port and serverUri values', () => {
@@ -51,27 +59,31 @@ describe('SolidHost', () => {
     })
 
     it('should allow an empty userId and origin', () => {
-      expect(host.allowsSessionFor('', '')).to.be.true
+      expect(host.allowsSessionFor('', '', [])).to.be.true
     })
 
     it('should allow a userId with empty origin', () => {
-      expect(host.allowsSessionFor('https://user.own/profile/card#me', '')).to.be.true
+      expect(host.allowsSessionFor('https://user.own/profile/card#me', '', [])).to.be.true
     })
 
     it('should allow a userId with the user subdomain as origin', () => {
-      expect(host.allowsSessionFor('https://user.own/profile/card#me', 'https://user.own')).to.be.true
+      expect(host.allowsSessionFor('https://user.own/profile/card#me', 'https://user.own', [])).to.be.true
     })
 
     it('should allow a userId with the server domain as origin', () => {
-      expect(host.allowsSessionFor('https://user.own/profile/card#me', 'https://test.local')).to.be.true
+      expect(host.allowsSessionFor('https://user.own/profile/card#me', 'https://test.local', [])).to.be.true
     })
 
     it('should allow a userId with a server subdomain as origin', () => {
-      expect(host.allowsSessionFor('https://user.own/profile/card#me', 'https://other.test.local')).to.be.true
+      expect(host.allowsSessionFor('https://user.own/profile/card#me', 'https://other.test.local', [])).to.be.true
     })
 
     it('should disallow a userId from a different domain', () => {
-      expect(host.allowsSessionFor('https://user.own/profile/card#me', 'https://other.remote')).to.be.false
+      expect(host.allowsSessionFor('https://user.own/profile/card#me', 'https://other.remote', [])).to.be.false
+    })
+
+    it('should allow user from a trusted domain', () => {
+      expect(host.allowsSessionFor('https://user.own/profile/card#me', 'https://other.remote', ['https://other.remote'])).to.be.true
     })
   })
 

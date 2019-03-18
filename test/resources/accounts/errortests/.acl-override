@@ -9,7 +9,7 @@
     acl:accessTo </>;
 
     # All resources will inherit this authorization, by default
-    acl:defaultForNew </>;
+    acl:default </>;
 
     # The owner has all of the access modes allowed
     acl:mode

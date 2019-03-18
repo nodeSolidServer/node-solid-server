@@ -1,8 +1,10 @@
-var fs = require('fs-extra')
-var rimraf = require('rimraf')
-var path = require('path')
+const fs = require('fs-extra')
+const rimraf = require('rimraf')
+const path = require('path')
 const OIDCProvider = require('@solid/oidc-op')
 const dns = require('dns')
+const ldnode = require('../index')
+const supertest = require('supertest')
 
 const TEST_HOSTS = ['nic.localhost', 'tim.localhost', 'nicola.localhost']
 
@@ -12,6 +14,7 @@ exports.rm = function (file) {
 
 exports.cleanDir = function (dirPath) {
   fs.removeSync(path.join(dirPath, '.well-known/.acl'))
+  fs.removeSync(path.join(dirPath, '.acl'))
   fs.removeSync(path.join(dirPath, 'favicon.ico'))
   fs.removeSync(path.join(dirPath, 'favicon.ico.acl'))
   fs.removeSync(path.join(dirPath, 'index.html'))
@@ -79,4 +82,15 @@ exports.loadProvider = function loadProvider (configPath) {
 
       return provider.initializeKeyChain(config.keys)
     })
+}
+
+exports.createServer = createServer
+function createServer (options) {
+  return ldnode.createServer(options)
+}
+
+exports.setupSupertestServer = setupSuperServer
+function setupSuperServer (options) {
+  const ldpServer = createServer(options)
+  return supertest(ldpServer)
 }

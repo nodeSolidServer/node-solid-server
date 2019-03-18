@@ -1,17 +1,14 @@
 const fs = require('fs-extra')
 const Handlebars = require('handlebars')
 const path = require('path')
-const { URL } = require('url')
 
-const { loadConfig } = require('./common')
+const { getAccountManager, loadConfig, loadUsernames } = require('./cli-utils')
 const { isValidUsername } = require('../../lib/common/user-utils')
 const blacklistService = require('../../lib/services/blacklist-service')
 const { initConfigDir, initTemplateDirs } = require('../../lib/server-config')
 const { fromServerConfig } = require('../../lib/models/oidc-manager')
 
-const AccountManager = require('../../lib/models/account-manager')
 const EmailService = require('../../lib/services/email-service')
-const LDP = require('../../lib/ldp')
 const SolidHost = require('../../lib/models/solid-host')
 
 module.exports = function (program) {
@@ -28,7 +25,7 @@ module.exports = function (program) {
 
       const invalidUsernames = getInvalidUsernames(config)
       const host = SolidHost.from({ port: config.port, serverUri: config.serverUri })
-      const accountManager = getAccountManager(config, host)
+      const accountManager = getAccountManager(config, { host })
 
       if (options.notify) {
         return notifyUsers(invalidUsernames, accountManager, config)
@@ -96,23 +93,9 @@ async function deleteUsers (usernames, accountManager, config, host) {
   console.info(`Deleted ${deletingUsers.length} users succeeded`)
 }
 
-function getAccountManager (config, host) {
-  const ldp = new LDP(config)
-  return AccountManager.from({
-    host,
-    store: ldp,
-    multiuser: config.multiuser
-  })
-}
-
 function getInvalidUsernames (config) {
-  const files = fs.readdirSync(config.root)
-  const hostname = new URL(config.serverUri).hostname
-  const isUserDirectory = new RegExp(`.${hostname}$`)
-  return files
-    .filter(file => isUserDirectory.test(file))
-    .map(userDirectory => userDirectory.substr(0, userDirectory.length - hostname.length - 1))
-    .filter(username => !isValidUsername(username) || !blacklistService.validate(username))
+  const usernames = loadUsernames(config)
+  return usernames.filter(username => !isValidUsername(username) || !blacklistService.validate(username))
 }
 
 function listUsernames (usernames) {

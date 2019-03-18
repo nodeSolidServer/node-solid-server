@@ -1,0 +1,6 @@
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+
+<#DotAcl> a acl:Authorization ;
+    acl:accessTo <./.acl> ;
+    acl:agent <https://tim.localhost:7777/profile/card#me> ;
+    acl:mode acl:Read .

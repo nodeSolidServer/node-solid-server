@@ -1,7 +1,6 @@
 var assert = require('chai').assert
 
 var utils = require('../../lib/utils')
-var path = require('path')
 
 describe('Utility functions', function () {
   describe('pathBasename', function () {
@@ -19,18 +18,6 @@ describe('Utility functions', function () {
     })
     it('should return empty as relative path for undefined path', function () {
       assert.equal(utils.pathBasename(undefined), '')
-    })
-  })
-
-  describe('uriToFilename', function () {
-    it('should decode hex-encoded space', function () {
-      assert.equal(utils.uriToFilename('uri%20', 'base/'), path.join('base', 'uri '))
-    })
-    it('should decode hex-encoded at sign', function () {
-      assert.equal(utils.uriToFilename('film%4011', 'base/'), path.join('base', 'film@11'))
-    })
-    it('should decode hex-encoded single quote', function () {
-      assert.equal(utils.uriToFilename('quote%27', 'base/'), path.join('base', 'quote\''))
     })
   })
 
@@ -81,6 +68,39 @@ describe('Utility functions', function () {
       }
 
       assert.equal(utils.fullUrlForReq(req), 'https://example.com/resource1?sort=desc')
+    })
+  })
+
+  describe('getContentType()', () => {
+    describe('for Express headers', () => {
+      it('should default to text/plain', () => {
+        assert.equal(utils.getContentType({}), 'text/plain')
+      })
+
+      it('should get a basic content type', () => {
+        assert.equal(utils.getContentType({'content-type': 'text/html'}), 'text/html')
+      })
+
+      it('should get a content type without its charset', () => {
+        assert.equal(utils.getContentType({'content-type': 'text/html; charset=us-ascii'}), 'text/html')
+      })
+    })
+
+    describe('for Fetch API headers', () => {
+      it('should default to text/plain', () => {
+        // eslint-disable-next-line no-undef
+        assert.equal(utils.getContentType(new Headers({})), 'text/plain')
+      })
+
+      it('should get a basic content type', () => {
+        // eslint-disable-next-line no-undef
+        assert.equal(utils.getContentType(new Headers({'content-type': 'text/html'})), 'text/html')
+      })
+
+      it('should get a content type without its charset', () => {
+        // eslint-disable-next-line no-undef
+        assert.equal(utils.getContentType(new Headers({'content-type': 'text/html; charset=us-ascii'})), 'text/html')
+      })
     })
   })
 })
