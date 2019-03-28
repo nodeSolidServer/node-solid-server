@@ -69,9 +69,15 @@ function bin (argv, server) {
   // Set up port
   argv.port = argv.port || 3456
 
+  // Multiuser with no webid is not allowed
+
   // Webid to be default in command line
   if (argv.webid !== false) {
     argv.webid = true
+  }
+
+  if (!argv.webid && argv.multiuser) {
+    throw new Error('Server cannot operate as multiuser without webids')
   }
 
   // Signal handling (e.g. CTRL+C)
