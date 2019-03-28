@@ -104,7 +104,7 @@ $ solid start
 Otherwise, if you want to use flags, this would be the equivalent
 
 ```bash
-$ solid start --multiuser --port 8443 --cert /path/to/cert --key /path/to/key --root ./data
+$ solid start --multiuser --port 8443 --ssl-cert /path/to/cert --ssl-key /path/to/key --root ./data
 ```
 
 Your users will have a dedicated folder under `./data` at `./data/<username>.<yourdomain.tld>`. Also, your root domain's website will be in `./data/<yourdomain.tld>`. New users can create accounts on `/api/accounts/new` and create new certificates on `/api/accounts/cert`. An easy-to-use sign-up tool is found on `/api/accounts`.
