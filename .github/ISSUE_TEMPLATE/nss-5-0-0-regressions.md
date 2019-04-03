@@ -8,13 +8,14 @@ assignees: ''
 
 ---
 
+
 ## Please describe what you did in reproducible steps
 
 
 ## How did it work with 4.x series servers?
 
 
-## What happened when you tried the same with the 5.0.0 beta?
+## What happened when you tried the same with 5.0.0?
 
 
 ## Any material that will help, logs, error messages, etc.
