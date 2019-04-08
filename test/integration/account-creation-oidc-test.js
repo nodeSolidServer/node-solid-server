@@ -80,21 +80,21 @@ describe('AccountManager (OIDC account creation tests)', function () {
     })
 
     it('should not create WebID if no username is given', (done) => {
-      let subdomain = supertest('https://nicola.' + host)
+      let subdomain = supertest('https://' + host)
       subdomain.post('/api/accounts/new')
         .send('username=&password=12345')
         .expect(400, done)
     })
 
     it('should not create WebID if no password is given', (done) => {
-      let subdomain = supertest('https://nicola.' + host)
+      let subdomain = supertest('https://' + host)
       subdomain.post('/api/accounts/new')
         .send('username=nicola&password=')
         .expect(400, done)
     })
 
     it('should not create a WebID if it already exists', function (done) {
-      var subdomain = supertest('https://nicola.' + host)
+      var subdomain = supertest('https://' + host)
       subdomain.post('/api/accounts/new')
         .send('username=nicola&password=12345&acceptToc=true')
         .expect(302)
@@ -112,14 +112,14 @@ describe('AccountManager (OIDC account creation tests)', function () {
     })
 
     it('should not create WebID if T&C is not accepted', (done) => {
-      let subdomain = supertest('https://nicola.' + host)
+      let subdomain = supertest('https://' + host)
       subdomain.post('/api/accounts/new')
         .send('username=nicola&password=12345&acceptToc=')
         .expect(400, done)
     })
 
     it('should create the default folders', function (done) {
-      var subdomain = supertest('https://nicola.' + host)
+      var subdomain = supertest('https://' + host)
       subdomain.post('/api/accounts/new')
         .send('username=nicola&password=12345&acceptToc=true')
         .expect(302)
@@ -129,9 +129,9 @@ describe('AccountManager (OIDC account creation tests)', function () {
           }
           var domain = host.split(':')[0]
           var card = read(path.join('accounts/nicola.' + domain,
-            'profile/card'))
+            'profile/card$.ttl'))
           var cardAcl = read(path.join('accounts/nicola.' + domain,
-            'profile/card.acl'))
+           'profile/.acl'))
           var prefs = read(path.join('accounts/nicola.' + domain,
             'settings/prefs.ttl'))
           var inboxAcl = read(path.join('accounts/nicola.' + domain,
@@ -150,14 +150,15 @@ describe('AccountManager (OIDC account creation tests)', function () {
     }).timeout(20000)
 
     it('should link WebID to the root account', function (done) {
-      var subdomain = supertest('https://nicola.' + host)
-      subdomain.post('/api/accounts/new')
+      const domain = supertest('https://' + host)
+      domain.post('/api/accounts/new')
         .send('username=nicola&password=12345&acceptToc=true')
         .expect(302)
         .end(function (err) {
           if (err) {
             return done(err)
           }
+          const subdomain = supertest('https://nicola.' + host)
           subdomain.get('/.meta')
             .expect(200)
             .end(function (err, data) {
@@ -183,31 +184,40 @@ describe('AccountManager (OIDC account creation tests)', function () {
         })
     }).timeout(20000)
 
-    it('should create a private settings container', function (done) {
-      var subdomain = supertest('https://nicola.' + host)
-      subdomain.head('/settings/')
-        .expect(401)
-        .end(function (err) {
-          done(err)
-        })
-    })
+    describe('after setting up account', () => {
+      beforeEach(done => {
+        var subdomain = supertest('https://' + host)
+        subdomain.post('/api/accounts/new')
+          .send('username=nicola&password=12345&acceptToc=true')
+          .end(done)
+      })
 
-    it('should create a private prefs file in the settings container', function (done) {
-      var subdomain = supertest('https://nicola.' + host)
-      subdomain.head('/inbox/prefs.ttl')
-        .expect(401)
-        .end(function (err) {
-          done(err)
-        })
-    })
+      it('should create a private settings container', function (done) {
+        var subdomain = supertest('https://nicola.' + host)
+        subdomain.head('/settings/')
+          .expect(401)
+          .end(function (err) {
+            done(err)
+          })
+      })
 
-    it('should create a private inbox container', function (done) {
-      var subdomain = supertest('https://nicola.' + host)
-      subdomain.head('/inbox/')
-        .expect(401)
-        .end(function (err) {
-          done(err)
-        })
+      it('should create a private prefs file in the settings container', function (done) {
+        var subdomain = supertest('https://nicola.' + host)
+        subdomain.head('/inbox/prefs.ttl')
+          .expect(401)
+          .end(function (err) {
+            done(err)
+          })
+      })
+
+      it('should create a private inbox container', function (done) {
+        var subdomain = supertest('https://nicola.' + host)
+        subdomain.head('/inbox/')
+          .expect(401)
+          .end(function (err) {
+            done(err)
+          })
+      })
     })
   })
 })
@@ -215,7 +225,7 @@ describe('AccountManager (OIDC account creation tests)', function () {
 describe('Single User signup page', () => {
   const serverUri = 'https://localhost:7457'
   const port = 7457
-  var ldpHttpsServer
+  let ldpHttpsServer
   const rootDir = path.join(__dirname, '../resources/accounts/single-user/')
   const configPath = path.join(__dirname, '../resources/config')
   const ldp = ldnode.createServer({
@@ -231,7 +241,9 @@ describe('Single User signup page', () => {
   const server = supertest(serverUri)
 
   before(function (done) {
-    ldpHttpsServer = ldp.listen(port, done)
+    ldpHttpsServer = ldp.listen(port, () => server.post('/api/accounts/new')
+      .send('username=foo&password=12345&acceptToc=true')
+      .end(done))
   })
 
   after(function () {
@@ -239,10 +251,10 @@ describe('Single User signup page', () => {
     fs.removeSync(rootDir)
   })
 
-  it('should return a 401 unauthorized without accept text/html', done => {
+  it.skip('should return a 406 not acceptable without accept text/html', done => {
     server.get('/')
       .set('accept', 'text/plain')
-      .expect(401)
+      .expect(406)
       .end(done)
   })
 })
@@ -283,7 +295,7 @@ describe('Signup page where Terms & Conditions are not being enforced', () => {
   })
 
   it('should not enforce T&C upon creating account', function (done) {
-    var subdomain = supertest('https://nicola.' + host)
+    var subdomain = supertest('https://' + host)
     subdomain.post('/api/accounts/new')
       .send('username=nicola&password=12345')
       .expect(302, done)

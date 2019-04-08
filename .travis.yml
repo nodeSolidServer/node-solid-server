@@ -23,6 +23,7 @@ install:
 script:
   # Test the code
   - npm run standard
+  - npm run validate
   - npm run nyc
   # Test global install of the package
   - npm pack .
@@ -30,6 +31,8 @@ script:
 
 after_success:
   - snyk monitor
+
+cache: npm
 
 notifications:
   email:

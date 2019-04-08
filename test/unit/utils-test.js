@@ -70,4 +70,37 @@ describe('Utility functions', function () {
       assert.equal(utils.fullUrlForReq(req), 'https://example.com/resource1?sort=desc')
     })
   })
+
+  describe('getContentType()', () => {
+    describe('for Express headers', () => {
+      it('should default to text/plain', () => {
+        assert.equal(utils.getContentType({}), 'text/plain')
+      })
+
+      it('should get a basic content type', () => {
+        assert.equal(utils.getContentType({'content-type': 'text/html'}), 'text/html')
+      })
+
+      it('should get a content type without its charset', () => {
+        assert.equal(utils.getContentType({'content-type': 'text/html; charset=us-ascii'}), 'text/html')
+      })
+    })
+
+    describe('for Fetch API headers', () => {
+      it('should default to text/plain', () => {
+        // eslint-disable-next-line no-undef
+        assert.equal(utils.getContentType(new Headers({})), 'text/plain')
+      })
+
+      it('should get a basic content type', () => {
+        // eslint-disable-next-line no-undef
+        assert.equal(utils.getContentType(new Headers({'content-type': 'text/html'})), 'text/html')
+      })
+
+      it('should get a content type without its charset', () => {
+        // eslint-disable-next-line no-undef
+        assert.equal(utils.getContentType(new Headers({'content-type': 'text/html; charset=us-ascii'})), 'text/html')
+      })
+    })
+  })
 })

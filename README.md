@@ -104,7 +104,7 @@ $ solid start
 Otherwise, if you want to use flags, this would be the equivalent
 
 ```bash
-$ solid --multiuser --port 8443 --cert /path/to/cert --key /path/to/key --root ./data
+$ solid start --multiuser --port 8443 --ssl-cert /path/to/cert --ssl-key /path/to/key --root ./data
 ```
 
 Your users will have a dedicated folder under `./data` at `./data/<username>.<yourdomain.tld>`. Also, your root domain's website will be in `./data/<yourdomain.tld>`. New users can create accounts on `/api/accounts/new` and create new certificates on `/api/accounts/cert`. An easy-to-use sign-up tool is found on `/api/accounts`.
@@ -115,19 +115,6 @@ See [Running Solid behind a reverse proxy](https://github.com/solid/node-solid-s
 ##### How can I send emails to my users with my Gmail?
 
 > To use Gmail you may need to configure ["Allow Less Secure Apps"](https://www.google.com/settings/security/lesssecureapps) in your Gmail account unless you are using 2FA in which case you would have to create an [Application Specific](https://security.google.com/settings/security/apppasswords) password. You also may need to unlock your account with ["Allow access to your Google account"](https://accounts.google.com/DisplayUnlockCaptcha) to use SMTP.
-
-### Run the Linked Data Platform (intermediate)
-If you don't want WebID Authentication and Web Access Control, you can run a simple Linked Data Platform.
-
-```bash
-# over HTTP
-$ solid start --port 8080 --no-webid
-# over HTTPS
-$ solid start --port 8080 --ssl-key key.pem --ssl-cert cert.pem --no-webid
-```
-
-**Note:** if you want to run on HTTP, do not pass the `--ssl-*` flags, but keep `--no-webid`
-
 
 ### Extra flags (expert)
 The command line tool has the following options
@@ -167,7 +154,7 @@ $ solid start --help
 
     --root [value]                Root folder to serve (default: './data')
     --port [value]                SSL port to use
-    --serverUri [value]           Solid server uri (default: 'https://localhost:8443')
+    --server-uri [value]          Solid server uri (default: 'https://localhost:8443')
     --webid                       Enable WebID authentication and access control (uses HTTPS)
     --mount [value]               Serve on a specific URL path (default: '/')
     --config-path [value]
@@ -182,7 +169,7 @@ $ solid start --help
     --idp [value]                 Obsolete; use --multiuser
     --no-live                     Disable live support through WebSockets
     --proxy [value]               Obsolete; use --corsProxy
-    --corsProxy [value]           Serve the CORS proxy on this path
+    --cors-proxy [value]          Serve the CORS proxy on this path
     --suppress-data-browser       Suppress provision of a data browser
     --data-browser-path [value]   An HTML file which is sent to allow users to browse the data (eg using mashlib.js)
     --suffix-acl [value]          Suffix for acl files (default: '.acl')
@@ -191,19 +178,21 @@ $ solid start --help
     --error-pages [value]         Folder from which to look for custom error pages files (files must be named <error-code>.html -- eg. 500.html)
     --force-user [value]          Force a WebID to always be logged in (useful when offline)
     --strict-origin               Enforce same origin policy in the ACL
-    --useEmail                    Do you want to set up an email service?
+    --use-email                   Do you want to set up an email service?
     --email-host [value]          Host of your email service
     --email-port [value]          Port of your email service
     --email-auth-user [value]     User of your email service
     --email-auth-pass [value]     Password of your email service
-    --useApiApps                  Do you want to load your default apps on /api/apps?
+    --use-api-apps                Do you want to load your default apps on /api/apps?
     --api-apps [value]            Path to the folder to mount on /api/apps
     --redirect-http-from [value]  HTTP port or ','-separated ports to redirect to the solid server port (e.g. "80,8080").
     --server-name [value]         A name for your server (not required, but will be presented on your server's frontpage)
     --server-description [value]  A description of your server (not required)
     --server-logo [value]         A logo that represents you, your brand, or your server (not required)
-    -q, --quiet                  Do not print the logs to console
-    -v, --verbose                 DEPRECATED: Print the logs to console.  
+    --enforce-toc                 Do you want to enforce Terms & Conditions for your service?
+    --toc-uri [value]             URI to your Terms & Conditions
+    --support-email [value]       The support email you provide for your users (not required)
+    -q, --quiet                   Do not print the logs to console
     -h, --help                    output usage information
  ```
 
@@ -226,13 +215,20 @@ Run with:
 docker run -p 8443:8443 --name solid node-solid-server
 ```
 
-Modify the config as follows:
+This will enable you to login to solid on https://localhost:8443 and then create a new account
+but not yet use that account. After a new account is made you will need to create an entry for 
+it in your local (/etc/)hosts file in line with the account and subdomain i.e. 
+
+127.0.0.1	newsoliduser.localhost
+
+Then you'll be able to use solid as intended.
+
+You can modify the config within the docker container as follows:
 
  - Copy the config to the current directory with: `docker cp solid:/usr/src/app/config.json .`
  - Edit the `config.json` file
  - Copy the file back with `docker cp config.json solid:/usr/src/app/`
  - Restart the server with `docker restart solid`
-
 
 ## Library Usage
 
@@ -277,7 +273,7 @@ for more complex ones
 
 ##### Simple Example
 
-You can create an `solid` server ready to use using `solid.createServer(opts)`
+You can create a `solid` server ready to use using `solid.createServer(opts)`
 
 ```javascript
 var solid = require('solid-server')
@@ -385,73 +381,20 @@ blacklist profanities by default.
 
 ## Quota
 
-By default, a file `serverSide.ttl` will be installed to new PODs. Its
-current function is to set a quota for disk usage of just 25 MB, which
-is what we can be sure the current prototype can tolerate under
-load. This file is not writeable to users, but as server administrator
-you can remove it if you don't want to impose a quota. It is currently
-adviceable to remove it rather than set a large quota, because the
-current implementation will impair write performance if there is a lot
-of data.
+By default, a file `serverSide.ttl.inactive` will be installed to new
+PODs. If you rename it to `serverSide.ttl`, it will currently set a
+quota for disk usage.  This file is not writeable to users, only
+server administrators who are authorized on the backend can modify
+it. It is currently adviceable to remove it or set it inactive rather
+than set a large quota, because the current implementation will impair
+write performance if there is a lot of data.
 
-## Contributing
+## Contribute to Solid
 
-`solid` is has been made possible due to contributions from many individuals, these are some of the key contributors:
+Solid is only possible because of a large community of [contributors](https://github.com/solid/node-solid-server/blob/master/CONTRIBUTORS.md).
+A heartfelt thank you to everyone for all of your efforts!
 
-<table>
-  <tbody>
-    <tr>
-      <th align="left">Tim Berners-Lee</th>
-      <td><a href="https://github.com/timbl">GitHub/timbl</a></td>
-      <td><a href="http://twitter.com/timberners_lee">Twitter/@timberners_lee</a></td>
-      <td><a href="https://www.w3.org/People/Berners-Lee/card#i">WebID</a></td>
-    </tr>
-    <tr>
-      <th align="left">Nicola Greco</th>
-      <td><a href="https://github.com/nicola">GitHub/nicola</a></td>
-      <td><a href="http://twitter.com/nicolagreco">Twitter/@nicolagreco</a></td>
-      <td><a href="https://nicola.databox.me/profile/card#me">WebID</a></td>
-    </tr>
-    <tr>
-      <th align="left">Martin Martinez Rivera</th>
-      <td><a href="https://github.com/martinmr">GitHub/martinmr</a></td>
-      <td></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th align="left">Andrei Sambra</th>
-      <td><a href="https://github.com/deiu">GitHub/deiu</a></td>
-      <td><a href="http://twitter.com/deiu">Twitter/@deiu</a></td>
-      <td><a href="https://deiu.me/profile#me">WebID</a></td>
-    </tr>
-    <tr>
-      <th align="left">Dmitri Zagidulin</th>
-      <td><a href="https://github.com/dmitrizagidulin/">GitHub/dmitrizagidulin</a></td>
-      <td><a href="https://twitter.com/codenamedmitri">Twitter/@codenamedmitri</a></td>
-      <td></td>
-    </tr>
-    <tr>
-      <th align="left">Ruben Verborgh</th>
-      <td><a href="https://github.com/RubenVerborgh/">GitHub/RubenVerborgh</a></td>
-      <td><a href="https://twitter.com/RubenVerborgh">Twitter/@RubenVerborgh</a></td>
-      <td><a href="https://ruben.verborgh.org/profile/#me">WebID</a></td>
-    </tr>
-    <tr>
-      <th align="left">Kjetil Kjernsmo</th>
-      <td><a href="https://github.com/kjetilk">GitHub/kjetilk</a></td>
-      <td><a href="https://twitter.com/KKjernsmo">Twitter/@KKjernsmo</a></td>
-      <td><a href="https://solid.kjernsmo.net/profile/card#me">WebID</a></td>
-    </tr>
-    <tr>
-      <th align="left">Justin Bingham</th>
-      <td><a href="https://github.com/justinwb">GitHub/justinwb</a></td>
-      <td><a href="https://twitter.com/justinwb">Twitter/@justinwb</a></td>
-      <td><a href="https://justin.janeirodigital.exchange/profile/card#me">WebID</a></td>
-    </tr>
-  </tbody>
-</table>
-
-#### Do you want to contribute?
+You can help us too:
 
 - [Join us in Gitter](https://gitter.im/solid/chat) to help with development or to hang out with us :)
 - [Create a new issue](https://github.com/solid/node-solid-server/issues/new) to report bugs
@@ -461,4 +404,4 @@ Have a look at [CONTRIBUTING.md](https://github.com/solid/node-solid-server/blob
 
 ## License
 
-MIT
+[The MIT License](https://github.com/solid/node-solid-server/blob/master/LICENSE.md)

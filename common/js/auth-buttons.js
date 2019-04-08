@@ -3,7 +3,7 @@
 (({ auth }) => {
   // Wire up DOM elements
   const [loginButton, logoutButton, registerButton, accountSettings] =
-    ['login', 'logout', 'register', 'accountSettings'].map(id =>
+    ['login', 'logout', 'register', 'account-settings'].map(id =>
       document.getElementById(id) || document.createElement('a'))
   loginButton.addEventListener('click', login)
   logoutButton.addEventListener('click', logout)
@@ -15,6 +15,7 @@
     const isOwner = loggedIn && new URL(session.webId).origin === location.origin
     loginButton.classList.toggle('hidden', loggedIn)
     logoutButton.classList.toggle('hidden', !loggedIn)
+    registerButton.classList.toggle('hidden', loggedIn)
     accountSettings.classList.toggle('hidden', !isOwner)
   })
 

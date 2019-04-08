@@ -2,7 +2,8 @@
 
 const options = require('./options')
 const fs = require('fs')
-const { loadConfig } = require('./common')
+const path = require('path')
+const { loadConfig } = require('./cli-utils')
 const { red, bold } = require('colorette')
 
 module.exports = function (program, server) {
@@ -62,15 +63,21 @@ function bin (argv, server) {
 
   // Set up debug environment
   if (!argv.quiet) {
-    process.env.DEBUG = 'solid:*'
+    require('debug').enable('solid:*')
   }
 
   // Set up port
   argv.port = argv.port || 3456
 
+  // Multiuser with no webid is not allowed
+
   // Webid to be default in command line
   if (argv.webid !== false) {
     argv.webid = true
+  }
+
+  if (!argv.webid && argv.multiuser) {
+    throw new Error('Server cannot operate as multiuser without webids')
   }
 
   // Signal handling (e.g. CTRL+C)
@@ -84,10 +91,7 @@ function bin (argv, server) {
 
   // Overwrite root .acl if owner is specified
   if (argv.owner) {
-    let rootPath = argv.root
-    if (!rootPath) {
-      rootPath = process.cwd()
-    }
+    let rootPath = path.resolve(argv.root || process.cwd())
     if (!(rootPath.endsWith('/'))) {
       rootPath += '/'
     }

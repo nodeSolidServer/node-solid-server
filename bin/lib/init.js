@@ -82,12 +82,12 @@ function manipulateEmailSection (answers) {
 
 function manipulateServerSection (answers) {
   answers.server = {
-    name: answers['server-name'],
-    description: answers['server-description'],
-    logo: answers['server-logo']
+    name: answers['server-info-name'],
+    description: answers['server-info-description'],
+    logo: answers['server-info-logo']
   }
   Object.keys(answers).forEach((answer) => {
-    if (answer.startsWith('server-')) {
+    if (answer.startsWith('server-info-')) {
       delete answers[answer]
     }
   })
