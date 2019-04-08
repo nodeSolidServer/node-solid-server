@@ -85,6 +85,7 @@
     "li": "^1.0.1",
     "mashlib": "^0.7.18",
     "mime-types": "^2.1.11",
+    "mkdir-recursive": "^0.4.0",
     "negotiator": "^0.6.0",
     "node-fetch": "^2.1.2",
     "node-forge": "^0.7.4",
