@@ -121,6 +121,7 @@
     "nock": "^9.0.14",
     "node-mocks-http": "^1.7.0",
     "nyc": "^13.3.0",
+    "pre-commit": "^1.2.2",
     "randombytes": "^2.0.1",
     "sinon": "^2.1.0",
     "sinon-chai": "^2.8.0",
@@ -130,6 +131,9 @@
     "turtle-validator": "^1.0.2",
     "whatwg-url": "^6.1.0"
   },
+  "pre-commit": [
+    "standard"
+  ],
   "main": "index.js",
   "scripts": {
     "solid": "node ./bin/solid",
