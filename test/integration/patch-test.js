@@ -112,6 +112,17 @@ describe('PATCH', () => {
       text: 'Patch applied successfully',
       result: '@prefix : </write-only.ttl#>.\n@prefix tim: </>.\n\ntim:a tim:b tim:c.\n\ntim:d tim:e tim:f.\n\ntim:x tim:y tim:z.\n\n'
     }))
+
+    describe('on a resource with parent folders that do not exist', describePatch({
+      path: '/folder/cool.ttl',
+      exists: false,
+      patch: `<> solid:patches <https://tim.localhost:7777/folder/cool.ttl>;
+        solid:inserts { <x> <y> <z>. }.`
+    }, {
+      status: 200,
+      text: 'Patch applied successfully',
+      result: '@prefix : <#>.\n@prefix fol: <./>.\n\nfol:x fol:y fol:z.\n\n'
+    }))
   })
 
   describe('with insert and where', () => {
