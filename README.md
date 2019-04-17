@@ -116,6 +116,11 @@ See [Running Solid behind a reverse proxy](https://github.com/solid/node-solid-s
 
 > To use Gmail you may need to configure ["Allow Less Secure Apps"](https://www.google.com/settings/security/lesssecureapps) in your Gmail account unless you are using 2FA in which case you would have to create an [Application Specific](https://security.google.com/settings/security/apppasswords) password. You also may need to unlock your account with ["Allow access to your Google account"](https://accounts.google.com/DisplayUnlockCaptcha) to use SMTP.
 
+### Upgrading from version 4
+To upgrade from version 4 to the current version 5, you need to run a migration script, as explained in the [v5 upgrade notes](https://github.com/solid/node-solid-server/blob/master/CHANGELOG.md#500-upgrade-notes).
+
+Also, be aware that starting from version 5, third-party apps are untrusted by default. To trust a third-party app, before you can log in to it, you first need to go to your profile at https://example.com/profile/card#me (important to include the '#me' there), and then hover over the 'card' header to reveal the context menu. From there, select the 'A' symbol to go to your trusted applications pane, where you can whitelist third-party apps before using them. See also https://github.com/solid/node-solid-server/issues/1142 about streamlining this UX flow.
+
 ### Extra flags (expert)
 The command line tool has the following options
 
