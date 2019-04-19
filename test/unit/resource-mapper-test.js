@@ -239,7 +239,8 @@ describe('ResourceMapper', () => {
 
     itMapsUrl(mapper, 'a URL ending with a slash when index.html is available',
       {
-        url: 'http://localhost/space/'
+        url: 'http://localhost/space/',
+        contentType: 'text/html'
       },
       [
         `${rootPath}space/index.html`,
