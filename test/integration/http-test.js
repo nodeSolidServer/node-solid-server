@@ -165,7 +165,8 @@ describe('HTTP APIs', function () {
 
     it('should have set Link as resource on a implicit index page', function (done) {
       server.options('/sampleContainer/')
-        .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Resource>; rel="type"/)
+        .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#BasicContainer>; rel="type"/)
+        .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Container>; rel="type"/)
         .end(done)
     })
 
