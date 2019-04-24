@@ -94,6 +94,12 @@ describe('OIDC error handling', function () {
           .expect('WWW-Authenticate', 'Bearer realm="https://localhost:3457", scope="openid webid", error="invalid_token", error_description="Access token is expired"')
           .expect(401)
       })
+
+      it('should return a 200 if the resource is public', () => {
+        return server.get('/public/')
+          .set('Authorization', 'Bearer ' + expiredToken)
+          .expect(200)
+      })
     })
   })
 })
