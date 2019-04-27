@@ -18,6 +18,7 @@ var fs = require('fs')
 
 describe('LDP', function () {
   var root = path.join(__dirname, '..')
+  var rootNoQuota = path.join(__dirname, '../no-quota')
 
   var resourceMapper = new ResourceMapper({
     rootUrl: 'https://localhost:8443/',
@@ -25,8 +26,21 @@ describe('LDP', function () {
     includeHost: false
   })
 
+  var resourceMapperNoQuota = new ResourceMapper({
+    rootUrl: 'https://localhost:8443/',
+    rootPath: rootNoQuota,
+    includeHost: false
+  })
+
   var ldp = new LDP({
     resourceMapper,
+    serverUri: 'https://localhost',
+    multiuser: true,
+    webid: false
+  })
+
+  var ldpNoQuota = new LDP({
+    resourceMapper: resourceMapperNoQuota,
     serverUri: 'https://localhost',
     multiuser: true,
     webid: false
@@ -168,6 +182,46 @@ describe('LDP', function () {
   describe('delete', function () {
     it('should error when deleting a non-existing file', () => {
       return assert.isRejected(ldp.delete('/resources/testPut.txt'))
+    })
+
+    it('should delete a files metadata', async () => {
+      const streamAcl = stringToStream('')
+      const stream = stringToStream('hello world')
+
+      await ldpNoQuota.put('/resources/testDeleteACL.txt.acl', streamAcl, 'text/turtle')
+      await ldpNoQuota.put('/resources/testDeleteACL.txt', stream, 'text/plain')
+
+      await Promise.all([
+        new Promise(
+          (resolve, reject) => fs.stat(
+            ldpNoQuota.resourceMapper._rootPath + '/resources/testDeleteACL.txt.acl',
+            (error) => error ? reject(error) : resolve()
+          )
+        ),
+        new Promise(
+          (resolve, reject) => fs.stat(
+            ldpNoQuota.resourceMapper._rootPath + '/resources/testDeleteACL.txt',
+            (error) => error ? reject(error) : resolve()
+          )
+        )
+      ])
+
+      await ldpNoQuota.delete('/resources/testDeleteACL.txt')
+
+      await Promise.all([
+        new Promise(
+          (resolve, reject) => fs.stat(
+            ldpNoQuota.resourceMapper._rootPath + '/resources/testDeleteACL.txt.acl',
+            (error) => error ? resolve() : reject('Still exists')
+          )
+        ),
+        new Promise(
+          (resolve, reject) => fs.stat(
+            ldpNoQuota.resourceMapper._rootPath + '/resources/testDeleteACL.txt',
+            (error) => error ? resolve() : reject('Still exists')
+          )
+        )
+      ])
     })
 
     it.skip('should delete a file in an existing dir', async () => {
