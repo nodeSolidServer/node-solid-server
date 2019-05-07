@@ -120,7 +120,7 @@
     "mocha": "^5.1.1",
     "nock": "^9.0.14",
     "node-mocks-http": "^1.7.0",
-    "nyc": "^13.3.0",
+    "nyc": "^14.1.0",
     "pre-commit": "^1.2.2",
     "randombytes": "^2.0.1",
     "sinon": "^2.1.0",
