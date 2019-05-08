@@ -6,27 +6,26 @@
   <title>{{title}}</title>
   <!-- Bootstrap CSS and Theme for demo purposes -->
   <link rel="stylesheet" href="/common/css/bootstrap.min.css">
-  <style>
-    .title { margin-top: 2em; margin-bottom: 2em; }
-    #authorize { margin-right: 2em; }
-  </style>
+  <link rel="stylesheet" href="/common/css/solid.css">
 </head>
 <body>
 <div class="container title">
-  <h4>Authorize app to use your Web ID?</h4>
-</div>
-<div class="container">
-  <form method="post" action="/authorize">
-    <input type="hidden" name="response_type" value="{{response_type}}" />
-    <input type="hidden" name="display" value="{{display}}" />
-    <input type="hidden" name="scope" value="{{scope}}" />
-    <input type="hidden" name="client_id" value="{{client_id}}" />
-    <input type="hidden" name="redirect_uri" value="{{redirect_uri}}" />
-    <input type="hidden" name="state" value="{{state}}" />
-    <input type="hidden" name="nonce" value="{{nonce}}" />
+  <div class="page-title">
+    <h1>Authorize this app to use your data?</h1>
+    <p>You will be authorizing <strong>{{app_origin}}</strong> to have access perform the actions indicated below.</p>
+    <p>NOTE: This screen is TEMPORARY. Eventually more fine-tuned controls will be available.</p>
+  </div>
+
+  <form method="post" action="/consent">
+
+    <input type="checkbox" name="read" value="access_mode" checked> Read your data<br>
+    <input type="checkbox" name="write" value="access_mode" checked> Write new data<br>
+    <input type="checkbox" name="append" value="access_mode" checked> Add to existing data<br>
+    <input type="checkbox" name="control" value="access_mode"> Control who can access your data<br>
 
     <button type="submit" class="btn btn-primary" name="consent" value="true">Authorize</button>
-    <button type="submit" class="btn" name="cancel" value="true">Cancel</button>
+    <button type="submit" class="btn btn-default" name="cancel" value="true">Cancel</button>
+    {{> auth/auth-hidden-fields}}
   </form>
 </div>
 </body>
