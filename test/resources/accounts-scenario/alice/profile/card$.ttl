@@ -1,4 +1,14 @@
+@prefix : <#>.
 @prefix acl: <http://www.w3.org/ns/auth/acl#>.
+@prefix c: <card#>.
+@prefix c0: <https://localhost:8443/profile/card#>.
 
-<#me> acl:trustedApp [  acl:origin <https://trusted.app>;
-                        acl:mode    acl:Read, acl:Write, acl:Append, acl:Control].
+c:me
+    acl:trustedApp
+    [ acl:mode acl:Read, acl:Write; acl:origin <https://app.example.com> ].
+c0:me
+    acl:trustedApp
+            [
+                acl:mode acl:Append, acl:Control, acl:Read, acl:Write;
+                acl:origin <https://trusted.app>
+            ].
