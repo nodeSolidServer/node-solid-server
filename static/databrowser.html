@@ -5,10 +5,25 @@
     <script type="text/javascript" src="/common/js/mashlib.min.js"></script>
     <script>
       const $SOLID_GLOBAL_config = {}
-      document.addEventListener('DOMContentLoaded', function () {
+      document.addEventListener('DOMContentLoaded', async function () {
         const panes = require('mashlib')
         const UI = panes.UI
 
+        try {
+          var session = await SolidAuthClient.currentSession();
+          if (session && session.webId) {
+            // Check, that session has access to user data and it wasn't expired
+            var url = new URL(session.webId);
+            url.pathname = '/settings/privateTypeIndex.ttl';
+            const {status} = await SolidAuthClient.fetch(url.href, { method: 'HEAD' })
+            if (status === 401) {
+              await SolidAuthClient.logout()
+            }
+          }
+        } catch(e) {
+          console.log(e);
+        }
+    
         // Set up cross-site proxy
         const $rdf = UI.rdf
         $rdf.Fetcher.crossSiteProxyTemplate = self.origin + '/xss/?uri={uri}'
