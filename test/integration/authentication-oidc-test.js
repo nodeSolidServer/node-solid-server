@@ -45,7 +45,7 @@ describe('Authentication API (OIDC)', () => {
     webid: true,
     multiuser: false,
     configPath,
-    trustedOrigins: ['https://apps.solid.invalid']
+    trustedOrigins: ['https://apps.solid.invalid', 'https://trusted.app']
   }
 
   const aliceRootPath = path.join(__dirname, '../resources/accounts-scenario/alice')
