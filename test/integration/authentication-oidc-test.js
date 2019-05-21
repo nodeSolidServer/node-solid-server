@@ -45,7 +45,7 @@ describe('Authentication API (OIDC)', () => {
     webid: true,
     multiuser: false,
     configPath,
-    trustedOrigins: ['https://apps.solid.invalid']
+    trustedOrigins: ['https://apps.solid.invalid', 'https://trusted.app']
   }
 
   const aliceRootPath = path.join(__dirname, '../resources/accounts-scenario/alice')
@@ -526,6 +526,9 @@ describe('Authentication API (OIDC)', () => {
     let authorizationUri, loginUri, authParams, callbackUri
     let loginFormFields = ''
     let bearerToken
+    let postLoginUri
+    let cookie
+    let postConsentUri
 
     before(() => {
       auth = new SolidAuthOIDC({ store: localStorage, window: { location: {} } })
@@ -627,25 +630,50 @@ describe('Authentication API (OIDC)', () => {
       })
         .then(res => {
           expect(res.status).to.equal(302)
-          let postLoginUri = res.headers.get('location')
-          let cookie = res.headers.get('set-cookie')
+          postLoginUri = res.headers.get('location')
+          cookie = res.headers.get('set-cookie')
 
           // Successful login gets redirected back to /authorize and then
           // back to app
-          expect(postLoginUri.startsWith(aliceServerUri + '/authorize'))
+          expect(postLoginUri.startsWith(aliceServerUri + '/consent'))
             .to.be.true()
-
-          return fetch(postLoginUri, { redirect: 'manual', headers: { cookie } })
-        })
-        .then(res => {
-          // User gets redirected back to original app
-          expect(res.status).to.equal(302)
-          callbackUri = res.headers.get('location')
-          expect(callbackUri.startsWith('https://app.example.com#'))
         })
     })
 
-    // Step 6: Web App extracts tokens from the uri hash fragment, uses
+    // Step 6: User consents to the app accessing certain things
+    it('should consent via the /consent form', () => {
+      loginFormFields += `&access_mode=Read&access_mode=Write&consent=true`
+
+      return fetch(aliceServerUri + '/consent', {
+        method: 'POST',
+        body: loginFormFields,
+        redirect: 'manual',
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded',
+          cookie
+        },
+        credentials: 'include'
+      })
+      .then(res => {
+        expect(res.status).to.equal(302)
+        postConsentUri = res.headers.get('location')
+        // cookie = res.headers.get('set-cookie')
+
+        // Successful login gets redirected back to /authorize and then
+        // back to app
+        expect(postConsentUri.startsWith(aliceServerUri + '/authorize'))
+          .to.be.true()
+        return fetch(postConsentUri, { redirect: 'manual', headers: { cookie } })
+      })
+      .then(res => {
+        // User gets redirected back to original app
+        expect(res.status).to.equal(302)
+        callbackUri = res.headers.get('location')
+        expect(callbackUri.startsWith('https://app.example.com#'))
+      })
+    })
+
+    // Step 7: Web App extracts tokens from the uri hash fragment, uses
     //  them to access protected resource
     it('should use id token from the callback uri to access shared resource (no origin)', () => {
       auth.window.location.href = callbackUri
