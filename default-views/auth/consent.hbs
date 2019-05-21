@@ -10,36 +10,39 @@
 </head>
 <body>
 <div class="container title">
-  <div class="page-title">
-    <h1>Authorize this app to use your data?</h1>
-    <p>You will be authorizing <strong>{{app_origin}}</strong> to have access perform the actions indicated below.</p>
-    <p>NOTE: This screen is TEMPORARY. Eventually more fine-tuned controls will be available.</p>
-    <p>For more information see the <a href="https://github.com/solid/node-solid-server/blob/master/docs/login-and-grant-access-to-application.md" target="_blank">full explanation</a>.</p>
+  <h1>Authorize this app to use your data?</h1>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <div class="page-title">
+        <p>You will be authorizing <strong>{{app_origin}}</strong> to have access to perform the actions indicated below.</p>
+        <p>NOTE: This screen is TEMPORARY. Eventually more fine-tuned controls will be available.</p>
+        <p>For more information see the <a href="/common/disclaimer.html" target="_blank">full explanation</a>.</p>
+      </div>
+      <form method="post" action="/consent">
+
+        <input id="read" type="checkbox" name="access_mode" value="Read" checked>
+        <label for="read">Read your data</label>
+        <br>
+
+        <input id="write" type="checkbox" name="access_mode" value="Write" checked>
+        <label for="write">Write new data</label>
+        <br>
+
+        <input id="append" type="checkbox" name="access_mode" value="Append" checked>
+        <label for="append">Add to existing data</label>
+        <br>
+
+        <input id="control" type="checkbox" name="access_mode" value="Control">
+        <label for="control">Control who can access your data</label>
+        <br>
+        <br>
+
+        <button type="submit" class="btn btn-primary" name="consent" value="true">Authorize</button>
+        <button type="submit" class="btn btn-default" name="cancel" value="true">Cancel</button>
+        {{> auth/auth-hidden-fields}}
+      </form>
+    </div>
   </div>
-
-  <form method="post" action="/consent">
-
-    <input id="read" type="checkbox" name="access_mode" value="Read" checked>
-    <label for="read">Read your data</label>
-    <br>
-
-    <input id="write" type="checkbox" name="access_mode" value="Write" checked>
-    <label for="write">Write new data</label>
-    <br>
-
-    <input id="append" type="checkbox" name="access_mode" value="Append" checked>
-    <label for="append">Add to existing data</label>
-    <br>
-
-    <input id="control" type="checkbox" name="access_mode" value="Control">
-    <label for="control">Control who can access your data</label>
-    <br>
-    <br>
-
-    <button type="submit" class="btn btn-primary" name="consent" value="true">Authorize</button>
-    <button type="submit" class="btn btn-default" name="cancel" value="true">Cancel</button>
-    {{> auth/auth-hidden-fields}}
-  </form>
 </div>
 </body>
 </html>

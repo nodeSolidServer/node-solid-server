@@ -1,0 +1,44 @@
+<html>
+  <head>
+    <title>Solid Consent Disclaimer</title>
+  </head>
+  <body>
+    <h1 id="grantingaccesstoanapplicationaspartofauthentication">Granting access to an application as part of authentication</h1>
+
+    <p><strong>TL:DR: This is a temporary option that will be removed once we have better ways of granting access to applications. We recommend you grant read and write access by default, but it depends on the application you want to trust.</strong></p>
+
+    <p>Applications provide very useful ways of consuming and producing data. Solid provides functionality that allows you to grant access to applications that you trust. This trust might be misplaced sometimes though, which Solid tries to mitigate to lessen the harm that malicious applications can cause.</p>
+
+    <p>One of the strategies available in Solid is to check the origins of applications, and in solid-server in Node version 5 (NSS5) we set the configuration for this to be true by default. This strengthens the security of instances running on this codebase, but it also makes it more difficult for users to test applications without explicitly granting them access beforehand.</p>
+
+    <p>To facilitate a better user experience, we introduced the option of granting access to applications as part of the authentication process. We believe this is a <a href="https://github.com/solid/node-solid-server/issues/1142">better flow then forcing users to navigate to their profile and use the functionality provided in the trusted applications pane</a>, and offer this as a temporary solution.</p>
+
+    <h2 id="whichmodesshouldigranttheapplication">Which modes should I grant the application?</h2>
+
+    <p>That really depends on what the application needs to do. In general we suggest granting it Read and Write access. </p>
+
+    <p>This is what the various modes allows the application to do:</p>
+
+    <ul>
+      <li><strong>Read:</strong> Allows the application to read resources - this includes navigating through your pod and potentially copy all of your data</li>
+
+      <li><strong>Write:</strong> Allows the application to change and delete resources</li>
+
+      <li><strong>Append:</strong> Allows the application to only append new content to resources, not remove existing content</li>
+
+      <li><strong>Control:</strong> Allows the application to set which access modes agents have (including themself) - by allowing this you essentially allow the application complete control of your pod</li>
+    </ul>
+
+    <p>The last mode is a very powerful mode to grant an application. An application could use this to remove all of your control access, essentially locking you out of your pod. (This would also mean that the application couldn't get access to your pod though, as it is still relying on your authentication.)</p>
+
+    <h2 id="whyisittemporary">Why is it temporary?</h2>
+
+    <p>The way this solutions works "behind the scenes" is that you are granting the application access to all resources that you have access to and that is connected to your profile (in general this would be the pod that was created alongside your WebID). This is probably fine when you want to test an application that you or someone you trust are developing, but it's definitely not the granular access control we want to offer.</p>
+
+    <p>We do not have a solution ready yet, but <a href="https://github.com/solid/webid-oidc-spec">we are working on it</a>. When the solution is specified and implemented in NSS, we will remove the option in the login flow, as you would go through another process of granting applications access that would result in a more granular control.</p>
+
+    <h2 id="learnmore">Learn more</h2>
+
+    <p>The way that we handle access control in Solid is described in <a href="[http://solid.github.io/web-access-control-spec/](http://solid.github.io/web-access-control-spec/)">the Web Access Control specification (WAC)</a>. If you want to understand the reasoning for why we chose to turn origin checking on by default, you can read about it in the <a href="https://www.w3.org/community/solid/wiki/Meetings#20190307_1400CET">Meeting W3 Solid Community Group had March 7th 2019 (last point on the agenda)</a>.</p>
+  </body>
+</html>
