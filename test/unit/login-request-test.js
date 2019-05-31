@@ -175,9 +175,9 @@ describe('LoginRequest', () => {
   })
 
   describe('redirectPostLogin()', () => {
-    it('should redirect to the /consent url if response_type includes token', () => {
+    it('should redirect to the /sharing url if response_type includes token', () => {
       let res = HttpMocks.createResponse()
-      let authUrl = 'https://localhost:8443/consent?response_type=token'
+      let authUrl = 'https://localhost:8443/sharing?response_type=token'
       let validUser = accountManager.userAccountFrom({ username: 'alice' })
 
       let authQueryParams = {

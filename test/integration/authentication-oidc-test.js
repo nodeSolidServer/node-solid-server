@@ -528,7 +528,7 @@ describe('Authentication API (OIDC)', () => {
     let bearerToken
     let postLoginUri
     let cookie
-    let postConsentUri
+    let postSharingUri
 
     before(() => {
       auth = new SolidAuthOIDC({ store: localStorage, window: { location: {} } })
@@ -635,16 +635,16 @@ describe('Authentication API (OIDC)', () => {
 
           // Successful login gets redirected back to /authorize and then
           // back to app
-          expect(postLoginUri.startsWith(aliceServerUri + '/consent'))
+          expect(postLoginUri.startsWith(aliceServerUri + '/sharing'))
             .to.be.true()
         })
     })
 
-    // Step 6: User consents to the app accessing certain things
-    it('should consent via the /consent form', () => {
+    // Step 6: User shares with the app accessing certain things
+    it('should consent via the /sharing form', () => {
       loginFormFields += `&access_mode=Read&access_mode=Write&consent=true`
 
-      return fetch(aliceServerUri + '/consent', {
+      return fetch(aliceServerUri + '/sharing', {
         method: 'POST',
         body: loginFormFields,
         redirect: 'manual',
@@ -656,14 +656,14 @@ describe('Authentication API (OIDC)', () => {
       })
       .then(res => {
         expect(res.status).to.equal(302)
-        postConsentUri = res.headers.get('location')
+        postSharingUri = res.headers.get('location')
         // cookie = res.headers.get('set-cookie')
 
         // Successful login gets redirected back to /authorize and then
         // back to app
-        expect(postConsentUri.startsWith(aliceServerUri + '/authorize'))
+        expect(postSharingUri.startsWith(aliceServerUri + '/authorize'))
           .to.be.true()
-        return fetch(postConsentUri, { redirect: 'manual', headers: { cookie } })
+        return fetch(postSharingUri, { redirect: 'manual', headers: { cookie } })
       })
       .then(res => {
         // User gets redirected back to original app

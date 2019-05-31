@@ -507,16 +507,16 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
 
           // Successful login gets redirected back to /authorize and then
           // back to app
-          expect(postLoginUri.startsWith(aliceServerUri + '/consent'))
+          expect(postLoginUri.startsWith(aliceServerUri + '/sharing'))
             .to.be.true()
         })
     })
 
     // Step 6: User consents to the app accessing certain things
-    it('should consent via the /consent form', () => {
+    it('should consent via the /sharing form', () => {
       loginFormFields += `&access_mode=Read&access_mode=Write&consent=true`
 
-      return fetch(aliceServerUri + '/consent', {
+      return fetch(aliceServerUri + '/sharing', {
         method: 'POST',
         body: loginFormFields,
         redirect: 'manual',

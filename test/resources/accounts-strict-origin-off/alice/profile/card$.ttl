@@ -1,6 +1,6 @@
 @prefix : <#>.
 @prefix acl: <http://www.w3.org/ns/auth/acl#>.
-@prefix c: <card#>.
+@prefix c: <https://localhost:7010/profile/card#>.
 @prefix c0: <https://localhost:8443/profile/card#>.
 
 c:me
