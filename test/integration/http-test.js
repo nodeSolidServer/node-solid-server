@@ -323,7 +323,7 @@ describe('HTTP APIs', function () {
         .expect(200, done)
     })
     it('should have glob support', function (done) {
-      server.get('/sampleContainer/example*')
+      server.get('/sampleContainer/*')
         .expect('content-type', /text\/turtle/)
         .expect(200)
         .expect((res) => {
