@@ -126,7 +126,7 @@ describe('ResourceMapper', () => {
         url: 'http://localhost/space/foo.html'
       },
       [/* no files */],
-      new Error('File not found'))
+      new Error('Resource not found: /space/foo.html'))
 
     itMapsUrl(mapper, 'a URL of an existing file with extension',
       {
