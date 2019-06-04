@@ -14,7 +14,7 @@
   <div class="panel panel-default">
     <div class="panel-body">
       <div class="page-title">
-        <p>Solid allows you to precisely choose what other people and apps can read and write in a Pod. This version of the authorization user interface (node-solid-server V5.1.1) only supports the toggle of global access permissions to all of the data in your Pod.</p>
+        <p>Solid allows you to precisely choose what other people and apps can read and write in a Pod. This version of the authorization user interface (node-solid-server V5.1) only supports the toggle of global access permissions to all of the data in your Pod.</p>
         <p><strong>If you don’t want to set these permissions at a global level, uncheck all of the boxes below, then click authorize.</strong> This will add the application origin to your authorization list, without granting it permission to any of your data yet. You will then need to manage those permissions yourself by setting them explicitly in the places you want this application to access.</p>
         <p>By clicking Authorize, any app from {{app_origin}} will be able to:</p>
       </div>
@@ -41,7 +41,7 @@
         <button type="submit" class="btn btn-default" name="cancel" value="true">Cancel</button>
         {{> auth/auth-hidden-fields}}
       </form>
-      <p><i>This server (node-solid-server V5.1.1) only implements a limited subset of OpenID Connect, and doesn’t yet support token issuance for applications. OIDC Token Issuance and fine-grained management through this authorization user interface is currently in the development backlog for node-solid-server</i></p>
+      <p><i>This server (node-solid-server V5.1) only implements a limited subset of OpenID Connect, and doesn’t yet support token issuance for applications. OIDC Token Issuance and fine-grained management through this authorization user interface is currently in the development backlog for node-solid-server</i></p>
     </div>
   </div>
 </div>
