@@ -614,6 +614,18 @@ describe('ResourceMapper', () => {
         contentType: 'text/html'
       })
   })
+
+  describe('A ResourceMapper instance for an HTTPS host with non-default port in a multi-host setup', () => {
+    const mapper = new ResourceMapper({ rootUrl: 'https://localhost:81/', rootPath, includeHost: true })
+
+    it('throws an error when there is an improper file path', (done) => {
+      mapper.mapFileToUrl({
+        path: `${rootPath}example.orgspace/foo.html`,
+        hostname: 'example.org'
+      }).then(() => done('Did not throw error'))
+      .catch(() => done())
+    })
+  })
 })
 
 function asserter (assert) {
