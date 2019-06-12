@@ -535,7 +535,7 @@ describe('ResourceMapper', () => {
 
     itMapsFile(mapper, 'a file on a host',
       {
-        path: `${rootPath}space/foo.html`,
+        path: `${rootPath}example.org/space/foo.html`,
         hostname: 'example.org'
       },
       {
@@ -550,7 +550,7 @@ describe('ResourceMapper', () => {
 
     itMapsFile(mapper, 'a file on a host',
       {
-        path: `${rootPath}space/foo.html`,
+        path: `${rootPath}example.org/space/foo.html`,
         hostname: 'example.org'
       },
       {
@@ -564,10 +564,11 @@ describe('ResourceMapper', () => {
 
     itMapsFile(mapper, 'a file with the port',
       {
-        path: `${rootPath}space/foo.html`
+        path: `${rootPath}example.org/space/foo.html`,
+        hostname: 'example.org'
       },
       {
-        url: 'http://localhost:81/space/foo.html',
+        url: 'http://localhost:81/example.org/space/foo.html',
         contentType: 'text/html'
       })
   })
@@ -577,7 +578,7 @@ describe('ResourceMapper', () => {
 
     itMapsFile(mapper, 'a file with the port',
       {
-        path: `${rootPath}space/foo.html`,
+        path: `${rootPath}example.org/space/foo.html`,
         hostname: 'example.org'
       },
       {
@@ -591,10 +592,11 @@ describe('ResourceMapper', () => {
 
     itMapsFile(mapper, 'a file with the port',
       {
-        path: `${rootPath}space/foo.html`
+        path: `${rootPath}example.org/space/foo.html`,
+        hostname: 'example.org'
       },
       {
-        url: 'https://localhost:81/space/foo.html',
+        url: 'https://localhost:81/example.org/space/foo.html',
         contentType: 'text/html'
       })
   })
@@ -604,7 +606,7 @@ describe('ResourceMapper', () => {
 
     itMapsFile(mapper, 'a file with the port',
       {
-        path: `${rootPath}space/foo.html`,
+        path: `${rootPath}example.org/space/foo.html`,
         hostname: 'example.org'
       },
       {
