@@ -618,12 +618,11 @@ describe('ResourceMapper', () => {
   describe('A ResourceMapper instance for an HTTPS host with non-default port in a multi-host setup', () => {
     const mapper = new ResourceMapper({ rootUrl: 'https://localhost:81/', rootPath, includeHost: true })
 
-    it('throws an error when there is an improper file path', (done) => {
-      mapper.mapFileToUrl({
+    it('throws an error when there is an improper file path', () => {
+      return expect(mapper.mapFileToUrl({
         path: `${rootPath}example.orgspace/foo.html`,
         hostname: 'example.org'
-      }).then(() => done('Did not throw error'))
-      .catch(() => done())
+      })).to.be.rejectedWith(new Error('Path must start with hostname (/example.org)'))
     })
   })
 })
