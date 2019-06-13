@@ -619,11 +619,10 @@ describe('ResourceMapper', () => {
     const mapper = new ResourceMapper({ rootUrl: 'https://localhost:81/', rootPath, includeHost: true })
 
     it('throws an error when there is an improper file path', (done) => {
-      mapper.mapFileToUrl({
+      return expect(mapper.mapFileToUrl({
         path: `${rootPath}example.orgspace/foo.html`,
         hostname: 'example.org'
-      }).then(() => done('Did not throw error'))
-      .catch(() => done())
+      })).to.be.rejectedWith(new Error('error message'))
     })
   })
 })
