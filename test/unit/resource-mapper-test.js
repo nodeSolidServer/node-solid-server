@@ -622,7 +622,7 @@ describe('ResourceMapper', () => {
       return expect(mapper.mapFileToUrl({
         path: `${rootPath}example.orgspace/foo.html`,
         hostname: 'example.org'
-      })).to.be.rejectedWith(new Error('Path must start with hostname (/example.org)'))
+      })).to.be.rejectedWith(Error, 'Path must start with hostname (/example.org)')
     })
   })
 })
