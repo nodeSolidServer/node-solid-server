@@ -404,6 +404,7 @@ You can help us too:
 - [Join us in Gitter](https://gitter.im/solid/chat) to help with development or to hang out with us :)
 - [Create a new issue](https://github.com/solid/node-solid-server/issues/new) to report bugs
 - [Fix an issue](https://github.com/solid/node-solid-server/issues)
+- Reach out to Jackson at jacksonm@inrupt.com to become more involved in maintaining Node Solid Server
 
 Have a look at [CONTRIBUTING.md](https://github.com/solid/node-solid-server/blob/master/CONTRIBUTING.md).
 
