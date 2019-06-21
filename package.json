@@ -55,7 +55,7 @@
   "homepage": "https://github.com/solid/node-solid-server",
   "bugs": "https://github.com/solid/node-solid-server/issues",
   "dependencies": {
-    "@solid/acl-check": "^0.2.0",
+    "@solid/acl-check": "^0.2.1",
     "@solid/oidc-auth-manager": "^0.18.2",
     "body-parser": "^1.18.3",
     "bootstrap": "^3.3.7",
