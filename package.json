@@ -1,7 +1,7 @@
 {
   "name": "solid-server",
   "description": "Solid server on top of the file-system",
-  "version": "5.1.5",
+  "version": "5.1.6",
   "author": {
     "name": "Tim Berners-Lee",
     "email": "timbl@w3.org"
