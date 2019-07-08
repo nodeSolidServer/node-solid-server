@@ -25,8 +25,9 @@ function getVersion () {
     // Obtain version from git
     const options = { cwd: __dirname, encoding: 'utf8' }
     const { stdout } = spawnSync('git', ['describe', '--tags'], options)
+    const { stdout: gitStatusStdout } = spawnSync('git', ['status'], options)
     const version = stdout.trim()
-    if (version === '') {
+    if (version === '' || gitStatusStdout.match('Not currently on any branch')) {
       throw new Error('No git version here')
     }
     return version
