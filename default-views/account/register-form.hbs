@@ -2,7 +2,7 @@
   <div class="col-md-6">
     <div class="panel panel-default">
       <div class="panel-body">
-        <form method="post" action="/api/accounts/new">
+        <form method="post" action="/api/accounts/new" id="RegisterForm">
           {{> shared/error}}
 
           <div class="form-group">
@@ -133,6 +133,14 @@
     container.classList.toggle('hidden', !connect.checked)
     connect.addEventListener('change', function () {
       container.classList.toggle('hidden', !connect.checked)
+    })
+
+    var form = document.getElementById('RegisterForm')
+    var externalWebIdField = document.getElementById('externalWebId')
+    form.addEventListener('submit', function () {
+      if (!connect.checked) {
+        externalWebIdField.value = ''
+      }
     })
   })
 </script>
