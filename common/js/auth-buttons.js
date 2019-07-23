@@ -43,7 +43,6 @@
   // Redirect to the registration page
   function register () {
     const registration = new URL('/register', location)
-    registration.searchParams.set('returnToUrl', location)
     location.href = registration
   }
 })(solid)
