@@ -30,9 +30,7 @@
         await auth.logout()
       }
       // Now that we have a cookie, reload to display the authenticated page
-      const webId = new URL(session.webId)
-      const podUrl = `${webId.protocol}//${webId.host}`
-      location.href = podUrl
+      location.href = new URL(session.webId).origin
     }
   }
 
