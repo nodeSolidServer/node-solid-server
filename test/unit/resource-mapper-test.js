@@ -52,6 +52,18 @@ describe('ResourceMapper', () => {
         contentType: 'text/html'
       })
 
+    itMapsUrl(mapper, "a URL with a real extension that doesn't match the content type",
+      {
+        url: 'http://localhost/space/foo.exe',
+        contentType: 'text/html',
+        createIfNotExists: true,
+        searchIndex: false
+      },
+      {
+        path: `${rootPath}space/foo.exe$.html`,
+        contentType: 'text/html'
+      })
+
     // Additional PUT cases
 
     itMapsUrl(mapper, 'a URL without content type',
@@ -119,7 +131,7 @@ describe('ResourceMapper', () => {
         contentType: 'text/n3'
       })
 
-    // GET/HEAD/POST/DELETE/PATCH base cases
+  // GET/HEAD/POST/DELETE/PATCH base cases
 
     itMapsUrl(mapper, 'a URL of a non-existing file',
       {
@@ -131,6 +143,19 @@ describe('ResourceMapper', () => {
     itMapsUrl(mapper, 'a URL of an existing file with extension',
       {
         url: 'http://localhost/space/foo.html'
+      },
+      [
+        `${rootPath}space/foo.html`
+      ],
+      {
+        path: `${rootPath}space/foo.html`,
+        contentType: 'text/html'
+      })
+
+    itMapsUrl(mapper, 'a URL of an existing file with extension',
+      {
+        url: 'http://localhost/space/foo.html',
+        searchIndex: false
       },
       [
         `${rootPath}space/foo.html`
