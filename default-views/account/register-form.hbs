@@ -2,13 +2,13 @@
   <div class="col-md-6">
     <div class="panel panel-default">
       <div class="panel-body">
-        <form method="post" action="/api/accounts/new">
+        <form method="post" action="/api/accounts/new" id="RegisterForm">
           {{> shared/error}}
 
           <div class="form-group">
             <label class="control-label" for="username">Username*</label>
             <input type="text" class="form-control" name="username" id="username" placeholder="alice"
-                   required/>
+                   required value="{{username}}"/>
 
 	    {{#if multiuser}}
 	    <p>Your username should be a lower-case word with only
@@ -54,20 +54,27 @@
 
           <div class="form-group">
             <label class="control-label" for="name">Name*</label>
-            <input type="text" class="form-control" name="name" id="name" required/>
+            <input type="text" class="form-control" name="name" id="name" required value="{{name}}"/>
           </div>
 
           <div class="form-group">
             <label class="control-label" for="email">Email*</label>
-            <input type="email" class="form-control" name="email" id="email"/>
+            <input type="email" class="form-control" name="email" id="email" value="{{email}}"/>
             <span class="help-block">Your email will only be used for account recovery</span>
           </div>
 
-          <div class="form-group">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" name="connectExternalWebId" value="true" id="ConnectExternalWebId" {{#if connectExternalWebId}}checked{{/if}}/>
+              Connect to External WebID (<strong>Advanced feature</strong>)
+            </label>
+          </div>
+
+          <div class="form-group hidden" id="ExternalWebId">
             <label class="control-label" for="externalWebId">External WebID:</label>
-            <input type="text" class="form-control" name="externalWebId" id="externalWebId"/>
+            <input type="text" class="form-control" name="externalWebId" id="externalWebId" value="{{externalWebId}}"/>
             <span class="help-block">
-                We will generate a Web ID when you register, but if you already have a Web ID hosted elsewhere that you'd prefer to use to log in, enter it here
+              By connecting this account with an existing webId, you can use that webId to authenticate with the new account.
             </span>
           </div>
 
@@ -75,7 +82,7 @@
             {{#if tocUri}}
               <div class="checkbox">
                 <label>
-                  <input type="checkbox" name="acceptToc" value="true">
+                  <input type="checkbox" name="acceptToc" value="true" {{#if acceptToc}}checked{{/if}}>
                   I agree to the <a href="{{tocUri}}" target="_blank">Terms &amp; Conditions</a> of this service
                 </label>
               </div>
@@ -114,10 +121,27 @@
 <script>
   var username = document.getElementById('username');
   username.onkeyup = function() {
-  var list = document.getElementsByClassName('editable-username');
-  for (let item of list) {
-    item.innerHTML = username.value.toLowerCase()
+    var list = document.getElementsByClassName('editable-username');
+      for (let item of list) {
+      item.innerHTML = username.value.toLowerCase()
+    }
   }
-}
+
+  window.addEventListener('DOMContentLoaded', function () {
+    var connect = document.getElementById('ConnectExternalWebId')
+    var container = document.getElementById('ExternalWebId')
+    container.classList.toggle('hidden', !connect.checked)
+    connect.addEventListener('change', function () {
+      container.classList.toggle('hidden', !connect.checked)
+    })
+
+    var form = document.getElementById('RegisterForm')
+    var externalWebIdField = document.getElementById('externalWebId')
+    form.addEventListener('submit', function () {
+      if (!connect.checked) {
+        externalWebIdField.value = ''
+      }
+    })
+  })
 </script>
 

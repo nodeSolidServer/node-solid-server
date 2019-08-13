@@ -30,7 +30,9 @@
         await auth.logout()
       }
       // Now that we have a cookie, reload to display the authenticated page
-      location.reload()
+      const webId = new URL(session.webId)
+      const podUrl = `${webId.protocol}//${webId.host}`
+      location.href = podUrl
     }
   }
 
@@ -43,7 +45,6 @@
   // Redirect to the registration page
   function register () {
     const registration = new URL('/register', location)
-    registration.searchParams.set('returnToUrl', location)
     location.href = registration
   }
 })(solid)
