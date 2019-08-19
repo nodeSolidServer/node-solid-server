@@ -2,6 +2,9 @@
 @prefix acl: <http://www.w3.org/ns/auth/acl#>.
 @prefix foaf: <http://xmlns.com/foaf/0.1/>.
 
+# Indicates that root is the root of the Pod
+</> a sp:Storage.
+
 # The homepage is readable by the public
 <#public>
     a acl:Authorization;
