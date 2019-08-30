@@ -29,10 +29,7 @@
         alert(`Invalid login.\n\nDid you set ${session.idp} as your OIDC provider in your profile ${session.webId}?`)
         await auth.logout()
       }
-      // Now that we have a cookie, reload to display the authenticated page
-      const webId = new URL(session.webId)
-      const podUrl = `${webId.protocol}//${webId.host}`
-      location.href = podUrl
+      location.reload()
     }
   }
 
