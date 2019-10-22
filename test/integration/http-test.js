@@ -573,14 +573,12 @@ describe('HTTP APIs', function () {
         .set('slug', 'post-resource-empty-fail')
         .expect(415, done)
     })
-    it('should create a resource if parsable rdf is provided but with no content-type header', function (done) {
+    it('should error with 415 if the body is provided but there is no content-type header', function (done) {
       server.post('/post-tests/')
         .set('slug', 'post-resource-rdf-no-content-type')
         .send(postRequest1Body)
-        .expect(hasHeader('describedBy', suffixMeta))
-        .expect(hasHeader('acl', suffixAcl))
-        .expect('location', '/post-tests/post-resource-rdf-no-content-type')
-        .expect(201, done)
+        .set('content-type', '')
+        .expect(415, done)
     })
     it('should create new resource even if no trailing / is in the target',
       function (done) {
