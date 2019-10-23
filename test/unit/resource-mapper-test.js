@@ -119,6 +119,17 @@ describe('ResourceMapper', () => {
         contentType: 'text/n3'
       })
 
+    itMapsUrl(mapper, 'a URL with a file extension having more than one possible content type',
+      {
+        url: 'http://localhost/space/foo.mp3',
+        contentType: 'audio/mp3',
+        createIfNotExists: true
+      },
+      {
+        path: `${rootPath}space/foo.mp3`,
+        contentType: 'audio/mp3'
+      })
+
     // GET/HEAD/POST/DELETE/PATCH base cases
 
     itMapsUrl(mapper, 'a URL of a non-existing file',
