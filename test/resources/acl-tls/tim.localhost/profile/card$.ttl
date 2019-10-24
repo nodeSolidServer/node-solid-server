@@ -2,6 +2,8 @@
 @prefix n0: <http://xmlns.com/foaf/0.1/>.
 @prefix n: <http://www.w3.org/2006/vcard/ns#>.
 @prefix cert: <http://www.w3.org/ns/auth/cert#>.
+@prefix schem: <http://schema.org/>.
+@prefix XML: <http://www.w3.org/2001/XMLSchema#>.
 
 :me
     a schem:Person, n0:Person;
