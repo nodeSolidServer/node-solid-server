@@ -21,7 +21,7 @@ var ns = require('solid-namespace')($rdf)
 
 const port = 7777
 const serverUri = `https://localhost:7777`
-const rootPath = path.join(__dirname, '../resources/accounts-acl')
+const rootPath = path.join(__dirname, '../resources/acl-tls')
 const dbPath = path.join(rootPath, 'db')
 const configPath = path.join(rootPath, 'config')
 
@@ -54,6 +54,7 @@ var userCredentials = {
 }
 
 describe('ACL with WebID+TLS', function () {
+  this.timeout(1000000)
   var ldpHttpsServer
   var serverConfig = {
     root: rootPath,
@@ -73,7 +74,11 @@ describe('ACL with WebID+TLS', function () {
   var ldp = ldnode.createServer(serverConfig)
 
   before(function (done) {
-    ldpHttpsServer = ldp.listen(port, done)
+    ldpHttpsServer = ldp.listen(port, () => {
+      setTimeout(() => {
+        done()
+      }, 0)
+    })
   })
 
   after(function () {
@@ -137,7 +142,9 @@ describe('ACL with WebID+TLS', function () {
       it('should give no access', function (done) {
         var options = createOptions('/acl-tls/empty-acl/test-folder', 'user1')
         options.body = ''
+        console.log(options)
         request.put(options, function (error, response, body) {
+          console.log(body)
           assert.equal(error, null)
           assert.equal(response.statusCode, 403)
           done()
@@ -474,7 +481,7 @@ describe('ACL with WebID+TLS', function () {
   })
 
   describe('Read-only', function () {
-    var body = fs.readFileSync(path.join(__dirname, '../resources/acl-tls/read-acl/.acl'))
+    var body = fs.readFileSync(path.join(__dirname, '../resources/acl-tls/tim.localhost/read-acl/.acl'))
     it('user1 should be able to access ACL file', function (done) {
       var options = createOptions('/acl-tls/read-acl/.acl', 'user1')
       request.head(options, function (error, response, body) {
