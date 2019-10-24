@@ -19,9 +19,11 @@ var rm = require('../utils').rm
 var ldnode = require('../../index')
 var ns = require('solid-namespace')($rdf)
 
-var address = 'https://localhost:3456/test/'
-let rootPath = path.join(__dirname, '../resources')
-let configPath = path.join(rootPath, 'config')
+const port = 7777
+const serverUri = `https://localhost:7777`
+const rootPath = path.join(__dirname, '../resources/accounts-acl')
+const dbPath = path.join(rootPath, 'db')
+const configPath = path.join(rootPath, 'config')
 
 var aclExtension = '.acl'
 var metaExtension = '.meta'
@@ -37,8 +39,9 @@ var globFile = testDir + '/*'
 var origin1 = 'http://example.org/'
 var origin2 = 'http://example.com/'
 
-var user1 = 'https://user1.databox.me/profile/card#me'
-var user2 = 'https://user2.databox.me/profile/card#me'
+var user1 = 'https://tim.localhost:7777/profile/card#me'
+var user2 = 'https://nicola.localhost:7777/profile/card#me'
+var address = 'https://tim.localhost:7777'
 var userCredentials = {
   user1: {
     cert: fs.readFileSync(path.join(__dirname, '../keys/user1-cert.pem')),
@@ -52,20 +55,25 @@ var userCredentials = {
 
 describe('ACL with WebID+TLS', function () {
   var ldpHttpsServer
-  var ldp = ldnode.createServer({
-    mount: '/test',
+  var serverConfig = {
     root: rootPath,
+    serverUri,
+    dbPath,
+    port,
     configPath,
     sslKey: path.join(__dirname, '../keys/key.pem'),
     sslCert: path.join(__dirname, '../keys/cert.pem'),
     webid: true,
-    strictOrigin: true,
+    multiuser: true,
     auth: 'tls',
-    rejectUnauthorized: false
-  })
+    rejectUnauthorized: false,
+    strictOrigin: true,
+    host: { serverUri }
+  }
+  var ldp = ldnode.createServer(serverConfig)
 
   before(function (done) {
-    ldpHttpsServer = ldp.listen(3456, done)
+    ldpHttpsServer = ldp.listen(port, done)
   })
 
   after(function () {

@@ -1,0 +1,21 @@
+{
+  "root": "/Users/m/inrupt/node-solid-server/data",
+  "port": "8443",
+  "serverUri": "https://localhost:8443",
+  "webid": true,
+  "mount": "/",
+  "configPath": "./config",
+  "configFile": "./config.json",
+  "dbPath": "./.db",
+  "sslKey": "../privkey.pem",
+  "sslCert": "../fullchain.pem",
+  "multiuser": true,
+  "enforceToc": false,
+  "disablePasswordChecks": false,
+  "supportEmail": "",
+  "server": {
+    "name": "localhost",
+    "description": "",
+    "logo": ""
+  }
+}
