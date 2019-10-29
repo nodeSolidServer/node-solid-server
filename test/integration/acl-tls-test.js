@@ -488,7 +488,7 @@ describe.skip('ACL with WebID+TLS', function () {
         done()
       })
     })
-    it('user1 should be able to access test directory BEEP BOOP REMOVE THIS', function (done) {
+    it('user1 should be able to access test directory', function (done) {
       var options = createOptions('/acl-tls/read-acl/', 'user1')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
