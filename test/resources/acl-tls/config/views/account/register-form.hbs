@@ -1,0 +1,147 @@
+<div class="row">
+  <div class="col-md-6">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        <form method="post" action="/api/accounts/new" id="RegisterForm">
+          {{> shared/error}}
+
+          <div class="form-group">
+            <label class="control-label" for="username">Username*</label>
+            <input type="text" class="form-control" name="username" id="username" placeholder="alice"
+                   required value="{{username}}"/>
+
+	    {{#if multiuser}}
+	    <p>Your username should be a lower-case word with only
+	    letters a-z and numbers 0-9 and without periods.</p>
+	    <p>Your public Solid POD URL will be:
+	    <tt>https://<span class="editable-username">alice</span>.<script type="text/javascript">
+              document.write(window.location.host)
+	    </script></tt></p>
+	    <p>Your public Solid WebID will be:
+	    <tt>https://<span class="editable-username">alice</span>.<script type="text/javascript">
+              document.write(window.location.host)
+	    </script>/profile/card#me</tt></p>
+
+	    <p>Your <em>POD URL</em> is like the homepage for your Solid
+	    pod. By default, it is readable by the public, but you can
+	    always change that if you like by changing the access
+	    control.</p>
+
+	    <p>Your <em>Solid WebID</em> is your globally unique name
+	    that you can use to identify and authenticate yourself with
+	    other PODs across the world.</p>
+	    {{/if}}
+
+	  </div>
+
+          <div class="form-group has-feedback">
+            <label class="control-label" for="password">Password*</label>
+            <input type="password" class="form-control control-progress{{#if disablePasswordStrengthCheck}} disable-password-strength-check{{/if}}" name="password" id="password" required/>
+            <span class="glyphicon glyphicon-remove form-control-feedback hidden" aria-hidden="true"></span>
+            <div class="progress">
+              <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="4"></div>
+            </div>
+            <div class="help-block"></div>
+          </div>
+
+
+          <div class="form-group has-feedback">
+            <label class="control-label" for="repeat_password">Repeat password*</label>
+            <input type="password" class="form-control" name="repeat_password" id="repeat_password" required/>
+            <span class="glyphicon glyphicon-remove form-control-feedback hidden"></span>
+          </div>
+
+
+          <div class="form-group">
+            <label class="control-label" for="name">Name*</label>
+            <input type="text" class="form-control" name="name" id="name" required value="{{name}}"/>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label" for="email">Email*</label>
+            <input type="email" class="form-control" name="email" id="email" value="{{email}}"/>
+            <span class="help-block">Your email will only be used for account recovery</span>
+          </div>
+
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" name="connectExternalWebId" value="true" id="ConnectExternalWebId" {{#if connectExternalWebId}}checked{{/if}}/>
+              Connect to External WebID (<strong>Advanced feature</strong>)
+            </label>
+          </div>
+
+          <div class="form-group hidden" id="ExternalWebId">
+            <label class="control-label" for="externalWebId">External WebID:</label>
+            <input type="text" class="form-control" name="externalWebId" id="externalWebId" value="{{externalWebId}}"/>
+            <span class="help-block">
+              By connecting this account with an existing WebID, you can use that WebID to authenticate with the new account.
+            </span>
+          </div>
+
+          {{#if enforceToc}}
+            {{#if tocUri}}
+              <div class="checkbox">
+                <label>
+                  <input type="checkbox" name="acceptToc" value="true" {{#if acceptToc}}checked{{/if}}>
+                  I agree to the <a href="{{tocUri}}" target="_blank">Terms &amp; Conditions</a> of this service
+                </label>
+              </div>
+            {{/if}}
+          {{/if}}
+
+
+          <button type="submit" class="btn btn-primary" id="register">Register</button>
+
+          <input type="hidden" name="returnToUrl" value="{{returnToUrl}}"/>
+          {{> auth/auth-hidden-fields}}
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="panel panel-default panel-already-registered">
+      <div class="panel-body">
+        <h2>Already have an account?</h2>
+        <p>
+          <a class="btn btn-lg btn-success" href="{{{loginUrl}}}">
+            Please Log In
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="/common/js/owasp-password-strength-test.js" defer></script>
+<script src="/common/js/text-encoder-lite.min.js" defer></script>
+<script src="/common/js/solid.js" defer></script>
+
+<script>
+  var username = document.getElementById('username');
+  username.onkeyup = function() {
+    var list = document.getElementsByClassName('editable-username');
+      for (let item of list) {
+      item.innerHTML = username.value.toLowerCase()
+    }
+  }
+
+  window.addEventListener('DOMContentLoaded', function () {
+    var connect = document.getElementById('ConnectExternalWebId')
+    var container = document.getElementById('ExternalWebId')
+    container.classList.toggle('hidden', !connect.checked)
+    connect.addEventListener('change', function () {
+      container.classList.toggle('hidden', !connect.checked)
+    })
+
+    var form = document.getElementById('RegisterForm')
+    var externalWebIdField = document.getElementById('externalWebId')
+    form.addEventListener('submit', function () {
+      if (!connect.checked) {
+        externalWebIdField.value = ''
+      }
+    })
+  })
+</script>
+
