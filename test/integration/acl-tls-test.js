@@ -53,7 +53,13 @@ var userCredentials = {
   }
 }
 
-// TODO Remove skip. TLS is currently broken, but is not a priority to fix
+// TODO Remove skip. TLS is currently broken, but is not a priority to fix since
+// the current Solid spec does not require supporting webid-tls on the resource
+// server. The current spec only requires the resource server to support webid-oidc,
+// and it requires the IDP to support webid-tls as a log in method, so that users of
+// a webid-tls client certificate can still use their certificate (and not a
+// username/password pair or other login method) to "bridge" from webid-tls to
+// webid-oidc.
 describe.skip('ACL with WebID+TLS', function () {
   var ldpHttpsServer
   var serverConfig = {
