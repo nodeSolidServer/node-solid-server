@@ -559,6 +559,27 @@ describe('HTTP APIs', function () {
         .expect(hasHeader('acl', suffixAcl))
         .expect(201, done)
     })
+    it('should create new resource even if body is empty', function (done) {
+      server.post('/post-tests/')
+        .set('slug', 'post-resource-empty')
+        .set('content-type', 'text/turtle')
+        .expect(hasHeader('describedBy', suffixMeta))
+        .expect(hasHeader('acl', suffixAcl))
+        .expect('location', /.*\.ttl/)
+        .expect(201, done)
+    })
+    it('should error with 415 if the body is empty and no content type is provided', function (done) {
+      server.post('/post-tests/')
+        .set('slug', 'post-resource-empty-fail')
+        .expect(415, done)
+    })
+    it('should error with 415 if the body is provided but there is no content-type header', function (done) {
+      server.post('/post-tests/')
+        .set('slug', 'post-resource-rdf-no-content-type')
+        .send(postRequest1Body)
+        .set('content-type', '')
+        .expect(415, done)
+    })
     it('should create new resource even if no trailing / is in the target',
       function (done) {
         server.post('')
