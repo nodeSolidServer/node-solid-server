@@ -489,6 +489,13 @@ describe('ResourceMapper', () => {
         url: 'http://localhost/space/foo%20bar%20bar.html',
         contentType: 'text/html'
       })
+
+    itMapsFile(mapper, 'a file with even stranger disallowed IRI characters',
+      { path: `${rootPath}space/Blog discovery for the future? · Issue #96 · scripting:Scripting-News · GitHub.pdf` },
+      {
+        url: 'http://localhost/space/Blog%20discovery%20for%20the%20future%3F%20%C2%B7%20Issue%20%2396%20%C2%B7%20scripting%3AScripting-News%20%C2%B7%20GitHub.pdf',
+        contentType: 'application/pdf'
+      })
   })
 
   describe('A ResourceMapper instance for a multi-host setup', () => {
