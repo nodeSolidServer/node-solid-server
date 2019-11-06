@@ -134,7 +134,7 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
       })
 
       it('should set the cookie', () => {
-        expect(cookie).to.match(/connect.sid=\S{65,100}/)
+        expect(cookie).to.match(/nssidp.sid=\S{65,100}/)
       })
 
       it('should set the cookie with HttpOnly', () => {
@@ -286,7 +286,7 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
           let malcookie
           before(() => {
             // How Mallory might set their cookie:
-            malcookie = cookie.replace(/connect\.sid=(\S+)/, 'connect.sid=l33th4x0rzp0wn4g3;')
+            malcookie = cookie.replace(/nssidp\.sid=(\S+)/, 'nssidp.sid=l33th4x0rzp0wn4g3;')
           })
           describe('and no origin set', () => {
             before(done => {
