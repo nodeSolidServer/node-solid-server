@@ -379,6 +379,20 @@ describe('HTTP APIs', function () {
           .expect('content-type', /text\/html/)
           .end(done)
       })
+    it('should return turtle if requesting a conatiner that has index.html with conteent-type text/turtle', (done) => {
+      server.get('/sampleContainer/')
+        .set('accept', 'text/turtle')
+        .expect(200)
+        .expect('content-type', /text\/turtle/)
+        .end(done)
+    })
+    it('should return turtle if requesting a container that conatins an index.html file with a content type where some rdf format is ranked higher than html', (done) => {
+      server.get('/sampleContainer/')
+        .set('accept', 'image/*;q=0.9, */*;q=0.1, application/rdf+xml;q=0.9, application/xhtml+xml, text/xml;q=0.5, application/xml;q=0.5, text/html;q=0.9, text/plain;q=0.5, text/n3;q=1.0, text/turtle;q=1')
+        .expect(200)
+        .expect('content-type', /text\/turtle/)
+        .end(done)
+    })
     it('should still redirect to the right container URI if missing / and HTML is requested',
       function (done) {
         server.get('/sampleContainer')
