@@ -137,7 +137,7 @@ describe('Authentication API (OIDC)', () => {
       })
 
       it('should set the cookie', () => {
-        expect(cookie).to.match(/connect.sid=\S{65,100}/)
+        expect(cookie).to.match(/nssidp.sid=\S{65,100}/)
       })
 
       it('should set the cookie with HttpOnly', () => {
@@ -247,7 +247,7 @@ describe('Authentication API (OIDC)', () => {
         describe('with malicious cookie but without origin', () => {
           let response
           before(done => {
-            var malcookie = cookie.replace(/connect\.sid=(\S+)/, 'connect.sid=l33th4x0rzp0wn4g3;')
+            var malcookie = cookie.replace(/nssidp\.sid=(\S+)/, 'nssidp.sid=l33th4x0rzp0wn4g3;')
             alice.get('/private-for-alice.txt')
               .set('Cookie', malcookie)
               .end((err, res) => {
@@ -353,7 +353,7 @@ describe('Authentication API (OIDC)', () => {
         describe('with malicious cookie but with globally configured origin', () => {
           let response
           before(done => {
-            var malcookie = cookie.replace(/connect\.sid=(\S+)/, 'connect.sid=l33th4x0rzp0wn4g3;')
+            var malcookie = cookie.replace(/nssidp\.sid=(\S+)/, 'nssidp.sid=l33th4x0rzp0wn4g3;')
             alice.get('/private-for-alice.txt')
               .set('Cookie', malcookie)
               .set('Origin', 'https://apps.solid.invalid')
@@ -407,7 +407,7 @@ describe('Authentication API (OIDC)', () => {
         describe('with malicious cookie and our origin', () => {
           let response
           before(done => {
-            var malcookie = cookie.replace(/connect\.sid=(\S+)/, 'connect.sid=l33th4x0rzp0wn4g3;')
+            var malcookie = cookie.replace(/nssidp\.sid=(\S+)/, 'nssidp.sid=l33th4x0rzp0wn4g3;')
             alice.get('/private-for-alice.txt')
               .set('Cookie', malcookie)
               .set('Origin', aliceServerUri)
@@ -425,7 +425,7 @@ describe('Authentication API (OIDC)', () => {
         describe('with malicious cookie and a non-matching origin', () => {
           let response
           before(done => {
-            var malcookie = cookie.replace(/connect\.sid=(\S+)/, 'connect.sid=l33th4x0rzp0wn4g3;')
+            var malcookie = cookie.replace(/nssidp\.sid=(\S+)/, 'nssidp.sid=l33th4x0rzp0wn4g3;')
             alice.get('/private-for-owner.txt')
               .set('Cookie', malcookie)
               .set('Origin', bobServerUri)
@@ -455,7 +455,7 @@ describe('Authentication API (OIDC)', () => {
 
         describe('with trusted app and malicious cookie', () => {
           before(done => {
-            var malcookie = cookie.replace(/connect\.sid=(\S+)/, 'connect.sid=l33th4x0rzp0wn4g3;')
+            var malcookie = cookie.replace(/nssidp\.sid=(\S+)/, 'nssidp.sid=l33th4x0rzp0wn4g3;')
             alice.get('/private-for-alice.txt')
                  .set('Cookie', malcookie)
                  .set('Origin', trustedAppUri)

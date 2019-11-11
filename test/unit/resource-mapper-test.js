@@ -119,6 +119,17 @@ describe('ResourceMapper', () => {
         contentType: 'text/n3'
       })
 
+    itMapsUrl(mapper, 'a URL with a file extension having more than one possible content type',
+      {
+        url: 'http://localhost/space/foo.mp3',
+        contentType: 'audio/mp3',
+        createIfNotExists: true
+      },
+      {
+        path: `${rootPath}space/foo.mp3`,
+        contentType: 'audio/mp3'
+      })
+
     // GET/HEAD/POST/DELETE/PATCH base cases
 
     itMapsUrl(mapper, 'a URL of a non-existing file',
@@ -477,6 +488,13 @@ describe('ResourceMapper', () => {
       {
         url: 'http://localhost/space/foo%20bar%20bar.html',
         contentType: 'text/html'
+      })
+
+    itMapsFile(mapper, 'a file with even stranger disallowed IRI characters',
+      { path: `${rootPath}space/Blog discovery for the future? · Issue #96 · scripting:Scripting-News · GitHub.pdf` },
+      {
+        url: 'http://localhost/space/Blog%20discovery%20for%20the%20future%3F%20%C2%B7%20Issue%20%2396%20%C2%B7%20scripting%3AScripting-News%20%C2%B7%20GitHub.pdf',
+        contentType: 'application/pdf'
       })
   })
 
