@@ -379,6 +379,20 @@ describe('HTTP APIs', function () {
           .expect('content-type', /text\/html/)
           .end(done)
       })
+    it('should return turtle if requesting a conatiner that has index.html with conteent-type text/turtle', (done) => {
+      server.get('/sampleContainer/')
+        .set('accept', 'text/turtle')
+        .expect(200)
+        .expect('content-type', /text\/turtle/)
+        .end(done)
+    })
+    it('should return turtle if requesting a container that conatins an index.html file with a content type where some rdf format is ranked higher than html', (done) => {
+      server.get('/sampleContainer/')
+        .set('accept', 'image/*;q=0.9, */*;q=0.1, application/rdf+xml;q=0.9, application/xhtml+xml, text/xml;q=0.5, application/xml;q=0.5, text/html;q=0.9, text/plain;q=0.5, text/n3;q=1.0, text/turtle;q=1')
+        .expect(200)
+        .expect('content-type', /text\/turtle/)
+        .end(done)
+    })
     it('should still redirect to the right container URI if missing / and HTML is requested',
       function (done) {
         server.get('/sampleContainer')
@@ -558,6 +572,27 @@ describe('HTTP APIs', function () {
         .expect(hasHeader('describedBy', suffixMeta))
         .expect(hasHeader('acl', suffixAcl))
         .expect(201, done)
+    })
+    it('should create new resource even if body is empty', function (done) {
+      server.post('/post-tests/')
+        .set('slug', 'post-resource-empty')
+        .set('content-type', 'text/turtle')
+        .expect(hasHeader('describedBy', suffixMeta))
+        .expect(hasHeader('acl', suffixAcl))
+        .expect('location', /.*\.ttl/)
+        .expect(201, done)
+    })
+    it('should error with 415 if the body is empty and no content type is provided', function (done) {
+      server.post('/post-tests/')
+        .set('slug', 'post-resource-empty-fail')
+        .expect(415, done)
+    })
+    it('should error with 415 if the body is provided but there is no content-type header', function (done) {
+      server.post('/post-tests/')
+        .set('slug', 'post-resource-rdf-no-content-type')
+        .send(postRequest1Body)
+        .set('content-type', '')
+        .expect(415, done)
     })
     it('should create new resource even if no trailing / is in the target',
       function (done) {
