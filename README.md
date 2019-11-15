@@ -408,7 +408,8 @@ A heartfelt thank you to everyone for all of your efforts!
 
 You can receive or provide help too:
 
-- [Join us in Gitter](https://gitter.im/solid/chat) to help with development or to hang out with us :)
+- [Join us in Gitter](https://gitter.im/solid/chat) to chat about Solid or to hang out with us :)
+- [NSS Gitter channel](https://gitter.im/solid/node-solid-server) for specific (installation) advice about this code base
 - [Create a new issue](https://github.com/solid/node-solid-server/issues/new) to report bugs
 - [Fix an issue](https://github.com/solid/node-solid-server/issues)
 - Reach out to Jackson at jacksonm@inrupt.com to become more involved in maintaining Node Solid Server
