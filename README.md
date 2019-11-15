@@ -401,12 +401,12 @@ it. It is currently adviceable to remove it or set it inactive rather
 than set a large quota, because the current implementation will impair
 write performance if there is a lot of data.
 
-## Contribute to Solid
+## Get help and contribute
 
 Solid is only possible because of a large community of [contributors](https://github.com/solid/node-solid-server/blob/master/CONTRIBUTORS.md).
 A heartfelt thank you to everyone for all of your efforts!
 
-You can help us too:
+You can receive or provide help too:
 
 - [Join us in Gitter](https://gitter.im/solid/chat) to help with development or to hang out with us :)
 - [Create a new issue](https://github.com/solid/node-solid-server/issues/new) to report bugs
