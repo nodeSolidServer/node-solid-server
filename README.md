@@ -248,7 +248,7 @@ git clone https://github.com/solid/node-solid-server
 cd node-solid-server
 docker build .
 ```
-We have a automatic builds set up so commits to master will trigger a build of https://hub.docker.com/r/nodesolidserver/node-solid-server.
+We have automatic builds set up so commits to master will trigger a build of https://hub.docker.com/r/nodesolidserver/node-solid-server.
 
 ## Library Usage
 
