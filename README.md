@@ -216,15 +216,15 @@ Configuring Solid via the config file can be a concise and convenient method and
 
 ## Use Docker
 
-Build with:
+Pull with:
 
 ```bash
-docker build -t node-solid-server .
+docker pull nodesolidserver/node-solid-server
 ```
 
 Run with:
 ```bash
-docker run -p 8443:8443 --name solid node-solid-server
+docker run -p 8443:8443 --name solid nodesolidserver/node-solid-server
 ```
 
 This will enable you to login to solid on https://localhost:8443 and then create a new account
@@ -241,6 +241,14 @@ You can modify the config within the docker container as follows:
  - Edit the `config.json` file
  - Copy the file back with `docker cp config.json solid:/usr/src/app/`
  - Restart the server with `docker restart solid`
+
+If you want to help improve the Docker image, then you can build it locally with:
+```bash
+git clone https://github.com/solid/node-solid-server
+cd node-solid-server
+docker build .
+```
+We have automatic builds set up so commits to master will trigger a build of https://hub.docker.com/r/nodesolidserver/node-solid-server.
 
 ## Library Usage
 
