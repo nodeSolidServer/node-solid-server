@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# conditional assignment of SOLID_SERVER_VERSION, like
+# SOLID_SERVER_VERSION = $SOURCE_BRANCH == master ? 'latest' : $SOURCE_BRANCH
+SOLID_SERVER_VERSION=latest && [[ "$SOURCE_BRANCH" != "master" ]] && SOLID_SERVER_VERSION=${SOURCE_BRANCH}
+
+echo building on branch/tag ${SOURCE_BRANCH}, server version ${SOLID_SERVER_VERSION} with image name ${IMAGE_NAME} .
+
+docker build --build-arg SOLID_SERVER_VERSION=${SOLID_SERVER_VERSION} --file Dockerfile -t ${IMAGE_NAME} .

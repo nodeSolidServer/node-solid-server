@@ -1,0 +1,50 @@
+# This example assumes, that you are running a jwilders/nginx proxy
+# with certificate generation by a letsencrypt companion container
+# as described here:
+#
+# https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion/blob/master/docs/Docker-Compose.md
+#
+# This should provide a docker volume containing the generated certificates.
+# We will use the same cert and key as the webproxy for the actual solid server. While it seems to
+# work, I am not sure if it is actually a good idea. Please file an issue if you want to discuss this.
+
+# Adjust any line that is commented with (!):
+# 1. Change any occurrence of the domain `solid.example` to your actual domain
+# 2. Adjust the `latest` tag to a specific version you want to use.
+
+version: '3.7'
+services:
+  server:
+    image: nodesolidserver/node-solid-server:latest # (!) use specific version tag here
+
+    # this ensures automatic container start, when host reboots
+    restart: always
+
+    expose:
+      - 8443
+
+    volumes:
+      # mount local directories to the container
+      # (!) the host directories have to exist and be owned by UID 1000
+      - /opt/solid/data:/opt/solid/data
+      - /opt/solid/.db:/opt/solid/.db
+      - /opt/solid/config:/opt/solid/config
+      - nginxproxy_certs:/opt/solid/certs
+
+    environment:
+      # (!) use your actual SOLID_SERVER_URI
+      - "SOLID_SERVER_URI=https://solid.example"
+      # (!) adjust path to the letsencrypt key and cert
+      - "SOLID_SSL_KEY=/opt/solid/certs/solid.example/key.pem"
+      - "SOLID_SSL_CERT=/opt/solid/certs/solid.example/fullchain.pem"
+      # (!) use your actual host name
+      - "VIRTUAL_HOST=solid.example"
+      - "VIRTUAL_PORT=8443"
+      - "VIRTUAL_PROTO=https"
+      # (!) use your actual host name
+      - "LETSENCRYPT_HOST=solid.example"
+      - "LETSENCRYPT_EMAIL=your@mail.example"
+volumes:
+  # (!) mount certificates from an external volume from your nginx setup
+  nginxproxy_certs:
+    external: true
