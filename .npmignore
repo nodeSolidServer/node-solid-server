@@ -18,3 +18,4 @@
 
 # Additional .npmignore entries (not in .gitignore)
 /test
+/docker-image
