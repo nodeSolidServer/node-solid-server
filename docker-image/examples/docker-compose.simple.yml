@@ -1,0 +1,34 @@
+# This file is an example for running solid server directly on port 443 with
+# existing (letsencrypt) certificates and without reverse proxy.
+
+# To use it adjust any line that is commented with (!):
+# 1. Change any occurrence of the domain `solid.example` to your actual domain
+# 2. Adjust the `latest` tag to a specific version you want to use.
+
+version: '3.7'
+services:
+  server:
+    image: nodesolidserver/node-solid-server:latest # (!) use specific version tag here
+
+    # this ensures automatic container start, when host reboots
+    restart: always
+
+    ports:
+      - 443:8443
+
+    volumes:
+      # mount local directories to the container
+      # (!) the host directories have to exist and be owned by UID 1000
+      - /opt/solid/data:/opt/solid/data
+      - /opt/solid/.db:/opt/solid/.db
+      - /opt/solid/config:/opt/solid/config
+
+      # (!) mount existing TLS certificates, e.g. from letsencrypt
+      # (!) ensure that the key and fullchain files are readable by UID 1000
+      - /etc/letsencrypt/live/solid.example/:/opt/solid/certs
+
+    environment:
+      # (!) use your actual SOLID_SERVER_URI
+      - "SOLID_SERVER_URI=https://solid.example"
+      - "SOLID_SSL_KEY=/opt/solid/certs/key.pem"
+      - "SOLID_SSL_CERT=/opt/solid/certs/fullchain.pem"
