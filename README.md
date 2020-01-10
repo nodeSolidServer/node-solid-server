@@ -176,6 +176,7 @@ $ solid start --help
     --owner [value]               Set the owner of the storage (overwrites the root ACL file)
     --ssl-key [value]             Path to the SSL private key in PEM format
     --ssl-cert [value]            Path to the SSL certificate key in PEM format
+    --extra-ca [value]            Path to the local root CA in PEM format (for example, mkcert is in: \"$(mkcert -CAROOT)/rootCA.pem\")
     --no-reject-unauthorized      Accept self-signed certificates
     --multiuser                   Enable multi-user mode
     --idp [value]                 Obsolete; use --multiuser
