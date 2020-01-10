@@ -118,6 +118,12 @@ module.exports = [
     prompt: true
   },
   {
+    name: 'extra-ca',
+    help: 'Path to the local root CA in PEM format (added by, for example, mkcert)',
+    validate: validPath,
+    prompt: true
+  },
+  {
     name: 'no-reject-unauthorized',
     help: 'Accept self-signed certificates',
     flag: true,
