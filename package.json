@@ -166,6 +166,6 @@
     "solid": "./bin/solid"
   },
   "engines": {
-    "node": ">=8.0"
+    "node": ">=12.0"
   }
 }
