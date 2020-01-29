@@ -1,7 +1,7 @@
 {
   "name": "solid-server",
   "description": "Solid server on top of the file-system",
-  "version": "5.2.2",
+  "version": "5.2.3",
   "author": {
     "name": "Tim Berners-Lee",
     "email": "timbl@w3.org"
@@ -76,14 +76,14 @@
     "get-folder-size": "^2.0.0",
     "glob": "^7.1.1",
     "global-tunnel-ng": "^2.1.0",
-    "handlebars": "^4.3.3",
+    "handlebars": "^4.7.2",
     "http-proxy-middleware": "^0.18.0",
     "inquirer": "^1.0.2",
     "into-stream": "^5.0.0",
     "ip-range-check": "0.0.2",
     "is-ip": "^2.0.0",
     "li": "^1.0.1",
-    "mashlib": "^1.1.7",
+    "mashlib": "^1.2.1",
     "mime-types": "^2.1.11",
     "mkdir-recursive": "^0.4.0",
     "negotiator": "^0.6.0",
@@ -92,7 +92,7 @@
     "nodemailer": "^3.1.4",
     "oidc-op-express": "^0.0.3",
     "owasp-password-strength-test": "^1.3.0",
-    "proper-lockfile": "^3.2.0",
+    "proper-lockfile": "^4.1.1",
     "rdflib": "^0.21.1",
     "recursive-readdir": "^2.1.0",
     "rimraf": "^2.7.1",
@@ -166,6 +166,6 @@
     "solid": "./bin/solid"
   },
   "engines": {
-    "node": ">=8.0"
+    "node": ">=12.0"
   }
 }
