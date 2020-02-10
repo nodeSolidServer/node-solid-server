@@ -235,28 +235,8 @@ it in your local (/etc/)hosts file in line with the account and subdomain, i.e. 
 ```
 Then you'll be able to use solid as intended.
 
-You can modify the config within the docker container as follows:
+For details on how to configure and use the docker image, please take a look at [docker-image/Readme.md](https://github.com/solid/node-solid-server/tree/master/docker-image).
 
- - Copy the config to the current directory with: 
-   ```
-   docker cp solid:/usr/src/app/config.json .
-   ```
- - Edit the `config.json` file
- - Copy the file back with 
-   ```
-   docker cp config.json solid:/usr/src/app/
-   ```
- - Restart the server with 
-   ```
-   docker restart solid
-   ```
-
-If you want to help improve the Docker image, then you can build it locally with:
-```bash
-git clone https://github.com/solid/node-solid-server
-cd node-solid-server
-docker build .
-```
 We have automatic builds set up, so commits to master will trigger a build of https://hub.docker.com/r/nodesolidserver/node-solid-server.
 
 ## Library Usage
