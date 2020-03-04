@@ -163,6 +163,13 @@ describe('LDP', function () {
         assert.equal(err.status, 415)
       })
     })
+
+    it('should fail if file.acl and content type not text/turtle', () => {
+      var stream = stringToStream('hello world')
+      return ldp.put('/resources/testPut.txt.acl', stream, 'text/plain').catch(err => {
+        assert.equal(err.status, 415)
+      })
+    })
   })
 
   describe('delete', function () {
