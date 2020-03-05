@@ -1,4 +1,13 @@
-FROM node:8.11.2-onbuild
+FROM node:lts
+
+# build
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+COPY package.json /usr/src/app/
+RUN npm install
+COPY . /usr/src/app
+
+# start
 EXPOSE 8443
 COPY config.json-default config.json
 RUN openssl req \
