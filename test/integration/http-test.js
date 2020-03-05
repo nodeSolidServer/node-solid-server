@@ -506,7 +506,8 @@ describe('HTTP APIs', function () {
       // Ensure all these are finished before running tests
       return Promise.all([
         rm('/false-file-48484848'),
-        createTestContainer('delete-test-empty-container'),
+//        createTestContainer('delete-test-empty-container'),
+        createTestResource('/delete-test-empty-container/test.txt.acl'),
         createTestResource('/put-resource-1.ttl'),
         createTestResource('/delete-test-non-empty/test.ttl')
       ])
@@ -528,7 +529,7 @@ describe('HTTP APIs', function () {
         .expect(409, done)
     })
 
-    it('should delete a new and empty container', function (done) {
+    it('should delete a new and empty container - with file.acl', function (done) {
       server.delete('/delete-test-empty-container/')
         .end(() => {
           server.get('/delete-test-empty-container/')
@@ -541,6 +542,7 @@ describe('HTTP APIs', function () {
       // Clean up after DELETE API tests
       rm('/put-resource-1.ttl')
       rm('/delete-test-non-empty/')
+      rm('/delete-test-empty-container/test.txt.acl')
       rm('/delete-test-empty-container/')
     })
   })
