@@ -170,12 +170,18 @@ describe('LDP', function () {
       return assert.isRejected(ldp.delete('/resources/testPut.txt'))
     })
 
-    it.skip('should delete a file in an existing dir', async () => {
+    it.skip('should delete a file with ACL in an existing dir', async () => {
       // First create a dummy file
       var stream = stringToStream('hello world')
       await ldp.put('/resources/testPut.txt', stream, 'text/plain')
+      await ldp.put('/resources/testPut.txt.acl', stream, 'text/turtle')
       // Make sure it exists
       fs.stat(ldp.resourceMapper._rootPath + '/resources/testPut.txt', function (err) {
+        if (err) {
+          throw err
+        }
+      })
+      fs.stat(ldp.resourceMapper._rootPath + '/resources/testPut.txt.acl', function (err) {
         if (err) {
           throw err
         }
@@ -185,6 +191,11 @@ describe('LDP', function () {
       await ldp.delete('/resources/testPut.txt')
       // Make sure it does not exist anymore
       fs.stat(ldp.resourceMapper._rootPath + '/resources/testPut.txt', function (err, s) {
+        if (!err) {
+          throw new Error('file still exists')
+        }
+      })
+      fs.stat(ldp.resourceMapper._rootPath + '/resources/testPut.txt.acl', function (err, s) {
         if (!err) {
           throw new Error('file still exists')
         }
