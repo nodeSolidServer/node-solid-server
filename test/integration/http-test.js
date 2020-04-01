@@ -481,6 +481,12 @@ describe('HTTP APIs', function () {
         .set('content-type', 'text/turtle')
         .expect(201, done)
     })
+    it('should reject create .acl resource, if contentType not text/turtle', function (done) {
+      server.put('/put-resource-1.acl')
+        .send(putRequestBody)
+        .set('content-type', 'text/plain')
+        .expect(415, done)
+    })
     it('should create directories if they do not exist', function (done) {
       server.put('/foo/bar/baz.ttl')
         .send(putRequestBody)
@@ -590,6 +596,13 @@ describe('HTTP APIs', function () {
     it('should error with 415 if the body is provided but there is no content-type header', function (done) {
       server.post('/post-tests/')
         .set('slug', 'post-resource-rdf-no-content-type')
+        .send(postRequest1Body)
+        .set('content-type', '')
+        .expect(415, done)
+    })
+    it('should error with 415 if file.acl and contentType not text/turtle', function (done) {
+      server.post('/post-tests/')
+        .set('slug', 'post-acl-no-content-type.acl')
         .send(postRequest1Body)
         .set('content-type', '')
         .expect(415, done)
