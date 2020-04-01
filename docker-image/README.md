@@ -35,6 +35,13 @@ You will need to have your certificates ready and mount them into the container.
 
 Run solid-server on port 8443 behind a nginx proxy on 443. You will need to setup an nginx container with letsencrypt companion [as described here](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion).
 
+When using nginx to proxy HTTPS connections to Solid you will need to specify HTTPS in the local service URI:
+
+`proxy_pass https://127.0.0.1:8443;`
+
+This approach is useful if you do not wish to grant Solid access to your HTTPS certificates, as nginx does not validate
+the self-signed certificates that Solid generates for its proxy_pass connection.
+
 #### Other setups
 
 The setup you need is not presented here? Feel free to ask, or provide a Pull Request
