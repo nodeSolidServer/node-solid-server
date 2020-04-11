@@ -61,7 +61,9 @@ describe('Header handler', () => {
       // Retrieve the response headers
       let response = {}
       before(async () => {
+        console.log('before')
         const { headers } = await request.get(resource)
+        console.log('after')
         response.headers = headers
       })
 

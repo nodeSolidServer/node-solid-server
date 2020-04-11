@@ -545,6 +545,16 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
+    it('user2 should not be able able to post an acl file', function (done) {
+      var options = createOptions('/append-acl/abc.ttl.acl', 'user2', 'text/turtle')
+      options.body = '<a> <b> <c> .\n'
+      request.put(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 403)
+        assert.equal(response.statusMessage, 'User Unauthorized')
+        done()
+      })
+    })
     it('user2 should not be able to access test file', function (done) {
       var options = createOptions('/append-acl/abc.ttl', 'user2', 'text/turtle')
       request.head(options, function (error, response, body) {
