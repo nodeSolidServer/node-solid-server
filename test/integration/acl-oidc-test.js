@@ -554,6 +554,28 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
+    it('user1 (owner) can use POST to append an acl', function (done) {
+      var options = createOptions('/append-acl/', 'user1', 'text/turtle')
+      options.headers.Slug = 'abc.ttl.acl'
+      options.body = '<a> <b> <c> .\n'
+      request.post(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 201)
+        assert.equal(response.statusMessage, 'Created')
+        done()
+      })
+    })
+    it('user2 (with append permission) cannot use POST to append an acl', function (done) {
+      var options = createOptions('/append-acl/', 'user2', 'text/turtle')
+      options.headers.Slug = 'abc.ttl.acl'
+      options.body = '<a> <b> <c> .\n'
+      request.post(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 403)
+        assert.equal(response.statusMessage, 'User Unauthorized')
+        done()
+      })
+    })
     it('user2 (with append permission) cannot use PUT to append', function (done) {
       var options = createOptions('/append-acl/abc.ttl', 'user2', 'text/turtle')
       options.body = '<d> <e> <f> .\n'
