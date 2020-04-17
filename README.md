@@ -122,6 +122,7 @@ See [Running Solid behind a reverse proxy](https://github.com/solid/node-solid-s
 ##### How can I send emails to my users with my Gmail?
 
 > To use Gmail you may need to configure ["Allow Less Secure Apps"](https://www.google.com/settings/security/lesssecureapps) in your Gmail account unless you are using 2FA in which case you would have to create an [Application Specific](https://security.google.com/settings/security/apppasswords) password. You also may need to unlock your account with ["Allow access to your Google account"](https://accounts.google.com/DisplayUnlockCaptcha) to use SMTP.
+
 also add to `config.json`
 ``` 
   "useEmail": true,
