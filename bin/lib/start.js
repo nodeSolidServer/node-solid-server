@@ -58,6 +58,10 @@ function bin (argv, server) {
     delete argv['emailAuthPass']
   }
 
+  if (!argv.tokenTypesSupported) {
+    argv.tokenTypesSupported = ['legacyPop', 'dpop']
+  }
+
   // Set up --no-*
   argv.live = !argv.noLive
 
