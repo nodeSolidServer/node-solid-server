@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Magic Link</title>
+  <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/common/css/solid.css">
+</head>
+<body>
+<div class="container">
+
+  <div class="page-header">
+    <h1>Magic Link</h1>
+  </div>
+
+  <div class="panel panel-default">
+    <div class="panel-body">
+      <form method="post" action="/magic-link/generate">
+        {{> shared/error}}
+
+        <div class="form-group">
+          {{#if multiuser}}
+            <p>Please enter your email. A magic link will be
+              emailed to you allowing you to log in.</p>
+
+            <label class="control-label" for="email">Email:</label>
+            <input type="text" class="form-control" name="email" id="email"
+                   placeholder="alice@bob.com"/>
+          {{else}}
+            <p>A magic link will be emailed to you.</p>
+          {{/if}}
+
+        </div>
+
+        <button type="submit" class="btn btn-primary">Send Magic Link</button>
+        <input type="hidden" name="returnToUrl" value="{{{returnToUrl}}}"/>
+      </form>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
