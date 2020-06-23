@@ -117,7 +117,7 @@
     "cross-env": "^5.2.1",
     "dirty-chai": "^1.2.2",
     "localstorage-memory": "^1.0.2",
-    "mocha": "^5.1.1",
+    "mocha": "^8.0.1",
     "nock": "^9.0.14",
     "node-mocks-http": "^1.8.1",
     "nyc": "^14.1.0",
