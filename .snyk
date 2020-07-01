@@ -1,5 +1,5 @@
 # Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
-version: v1.12.0
+version: v1.16.0
 # ignores vulnerabilities until expiry date; change duration by modifying expiry date
 ignore:
   'npm:braces:20180219':
@@ -32,4 +32,10 @@ ignore:
     - solid-auth-client@2.1.0 > @trust/oidc-rp@0.4.3 > @trust/webcrypto@0.4.0 > base64url@2.0.0:
         reason: None given
         expires: '2018-09-11T01:52:14.023Z'
-patch: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-LODASH-567746:
+    - '@solid/oidc-auth-manager > @solid/oidc-op > isomorphic-webcrypto > @unimodules/react-native-adapter > lodash':
+        patched: '2020-07-01T01:21:38.373Z'
+    - '@solid/oidc-auth-manager > @solid/oidc-op > @solid/keychain > isomorphic-webcrypto > @unimodules/react-native-adapter > lodash':
+        patched: '2020-07-01T01:21:38.373Z'
