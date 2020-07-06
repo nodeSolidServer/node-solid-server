@@ -73,8 +73,8 @@ describe('Utility functions', function () {
 
   describe('getContentType()', () => {
     describe('for Express headers', () => {
-      it('should default to text/plain', () => {
-        assert.equal(utils.getContentType({}), 'text/plain')
+      it('should default to application/octet-stream', () => {
+        assert.equal(utils.getContentType({}), 'application/octet-stream')
       })
 
       it('should get a basic content type', () => {
@@ -87,9 +87,9 @@ describe('Utility functions', function () {
     })
 
     describe('for Fetch API headers', () => {
-      it('should default to text/plain', () => {
+      it('should default to application/octet-stream', () => {
         // eslint-disable-next-line no-undef
-        assert.equal(utils.getContentType(new Headers({})), 'text/plain')
+        assert.equal(utils.getContentType(new Headers({})), 'application/octet-stream')
       })
 
       it('should get a basic content type', () => {
