@@ -129,6 +129,7 @@
     "standard": "^8.6.0",
     "supertest": "^3.0.0",
     "turtle-validator": "^1.0.2",
+    "webid-provider-tests": "^1.0.0",
     "whatwg-url": "^6.1.0"
   },
   "pre-commit": [
