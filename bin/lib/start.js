@@ -89,6 +89,18 @@ function bin (argv, server) {
     })
   }
 
+  if (argv.createOwnerPod && !argv.ownerEmail) {
+    throw new Error('Cannot create owner pod without an email address.')
+  }
+
+  if(argv.owner && argv.createOwnerPod) {
+    throw new Error('Cannot create owner pod if external owner webid is configured.')
+  }
+
+  if (argv.private && !(argv.owner || argv.ownerEmail)) {
+    throw new Error('An owner is required to invite the first user in private mode.')
+  }
+
   // Overwrite root .acl if owner is specified
   if (argv.owner) {
     let rootPath = path.resolve(argv.root || process.cwd())
