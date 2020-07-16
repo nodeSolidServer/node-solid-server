@@ -103,6 +103,7 @@ function bin (argv, server) {
 
   // Overwrite root .acl if owner is specified
   if (argv.owner) {
+    // TODO: This should work with owner pods too
     let rootPath = path.resolve(argv.root || process.cwd())
     if (!(rootPath.endsWith('/'))) {
       rootPath += '/'
