@@ -133,7 +133,6 @@ also add to `config.json`
 ```
 
 ### Upgrading from version <5.3
-Make sure you're running Node version 10 or later.
 Please take into account the [v5.3 upgrade notes](https://github.com/solid/node-solid-server/blob/master/CHANGELOG.md#530-upgrade-notes).
 
 ### Upgrading from version <5.0
