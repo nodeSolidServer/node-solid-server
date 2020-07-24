@@ -1,0 +1,1 @@
+{"redirect_uris":["https://app.example.com/callback"],"client_id":"96bad7ec87fd43536a65a9a9d0d2c684","response_types":["id_token token"],"grant_types":["implicit"],"application_type":"web","id_token_signed_response_alg":"RS256","token_endpoint_auth_method":"client_secret_basic"}

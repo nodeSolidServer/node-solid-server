@@ -1,0 +1,26 @@
+@prefix : </existingTriple.ttl#>.
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix meeting: <http://www.w3.org/ns/pim/meeting#>.
+@prefix card: <https://www.w3.org/People/Berners-Lee/card#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix p: <http://www.w3.org/ns/pim/pad#>.
+@prefix in: </parent/index.ttl#>.
+@prefix n: <http://rdfs.org/sioc/ns#>.
+@prefix flow: <http://www.w3.org/2005/01/wf/flow#>.
+@prefix ic: <http://www.w3.org/2002/12/cal/ical#>.
+@prefix ui: <http://www.w3.org/ns/ui#>.
+
+:id1477502276660 dc:author card:i; n:content ""; p:next :this.
+
+:id1477522707481
+    ic:dtstart "2016-10-26T22:58:27Z"^^xsd:dateTime;
+    flow:participant card:i;
+    ui:backgroundColor "#c1d0c8".
+:this
+    a p:Notepad;
+    dc:author card:i;
+    dc:created "2016-10-25T15:44:42Z"^^xsd:dateTime;
+    dc:title "Shared Notes";
+    p:next :id1477502276660.
+in:this flow:participation :id1477522707481; meeting:sharedNotes :this.
+
