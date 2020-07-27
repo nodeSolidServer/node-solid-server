@@ -59,7 +59,7 @@ describe('Utility functions', function () {
 
   describe('fullUrlForReq()', () => {
     it('should extract a fully-qualified url from an Express request', () => {
-      let req = {
+      const req = {
         protocol: 'https:',
         get: (host) => 'example.com',
         baseUrl: '/',
@@ -78,11 +78,11 @@ describe('Utility functions', function () {
       })
 
       it('should get a basic content type', () => {
-        assert.equal(utils.getContentType({'content-type': 'text/html'}), 'text/html')
+        assert.equal(utils.getContentType({ 'content-type': 'text/html' }), 'text/html')
       })
 
       it('should get a content type without its charset', () => {
-        assert.equal(utils.getContentType({'content-type': 'text/html; charset=us-ascii'}), 'text/html')
+        assert.equal(utils.getContentType({ 'content-type': 'text/html; charset=us-ascii' }), 'text/html')
       })
     })
 
@@ -94,12 +94,12 @@ describe('Utility functions', function () {
 
       it('should get a basic content type', () => {
         // eslint-disable-next-line no-undef
-        assert.equal(utils.getContentType(new Headers({'content-type': 'text/html'})), 'text/html')
+        assert.equal(utils.getContentType(new Headers({ 'content-type': 'text/html' })), 'text/html')
       })
 
       it('should get a content type without its charset', () => {
         // eslint-disable-next-line no-undef
-        assert.equal(utils.getContentType(new Headers({'content-type': 'text/html; charset=us-ascii'})), 'text/html')
+        assert.equal(utils.getContentType(new Headers({ 'content-type': 'text/html; charset=us-ascii' })), 'text/html')
       })
     })
   })

@@ -32,7 +32,7 @@ function loadConfig (program, options) {
     ...options,
     version: program.version()
   }
-  let configFile = argv['configFile'] || './config.json'
+  const configFile = argv.configFile || './config.json'
 
   try {
     const file = fs.readFileSync(configFile)
@@ -42,7 +42,7 @@ function loadConfig (program, options) {
     argv = { ...config, ...argv }
   } catch (err) {
     // If config file was specified, but it doesn't exist, stop with error message
-    if (typeof argv['configFile'] !== 'undefined') {
+    if (typeof argv.configFile !== 'undefined') {
       if (!fs.existsSync(configFile)) {
         console.log(red(bold('ERR')), 'Config file ' + configFile + ' doesn\'t exist.')
         process.exit(1)

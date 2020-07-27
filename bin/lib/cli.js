@@ -37,4 +37,3 @@ function getVersion () {
     return version
   }
 }
-

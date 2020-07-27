@@ -85,7 +85,7 @@ describe('PATCH through application/sparql-update', function () {
            card:i;
         ui:backgroundColor
            "#c1d0c8".\n`,
-        'sampleContainer/existingTriple.ttl')
+      'sampleContainer/existingTriple.ttl')
 
       server.post('/existingTriple.ttl')
         .set('content-type', 'application/sparql-update')

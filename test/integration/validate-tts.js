@@ -11,7 +11,7 @@ const server = setupSupertestServer({
 })
 
 const invalidTurtleBody = fs.readFileSync(path.join(__dirname, '../resources/invalid1.ttl'), {
-  'encoding': 'utf8'
+  encoding: 'utf8'
 })
 
 describe('HTTP requests with invalid Turtle syntax', () => {

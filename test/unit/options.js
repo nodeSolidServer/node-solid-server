@@ -10,7 +10,7 @@ describe('Command line options', function () {
 
     it('contains only `name`s that are kebab-case', function () {
       assert.equal(
-        options.every(({name}) => (/^[a-z][a-z0-9-]*$/).test(name)),
+        options.every(({ name }) => (/^[a-z][a-z0-9-]*$/).test(name)),
         true
       )
     })

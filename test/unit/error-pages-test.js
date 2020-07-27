@@ -11,11 +11,11 @@ const errorPages = require('../../lib/handlers/error-pages')
 describe('handlers/error-pages', () => {
   describe('handler()', () => {
     it('should use the custom error handler if available', () => {
-      let ldp = { errorHandler: sinon.stub() }
-      let req = { app: { locals: { ldp } } }
-      let res = { status: sinon.stub(), send: sinon.stub() }
-      let err = {}
-      let next = {}
+      const ldp = { errorHandler: sinon.stub() }
+      const req = { app: { locals: { ldp } } }
+      const res = { status: sinon.stub(), send: sinon.stub() }
+      const err = {}
+      const next = {}
 
       errorPages.handler(err, req, res, next)
 
@@ -26,11 +26,11 @@ describe('handlers/error-pages', () => {
     })
 
     it('defaults to status code 500 if none is specified in the error', () => {
-      let ldp = { noErrorPages: true }
-      let req = { app: { locals: { ldp } } }
-      let res = { status: sinon.stub(), send: sinon.stub(), header: sinon.stub() }
-      let err = { message: 'Unspecified error' }
-      let next = {}
+      const ldp = { noErrorPages: true }
+      const req = { app: { locals: { ldp } } }
+      const res = { status: sinon.stub(), send: sinon.stub(), header: sinon.stub() }
+      const err = { message: 'Unspecified error' }
+      const next = {}
 
       errorPages.handler(err, req, res, next)
 
@@ -42,11 +42,11 @@ describe('handlers/error-pages', () => {
 
   describe('sendErrorResponse()', () => {
     it('should send http status code and error message', () => {
-      let statusCode = 404
-      let error = {
+      const statusCode = 404
+      const error = {
         message: 'Error description'
       }
-      let res = {
+      const res = {
         status: sinon.stub(),
         header: sinon.stub(),
         send: sinon.stub()
@@ -62,11 +62,11 @@ describe('handlers/error-pages', () => {
 
   describe('setAuthenticateHeader()', () => {
     it('should do nothing for a non-implemented auth method', () => {
-      let err = {}
-      let req = {
+      const err = {}
+      const req = {
         app: { locals: { authMethod: null } }
       }
-      let res = {
+      const res = {
         set: sinon.stub()
       }
 
@@ -78,14 +78,14 @@ describe('handlers/error-pages', () => {
 
   describe('sendErrorPage()', () => {
     it('falls back the default sendErrorResponse if no page is found', () => {
-      let statusCode = 400
-      let res = {
+      const statusCode = 400
+      const res = {
         status: sinon.stub(),
         header: sinon.stub(),
         send: sinon.stub()
       }
-      let err = { message: 'Error description' }
-      let ldp = { errorPages: './' }
+      const err = { message: 'Error description' }
+      const ldp = { errorPages: './' }
 
       return errorPages.sendErrorPage(statusCode, res, err, ldp)
         .then(() => {

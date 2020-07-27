@@ -52,7 +52,7 @@ describe('LDNODE params', function () {
     })
 
     describe('passed', function () {
-      var ldp = ldnode({root: './test/resources/', webid: false})
+      var ldp = ldnode({ root: './test/resources/', webid: false })
       var server = supertest(ldp)
 
       it('should fallback on current working directory', function () {
@@ -78,7 +78,7 @@ describe('LDNODE params', function () {
   })
 
   describe('ui-path', function () {
-    let rootPath = './test/resources/'
+    const rootPath = './test/resources/'
     var ldp = ldnode({
       root: rootPath,
       apiApps: path.join(__dirname, '../resources/sampleContainer'),
@@ -97,7 +97,7 @@ describe('LDNODE params', function () {
     var ldpHttpsServer
 
     const port = 7777
-    const serverUri = `https://localhost:7777`
+    const serverUri = 'https://localhost:7777'
     const rootPath = path.join(__dirname, '../resources/accounts-acl')
     const dbPath = path.join(rootPath, 'db')
     const configPath = path.join(rootPath, 'config')

@@ -312,8 +312,8 @@ module.exports = [
       if (!value.match(/^[0-9]+(,[0-9]+)*$/)) {
         return 'direct-port(s) must be a comma-separated list of integers.'
       }
-      let list = value.split(/,/).map(v => parseInt(v))
-      let bad = list.find(v => { return v < 1 || v > 65535 })
+      const list = value.split(/,/).map(v => parseInt(v))
+      const bad = list.find(v => { return v < 1 || v > 65535 })
       if (bad.length) {
         return 'redirect-http-from port(s) ' + bad + ' out of range'
       }

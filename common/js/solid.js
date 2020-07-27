@@ -267,8 +267,8 @@
 
     // Add the errors in the stack to the DOM
     this.errors.map((error) => {
-      let text = document.createTextNode(error)
-      let paragraph = document.createElement('p')
+      const text = document.createTextNode(error)
+      const paragraph = document.createElement('p')
       paragraph.appendChild(text)
       this.passwordHelpText.appendChild(paragraph)
     })
@@ -419,15 +419,15 @@
    * @returns {string[]}
    */
   PasswordValidator.prototype.tokenize = function () {
-    let tokenArray = []
-    for (let i in arguments) {
+    const tokenArray = []
+    for (const i in arguments) {
       tokenArray.push(arguments[i])
     }
     return tokenArray.join(' ').split(' ')
   }
 
   PasswordValidator.prototype.sha1 = function (str) {
-    let buffer = new TextEncoder('utf-8').encode(str)
+    const buffer = new TextEncoder('utf-8').encode(str)
 
     return crypto.subtle.digest('SHA-1', buffer).then((hash) => {
       return this.hex(hash)
@@ -435,13 +435,13 @@
   }
 
   PasswordValidator.prototype.hex = function (buffer) {
-    let hexCodes = []
-    let view = new DataView(buffer)
+    const hexCodes = []
+    const view = new DataView(buffer)
     for (let i = 0; i < view.byteLength; i += 4) {
-      let value = view.getUint32(i)
-      let stringValue = value.toString(16)
+      const value = view.getUint32(i)
+      const stringValue = value.toString(16)
       const padding = '00000000'
-      let paddedValue = (padding + stringValue).slice(-padding.length)
+      const paddedValue = (padding + stringValue).slice(-padding.length)
       hexCodes.push(paddedValue)
     }
     return hexCodes.join('')

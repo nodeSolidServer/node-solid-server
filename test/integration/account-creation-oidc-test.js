@@ -80,14 +80,14 @@ describe('AccountManager (OIDC account creation tests)', function () {
     })
 
     it('should not create WebID if no username is given', (done) => {
-      let subdomain = supertest('https://' + host)
+      const subdomain = supertest('https://' + host)
       subdomain.post('/api/accounts/new')
         .send('username=&password=12345')
         .expect(400, done)
     })
 
     it('should not create WebID if no password is given', (done) => {
-      let subdomain = supertest('https://' + host)
+      const subdomain = supertest('https://' + host)
       subdomain.post('/api/accounts/new')
         .send('username=nicola&password=')
         .expect(400, done)
@@ -112,7 +112,7 @@ describe('AccountManager (OIDC account creation tests)', function () {
     })
 
     it('should not create WebID if T&C is not accepted', (done) => {
-      let subdomain = supertest('https://' + host)
+      const subdomain = supertest('https://' + host)
       subdomain.post('/api/accounts/new')
         .send('username=nicola&password=12345&acceptToc=')
         .expect(400, done)
@@ -131,7 +131,7 @@ describe('AccountManager (OIDC account creation tests)', function () {
           var card = read(path.join('accounts/nicola.' + domain,
             'profile/card$.ttl'))
           var cardAcl = read(path.join('accounts/nicola.' + domain,
-           'profile/.acl'))
+            'profile/.acl'))
           var prefs = read(path.join('accounts/nicola.' + domain,
             'settings/prefs.ttl'))
           var inboxAcl = read(path.join('accounts/nicola.' + domain,

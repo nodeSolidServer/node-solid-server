@@ -25,15 +25,15 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
   const aliceServerPort = 7010
   const aliceServerUri = `https://localhost:${aliceServerPort}`
   const aliceWebId = `https://localhost:${aliceServerPort}/profile/card#me`
-  let configPath = path.join(__dirname, '../resources/config')
-  let aliceDbPath = path.join(__dirname, '../resources/accounts-strict-origin-off/alice/db')
-  let userStorePath = path.join(aliceDbPath, 'oidc/users')
-  let aliceUserStore = UserStore.from({ path: userStorePath, saltRounds: 1 })
+  const configPath = path.join(__dirname, '../resources/config')
+  const aliceDbPath = path.join(__dirname, '../resources/accounts-strict-origin-off/alice/db')
+  const userStorePath = path.join(aliceDbPath, 'oidc/users')
+  const aliceUserStore = UserStore.from({ path: userStorePath, saltRounds: 1 })
   aliceUserStore.initCollections()
 
   const bobServerPort = 7011
   const bobServerUri = `https://localhost:${bobServerPort}`
-  let bobDbPath = path.join(__dirname, '../resources/accounts-strict-origin-off/bob/db')
+  const bobDbPath = path.join(__dirname, '../resources/accounts-strict-origin-off/bob/db')
 
   const trustedAppUri = 'https://trusted.app'
 
@@ -97,8 +97,8 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
 
   describe('Login by Username and Password (POST /login/password)', () => {
     // Logging in as alice, to alice's pod
-    let aliceAccount = UserAccount.from({ webId: aliceWebId })
-    let alicePassword = '12345'
+    const aliceAccount = UserAccount.from({ webId: aliceWebId })
+    const alicePassword = '12345'
 
     beforeEach(() => {
       aliceUserStore.initCollections()
@@ -151,10 +151,10 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
           describe('and no origin set', () => {
             before(done => {
               alice.get('/private-for-alice.txt')
-                   .end((err, res) => {
-                     response = res
-                     done(err)
-                   })
+                .end((err, res) => {
+                  response = res
+                  done(err)
+                })
             })
 
             it('should return a 401', () => expect(response).to.have.property('status', 401))
@@ -163,11 +163,11 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
             // Our own origin, no agent auth
             before(done => {
               alice.get('/private-for-alice.txt')
-                   .set('Origin', aliceServerUri)
-                   .end((err, res) => {
-                     response = res
-                     done(err)
-                   })
+                .set('Origin', aliceServerUri)
+                .end((err, res) => {
+                  response = res
+                  done(err)
+                })
             })
 
             it('should return a 401', () => expect(response).to.have.property('status', 401))
@@ -176,11 +176,11 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
             // Configuration for originsAllowed but no auth
             before(done => {
               alice.get('/private-for-alice.txt')
-                   .set('Origin', 'https://apps.solid.invalid')
-                   .end((err, res) => {
-                     response = res
-                     done(err)
-                   })
+                .set('Origin', 'https://apps.solid.invalid')
+                .end((err, res) => {
+                  response = res
+                  done(err)
+                })
             })
 
             it('should return a 401', () => expect(response).to.have.property('status', 401))
@@ -189,11 +189,11 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
             // Not authenticated but also wrong origin,
             before(done => {
               alice.get('/private-for-alice.txt')
-                   .set('Origin', bobServerUri)
-                   .end((err, res) => {
-                     response = res
-                     done(err)
-                   })
+                .set('Origin', bobServerUri)
+                .end((err, res) => {
+                  response = res
+                  done(err)
+                })
             })
 
             it('should return a 401', () => expect(response).to.have.property('status', 401))
@@ -201,11 +201,11 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
           describe('and trusted app', () => {
             before(done => {
               alice.get('/private-for-alice.txt')
-                   .set('Origin', trustedAppUri)
-                   .end((err, res) => {
-                     response = res
-                     done(err)
-                   })
+                .set('Origin', trustedAppUri)
+                .end((err, res) => {
+                  response = res
+                  done(err)
+                })
             })
 
             it('should return a 401', () => expect(response).to.have.property('status', 401))
@@ -216,11 +216,11 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
           describe('and no origin set', () => {
             before(done => {
               alice.get('/private-for-alice.txt')
-                   .set('Cookie', cookie)
-                   .end((err, res) => {
-                     response = res
-                     done(err)
-                   })
+                .set('Cookie', cookie)
+                .end((err, res) => {
+                  response = res
+                  done(err)
+                })
             })
 
             it('should return a 200', () => expect(response).to.have.property('status', 200))
@@ -228,12 +228,12 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
           describe('and our origin', () => {
             before(done => {
               alice.get('/private-for-alice.txt')
-                   .set('Cookie', cookie)
-                   .set('Origin', aliceServerUri)
-                   .end((err, res) => {
-                     response = res
-                     done(err)
-                   })
+                .set('Cookie', cookie)
+                .set('Origin', aliceServerUri)
+                .end((err, res) => {
+                  response = res
+                  done(err)
+                })
             })
 
             it('should return a 200', () => expect(response).to.have.property('status', 200))
@@ -241,12 +241,12 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
           describe('and trusted origin', () => {
             before(done => {
               alice.get('/')
-                   .set('Cookie', cookie)
-                   .set('Origin', 'https://apps.solid.invalid') // TODO: Should we configure the server with that? Should it matter?
-                   .end((err, res) => {
-                     response = res
-                     done(err)
-                   })
+                .set('Cookie', cookie)
+                .set('Origin', 'https://apps.solid.invalid') // TODO: Should we configure the server with that? Should it matter?
+                .end((err, res) => {
+                  response = res
+                  done(err)
+                })
             })
 
             it('should return a 401', () => expect(response).to.have.property('status', 401))
@@ -254,12 +254,12 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
           describe('and untrusted origin', () => {
             before(done => {
               alice.get('/private-for-alice.txt')
-                   .set('Cookie', cookie)
-                   .set('Origin', bobServerUri)
-                   .end((err, res) => {
-                     response = res
-                     done(err)
-                   })
+                .set('Cookie', cookie)
+                .set('Origin', bobServerUri)
+                .end((err, res) => {
+                  response = res
+                  done(err)
+                })
             })
 
             // Even if origin checking is disabled, then this should return a 401 because cookies should not be trusted cross-origin
@@ -270,12 +270,12 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
             // Trusted apps are not supported when strictOrigin check is turned off
             before(done => {
               alice.get('/private-for-alice.txt')
-                   .set('Cookie', cookie)
-                   .set('Origin', trustedAppUri)
-                   .end((err, res) => {
-                     response = res
-                     done(err)
-                   })
+                .set('Cookie', cookie)
+                .set('Origin', trustedAppUri)
+                .end((err, res) => {
+                  response = res
+                  done(err)
+                })
             })
 
             it('should return a 401', () => expect(response).to.have.property('status', 401))
@@ -291,11 +291,11 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
           describe('and no origin set', () => {
             before(done => {
               alice.get('/private-for-alice.txt')
-                   .set('Cookie', malcookie)
-                   .end((err, res) => {
-                     response = res
-                     done(err)
-                   })
+                .set('Cookie', malcookie)
+                .end((err, res) => {
+                  response = res
+                  done(err)
+                })
             })
 
             it('should return a 401', () => expect(response).to.have.property('status', 401))
@@ -303,12 +303,12 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
           describe('and our origin', () => {
             before(done => {
               alice.get('/private-for-alice.txt')
-                   .set('Cookie', malcookie)
-                   .set('Origin', aliceServerUri)
-                   .end((err, res) => {
-                     response = res
-                     done(err)
-                   })
+                .set('Cookie', malcookie)
+                .set('Origin', aliceServerUri)
+                .end((err, res) => {
+                  response = res
+                  done(err)
+                })
             })
 
             it('should return a 401', () => expect(response).to.have.property('status', 401))
@@ -316,12 +316,12 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
           describe('and trusted origin', () => {
             before(done => {
               alice.get('/private-for-alice.txt')
-                   .set('Cookie', malcookie)
-                   .set('Origin', 'https://apps.solid.invalid')
-                   .end((err, res) => {
-                     response = res
-                     done(err)
-                   })
+                .set('Cookie', malcookie)
+                .set('Origin', 'https://apps.solid.invalid')
+                .end((err, res) => {
+                  response = res
+                  done(err)
+                })
             })
 
             it('should return a 401', () => expect(response).to.have.property('status', 401))
@@ -329,12 +329,12 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
           describe('and untrusted origin', () => {
             before(done => {
               alice.get('/private-for-alice.txt')
-                   .set('Cookie', malcookie)
-                   .set('Origin', bobServerUri)
-                   .end((err, res) => {
-                     response = res
-                     done(err)
-                   })
+                .set('Cookie', malcookie)
+                .set('Origin', bobServerUri)
+                .end((err, res) => {
+                  response = res
+                  done(err)
+                })
             })
 
             it('should return a 401', () => expect(response).to.have.property('status', 401))
@@ -343,12 +343,12 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
           describe('and trusted app', () => {
             before(done => {
               alice.get('/private-for-alice.txt')
-                   .set('Cookie', malcookie)
-                   .set('Origin', trustedAppUri)
-                   .end((err, res) => {
-                     response = res
-                     done(err)
-                   })
+                .set('Cookie', malcookie)
+                .set('Origin', trustedAppUri)
+                .end((err, res) => {
+                  response = res
+                  done(err)
+                })
             })
 
             it('should return a 401', () => expect(response).to.have.property('status', 401))
@@ -392,8 +392,8 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
   })
 
   describe('Two Pods + Web App Login Workflow', () => {
-    let aliceAccount = UserAccount.from({ webId: aliceWebId })
-    let alicePassword = '12345'
+    const aliceAccount = UserAccount.from({ webId: aliceWebId })
+    const alicePassword = '12345'
 
     let auth
     let authorizationUri, loginUri, authParams, callbackUri
@@ -404,7 +404,7 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
 
     before(() => {
       auth = new SolidAuthOIDC({ store: localStorage, window: { location: {} } })
-      let appOptions = {
+      const appOptions = {
         redirectUri: 'https://app.example.com/callback'
       }
 
@@ -423,8 +423,8 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
       fs.removeSync(path.join(aliceDbPath, 'users/users'))
       fs.removeSync(path.join(aliceDbPath, 'oidc/op/tokens'))
 
-      let clientId = auth.currentClient.registration['client_id']
-      let registration = `_key_${clientId}.json`
+      const clientId = auth.currentClient.registration.client_id
+      const registration = `_key_${clientId}.json`
       fs.removeSync(path.join(aliceDbPath, 'oidc/op/clients', registration))
     })
 
@@ -476,9 +476,9 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
           // Login page should contain the relevant auth params as hidden fields
 
           authParams.forEach((value, key) => {
-            let hiddenField = `<input type="hidden" name="${key}" id="${key}" value="${value}" />`
+            const hiddenField = `<input type="hidden" name="${key}" id="${key}" value="${value}" />`
 
-            let fieldRegex = new RegExp(hiddenField)
+            const fieldRegex = new RegExp(hiddenField)
 
             expect(pageText).to.match(fieldRegex)
 
@@ -514,7 +514,7 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
 
     // Step 6: User consents to the app accessing certain things
     it('should consent via the /sharing form', () => {
-      loginFormFields += `&access_mode=Read&access_mode=Write&consent=true`
+      loginFormFields += '&access_mode=Read&access_mode=Write&consent=true'
 
       return fetch(aliceServerUri + '/sharing', {
         method: 'POST',
@@ -526,24 +526,24 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
         },
         credentials: 'include'
       })
-      .then(res => {
-        expect(res.status).to.equal(302)
-        let postLoginUri = res.headers.get('location')
-        let cookie = res.headers.get('set-cookie')
+        .then(res => {
+          expect(res.status).to.equal(302)
+          const postLoginUri = res.headers.get('location')
+          const cookie = res.headers.get('set-cookie')
 
-        // Successful login gets redirected back to /authorize and then
-        // back to app
-        expect(postLoginUri.startsWith(aliceServerUri + '/authorize'))
-          .to.be.true()
+          // Successful login gets redirected back to /authorize and then
+          // back to app
+          expect(postLoginUri.startsWith(aliceServerUri + '/authorize'))
+            .to.be.true()
 
-        return fetch(postLoginUri, { redirect: 'manual', headers: { cookie } })
-      })
-      .then(res => {
+          return fetch(postLoginUri, { redirect: 'manual', headers: { cookie } })
+        })
+        .then(res => {
         // User gets redirected back to original app
-        expect(res.status).to.equal(302)
-        callbackUri = res.headers.get('location')
-        expect(callbackUri.startsWith('https://app.example.com#'))
-      })
+          expect(res.status).to.equal(302)
+          callbackUri = res.headers.get('location')
+          expect(callbackUri.startsWith('https://app.example.com#'))
+        })
     })
 
     // Step 6: Web App extracts tokens from the uri hash fragment, uses
@@ -551,7 +551,7 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
     it('should use id token from the callback uri to access shared resource (no origin)', () => {
       auth.window.location.href = callbackUri
 
-      let protectedResourcePath = bobServerUri + '/shared-with-alice.txt'
+      const protectedResourcePath = bobServerUri + '/shared-with-alice.txt'
 
       return auth.initUserFromResponse(auth.currentClient)
         .then(webId => {
@@ -564,7 +564,7 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
 
           return fetch(protectedResourcePath, {
             headers: {
-              'Authorization': 'Bearer ' + bearerToken
+              Authorization: 'Bearer ' + bearerToken
             }
           })
         })
@@ -580,7 +580,7 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
     it('should use id token from the callback uri to access shared resource (untrusted origin)', () => {
       auth.window.location.href = callbackUri
 
-      let protectedResourcePath = bobServerUri + '/shared-with-alice.txt'
+      const protectedResourcePath = bobServerUri + '/shared-with-alice.txt'
 
       return auth.initUserFromResponse(auth.currentClient)
         .then(webId => {
@@ -593,8 +593,8 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
 
           return fetch(protectedResourcePath, {
             headers: {
-              'Authorization': 'Bearer ' + bearerToken,
-              'Origin': 'https://untrusted.example.com' // shouldn't matter if strictOrigin is set to false
+              Authorization: 'Bearer ' + bearerToken,
+              Origin: 'https://untrusted.example.com' // shouldn't matter if strictOrigin is set to false
             }
           })
         })
@@ -609,12 +609,12 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
     })
 
     it('should not be able to reuse the bearer token for bob server on another server', () => {
-      let privateAliceResourcePath = aliceServerUri + '/private-for-alice.txt'
+      const privateAliceResourcePath = aliceServerUri + '/private-for-alice.txt'
 
       return fetch(privateAliceResourcePath, {
         headers: {
           // This is Alice's bearer token with her own Web ID
-          'Authorization': 'Bearer ' + bearerToken
+          Authorization: 'Bearer ' + bearerToken
         }
       })
         .then(res => {

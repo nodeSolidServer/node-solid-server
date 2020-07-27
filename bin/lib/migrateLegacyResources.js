@@ -20,7 +20,7 @@ module.exports = function (program) {
     .action(async (opts) => {
       const verbose = opts.verbose
       const suffix = opts.suffix || '$.ttl'
-      let paths = opts.path ? [ opts.path ] : [ 'data', 'config/templates' ]
+      let paths = opts.path ? [opts.path] : ['data', 'config/templates']
       paths = paths.map(path => path.startsWith(Path.sep) ? path : Path.join(process.cwd(), path))
       try {
         for (const path of paths) {
