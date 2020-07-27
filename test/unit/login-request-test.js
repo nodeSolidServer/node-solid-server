@@ -44,7 +44,7 @@ describe('LoginRequest', () => {
       return LoginRequest.loginPassword(req, res)
         .then(() => {
           expect(fromParams).to.have.been.calledWith(req, res)
-          fromParams.reset()
+          fromParams.resetHistory()
           loginStub.restore()
         })
     })
@@ -55,7 +55,7 @@ describe('LoginRequest', () => {
       return LoginRequest.loginPassword(req, res)
         .then(() => {
           expect(login).to.have.been.called()
-          login.reset()
+          login.resetHistory()
         })
     })
   })
@@ -75,8 +75,8 @@ describe('LoginRequest', () => {
       return LoginRequest.loginTls(req, res)
         .then(() => {
           expect(LoginRequest.fromParams).to.have.been.calledWith(req, res)
-          LoginRequest.fromParams.reset()
-          LoginRequest.login.reset()
+          LoginRequest.fromParams.resetHistory()
+          LoginRequest.login.resetHistory()
         })
     })
 
@@ -84,7 +84,7 @@ describe('LoginRequest', () => {
       return LoginRequest.loginTls(req, res)
         .then(() => {
           expect(LoginRequest.login).to.have.been.called()
-          LoginRequest.login.reset()
+          LoginRequest.login.resetHistory()
         })
     })
   })
