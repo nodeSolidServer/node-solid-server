@@ -1,5 +1,5 @@
 'use strict'
-/* eslint-disable no-unused-expressions */
+/* eslint-disable no-unused-expressions, node/no-deprecated-api */
 
 const chai = require('chai')
 const expect = chai.expect
