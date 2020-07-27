@@ -1,4 +1,5 @@
 'use strict'
+/* eslint-disable no-unused-expressions */
 
 const path = require('path')
 const fs = require('fs-extra')

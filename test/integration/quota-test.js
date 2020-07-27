@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-expressions */
+
 var expect = require('chai').expect
 const getQuota = require('../../lib/utils').getQuota
 const overQuota = require('../../lib/utils').overQuota

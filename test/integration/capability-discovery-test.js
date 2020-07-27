@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-expressions */
+
 const Solid = require('../../index')
 const path = require('path')
 const { cleanDir } = require('../utils')

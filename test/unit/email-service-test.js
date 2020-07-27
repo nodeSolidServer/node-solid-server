@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-expressions */
+
 const EmailService = require('../../lib/services/email-service')
 const path = require('path')
 const sinon = require('sinon')
