@@ -1,3 +1,4 @@
+/* global location, alert, solid */
 /* Provide functionality for authentication buttons */
 
 (({ auth }) => {
