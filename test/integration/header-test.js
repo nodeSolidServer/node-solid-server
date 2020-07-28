@@ -60,7 +60,8 @@ describe('Header handler', () => {
     describe(`a resource that is ${label}`, () => {
       // Retrieve the response headers
       const response = {}
-      before(async () => {
+      before(async function () {
+        this.timeout(10000) // FIXME: https://github.com/solid/node-solid-server/issues/1443
         const { headers } = await request.get(resource)
         response.headers = headers
       })
