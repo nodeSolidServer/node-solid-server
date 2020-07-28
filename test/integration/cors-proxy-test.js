@@ -18,12 +18,11 @@ describe('CORS Proxy', () => {
       .expect(200, done)
   })
 
-  it.only('should pass the Host header to the proxied server', (done) => {
+  it('should pass the Host header to the proxied server', (done) => {
     let headers
     nock('https://example.org').get('/').reply(function (uri, body) {
       headers = this.req.headers
-      console.log('nock me', headers, uri)
-      return 200
+      return [200]
     })
     server.get('/proxy?uri=https://example.org/')
       .expect(200)
