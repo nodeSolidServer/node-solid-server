@@ -1,0 +1,13 @@
+releases:
+  - name: node-solid-server
+    namespace: coop
+    chart: ./chart
+  - name: node-solid-server
+    namespace: investors
+    chart: ./chart
+  - name: node-solid-server
+    namespace: one
+    chart: ./chart
+  - name: node-solid-server
+    namespace: colab
+    chart: ./chart

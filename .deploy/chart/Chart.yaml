@@ -1,0 +1,5 @@
+apiVersion: v2
+name: node-solide-server
+description: A simple helm chart for deploying node-solid-server. Uses persistent volumes.
+type: application
+version: 0.1.0

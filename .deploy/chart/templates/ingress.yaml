@@ -1,0 +1,23 @@
+{{- if .Values.host }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: {{ .Release.Name }}
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    cert-manager.io/cluster-issuer: {{ .Values.issuer }}
+
+spec:
+  tls:
+  - hosts:
+    - {{ .Values.host }}
+    secretName: {{ .Release.Name }}-tls
+  rules:
+  - host: {{ .Values.host }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ .Release.Name }}
+          servicePort: 80
+{{- end -}}

@@ -1,0 +1,11 @@
+issuer: "letsencrypt-prod"
+host: host.example.com
+image:
+  tag: gcr.io/kuar-demo/kuard-amd64:1
+  port: 8080
+imageCredentials:
+  # default to DockerHub
+  registry: https://index.docker.io/v1/
+  # username: {{ requiredEnv "DOCKER_USER" }}
+  # password: {{ requiredEnv "DOCKER_PASSWORD" }}
+  # email: email@example.com

@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Release.Name }}
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}
+    spec:
+      containers:
+      - name: {{ .Release.Name }}
+        image: {{ .Values.image.tag }}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: {{ .Values.image.port }}
+        {{- with .Values.image.env}}
+        env:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        volumeMounts:
+            - name: {{ .Release.Name }}-data
+              mountPath: /opt/solid
+      volumes:
+          - name: {{ .Release.Name }}-data
+            persistentVolumeClaim:
+              claimName: {{ .Release.name }}-pvc
+      imagePullSecrets:
+      - name: {{ .Release.Name }}-image-pull-secret

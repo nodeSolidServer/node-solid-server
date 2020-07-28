@@ -1,0 +1,13 @@
+kind: "PersistentVolumeClaim"
+apiVersion: "v1"
+metadata:
+  name: {{ .Values.name }}-pvc
+  labels:
+    app: {{ .Values.name }}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: gp2
+  resources:
+    requests:
+      storage: 100Gi
