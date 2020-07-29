@@ -8,4 +8,7 @@ imageCredentials:
   registry: https://index.docker.io/v1/
   # username: {{ requiredEnv "DOCKER_USER" }}
   # password: {{ requiredEnv "DOCKER_PASSWORD" }}
-  # email: email@example.com
+  email: root@itme.email
+# note: The i at the end is not a typo. https://stackoverflow.com/questions/50804915/kubernetes-size-definitions-whats-the-difference-of-gi-and-g
+volumeSize: 100Gi
+mountPath: /opt/solid

@@ -10,4 +10,4 @@ spec:
   storageClassName: gp2
   resources:
     requests:
-      storage: 100Gi
+      storage: {{ .Values.volumeSize }}

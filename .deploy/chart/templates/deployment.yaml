@@ -24,7 +24,7 @@ spec:
         {{- end }}
         volumeMounts:
             - name: {{ .Release.Name }}-data
-              mountPath: /opt/solid
+              mountPath: {{ .Values.mountPath }}
       volumes:
           - name: {{ .Release.Name }}-data
             persistentVolumeClaim:
