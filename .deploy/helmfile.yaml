@@ -2,12 +2,24 @@ releases:
   - name: node-solid-server
     namespace: coop
     chart: ./chart
+    values:
+     - ./shared-values.yaml.gotmpl
+     - ./values/coop.yaml.gotmpl
   - name: node-solid-server
     namespace: investors
     chart: ./chart
+    values:
+     - ./shared-values.yaml.gotmpl
+     - ./values/investors.yaml.gotmpl
   - name: node-solid-server
     namespace: one
     chart: ./chart
+    values:
+     - ./shared-values.yaml.gotmpl
+     - ./values/one.yaml.gotmpl
   - name: node-solid-server
     namespace: colab
     chart: ./chart
+    values:
+     - ./shared-values.yaml.gotmpl
+     - ./values/colab.yaml.gotmpl

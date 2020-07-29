@@ -1,0 +1,5 @@
+image:
+  tag: {{ requiredEnv "DOCKER_TAG" }}
+imageCredentials:
+  username: {{ requiredEnv "DOCKER_USER" }}
+  password: {{ requiredEnv "DOCKER_PASSWORD" }}

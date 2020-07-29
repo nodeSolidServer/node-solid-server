@@ -1,13 +1,12 @@
-issuer: "letsencrypt-prod"
+issuer: "letsencrypt-staging"
 host: host.example.com
 image:
-  tag: gcr.io/kuar-demo/kuard-amd64:1
+  tag: {{ requiredEnv "DOCKER_TAG" }}
   port: 8080
 imageCredentials:
-  # default to DockerHub
   registry: https://index.docker.io/v1/
-  # username: {{ requiredEnv "DOCKER_USER" }}
-  # password: {{ requiredEnv "DOCKER_PASSWORD" }}
+  username: {{ requiredEnv "DOCKER_USER" }}
+  password: {{ requiredEnv "DOCKER_PASSWORD" }}
   email: root@itme.email
 # note: The i at the end is not a typo. https://stackoverflow.com/questions/50804915/kubernetes-size-definitions-whats-the-difference-of-gi-and-g
 volumeSize: 100Gi
