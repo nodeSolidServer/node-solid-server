@@ -1,4 +1,5 @@
 'use strict'
+/* eslint-disable no-unused-expressions */
 
 const path = require('path')
 const chai = require('chai')
@@ -19,10 +20,10 @@ var host, accountManager, emailService
 beforeEach(() => {
   host = SolidHost.from({ serverUri: 'https://example.com' })
 
-  let emailConfig = { auth: {}, sender: 'solid@example.com' }
+  const emailConfig = { auth: {}, sender: 'solid@example.com' }
   emailService = new EmailService(templatePath, emailConfig)
 
-  let mgrConfig = {
+  const mgrConfig = {
     host,
     emailService,
     authMethod: 'oidc',
@@ -36,8 +37,8 @@ describe('Account Creation Welcome Email', () => {
     it('should resolve to null if email service not set up', () => {
       accountManager.emailService = null
 
-      let userData = { name: 'Alice', username: 'alice', email: 'alice@alice.com' }
-      let newUser = accountManager.userAccountFrom(userData)
+      const userData = { name: 'Alice', username: 'alice', email: 'alice@alice.com' }
+      const newUser = accountManager.userAccountFrom(userData)
 
       return accountManager.sendWelcomeEmail(newUser)
         .then(result => {
@@ -46,8 +47,8 @@ describe('Account Creation Welcome Email', () => {
     })
 
     it('should resolve to null if a new user has no email', () => {
-      let userData = { name: 'Alice', username: 'alice' }
-      let newUser = accountManager.userAccountFrom(userData)
+      const userData = { name: 'Alice', username: 'alice' }
+      const newUser = accountManager.userAccountFrom(userData)
 
       return accountManager.sendWelcomeEmail(newUser)
         .then(result => {
@@ -56,14 +57,14 @@ describe('Account Creation Welcome Email', () => {
     })
 
     it('should send an email using the welcome template', () => {
-      let sendWithTemplate = sinon
+      const sendWithTemplate = sinon
         .stub(accountManager.emailService, 'sendWithTemplate')
         .returns(Promise.resolve())
 
-      let userData = { name: 'Alice', username: 'alice', email: 'alice@alice.com' }
-      let newUser = accountManager.userAccountFrom(userData)
+      const userData = { name: 'Alice', username: 'alice', email: 'alice@alice.com' }
+      const newUser = accountManager.userAccountFrom(userData)
 
-      let expectedEmailData = {
+      const expectedEmailData = {
         webid: 'https://alice.example.com/profile/card#me',
         to: 'alice@alice.com',
         name: 'Alice'

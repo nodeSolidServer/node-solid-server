@@ -1,4 +1,5 @@
 'use strict'
+/* eslint-disable no-unused-expressions */
 
 const chai = require('chai')
 const expect = chai.expect
@@ -14,18 +15,18 @@ describe('OidcManager', () => {
     })
 
     it('should result in an initialized oidc object', () => {
-      let serverUri = 'https://localhost:8443'
-      let host = SolidHost.from({ serverUri })
+      const serverUri = 'https://localhost:8443'
+      const host = SolidHost.from({ serverUri })
 
-      let dbPath = path.join(__dirname, '../resources/db')
-      let saltRounds = 5
-      let argv = {
+      const dbPath = path.join(__dirname, '../resources/db')
+      const saltRounds = 5
+      const argv = {
         host,
         dbPath,
         saltRounds
       }
 
-      let oidc = OidcManager.fromServerConfig(argv)
+      const oidc = OidcManager.fromServerConfig(argv)
 
       expect(oidc.rs.defaults.query).to.be.true
       expect(oidc.clients.store.backend.path.endsWith('db/rp/clients'))

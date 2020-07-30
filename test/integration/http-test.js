@@ -328,7 +328,7 @@ describe('HTTP APIs', function () {
         .expect('content-type', /text\/turtle/)
         .expect(200)
         .expect((res) => {
-          let kb = rdf.graph()
+          const kb = rdf.graph()
           rdf.parse(res.text, kb, 'https://localhost/', 'text/turtle')
 
           assert(kb.match(
@@ -473,8 +473,8 @@ describe('HTTP APIs', function () {
   describe('PUT API', function () {
     var putRequestBody = fs.readFileSync(path.join(__dirname,
       '../resources/sampleContainer/put1.ttl'), {
-        'encoding': 'utf8'
-      })
+      encoding: 'utf8'
+    })
     it('should create new resource', function (done) {
       server.put('/put-resource-1.ttl')
         .send(putRequestBody)
@@ -588,12 +588,12 @@ describe('HTTP APIs', function () {
 
     var postRequest1Body = fs.readFileSync(path.join(__dirname,
       '../resources/sampleContainer/put1.ttl'), {
-        'encoding': 'utf8'
-      })
+      encoding: 'utf8'
+    })
     var postRequest2Body = fs.readFileSync(path.join(__dirname,
       '../resources/sampleContainer/post2.ttl'), {
-        'encoding': 'utf8'
-      })
+      encoding: 'utf8'
+    })
     it('should create new resource', function (done) {
       server.post('/post-tests/')
         .send(postRequest1Body)
@@ -703,8 +703,8 @@ describe('HTTP APIs', function () {
     })
 
     it('should create a container with a name hex decoded from the slug', (done) => {
-      let containerName = 'Film%4011'
-      let expectedDirName = '/post-tests/Film@11/'
+      const containerName = 'Film%4011'
+      const expectedDirName = '/post-tests/Film@11/'
       server.post('/post-tests/')
         .set('slug', containerName)
         .set('content-type', 'text/turtle')
@@ -715,7 +715,7 @@ describe('HTTP APIs', function () {
           try {
             assert.equal(res.headers.location, expectedDirName,
               'Uri container names should be encoded')
-            let createdDir = fs.statSync(path.join(__dirname, '../resources', expectedDirName))
+            const createdDir = fs.statSync(path.join(__dirname, '../resources', expectedDirName))
             assert(createdDir.isDirectory(), 'Container should have been created')
           } catch (err) {
             return done(err)
@@ -736,8 +736,8 @@ describe('HTTP APIs', function () {
         let response
         before(() =>
           server.post('/post-tests/')
-                .set('content-type', 'text/turtle; charset=utf-8')
-                .then(res => { response = res })
+            .set('content-type', 'text/turtle; charset=utf-8')
+            .then(res => { response = res })
         )
 
         it('is assigned an URL with the .ttl extension', () => {
@@ -750,9 +750,9 @@ describe('HTTP APIs', function () {
         let response
         before(() =>
           server.post('/post-tests/')
-                .set('slug', 'slug1')
-                .set('content-type', 'text/turtle; charset=utf-8')
-                .then(res => { response = res })
+            .set('slug', 'slug1')
+            .set('content-type', 'text/turtle; charset=utf-8')
+            .then(res => { response = res })
         )
 
         it('is assigned an URL with the .ttl extension', () => {
@@ -764,8 +764,8 @@ describe('HTTP APIs', function () {
         let response
         before(() =>
           server.post('/post-tests/')
-                .set('content-type', 'text/html; charset=utf-8')
-                .then(res => { response = res })
+            .set('content-type', 'text/html; charset=utf-8')
+            .then(res => { response = res })
         )
 
         it('is assigned an URL with the .html extension', () => {
@@ -778,9 +778,9 @@ describe('HTTP APIs', function () {
         let response
         before(() =>
           server.post('/post-tests/')
-                .set('slug', 'slug2')
-                .set('content-type', 'text/html; charset=utf-8')
-                .then(res => { response = res })
+            .set('slug', 'slug2')
+            .set('content-type', 'text/html; charset=utf-8')
+            .then(res => { response = res })
         )
 
         it('is assigned an URL with the .html extension', () => {

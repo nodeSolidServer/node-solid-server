@@ -1,4 +1,5 @@
 'use strict'
+/* eslint-disable no-unused-expressions */
 
 const expect = require('chai').expect
 
@@ -8,7 +9,7 @@ const defaults = require('../../config/defaults')
 describe('SolidHost', () => {
   describe('from()', () => {
     it('should init with provided params', () => {
-      let config = {
+      const config = {
         port: 3000,
         serverUri: 'https://localhost:3000',
         live: true,
@@ -16,7 +17,7 @@ describe('SolidHost', () => {
         multiuser: true,
         webid: true
       }
-      let host = SolidHost.from(config)
+      const host = SolidHost.from(config)
 
       expect(host.port).to.equal(3000)
       expect(host.serverUri).to.equal('https://localhost:3000')
@@ -28,7 +29,7 @@ describe('SolidHost', () => {
     })
 
     it('should init to default port and serverUri values', () => {
-      let host = SolidHost.from({})
+      const host = SolidHost.from({})
       expect(host.port).to.equal(defaults.port)
       expect(host.serverUri).to.equal(defaults.serverUri)
     })
@@ -36,16 +37,16 @@ describe('SolidHost', () => {
 
   describe('accountUriFor()', () => {
     it('should compose an account uri for an account name', () => {
-      let config = {
+      const config = {
         serverUri: 'https://test.local'
       }
-      let host = SolidHost.from(config)
+      const host = SolidHost.from(config)
 
       expect(host.accountUriFor('alice')).to.equal('https://alice.test.local')
     })
 
     it('should throw an error if no account name is passed in', () => {
-      let host = SolidHost.from()
+      const host = SolidHost.from()
       expect(() => { host.accountUriFor() }).to.throw(TypeError)
     })
   })
@@ -89,7 +90,7 @@ describe('SolidHost', () => {
 
   describe('cookieDomain getter', () => {
     it('should return null for single-part domains (localhost)', () => {
-      let host = SolidHost.from({
+      const host = SolidHost.from({
         serverUri: 'https://localhost:8443'
       })
 
@@ -97,7 +98,7 @@ describe('SolidHost', () => {
     })
 
     it('should return a cookie domain for multi-part domains', () => {
-      let host = SolidHost.from({
+      const host = SolidHost.from({
         serverUri: 'https://example.com:8443'
       })
 
@@ -107,11 +108,11 @@ describe('SolidHost', () => {
 
   describe('authEndpoint getter', () => {
     it('should return an /authorize url object', () => {
-      let host = SolidHost.from({
+      const host = SolidHost.from({
         serverUri: 'https://localhost:8443'
       })
 
-      let authUrl = host.authEndpoint
+      const authUrl = host.authEndpoint
 
       expect(authUrl.host).to.equal('localhost:8443')
       expect(authUrl.path).to.equal('/authorize')

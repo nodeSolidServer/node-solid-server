@@ -35,7 +35,7 @@ exports.cp = function (src, dest) {
 
 exports.read = function (file) {
   return fs.readFileSync(path.join(__dirname, '/resources/' + file), {
-    'encoding': 'utf8'
+    encoding: 'utf8'
   })
 }
 
@@ -63,9 +63,9 @@ exports.checkDnsSettings = function () {
       })
     })
   }))
-  .catch(() => {
-    throw new Error(`Expected HOSTS entries of 127.0.0.1 for ${TEST_HOSTS.join()}`)
-  })
+    .catch(() => {
+      throw new Error(`Expected HOSTS entries of 127.0.0.1 for ${TEST_HOSTS.join()}`)
+    })
 }
 
 /**

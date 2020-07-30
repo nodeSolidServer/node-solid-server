@@ -1,4 +1,5 @@
 'use strict'
+/* eslint-disable no-unused-expressions */
 
 const chai = require('chai')
 const expect = chai.expect
@@ -11,7 +12,7 @@ const UserAccount = require('../../lib/models/user-account')
 
 describe('AccountTemplate', () => {
   describe('isTemplate()', () => {
-    let template = new AccountTemplate()
+    const template = new AccountTemplate()
 
     it('should recognize rdf files as templates', () => {
       expect(template.isTemplate('./file.ttl')).to.be.true
@@ -42,15 +43,15 @@ describe('AccountTemplate', () => {
 
   describe('templateSubstitutionsFor()', () => {
     it('should init', () => {
-      let userOptions = {
+      const userOptions = {
         username: 'alice',
         webId: 'https://alice.example.com/profile/card#me',
         name: 'Alice Q.',
         email: 'alice@example.com'
       }
-      let userAccount = UserAccount.from(userOptions)
+      const userAccount = UserAccount.from(userOptions)
 
-      let substitutions = AccountTemplate.templateSubstitutionsFor(userAccount)
+      const substitutions = AccountTemplate.templateSubstitutionsFor(userAccount)
       expect(substitutions.name).to.equal('Alice Q.')
       expect(substitutions.email).to.equal('alice@example.com')
       expect(substitutions.webId).to.equal('https://alice.example.com/profile/card#me')

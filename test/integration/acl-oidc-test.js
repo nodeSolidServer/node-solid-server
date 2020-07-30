@@ -8,7 +8,7 @@ const IDToken = require('@solid/oidc-op/src/IDToken')
 const ldnode = require('../../index')
 
 const port = 7777
-const serverUri = `https://localhost:7777`
+const serverUri = 'https://localhost:7777'
 const rootPath = path.join(__dirname, '../resources/accounts-acl')
 const dbPath = path.join(rootPath, 'db')
 const oidcProviderPath = path.join(dbPath, 'oidc', 'op', 'provider.json')
@@ -21,7 +21,7 @@ const user2 = 'https://nicola.localhost:7777/profile/card#me'
 let oidcProvider
 
 // To be initialized in the before() block
-let userCredentials = {
+const userCredentials = {
   // idp: https://localhost:7777
   // web id: https://tim.localhost:7777/profile/card#me
   user1: '',
@@ -31,7 +31,7 @@ let userCredentials = {
 
 function issueIdToken (oidcProvider, webId) {
   return Promise.resolve().then(() => {
-    let jwt = IDToken.issue(oidcProvider, {
+    const jwt = IDToken.issue(oidcProvider, {
       sub: webId,
       aud: [serverUri, 'client123'],
       azp: 'client123'
@@ -91,13 +91,13 @@ describe('ACL with WebID+OIDC over HTTP', function () {
     const options = {
       url: timAccountUri + path,
       headers: {
-        'accept': 'text/turtle',
+        accept: 'text/turtle',
         'content-type': contentType
       }
     }
     if (user) {
-      let accessToken = userCredentials[user]
-      options.headers['Authorization'] = 'Bearer ' + accessToken
+      const accessToken = userCredentials[user]
+      options.headers.Authorization = 'Bearer ' + accessToken
     }
 
     return options

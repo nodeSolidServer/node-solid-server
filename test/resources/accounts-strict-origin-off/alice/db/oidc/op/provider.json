@@ -1,10 +1,6 @@
 {
   "issuer": "https://localhost:7010",
-  "authorization_endpoint": "https://localhost:7010/authorize",
-  "token_endpoint": "https://localhost:7010/token",
-  "userinfo_endpoint": "https://localhost:7010/userinfo",
   "jwks_uri": "https://localhost:7010/jwks",
-  "registration_endpoint": "https://localhost:7010/register",
   "response_types_supported": [
     "code",
     "code token",
@@ -13,6 +9,10 @@
     "id_token token",
     "code id_token token",
     "none"
+  ],
+  "token_types_supported": [
+    "legacyPop",
+    "dpop"
   ],
   "response_modes_supported": [
     "query",
@@ -50,6 +50,10 @@
   "require_request_uri_registration": false,
   "check_session_iframe": "https://localhost:7010/session",
   "end_session_endpoint": "https://localhost:7010/logout",
+  "authorization_endpoint": "https://localhost:7010/authorize",
+  "token_endpoint": "https://localhost:7010/token",
+  "userinfo_endpoint": "https://localhost:7010/userinfo",
+  "registration_endpoint": "https://localhost:7010/register",
   "keys": {
     "descriptor": {
       "id_token": {

@@ -19,12 +19,12 @@ describe('PasswordChangeRequest', () => {
 
   describe('constructor()', () => {
     it('should initialize a request instance from options', () => {
-      let res = HttpMocks.createResponse()
+      const res = HttpMocks.createResponse()
 
-      let accountManager = {}
-      let userStore = {}
+      const accountManager = {}
+      const userStore = {}
 
-      let options = {
+      const options = {
         accountManager,
         userStore,
         returnToUrl: 'https://example.com/resource',
@@ -33,7 +33,7 @@ describe('PasswordChangeRequest', () => {
         newPassword: 'swordfish'
       }
 
-      let request = new PasswordChangeRequest(options)
+      const request = new PasswordChangeRequest(options)
 
       expect(request.returnToUrl).to.equal(options.returnToUrl)
       expect(request.response).to.equal(res)
@@ -46,20 +46,20 @@ describe('PasswordChangeRequest', () => {
 
   describe('fromParams()', () => {
     it('should return a request instance from options', () => {
-      let returnToUrl = 'https://example.com/resource'
-      let token = '12345'
-      let newPassword = 'swordfish'
-      let accountManager = {}
-      let userStore = {}
+      const returnToUrl = 'https://example.com/resource'
+      const token = '12345'
+      const newPassword = 'swordfish'
+      const accountManager = {}
+      const userStore = {}
 
-      let req = {
+      const req = {
         app: { locals: { accountManager, oidc: { users: userStore } } },
         query: { returnToUrl, token },
         body: { newPassword }
       }
-      let res = HttpMocks.createResponse()
+      const res = HttpMocks.createResponse()
 
-      let request = PasswordChangeRequest.fromParams(req, res)
+      const request = PasswordChangeRequest.fromParams(req, res)
 
       expect(request.returnToUrl).to.equal(returnToUrl)
       expect(request.response).to.equal(res)
@@ -71,17 +71,17 @@ describe('PasswordChangeRequest', () => {
   })
 
   describe('get()', () => {
-    let returnToUrl = 'https://example.com/resource'
-    let token = '12345'
-    let userStore = {}
-    let res = HttpMocks.createResponse()
+    const returnToUrl = 'https://example.com/resource'
+    const token = '12345'
+    const userStore = {}
+    const res = HttpMocks.createResponse()
     sinon.spy(res, 'render')
 
     it('should create an instance and render a change password form', () => {
-      let accountManager = {
+      const accountManager = {
         validateResetToken: sinon.stub().resolves(true)
       }
-      let req = {
+      const req = {
         app: { locals: { accountManager, oidc: { users: userStore } } },
         query: { returnToUrl, token }
       }
@@ -96,10 +96,10 @@ describe('PasswordChangeRequest', () => {
     })
 
     it('should display an error message on an invalid token', () => {
-      let accountManager = {
+      const accountManager = {
         validateResetToken: sinon.stub().throws()
       }
-      let req = {
+      const req = {
         app: { locals: { accountManager, oidc: { users: userStore } } },
         query: { returnToUrl, token }
       }
@@ -116,19 +116,19 @@ describe('PasswordChangeRequest', () => {
     it('creates a request instance and invokes handlePost()', () => {
       sinon.spy(PasswordChangeRequest, 'handlePost')
 
-      let returnToUrl = 'https://example.com/resource'
-      let token = '12345'
-      let newPassword = 'swordfish'
-      let host = SolidHost.from({ serverUri: 'https://example.com' })
-      let alice = {
+      const returnToUrl = 'https://example.com/resource'
+      const token = '12345'
+      const newPassword = 'swordfish'
+      const host = SolidHost.from({ serverUri: 'https://example.com' })
+      const alice = {
         webId: 'https://alice.example.com/#me'
       }
-      let storedToken = { webId: alice.webId }
-      let store = {
+      const storedToken = { webId: alice.webId }
+      const store = {
         findUser: sinon.stub().resolves(alice),
         updatePassword: sinon.stub()
       }
-      let accountManager = {
+      const accountManager = {
         host,
         store,
         userAccountFrom: sinon.stub().resolves(alice),
@@ -139,12 +139,12 @@ describe('PasswordChangeRequest', () => {
       accountManager.loadAccountRecoveryEmail = sinon.stub().resolves('alice@example.com')
       accountManager.sendPasswordResetEmail = sinon.stub().resolves()
 
-      let req = {
+      const req = {
         app: { locals: { accountManager, oidc: { users: store } } },
         query: { returnToUrl },
         body: { token, newPassword }
       }
-      let res = HttpMocks.createResponse()
+      const res = HttpMocks.createResponse()
 
       return PasswordChangeRequest.post(req, res)
         .then(() => {
@@ -155,19 +155,19 @@ describe('PasswordChangeRequest', () => {
 
   describe('handlePost()', () => {
     it('should display error message if validation error encountered', () => {
-      let returnToUrl = 'https://example.com/resource'
-      let token = '12345'
-      let userStore = {}
-      let res = HttpMocks.createResponse()
-      let accountManager = {
+      const returnToUrl = 'https://example.com/resource'
+      const token = '12345'
+      const userStore = {}
+      const res = HttpMocks.createResponse()
+      const accountManager = {
         validateResetToken: sinon.stub().throws()
       }
-      let req = {
+      const req = {
         app: { locals: { accountManager, oidc: { users: userStore } } },
         query: { returnToUrl, token }
       }
 
-      let request = PasswordChangeRequest.fromParams(req, res)
+      const request = PasswordChangeRequest.fromParams(req, res)
 
       return PasswordChangeRequest.handlePost(request)
         .then(() => {
@@ -179,10 +179,10 @@ describe('PasswordChangeRequest', () => {
 
   describe('validateToken()', () => {
     it('should return false if no token is present', () => {
-      let accountManager = {
+      const accountManager = {
         validateResetToken: sinon.stub()
       }
-      let request = new PasswordChangeRequest({ accountManager, token: null })
+      const request = new PasswordChangeRequest({ accountManager, token: null })
 
       return request.validateToken()
         .then(result => {
@@ -194,7 +194,7 @@ describe('PasswordChangeRequest', () => {
 
   describe('validatePost()', () => {
     it('should throw an error if no new password was entered', () => {
-      let request = new PasswordChangeRequest({ newPassword: null })
+      const request = new PasswordChangeRequest({ newPassword: null })
 
       expect(() => request.validatePost()).to.throw('Please enter a new password')
     })
@@ -202,9 +202,9 @@ describe('PasswordChangeRequest', () => {
 
   describe('error()', () => {
     it('should invoke renderForm() with the error', () => {
-      let request = new PasswordChangeRequest({})
+      const request = new PasswordChangeRequest({})
       request.renderForm = sinon.stub()
-      let error = new Error('error message')
+      const error = new Error('error message')
 
       request.error(error)
 
@@ -215,21 +215,21 @@ describe('PasswordChangeRequest', () => {
   describe('changePassword()', () => {
     it('should create a new user store entry if none exists', () => {
       // this would be the case for legacy pre-user-store accounts
-      let webId = 'https://alice.example.com/#me'
-      let user = { webId, id: webId }
-      let accountManager = {
+      const webId = 'https://alice.example.com/#me'
+      const user = { webId, id: webId }
+      const accountManager = {
         userAccountFrom: sinon.stub().returns(user)
       }
-      let userStore = {
-        findUser: sinon.stub().resolves(null),  // no user found
+      const userStore = {
+        findUser: sinon.stub().resolves(null), // no user found
         createUser: sinon.stub().resolves(),
         updatePassword: sinon.stub().resolves()
       }
 
-      let options = {
+      const options = {
         accountManager, userStore, newPassword: 'swordfish'
       }
-      let request = new PasswordChangeRequest(options)
+      const request = new PasswordChangeRequest(options)
 
       return request.changePassword(user)
         .then(() => {
@@ -240,16 +240,16 @@ describe('PasswordChangeRequest', () => {
 
   describe('renderForm()', () => {
     it('should set response status to error status, if error exists', () => {
-      let returnToUrl = 'https://example.com/resource'
-      let token = '12345'
-      let response = HttpMocks.createResponse()
+      const returnToUrl = 'https://example.com/resource'
+      const token = '12345'
+      const response = HttpMocks.createResponse()
       sinon.spy(response, 'render')
 
-      let options = { returnToUrl, token, response }
+      const options = { returnToUrl, token, response }
 
-      let request = new PasswordChangeRequest(options)
+      const request = new PasswordChangeRequest(options)
 
-      let error = new Error('error message')
+      const error = new Error('error message')
 
       request.renderForm(error)
 

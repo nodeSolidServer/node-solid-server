@@ -1,4 +1,5 @@
 'use strict'
+/* eslint-disable no-unused-expressions */
 
 const fs = require('fs-extra')
 const path = require('path')
@@ -30,15 +31,15 @@ beforeEach(() => {
 describe('AddCertificateRequest', () => {
   describe('fromParams()', () => {
     it('should throw a 401 error if session.userId is missing', () => {
-      let multiuser = true
-      let options = { host, multiuser, authMethod: 'oidc' }
-      let accountManager = AccountManager.from(options)
+      const multiuser = true
+      const options = { host, multiuser, authMethod: 'oidc' }
+      const accountManager = AccountManager.from(options)
 
-      let req = {
+      const req = {
         body: { spkac: '123', webid: 'https://alice.example.com/#me' },
         session: {}
       }
-      let res = HttpMocks.createResponse()
+      const res = HttpMocks.createResponse()
 
       try {
         AddCertificateRequest.fromParams(req, res, accountManager)
@@ -49,26 +50,26 @@ describe('AddCertificateRequest', () => {
   })
 
   describe('createRequest()', () => {
-    let multiuser = true
+    const multiuser = true
 
     it('should call certificate.generateCertificate()', () => {
-      let options = { host, multiuser, authMethod: 'oidc' }
-      let accountManager = AccountManager.from(options)
+      const options = { host, multiuser, authMethod: 'oidc' }
+      const accountManager = AccountManager.from(options)
 
-      let req = {
+      const req = {
         body: { spkac: '123', webid: 'https://alice.example.com/#me' },
         session: {
           userId: 'https://alice.example.com/#me'
         }
       }
-      let res = HttpMocks.createResponse()
+      const res = HttpMocks.createResponse()
 
-      let request = AddCertificateRequest.fromParams(req, res, accountManager)
-      let certificate = request.certificate
+      const request = AddCertificateRequest.fromParams(req, res, accountManager)
+      const certificate = request.certificate
 
       accountManager.addCertKeyToProfile = sinon.stub()
       request.sendResponse = sinon.stub()
-      let certSpy = sinon.stub(certificate, 'generateCertificate').returns(Promise.resolve())
+      const certSpy = sinon.stub(certificate, 'generateCertificate').returns(Promise.resolve())
 
       return AddCertificateRequest.addCertificate(request)
         .then(() => {
@@ -78,29 +79,29 @@ describe('AddCertificateRequest', () => {
   })
 
   describe('accountManager.addCertKeyToGraph()', () => {
-    let multiuser = true
+    const multiuser = true
 
     it('should add certificate data to a graph', () => {
-      let options = { host, multiuser, authMethod: 'oidc' }
-      let accountManager = AccountManager.from(options)
+      const options = { host, multiuser, authMethod: 'oidc' }
+      const accountManager = AccountManager.from(options)
 
-      let userData = { username: 'alice' }
-      let userAccount = accountManager.userAccountFrom(userData)
+      const userData = { username: 'alice' }
+      const userAccount = accountManager.userAccountFrom(userData)
 
-      let certificate = WebIdTlsCertificate.fromSpkacPost(
+      const certificate = WebIdTlsCertificate.fromSpkacPost(
         decodeURIComponent(exampleSpkac),
         userAccount,
         host)
 
-      let graph = rdf.graph()
+      const graph = rdf.graph()
 
       return certificate.generateCertificate()
         .then(() => {
           return accountManager.addCertKeyToGraph(certificate, graph)
         })
         .then(graph => {
-          let webId = rdf.namedNode(certificate.webId)
-          let key = rdf.namedNode(certificate.keyUri)
+          const webId = rdf.namedNode(certificate.webId)
+          const key = rdf.namedNode(certificate.keyUri)
 
           expect(graph.anyStatementMatching(webId, ns.cert('key'), key))
             .to.exist
@@ -114,4 +115,3 @@ describe('AddCertificateRequest', () => {
     })
   })
 })
-

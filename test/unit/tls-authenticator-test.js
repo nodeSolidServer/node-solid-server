@@ -18,13 +18,13 @@ const accountManager = AccountManager.from({ host, multiuser: true })
 
 describe('TlsAuthenticator', () => {
   describe('fromParams()', () => {
-    let req = {
+    const req = {
       connection: {}
     }
-    let options = { accountManager }
+    const options = { accountManager }
 
     it('should return a TlsAuthenticator instance', () => {
-      let tlsAuth = TlsAuthenticator.fromParams(req, options)
+      const tlsAuth = TlsAuthenticator.fromParams(req, options)
 
       expect(tlsAuth.accountManager).to.equal(accountManager)
       expect(tlsAuth.connection).to.equal(req.connection)
@@ -32,15 +32,15 @@ describe('TlsAuthenticator', () => {
   })
 
   describe('findValidUser()', () => {
-    let webId = 'https://alice.example.com/#me'
-    let certificate = { uri: webId }
-    let connection = {
+    const webId = 'https://alice.example.com/#me'
+    const certificate = { uri: webId }
+    const connection = {
       renegotiate: sinon.stub().yields(),
       getPeerCertificate: sinon.stub().returns(certificate)
     }
-    let options = { accountManager, connection }
+    const options = { accountManager, connection }
 
-    let tlsAuth = new TlsAuthenticator(options)
+    const tlsAuth = new TlsAuthenticator(options)
 
     tlsAuth.extractWebId = sinon.stub().resolves(webId)
     sinon.spy(tlsAuth, 'renegotiateTls')
@@ -59,21 +59,21 @@ describe('TlsAuthenticator', () => {
 
   describe('renegotiateTls()', () => {
     it('should reject if an error occurs while renegotiating', () => {
-      let connection = {
+      const connection = {
         renegotiate: sinon.stub().yields(new Error('Error renegotiating'))
       }
 
-      let tlsAuth = new TlsAuthenticator({ connection })
+      const tlsAuth = new TlsAuthenticator({ connection })
 
       expect(tlsAuth.renegotiateTls()).to.be.rejectedWith(/Error renegotiating/)
     })
 
     it('should resolve if no error occurs', () => {
-      let connection = {
+      const connection = {
         renegotiate: sinon.stub().yields(null)
       }
 
-      let tlsAuth = new TlsAuthenticator({ connection })
+      const tlsAuth = new TlsAuthenticator({ connection })
 
       expect(tlsAuth.renegotiateTls()).to.be.fulfilled()
     })
@@ -81,32 +81,32 @@ describe('TlsAuthenticator', () => {
 
   describe('getCertificate()', () => {
     it('should throw on a non-existent certificate', () => {
-      let connection = {
+      const connection = {
         getPeerCertificate: sinon.stub().returns(null)
       }
 
-      let tlsAuth = new TlsAuthenticator({ connection })
+      const tlsAuth = new TlsAuthenticator({ connection })
 
       expect(() => tlsAuth.getCertificate()).to.throw(/No client certificate detected/)
     })
 
     it('should throw on an empty certificate', () => {
-      let connection = {
+      const connection = {
         getPeerCertificate: sinon.stub().returns({})
       }
 
-      let tlsAuth = new TlsAuthenticator({ connection })
+      const tlsAuth = new TlsAuthenticator({ connection })
 
       expect(() => tlsAuth.getCertificate()).to.throw(/No client certificate detected/)
     })
 
     it('should return a certificate if no error occurs', () => {
-      let certificate = { uri: 'https://alice.example.com/#me' }
-      let connection = {
+      const certificate = { uri: 'https://alice.example.com/#me' }
+      const connection = {
         getPeerCertificate: sinon.stub().returns(certificate)
       }
 
-      let tlsAuth = new TlsAuthenticator({ connection })
+      const tlsAuth = new TlsAuthenticator({ connection })
 
       expect(tlsAuth.getCertificate()).to.equal(certificate)
     })
@@ -114,7 +114,7 @@ describe('TlsAuthenticator', () => {
 
   describe('extractWebId()', () => {
     it('should reject if an error occurs verifying certificate', () => {
-      let tlsAuth = new TlsAuthenticator({})
+      const tlsAuth = new TlsAuthenticator({})
 
       tlsAuth.verifyWebId = sinon.stub().yields(new Error('Error processing certificate'))
 
@@ -122,12 +122,12 @@ describe('TlsAuthenticator', () => {
     })
 
     it('should resolve with a verified web id', () => {
-      let tlsAuth = new TlsAuthenticator({})
+      const tlsAuth = new TlsAuthenticator({})
 
-      let webId = 'https://alice.example.com/#me'
+      const webId = 'https://alice.example.com/#me'
       tlsAuth.verifyWebId = sinon.stub().yields(null, webId)
 
-      let certificate = { uri: webId }
+      const certificate = { uri: webId }
 
       expect(tlsAuth.extractWebId(certificate)).to.become(webId)
     })
@@ -135,24 +135,24 @@ describe('TlsAuthenticator', () => {
 
   describe('loadUser()', () => {
     it('should return a user instance if the webid is local', () => {
-      let tlsAuth = new TlsAuthenticator({ accountManager })
+      const tlsAuth = new TlsAuthenticator({ accountManager })
 
-      let webId = 'https://alice.example.com/#me'
+      const webId = 'https://alice.example.com/#me'
 
-      let user = tlsAuth.loadUser(webId)
+      const user = tlsAuth.loadUser(webId)
 
       expect(user.username).to.equal('alice')
       expect(user.webId).to.equal(webId)
     })
 
     it('should return a user instance if external user and this server is authorized provider', () => {
-      let tlsAuth = new TlsAuthenticator({ accountManager })
+      const tlsAuth = new TlsAuthenticator({ accountManager })
 
-      let externalWebId = 'https://alice.someothersite.com#me'
+      const externalWebId = 'https://alice.someothersite.com#me'
 
       tlsAuth.discoverProviderFor = sinon.stub().resolves('https://example.com')
 
-      let user = tlsAuth.loadUser(externalWebId)
+      const user = tlsAuth.loadUser(externalWebId)
 
       expect(user.username).to.equal(externalWebId)
       expect(user.webId).to.equal(externalWebId)
@@ -161,7 +161,7 @@ describe('TlsAuthenticator', () => {
 
   describe('verifyWebId()', () => {
     it('should yield an error if no cert is given', done => {
-      let tlsAuth = new TlsAuthenticator({})
+      const tlsAuth = new TlsAuthenticator({})
 
       tlsAuth.verifyWebId(null, (error) => {
         expect(error.message).to.equal('No certificate given')

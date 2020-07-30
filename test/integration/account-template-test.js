@@ -1,4 +1,5 @@
 'use strict'
+/* eslint-disable no-unused-expressions */
 
 const path = require('path')
 const fs = require('fs-extra')
@@ -26,7 +27,7 @@ describe('AccountTemplate', () => {
     it('should copy a directory', () => {
       return AccountTemplate.copyTemplateDir(templatePath, accountPath)
         .then(() => {
-          let rootAcl = fs.readFileSync(path.join(accountPath, '.acl'), 'utf8')
+          const rootAcl = fs.readFileSync(path.join(accountPath, '.acl'), 'utf8')
           expect(rootAcl).to.exist
         })
     })
@@ -34,22 +35,22 @@ describe('AccountTemplate', () => {
 
   describe('processAccount()', () => {
     it('should process all the files in an account', () => {
-      let substitutions = {
+      const substitutions = {
         webId: 'https://alice.example.com/#me',
         email: 'alice@example.com',
         name: 'Alice Q.'
       }
-      let template = new AccountTemplate({ substitutions })
+      const template = new AccountTemplate({ substitutions })
 
       return AccountTemplate.copyTemplateDir(templatePath, accountPath)
         .then(() => {
           return template.processAccount(accountPath)
         })
         .then(() => {
-          let profile = fs.readFileSync(path.join(accountPath, '/profile/card$.ttl'), 'utf8')
+          const profile = fs.readFileSync(path.join(accountPath, '/profile/card$.ttl'), 'utf8')
           expect(profile).to.include('"Alice Q."')
 
-          let rootAcl = fs.readFileSync(path.join(accountPath, '.acl'), 'utf8')
+          const rootAcl = fs.readFileSync(path.join(accountPath, '.acl'), 'utf8')
           expect(rootAcl).to.include('<mailto:alice@')
           expect(rootAcl).to.include('<https://alice.example.com/#me>')
         })

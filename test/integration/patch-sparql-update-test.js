@@ -51,16 +51,42 @@ describe('PATCH through application/sparql-update', function () {
     })
 
     it('should delete a single triple from a pad document', function (done) {
-      var expected = '@prefix : </existingTriple.ttl#>.\n@prefix dc: <http://purl.org/dc/elements/1.1/>.\n@prefix c: <https://www.w3.org/People/Berners-Lee/card#>.\n@prefix n: <http://rdfs.org/sioc/ns#>.\n@prefix p: <http://www.w3.org/ns/pim/pad#>.\n@prefix ic: <http://www.w3.org/2002/12/cal/ical#>.\n@prefix XML: <http://www.w3.org/2001/XMLSchema#>.\n@prefix flow: <http://www.w3.org/2005/01/wf/flow#>.\n@prefix ui: <http://www.w3.org/ns/ui#>.\n@prefix ind: </parent/index.ttl#>.\n@prefix mee: <http://www.w3.org/ns/pim/meeting#>.\n\n:id1477502276660 dc:author c:i; n:content ""; p:next :this.\n\n:id1477522707481\n    ic:dtstart "2016-10-26T22:58:27Z"^^XML:dateTime;\n    flow:participant c:i;\n    ui:backgroundColor "#c1d0c8".\n:this\n    a p:Notepad;\n    dc:author c:i;\n    dc:created "2016-10-25T15:44:42Z"^^XML:dateTime;\n    dc:title "Shared Notes";\n    p:next :id1477502276660.\nind:this flow:participation :id1477522707481; mee:sharedNotes :this.\n\n'
+      var expected = `\
+@prefix : </existingTriple.ttl#>.
+@prefix dc: <http://purl.org/dc/elements/1.1/>.
+@prefix mee: <http://www.w3.org/ns/pim/meeting#>.
+@prefix c: <https://www.w3.org/People/Berners-Lee/card#>.
+@prefix XML: <http://www.w3.org/2001/XMLSchema#>.
+@prefix p: <http://www.w3.org/ns/pim/pad#>.
+@prefix ind: </parent/index.ttl#>.
+@prefix n: <http://rdfs.org/sioc/ns#>.
+@prefix flow: <http://www.w3.org/2005/01/wf/flow#>.
+@prefix ic: <http://www.w3.org/2002/12/cal/ical#>.
+@prefix ui: <http://www.w3.org/ns/ui#>.
+
+:id1477502276660 dc:author c:i; n:content ""; p:next :this.
+
+:id1477522707481\n    ic:dtstart "2016-10-26T22:58:27Z"^^XML:dateTime;
+    flow:participant c:i;
+    ui:backgroundColor "#c1d0c8".
+:this
+    a p:Notepad;
+    dc:author c:i;
+    dc:created "2016-10-25T15:44:42Z"^^XML:dateTime;
+    dc:title "Shared Notes";
+    p:next :id1477502276660.
+ind:this flow:participation :id1477522707481; mee:sharedNotes :this.
+
+`
 
       write(`\n\
 
         @prefix dc: <http://purl.org/dc/elements/1.1/>.
-    @prefix meeting: <http://www.w3.org/ns/pim/meeting#>.
-    @prefix card: <https://www.w3.org/People/Berners-Lee/card#>.
-    @prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+    @prefix mee: <http://www.w3.org/ns/pim/meeting#>.
+    @prefix c: <https://www.w3.org/People/Berners-Lee/card#>.
+    @prefix XML: <http://www.w3.org/2001/XMLSchema#>.
     @prefix p: <http://www.w3.org/ns/pim/pad#>.
-    @prefix in: </parent/index.ttl#>.
+    @prefix ind: </parent/index.ttl#>.
     @prefix n: <http://rdfs.org/sioc/ns#>.
     @prefix flow: <http://www.w3.org/2005/01/wf/flow#>.
     @prefix ic: <http://www.w3.org/2002/12/cal/ical#>.
@@ -68,24 +94,24 @@ describe('PATCH through application/sparql-update', function () {
 
     <#this>
         dc:author
-           card:i;
+           c:i;
         dc:created
-           "2016-10-25T15:44:42Z"^^xsd:dateTime;
+           "2016-10-25T15:44:42Z"^^XML:dateTime;
         dc:title
            "Shared Notes";
         a    p:Notepad;
         p:next
            <#id1477502276660>.
-       in:this flow:participation <#id1477522707481>; meeting:sharedNotes <#this> .
-       <#id1477502276660> dc:author card:i; n:content ""; p:indent 1; p:next <#this> .
+       ind:this flow:participation <#id1477522707481>; mee:sharedNotes <#this> .
+       <#id1477502276660> dc:author c:i; n:content ""; p:indent 1; p:next <#this> .
     <#id1477522707481>
         ic:dtstart
-           "2016-10-26T22:58:27Z"^^xsd:dateTime;
+           "2016-10-26T22:58:27Z"^^XML:dateTime;
         flow:participant
-           card:i;
+           c:i;
         ui:backgroundColor
            "#c1d0c8".\n`,
-        'sampleContainer/existingTriple.ttl')
+      'sampleContainer/existingTriple.ttl')
 
       server.post('/existingTriple.ttl')
         .set('content-type', 'application/sparql-update')
@@ -107,19 +133,19 @@ describe('PATCH through application/sparql-update', function () {
     it('should update a resource using SPARQL-query using `prefix`', function (done) {
       write(
         '@prefix schema: <http://schema.org/> .\n' +
-        '@prefix profile: <http://ogp.me/ns/profile#> .\n' +
+        '@prefix pro: <http://ogp.me/ns/profile#> .\n' +
         '# <http://example.com/timbl#> a schema:Person ;\n' +
         '<#> a schema:Person ;\n' +
-        '  profile:first_name "Tim" .\n',
+        '  pro:first_name "Tim" .\n',
         'sampleContainer/prefixSparql.ttl')
       server.post('/prefixSparql.ttl')
         .set('content-type', 'application/sparql-update')
         .send('@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .\n' +
           '@prefix schema: <http://schema.org/> .\n' +
-          '@prefix profile: <http://ogp.me/ns/profile#> .\n' +
+          '@prefix pro: <http://ogp.me/ns/profile#> .\n' +
           '@prefix ex: <http://example.org/vocab#> .\n' +
-          'DELETE { <#> profile:first_name "Tim" }\n' +
-          'INSERT { <#> profile:first_name "Timothy" }')
+          'DELETE { <#> pro:first_name "Tim" }\n' +
+          'INSERT { <#> pro:first_name "Timothy" }')
         .expect(200)
         .end(function (err, res, body) {
           assert.equal(

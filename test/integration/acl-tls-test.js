@@ -20,7 +20,7 @@ var ldnode = require('../../index')
 var ns = require('solid-namespace')($rdf)
 
 const port = 7777
-const serverUri = `https://localhost:7777`
+const serverUri = 'https://localhost:7777'
 const rootPath = path.join(__dirname, '../resources/acl-tls')
 const dbPath = path.join(rootPath, 'db')
 const configPath = path.join(rootPath, 'config')
@@ -122,14 +122,14 @@ describe.skip('ACL with WebID+TLS', function () {
       var options = createOptions('/acl-tls/no-acl/', 'user1')
       request(options, function (error, response, body) {
         assert.equal(error, null)
-        assert.equal(response.headers['user'], 'https://user1.databox.me/profile/card#me')
+        assert.equal(response.headers.user, 'https://user1.databox.me/profile/card#me')
         done()
       })
     })
 
     it.skip('should return a 401 and WWW-Authenticate header without credentials', (done) => {
       rm('.acl')
-      let options = {
+      const options = {
         url: address + '/acl-tls/no-acl/',
         headers: { accept: 'text/turtle' }
       }

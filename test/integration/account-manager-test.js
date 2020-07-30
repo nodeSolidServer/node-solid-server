@@ -1,4 +1,5 @@
 'use strict'
+/* eslint-disable no-unused-expressions */
 
 const path = require('path')
 const fs = require('fs-extra')
@@ -26,18 +27,18 @@ afterEach(() => {
 
 describe('AccountManager', () => {
   describe('accountExists()', () => {
-    let host = SolidHost.from({ serverUri: 'https://localhost' })
+    const host = SolidHost.from({ serverUri: 'https://localhost' })
 
     describe('in multi user mode', () => {
-      let multiuser = true
-      let resourceMapper = new ResourceMapper({
+      const multiuser = true
+      const resourceMapper = new ResourceMapper({
         rootUrl: 'https://localhost:8443/',
         rootPath: process.cwd(),
         includeHost: multiuser
       })
-      let store = new LDP({ multiuser, resourceMapper })
-      let options = { multiuser, store, host }
-      let accountManager = AccountManager.from(options)
+      const store = new LDP({ multiuser, resourceMapper })
+      const options = { multiuser, store, host }
+      const accountManager = AccountManager.from(options)
 
       it('resolves to true if a directory for the account exists in root', () => {
         // Note: test/resources/accounts/tim.localhost/ exists in this repo
@@ -57,20 +58,20 @@ describe('AccountManager', () => {
     })
 
     describe('in single user mode', () => {
-      let multiuser = false
+      const multiuser = false
 
       it('resolves to true if root .acl exists in root storage', () => {
-        let resourceMapper = new ResourceMapper({
+        const resourceMapper = new ResourceMapper({
           rootUrl: 'https://localhost:8443/',
           includeHost: multiuser,
           rootPath: path.join(testAccountsDir, 'tim.localhost')
         })
-        let store = new LDP({
+        const store = new LDP({
           multiuser,
           resourceMapper
         })
-        let options = { multiuser, store, host }
-        let accountManager = AccountManager.from(options)
+        const options = { multiuser, store, host }
+        const accountManager = AccountManager.from(options)
 
         return accountManager.accountExists()
           .then(exists => {
@@ -79,17 +80,17 @@ describe('AccountManager', () => {
       })
 
       it('resolves to false if root .acl does not exist in root storage', () => {
-        let resourceMapper = new ResourceMapper({
+        const resourceMapper = new ResourceMapper({
           rootUrl: 'https://localhost:8443/',
           includeHost: multiuser,
           rootPath: testAccountsDir
         })
-        let store = new LDP({
+        const store = new LDP({
           multiuser,
           resourceMapper
         })
-        let options = { multiuser, store, host }
-        let accountManager = AccountManager.from(options)
+        const options = { multiuser, store, host }
+        const accountManager = AccountManager.from(options)
 
         return accountManager.accountExists()
           .then(exists => {
@@ -101,24 +102,24 @@ describe('AccountManager', () => {
 
   describe('createAccountFor()', () => {
     it('should create an account directory', () => {
-      let multiuser = true
-      let resourceMapper = new ResourceMapper({
+      const multiuser = true
+      const resourceMapper = new ResourceMapper({
         rootUrl: 'https://localhost:8443/',
         includeHost: multiuser,
         rootPath: testAccountsDir
       })
-      let store = new LDP({ multiuser, resourceMapper })
-      let options = { host, multiuser, store, accountTemplatePath }
-      let accountManager = AccountManager.from(options)
+      const store = new LDP({ multiuser, resourceMapper })
+      const options = { host, multiuser, store, accountTemplatePath }
+      const accountManager = AccountManager.from(options)
 
-      let userData = {
+      const userData = {
         username: 'alice',
         email: 'alice@example.com',
         name: 'Alice Q.'
       }
-      let userAccount = accountManager.userAccountFrom(userData)
+      const userAccount = accountManager.userAccountFrom(userData)
 
-      let accountDir = accountManager.accountDirFor('alice')
+      const accountDir = accountManager.accountDirFor('alice')
 
       return accountManager.createAccountFor(userAccount)
         .then(() => {
@@ -128,10 +129,10 @@ describe('AccountManager', () => {
           expect(found).to.be.true
         })
         .then(() => {
-          let profile = fs.readFileSync(path.join(accountDir, '/profile/card$.ttl'), 'utf8')
+          const profile = fs.readFileSync(path.join(accountDir, '/profile/card$.ttl'), 'utf8')
           expect(profile).to.include('"Alice Q."')
 
-          let rootAcl = fs.readFileSync(path.join(accountDir, '.acl'), 'utf8')
+          const rootAcl = fs.readFileSync(path.join(accountDir, '.acl'), 'utf8')
           expect(rootAcl).to.include('<mailto:alice@')
           expect(rootAcl).to.include('<https://alice.example.com/profile/card#me>')
         })

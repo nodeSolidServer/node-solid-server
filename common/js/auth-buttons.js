@@ -1,3 +1,4 @@
+/* global location, alert, solid */
 /* Provide functionality for authentication buttons */
 
 (({ auth }) => {
@@ -41,7 +42,7 @@
     const session = await auth.popupLogin()
     if (session) {
       // Make authenticated request to the server to establish a session cookie
-      const {status} = await auth.fetch(location, { method: 'HEAD' })
+      const { status } = await auth.fetch(location, { method: 'HEAD' })
       if (status === 401) {
         alert(`Invalid login.\n\nDid you set ${session.idp} as your OIDC provider in your profile ${session.webId}?`)
         await auth.logout()

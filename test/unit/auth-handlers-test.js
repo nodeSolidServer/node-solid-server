@@ -23,7 +23,7 @@ describe('OIDC Handler', () => {
     })
 
     it('should set the WWW-Authenticate header with error params', () => {
-      let error = {
+      const error = {
         error: 'invalid_token',
         error_description: 'Invalid token',
         error_uri: 'https://example.com/errors/token'
@@ -38,7 +38,7 @@ describe('OIDC Handler', () => {
     })
 
     it('should set WWW-Authenticate with no error_description if none given', () => {
-      let error = {}
+      const error = {}
 
       Auth.oidc.setAuthenticateHeader(req, res, error)
 

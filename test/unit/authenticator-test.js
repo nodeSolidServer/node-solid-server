@@ -9,8 +9,8 @@ const { Authenticator } = require('../../lib/models/authenticator')
 describe('Authenticator', () => {
   describe('constructor()', () => {
     it('should initialize the accountManager property', () => {
-      let accountManager = {}
-      let auth = new Authenticator({ accountManager })
+      const accountManager = {}
+      const auth = new Authenticator({ accountManager })
 
       expect(auth.accountManager).to.equal(accountManager)
     })
@@ -25,7 +25,7 @@ describe('Authenticator', () => {
 
   describe('findValidUser()', () => {
     it('should throw an abstract method error', () => {
-      let auth = new Authenticator({})
+      const auth = new Authenticator({})
 
       expect(() => auth.findValidUser())
         .to.throw(/Must override method/)

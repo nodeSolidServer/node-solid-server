@@ -1,11 +1,11 @@
 @prefix schema: <http://schema.org/> .
-@prefix profile: <http://ogp.me/ns/profile#> .
+@prefix pro: <http://ogp.me/ns/profile#> .
 @prefix ex: <http://example.org/vocab#> .
 
 <http://example.com/timbl#> a schema:Person ;
   schema:alternateName "TimBL" ;
-  profile:first_name "Timothy" ;
-  profile:last_name "Berners-Lee" ;
+  pro:first_name "Timothy" ;
+  pro:last_name "Berners-Lee" ;
   schema:workLocation [ schema:name "W3C/MIT" ] ;
   schema:performerIn _:b1, _:b2 ;
   ex:preferredLanguages ( "en" "fr-CH" ).
