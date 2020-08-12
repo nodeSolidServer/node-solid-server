@@ -87,6 +87,7 @@
     "mime-types": "^2.1.27",
     "mkdir-recursive": "^0.4.0",
     "negotiator": "^0.6.2",
+    "node-cache": "^5.1.2",
     "node-fetch": "^2.6.0",
     "node-forge": "^0.9.1",
     "nodemailer": "^6.4.11",
