@@ -4,7 +4,7 @@ const request = require('request')
 const path = require('path')
 const { loadProvider, rm, checkDnsSettings, cleanDir } = require('../utils')
 const IDToken = require('@solid/oidc-op/src/IDToken')
-
+const { clearAclCache } = require('../../lib/acl-checker')
 const ldnode = require('../../index')
 
 const port = 7777
@@ -77,6 +77,10 @@ describe('ACL with WebID+OIDC over HTTP', function () {
     }).then(() => {
       ldpHttpsServer = ldp.listen(port, done)
     }).catch(console.error)
+  })
+
+  afterEach(() => {
+    clearAclCache()
   })
 
   after(() => {
