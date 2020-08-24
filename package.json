@@ -142,6 +142,8 @@
     "validate": "node ./test/validate-turtle.js",
     "nyc": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 nyc --reporter=text-summary mocha --recursive test/",
     "mocha": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 mocha --recursive test/",
+    "prepublishOnly": "npm test",
+    "postpublish": "git push --follow-tags",
     "test": "npm run standard && npm run validate && npm run nyc",
     "clean": "rimraf config/templates config/views",
     "reset": "rimraf .db data && npm run clean"
