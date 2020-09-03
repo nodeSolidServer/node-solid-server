@@ -218,7 +218,7 @@ $ solid start --help
     --support-email [value]       The support email you provide for your users (not required)
     -q, --quiet                   Do not print the logs to console
     -h, --help                    output usage information
- ```
+```
 
 Instead of using flags, these same options can also be configured via environment variables taking the form of `SOLID_` followed by the `SNAKE_CASE` of the flag. For example `--api-apps` can be set via the `SOLID_API_APPS`environment variable, and `--serverUri` can be set with `SOLID_SERVER_URI`.
 
@@ -228,47 +228,8 @@ Configuring Solid via the config file can be a concise and convenient method and
 
 ## Use Docker
 
-Pull with:
+See the [documentation to run Solid using docker and docker-compose](https://github.com/solid/node-solid-server/tree/master/docker-image).
 
-```bash
-docker pull nodesolidserver/node-solid-server
-```
-
-Run with:
-```bash
-docker run -p 8443:8443 --name solid nodesolidserver/node-solid-server
-```
-
-This will enable you to login to solid on https://localhost:8443 and then create a new account
-but not yet use that account. After a new account is made you will need to create an entry for 
-it in your local (/etc/)hosts file in line with the account and subdomain, i.e. --
-```pre
-127.0.0.1	newsoliduser.localhost
-```
-Then you'll be able to use solid as intended.
-
-You can modify the config within the docker container as follows:
-
- - Copy the config to the current directory with: 
-   ```
-   docker cp solid:/usr/src/app/config.json .
-   ```
- - Edit the `config.json` file
- - Copy the file back with 
-   ```
-   docker cp config.json solid:/usr/src/app/
-   ```
- - Restart the server with 
-   ```
-   docker restart solid
-   ```
-
-If you want to help improve the Docker image, then you can build it locally with:
-```bash
-git clone https://github.com/solid/node-solid-server
-cd node-solid-server
-docker build .
-```
 We have automatic builds set up, so commits to master will trigger a build of https://hub.docker.com/r/nodesolidserver/node-solid-server.
 
 ## Library Usage
