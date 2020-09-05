@@ -235,6 +235,45 @@ See the [documentation to run Solid using docker and docker-compose](https://git
 
 We have automatic builds set up, so commits to master will trigger a build of https://hub.docker.com/r/nodesolidserver/node-solid-server.
 
+### Development usage
+
+If you want to use Docker in development, then you can build it locally with:
+
+```bash
+git clone https://github.com/solid/node-solid-server
+cd node-solid-server
+docker build -t node-solid-server .
+```
+
+Run with:
+```bash
+docker run -p 8443:8443 --name solid node-solid-server
+```
+
+This will enable you to login to solid on https://localhost:8443 and then create a new account
+but not yet use that account. After a new account is made you will need to create an entry for 
+it in your local (/etc/)hosts file in line with the account and subdomain, i.e. --
+
+```pre
+127.0.0.1	newsoliduser.localhost
+```
+
+You can modify the config within the docker container as follows:
+
+ - Copy the `config.json` to the current directory with: 
+   ```bash
+   docker cp solid:/usr/src/app/config.json .
+   ```
+ - Edit the `config.json` file
+ - Copy the file back with 
+   ```bash
+   docker cp config.json solid:/usr/src/app/
+   ```
+ - Restart the server with 
+   ```bash
+   docker restart solid
+   ```
+
 ## Library Usage
 
 ### Install Dependencies
