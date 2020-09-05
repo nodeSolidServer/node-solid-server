@@ -228,6 +228,9 @@ Configuring Solid via the config file can be a concise and convenient method and
 
 ## Use Docker
 
+
+### Production usage
+
 See the [documentation to run Solid using docker and docker-compose](https://github.com/solid/node-solid-server/tree/master/docker-image).
 
 We have automatic builds set up, so commits to master will trigger a build of https://hub.docker.com/r/nodesolidserver/node-solid-server.
