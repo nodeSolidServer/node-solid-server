@@ -91,6 +91,9 @@ accidentally commit your certificates to `solid` while you're developing.
 
 If you would like to get rid of the browser warnings, import your fullchain.pem certificate into your 'Trusted Root Certificate' store.
 
+### Running Solid behind a reverse proxy (such as NGINX)
+See [Running Solid behind a reverse proxy](https://github.com/solid/node-solid-server/wiki/Running-Solid-behind-a-reverse-proxy).
+
 ### Run multi-user server (intermediate)
 
 You can run `solid` so that new users can sign up, in other words, get their WebIDs _username.yourdomain.com_.
@@ -115,9 +118,6 @@ $ solid start --multiuser --port 8443 --ssl-cert /path/to/cert --ssl-key /path/t
 ```
 
 Your users will have a dedicated folder under `./data` at `./data/<username>.<yourdomain.tld>`. Also, your root domain's website will be in `./data/<yourdomain.tld>`. New users can create accounts on `/api/accounts/new` and create new certificates on `/api/accounts/cert`. An easy-to-use sign-up tool is found on `/api/accounts`.
-
-### Running Solid behind a reverse proxy (such as NGINX)
-See [Running Solid behind a reverse proxy](https://github.com/solid/node-solid-server/wiki/Running-Solid-behind-a-reverse-proxy).
 
 ##### How can I send emails to my users with my Gmail?
 
