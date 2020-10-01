@@ -42,6 +42,13 @@ When using nginx to proxy HTTPS connections to Solid you will need to specify HT
 This approach is useful if you do not wish to grant Solid access to your HTTPS certificates, as nginx does not validate
 the self-signed certificates that Solid generates for its proxy_pass connection.
 
+#### All-in one nginx proxy + letsencrypt + solid server 
+
+`./examples/docker-compose.all-in-one.yml`
+
+Run solid-server on port 8443 behind a [nginx proxy](https://hub.docker.com/r/jwilder/nginx-proxy/) on 443, including
+certificate generation via [letsencrypt companion](https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion).
+
 #### Other setups
 
 The setup you need is not presented here? Feel free to ask, or provide a Pull Request

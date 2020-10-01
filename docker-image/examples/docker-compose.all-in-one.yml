@@ -1,19 +1,42 @@
-# This example assumes, that you are running a jwilders/nginx proxy
-# with certificate generation by a letsencrypt companion container
-# as described here:
+# This example assumes, that you are not running another application or proxy on ports 80 / 443.
+# It provides an all-in-one solution to start a docker-server together with an nginx proxy and
+# automatic letsencrypt certificate generation and renewal.
 #
-# https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion/blob/master/docs/Docker-Compose.md
+# It is based on https://github.com/JrCs/docker-letsencrypt-nginx-proxy-companion/blob/master/docs/Docker-Compose.md
 #
-# This should provide a docker volume containing the generated certificates.
-# We will use the same cert and key as the webproxy for the actual solid server. While it seems to
-# work, I am not sure if it is actually a good idea. Please file an issue if you want to discuss this.
-
 # Adjust any line that is commented with (!):
 # 1. Change any occurrence of the domain `solid.example` to your actual domain
 # 2. Adjust the `latest` tag to a specific version you want to use.
 
 version: '3.7'
 services:
+  nginx:
+    container_name: nginx
+    image: jwilder/nginx-proxy:latest
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - nginx-conf:/etc/nginx/conf.d
+      - vhostd:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - certs:/etc/nginx/certs:ro
+
+  letsencrypt:
+    container_name: letsencrypt
+    image: jrcs/letsencrypt-nginx-proxy-companion:latest
+    restart: always
+    environment:
+      - "NGINX_PROXY_CONTAINER=nginx"
+    volumes:
+      - nginx-conf:/etc/nginx/conf.d
+      - vhostd:/etc/nginx/vhost.d
+      - html:/usr/share/nginx/html
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - certs:/etc/nginx/certs
+
   server:
     image: nodesolidserver/node-solid-server:latest # (!) use specific version tag here
 
@@ -29,7 +52,7 @@ services:
       - /opt/solid/data:/opt/solid/data
       - /opt/solid/.db:/opt/solid/.db
       - /opt/solid/config:/opt/solid/config
-      - nginxproxy_certs:/opt/solid/certs
+      - certs:/opt/solid/certs
 
     environment:
       # (!) use your actual SOLID_SERVER_URI
@@ -45,7 +68,9 @@ services:
       - "LETSENCRYPT_HOST=solid.example"
       # (!) use your actual email
       - "LETSENCRYPT_EMAIL=your@mail.example"
+
 volumes:
-  # (!) mount certificates from an external volume from your nginx setup
-  nginxproxy_certs:
-    external: true
+  nginx-conf:
+  vhostd:
+  html:
+  certs:
