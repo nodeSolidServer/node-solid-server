@@ -28,7 +28,7 @@ script:
   - npm pack .
   - npm install -g solid-server-*.tgz
   # Run the Solid test-suite
-  - sh test/surface/run-solid-test-suite-travis.sh
+  - sh test/surface/run-solid-test-suite.sh
 
 after_success:
   - snyk monitor
