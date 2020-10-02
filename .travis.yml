@@ -28,6 +28,7 @@ script:
   - npm pack .
   - npm install -g solid-server-*.tgz
   # Run the Solid test-suite
+  - npm install
   - sh test/surface/run-solid-test-suite.sh
 
 after_success:
