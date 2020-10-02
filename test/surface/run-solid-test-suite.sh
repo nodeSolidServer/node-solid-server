@@ -10,7 +10,9 @@ docker run --rm -d --name server --network=testnet -v `pwd`:/travis -w /travis n
 wget -O /tmp/env-vars-for-test-image.list https://raw.githubusercontent.com/solid/test-suite/master/servers/node-solid-server/env.list
 until docker run --rm --network=testnet webid-provider curl -kI https://server 2> /dev/null > /dev/null
 do
-  echo Waiting for server to start ...
+  echo Waiting for server to start, this can take up to a minute ...
+  docker ps -a
+  docker logs server
   sleep 1
 done
 
