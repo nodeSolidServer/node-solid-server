@@ -8,8 +8,9 @@ docker build -t webid-provider https://github.com/solid/test-suite.git#master:/t
 # docker build -t web-access-control https://github.com/michielbdejong/test-suite.git#add-testers:/testers/web-access-control
 docker run --rm -d --name server --network=testnet -v `pwd`:/travis -w /travis node-solid-server ./bin/solid-test start --config-file /node-solid-server/config.json
 wget -O /tmp/env-vars-for-test-image.list https://raw.githubusercontent.com/solid/test-suite/master/servers/node-solid-server/env.list
-docker logs server
 docker ps -a
+sleep 5
+docker logs server
 docker run --rm --network=testnet --env-file /tmp/env-vars-for-test-image.list webid-provider
 # docker run --rm --network=testnet --env-file /tmp/env-vars-for-test-image.list solid-crud
 # docker run --rm --network=testnet --env-file /tmp/env-vars-for-test-image.list web-access-control
