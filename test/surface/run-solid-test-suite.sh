@@ -12,7 +12,7 @@ until docker run --rm --network=testnet webid-provider curl -kI https://server 2
 do
   echo Waiting for server to start, this can take up to a minute ...
   docker ps -a
-  docker logs server
+  docker logs server || true
   sleep 1
 done
 
