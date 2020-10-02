@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 docker network create testnet
 docker build -t webid-provider https://github.com/solid/test-suite#:/testers/webid-provider
