@@ -27,6 +27,8 @@ script:
   # Test global install of the package
   - npm pack .
   - npm install -g solid-server-*.tgz
+  # Run the Solid test-suite
+  - sh tests/surface/run-solid-test-suite.sh
 
 after_success:
   - snyk monitor
