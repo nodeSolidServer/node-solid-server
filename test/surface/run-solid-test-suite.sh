@@ -14,7 +14,7 @@ docker run --rm -d --name server --network=host -v `pwd`:/travis -w /travis node
 wget -O /tmp/env-vars-for-test-image.list https://raw.githubusercontent.com/solid/test-suite/master/servers/node-solid-server/env.list
 docker logs server
 docker ps -a
-docker run --rm --env-file /tmp/env-vars-for-test-image.list webid-provider
+docker run --rm --network=host --env-file /tmp/env-vars-for-test-image.list webid-provider
 # docker run --rm --name tester --network=testnet --env-file /tmp/env-vars-for-test-image.list solid-crud
 # docker run --rm --name tester --network=testnet --env-file /tmp/env-vars-for-test-image.list web-access-control
 rm /tmp/env-vars-for-test-image.list
