@@ -1,0 +1,22 @@
+{
+  "root": "./data",
+  "port": "443",
+  "serverUri": "https://server",
+  "webid": true,
+  "mount": "/",
+  "configPath": "./config",
+  "configFile": "./config.json",
+  "dbPath": "./.db",
+  "sslKey": "./server.key",
+  "sslCert": "./server.cert",
+  "multiuser": false,
+  "server": {
+    "name": "server",
+    "description": "",
+    "logo": ""
+  },
+  "enforceToc": true,
+  "disablePasswordChecks": false,
+  "tocUri": "https://your-toc",
+  "supportEmail": "Your support email address"
+}
