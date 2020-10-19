@@ -4,7 +4,6 @@ set -e
 docker network create testnet
 docker build -t server test/surface/docker/server
 docker build -t cookie test/surface/docker/cookie
-docker build -t cookie test/surface/docker/data
 docker build -t webid-provider https://github.com/solid/test-suite.git#master:/testers/webid-provider
 docker build -t solid-crud https://github.com/michielbdejong/test-suite.git#add-testers:/testers/solid-crud
 # docker build -t web-access-control https://github.com/michielbdejong/test-suite.git#add-testers:/testers/web-access-control
