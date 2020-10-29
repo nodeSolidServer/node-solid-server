@@ -4,7 +4,7 @@ const Handlebars = require('handlebars')
 const path = require('path')
 const validate = require('turtle-validator/lib/validator')
 
-const regex = new RegExp('\\.(acl|ttl)$', 'i')
+const regex = /\\.(acl|ttl)$/i
 const substitutions = {
   webId: 'http://example.com/#me',
   email: 'test@example.com',

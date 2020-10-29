@@ -1,16 +1,16 @@
-var assert = require('chai').assert
-var supertest = require('supertest')
-var path = require('path')
+const assert = require('chai').assert
+const supertest = require('supertest')
+const path = require('path')
 // Helper functions for the FS
 const { rm, write, read, cleanDir } = require('../utils')
 
-var ldnode = require('../../index')
+const ldnode = require('../../index')
 
 describe('LDNODE params', function () {
   describe('suffixMeta', function () {
     describe('not passed', function () {
       it('should fallback on .meta', function () {
-        var ldp = ldnode({ webid: false })
+        const ldp = ldnode({ webid: false })
         assert.equal(ldp.locals.ldp.suffixMeta, '.meta')
       })
     })
@@ -19,7 +19,7 @@ describe('LDNODE params', function () {
   describe('suffixAcl', function () {
     describe('not passed', function () {
       it('should fallback on .acl', function () {
-        var ldp = ldnode({ webid: false })
+        const ldp = ldnode({ webid: false })
         assert.equal(ldp.locals.ldp.suffixAcl, '.acl')
       })
     })
@@ -27,8 +27,8 @@ describe('LDNODE params', function () {
 
   describe('root', function () {
     describe('not passed', function () {
-      var ldp = ldnode({ webid: false })
-      var server = supertest(ldp)
+      const ldp = ldnode({ webid: false })
+      const server = supertest(ldp)
 
       it('should fallback on current working directory', function () {
         assert.equal(ldp.locals.ldp.resourceMapper._rootPath, process.cwd())
@@ -52,8 +52,8 @@ describe('LDNODE params', function () {
     })
 
     describe('passed', function () {
-      var ldp = ldnode({ root: './test/resources/', webid: false })
-      var server = supertest(ldp)
+      const ldp = ldnode({ root: './test/resources/', webid: false })
+      const server = supertest(ldp)
 
       it('should fallback on current working directory', function () {
         assert.equal(ldp.locals.ldp.resourceMapper._rootPath, path.resolve('./test/resources'))
@@ -79,12 +79,12 @@ describe('LDNODE params', function () {
 
   describe('ui-path', function () {
     const rootPath = './test/resources/'
-    var ldp = ldnode({
+    const ldp = ldnode({
       root: rootPath,
       apiApps: path.join(__dirname, '../resources/sampleContainer'),
       webid: false
     })
-    var server = supertest(ldp)
+    const server = supertest(ldp)
 
     it('should serve static files on /api/ui', (done) => {
       server.get('/api/apps/solid.png')
@@ -94,7 +94,7 @@ describe('LDNODE params', function () {
   })
 
   describe('forceUser', function () {
-    var ldpHttpsServer
+    let ldpHttpsServer
 
     const port = 7777
     const serverUri = 'https://localhost:7777'
@@ -102,7 +102,7 @@ describe('LDNODE params', function () {
     const dbPath = path.join(rootPath, 'db')
     const configPath = path.join(rootPath, 'config')
 
-    var ldp = ldnode.createServer({
+    const ldp = ldnode.createServer({
       auth: 'tls',
       forceUser: 'https://fakeaccount.com/profile#me',
       dbPath,
@@ -126,7 +126,7 @@ describe('LDNODE params', function () {
       cleanDir(rootPath)
     })
 
-    var server = supertest(serverUri)
+    const server = supertest(serverUri)
 
     it('sets the User header', function (done) {
       server.get('/hello.html')

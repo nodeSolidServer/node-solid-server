@@ -13,11 +13,11 @@ const LDP = require('../../lib/ldp')
 const SolidHost = require('../../lib/models/solid-host')
 const AccountManager = require('../../lib/models/account-manager')
 const testAccountsDir = path.join(__dirname, '..', 'resources', 'accounts')
-var ResourceMapper = require('../../lib/resource-mapper')
+const ResourceMapper = require('../../lib/resource-mapper')
 
 const api = require('../../lib/api/accounts/user-accounts')
 
-var host
+let host
 
 beforeEach(() => {
   host = SolidHost.from({ serverUri: 'https://example.com' })

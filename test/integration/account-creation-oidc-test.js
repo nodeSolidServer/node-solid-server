@@ -18,7 +18,7 @@ describe.skip('AccountManager (OIDC account creation tests)', function () {
 
   let ldpHttpsServer
 
-  var ldp = ldnode.createServer({
+  const ldp = ldnode.createServer({
     root,
     configPath,
     sslKey: path.join(__dirname, '../keys/key.pem'),
@@ -44,7 +44,7 @@ describe.skip('AccountManager (OIDC account creation tests)', function () {
     cleanDir(path.join(root, 'localhost'))
   })
 
-  var server = supertest(serverUri)
+  const server = supertest(serverUri)
 
   it('should expect a 404 on GET /accounts', function (done) {
     server.get('/api/accounts')
@@ -53,12 +53,12 @@ describe.skip('AccountManager (OIDC account creation tests)', function () {
 
   describe('accessing accounts', function () {
     it('should be able to access public file of an account', function (done) {
-      var subdomain = supertest('https://tim.' + host)
+      const subdomain = supertest('https://tim.' + host)
       subdomain.get('/hello.html')
         .expect(200, done)
     })
     it('should get 404 if root does not exist', function (done) {
-      var subdomain = supertest('https://nicola.' + host)
+      const subdomain = supertest('https://nicola.' + host)
       subdomain.get('/')
         .set('Accept', 'text/turtle')
         .set('Origin', 'http://example.com')
@@ -95,7 +95,7 @@ describe.skip('AccountManager (OIDC account creation tests)', function () {
     })
 
     it('should not create a WebID if it already exists', function (done) {
-      var subdomain = supertest('https://' + host)
+      const subdomain = supertest('https://' + host)
       subdomain.post('/api/accounts/new')
         .send('username=nicola&password=12345&acceptToc=true')
         .expect(302)
@@ -120,7 +120,7 @@ describe.skip('AccountManager (OIDC account creation tests)', function () {
     })
 
     it('should create the default folders', function (done) {
-      var subdomain = supertest('https://' + host)
+      const subdomain = supertest('https://' + host)
       subdomain.post('/api/accounts/new')
         .send('username=nicola&password=12345&acceptToc=true')
         .expect(302)
@@ -128,17 +128,17 @@ describe.skip('AccountManager (OIDC account creation tests)', function () {
           if (err) {
             return done(err)
           }
-          var domain = host.split(':')[0]
-          var card = read(path.join('accounts/nicola.' + domain,
+          const domain = host.split(':')[0]
+          const card = read(path.join('accounts/nicola.' + domain,
             'profile/card$.ttl'))
-          var cardAcl = read(path.join('accounts/nicola.' + domain,
+          const cardAcl = read(path.join('accounts/nicola.' + domain,
             'profile/.acl'))
-          var prefs = read(path.join('accounts/nicola.' + domain,
+          const prefs = read(path.join('accounts/nicola.' + domain,
             'settings/prefs.ttl'))
-          var inboxAcl = read(path.join('accounts/nicola.' + domain,
+          const inboxAcl = read(path.join('accounts/nicola.' + domain,
             'inbox/.acl'))
-          var rootMeta = read(path.join('accounts/nicola.' + domain, '.meta'))
-          var rootMetaAcl = read(path.join('accounts/nicola.' + domain,
+          const rootMeta = read(path.join('accounts/nicola.' + domain, '.meta'))
+          const rootMetaAcl = read(path.join('accounts/nicola.' + domain,
             '.meta.acl'))
 
           if (domain && card && cardAcl && prefs && inboxAcl && rootMeta &&
@@ -166,13 +166,13 @@ describe.skip('AccountManager (OIDC account creation tests)', function () {
               if (err) {
                 return done(err)
               }
-              var graph = $rdf.graph()
+              const graph = $rdf.graph()
               $rdf.parse(
                 data.text,
                 graph,
                 'https://nicola.' + host + '/.meta',
                 'text/turtle')
-              var statements = graph.statementsMatching(
+              const statements = graph.statementsMatching(
                 undefined,
                 $rdf.sym('http://www.w3.org/ns/solid/terms#account'),
                 undefined)
@@ -187,14 +187,14 @@ describe.skip('AccountManager (OIDC account creation tests)', function () {
 
     describe('after setting up account', () => {
       beforeEach(done => {
-        var subdomain = supertest('https://' + host)
+        const subdomain = supertest('https://' + host)
         subdomain.post('/api/accounts/new')
           .send('username=nicola&password=12345&acceptToc=true')
           .end(done)
       })
 
       it('should create a private settings container', function (done) {
-        var subdomain = supertest('https://nicola.' + host)
+        const subdomain = supertest('https://nicola.' + host)
         subdomain.head('/settings/')
           .expect(401)
           .end(function (err) {
@@ -203,7 +203,7 @@ describe.skip('AccountManager (OIDC account creation tests)', function () {
       })
 
       it('should create a private prefs file in the settings container', function (done) {
-        var subdomain = supertest('https://nicola.' + host)
+        const subdomain = supertest('https://nicola.' + host)
         subdomain.head('/inbox/prefs.ttl')
           .expect(401)
           .end(function (err) {
@@ -212,7 +212,7 @@ describe.skip('AccountManager (OIDC account creation tests)', function () {
       })
 
       it('should create a private inbox container', function (done) {
-        var subdomain = supertest('https://nicola.' + host)
+        const subdomain = supertest('https://nicola.' + host)
         subdomain.head('/inbox/')
           .expect(401)
           .end(function (err) {
@@ -298,7 +298,7 @@ describe.skip('Signup page where Terms & Conditions are not being enforced', () 
   })
 
   it('should not enforce T&C upon creating account', function (done) {
-    var subdomain = supertest('https://' + host)
+    const subdomain = supertest('https://' + host)
     subdomain.post('/api/accounts/new')
       .send('username=nicola&password=12345')
       .expect(302, done)

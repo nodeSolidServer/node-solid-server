@@ -1,31 +1,31 @@
-var chai = require('chai')
-var assert = chai.assert
+const chai = require('chai')
+const assert = chai.assert
 chai.use(require('chai-as-promised'))
-var $rdf = require('rdflib')
-var ns = require('solid-namespace')($rdf)
-var LDP = require('../../lib/ldp')
-var path = require('path')
-var stringToStream = require('../../lib/utils').stringToStream
-var randomBytes = require('randombytes')
-var ResourceMapper = require('../../lib/resource-mapper')
+const $rdf = require('rdflib')
+const ns = require('solid-namespace')($rdf)
+const LDP = require('../../lib/ldp')
+const path = require('path')
+const stringToStream = require('../../lib/utils').stringToStream
+const randomBytes = require('randombytes')
+const ResourceMapper = require('../../lib/resource-mapper')
 
 // Helper functions for the FS
-var rm = require('./../utils').rm
-var write = require('./../utils').write
+const rm = require('./../utils').rm
+const write = require('./../utils').write
 // var cp = require('./utils').cp
-var read = require('./../utils').read
-var fs = require('fs')
+const read = require('./../utils').read
+const fs = require('fs')
 
 describe('LDP', function () {
-  var root = path.join(__dirname, '..')
+  const root = path.join(__dirname, '..')
 
-  var resourceMapper = new ResourceMapper({
+  const resourceMapper = new ResourceMapper({
     rootUrl: 'https://localhost:8443/',
     rootPath: root,
     includeHost: false
   })
 
-  var ldp = new LDP({
+  const ldp = new LDP({
     resourceMapper,
     serverUri: 'https://localhost',
     multiuser: true,
@@ -122,50 +122,50 @@ describe('LDP', function () {
 
   describe('put', function () {
     it.skip('should write a file in an existing dir', () => {
-      var stream = stringToStream('hello world')
+      const stream = stringToStream('hello world')
       return ldp.put('/resources/testPut.txt', stream, 'text/plain').then(() => {
-        var found = read('testPut.txt')
+        const found = read('testPut.txt')
         rm('testPut.txt')
         assert.equal(found, 'hello world')
       })
     })
 
     it('should fail if a trailing `/` is passed', () => {
-      var stream = stringToStream('hello world')
+      const stream = stringToStream('hello world')
       return ldp.put('/resources/', stream, 'text/plain').catch(err => {
         assert.equal(err.status, 409)
       })
     })
 
     it.skip('with a larger file to exceed allowed quota', function () {
-      var randstream = stringToStream(randomBytes(2100))
+      const randstream = stringToStream(randomBytes(2100))
       return ldp.put('localhost', '/resources/testQuota.txt', randstream).catch((err) => {
         assert.notOk(err)
       })
     })
     it('should fail if a over quota', function () {
-      var hellostream = stringToStream('hello world')
+      const hellostream = stringToStream('hello world')
       return ldp.put('localhost', '/resources/testOverQuota.txt', hellostream).catch((err) => {
         assert.equal(err.status, 413)
       })
     })
 
     it('should fail if a trailing `/` is passed without content type', () => {
-      var stream = stringToStream('hello world')
+      const stream = stringToStream('hello world')
       return ldp.put('/resources/', stream, null).catch(err => {
         assert.equal(err.status, 409)
       })
     })
 
     it('should fail if no content type is passed', () => {
-      var stream = stringToStream('hello world')
+      const stream = stringToStream('hello world')
       return ldp.put('/resources/testPut.txt', stream, null).catch(err => {
         assert.equal(err.status, 415)
       })
     })
 
     it('should fail if file.acl and content type not text/turtle', () => {
-      var stream = stringToStream('hello world')
+      const stream = stringToStream('hello world')
       return ldp.put('/resources/testPut.txt.acl', stream, 'text/plain').catch(err => {
         assert.equal(err.status, 415)
       })
@@ -180,7 +180,7 @@ describe('LDP', function () {
 
     it.skip('should delete a file with ACL in an existing dir', async () => {
       // First create a dummy file
-      var stream = stringToStream('hello world')
+      const stream = stringToStream('hello world')
       await ldp.put('/resources/testPut.txt', stream, 'text/plain')
       await ldp.put('/resources/testPut.txt.acl', stream, 'text/turtle')
       // Make sure it exists
@@ -212,7 +212,7 @@ describe('LDP', function () {
 
     it.skip('should fail to delete a non-empty folder', async () => {
       // First create a dummy file
-      var stream = stringToStream('hello world')
+      const stream = stringToStream('hello world')
       await ldp.put('/resources/dummy/testPutBlocking.txt', stream, 'text/plain')
       // Make sure it exists
       fs.stat(ldp.resourceMapper._rootPath + '/resources/dummy/testPutBlocking.txt', function (err) {
@@ -227,7 +227,7 @@ describe('LDP', function () {
 
     it.skip('should fail to delete nested non-empty folders', async () => {
       // First create a dummy file
-      var stream = stringToStream('hello world')
+      const stream = stringToStream('hello world')
       await ldp.put('/resources/dummy/dummy2/testPutBlocking.txt', stream, 'text/plain')
       // Make sure it exists
       fs.stat(ldp.resourceMapper._rootPath + '/resources/dummy/dummy2/testPutBlocking.txt', function (err) {
@@ -306,14 +306,14 @@ describe('LDP', function () {
 
       return ldp.listContainer(path.join(__dirname, '../resources/sampleContainer/'), 'https://server.tld/resources/sampleContainer/', '', 'server.tld')
         .then(data => {
-          var graph = $rdf.graph()
+          const graph = $rdf.graph()
           $rdf.parse(
             data,
             graph,
             'https://localhost:8443/resources/sampleContainer',
             'text/turtle')
 
-          var basicContainerStatements = graph
+          const basicContainerStatements = graph
             .each(
               $rdf.sym('https://localhost:8443/resources/sampleContainer/basicContainerFile.ttl'),
               ns.rdf('type'),
@@ -327,7 +327,7 @@ describe('LDP', function () {
           ]
           assert.deepEqual(basicContainerStatements.sort(), expectedStatements)
 
-          var containerStatements = graph
+          const containerStatements = graph
             .each(
               $rdf.sym('https://localhost:8443/resources/sampleContainer/containerFile.ttl'),
               ns.rdf('type'),
