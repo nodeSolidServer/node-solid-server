@@ -7,7 +7,8 @@ const ldnode = require('../../index')
 const path = require('path')
 const fs = require('fs-extra')
 
-describe('AccountManager (OIDC account creation tests)', function () {
+// FIXME: #1502
+describe.skip('AccountManager (OIDC account creation tests)', function () {
   const port = 3457
   const serverUri = `https://localhost:${port}`
   const host = `localhost:${port}`
@@ -51,14 +52,12 @@ describe('AccountManager (OIDC account creation tests)', function () {
   })
 
   describe('accessing accounts', function () {
-    // FIXME: #1502
-    it.skip('should be able to access public file of an account', function (done) {
+    it('should be able to access public file of an account', function (done) {
       var subdomain = supertest('https://tim.' + host)
       subdomain.get('/hello.html')
         .expect(200, done)
     })
-    // FIXME: #1502
-    it.skip('should get 404 if root does not exist', function (done) {
+    it('should get 404 if root does not exist', function (done) {
       var subdomain = supertest('https://nicola.' + host)
       subdomain.get('/')
         .set('Accept', 'text/turtle')
