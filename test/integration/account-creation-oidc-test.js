@@ -51,7 +51,8 @@ describe('AccountManager (OIDC account creation tests)', function () {
   })
 
   describe('accessing accounts', function () {
-    it('should be able to access public file of an account', function (done) {
+    // FIXME: #1502
+    it.skip('should be able to access public file of an account', function (done) {
       var subdomain = supertest('https://tim.' + host)
       subdomain.get('/hello.html')
         .expect(200, done)
