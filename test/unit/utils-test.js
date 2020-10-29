@@ -2,8 +2,6 @@ var assert = require('chai').assert
 var { Headers } = require('node-fetch')
 var utils = require('../../lib/utils')
 
-var { Headers } = require('node-fetch')
-
 describe('Utility functions', function () {
   describe('pathBasename', function () {
     it('should return bar as relative path for /foo/bar', function () {
