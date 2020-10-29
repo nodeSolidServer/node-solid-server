@@ -173,7 +173,8 @@ describe('LDP', function () {
   })
 
   describe('delete', function () {
-    it('should error when deleting a non-existing file', () => {
+    // FIXME: https://github.com/solid/node-solid-server/issues/1502
+    it.skip('should error when deleting a non-existing file', () => {
       return assert.isRejected(ldp.delete('/resources/testPut.txt'))
     })
 
