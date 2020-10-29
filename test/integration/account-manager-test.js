@@ -25,7 +25,8 @@ afterEach(() => {
   fs.removeSync(path.join(__dirname, '../resources/accounts/alice.example.com'))
 })
 
-describe('AccountManager', () => {
+// FIXME #1502
+describe.skip('AccountManager', () => {
   describe('accountExists()', () => {
     const host = SolidHost.from({ serverUri: 'https://localhost' })
 
