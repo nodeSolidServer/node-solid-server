@@ -135,6 +135,7 @@
   ],
   "main": "index.js",
   "scripts": {
+    "build": "echo nothing to build",
     "solid": "node ./bin/solid",
     "standard": "standard '{bin,examples,lib,test}/**/*.js'",
     "validate": "node ./test/validate-turtle.js",
