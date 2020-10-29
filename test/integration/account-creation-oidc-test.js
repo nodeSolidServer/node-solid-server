@@ -223,7 +223,8 @@ describe.skip('AccountManager (OIDC account creation tests)', function () {
   })
 })
 
-describe('Single User signup page', () => {
+// FIXME: #1502
+describe.skip('Single User signup page', () => {
   const serverUri = 'https://localhost:7457'
   const port = 7457
   let ldpHttpsServer
@@ -260,7 +261,8 @@ describe('Single User signup page', () => {
   })
 })
 
-describe('Signup page where Terms & Conditions are not being enforced', () => {
+// FIXME: #1502
+describe.skip('Signup page where Terms & Conditions are not being enforced', () => {
   const port = 3457
   const host = `localhost:${port}`
   const root = path.join(__dirname, '../resources/accounts/')
