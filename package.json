@@ -125,7 +125,6 @@
     "sinon": "^9.0.3",
     "sinon-chai": "^3.5.0",
     "snyk": "^1.381.2",
-    "solid-auth-cli": "^1.0.14",
     "standard": "^14.3.4",
     "supertest": "^4.0.2",
     "turtle-validator": "^1.1.1",
