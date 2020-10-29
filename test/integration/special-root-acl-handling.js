@@ -47,7 +47,7 @@ describe('Special handling: Root ACL does not give READ access to root', () => {
 
   describe('should still grant READ access to everyone because of index.html.acl', () => {
     it('for root with /', function (done) {
-      var options = createOptions('/')
+      const options = createOptions('/')
       request.get(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 200)
@@ -55,7 +55,7 @@ describe('Special handling: Root ACL does not give READ access to root', () => {
       })
     })
     it('for root without /', function (done) {
-      var options = createOptions()
+      const options = createOptions()
       request.get(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 200)

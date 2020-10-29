@@ -22,7 +22,7 @@ const exampleSpkac = fs.readFileSync(
   path.join(__dirname, '../resources/example_spkac.cnf'), 'utf8'
 )
 
-var host
+let host
 
 beforeEach(() => {
   host = SolidHost.from({ serverUri: 'https://example.com' })

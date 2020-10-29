@@ -1,8 +1,8 @@
-var express = require('express')
-var solid = require('../') // or require('solid')
+const express = require('express')
+const solid = require('../') // or require('solid')
 
 // Starting our express app
-var app = express()
+const app = express()
 
 // My routes
 app.get('/', function (req, res) {
@@ -11,7 +11,7 @@ app.get('/', function (req, res) {
 })
 
 // Mounting solid on /ldp
-var ldp = solid()
+const ldp = solid()
 app.use('/ldp', ldp)
 
 // Starting server

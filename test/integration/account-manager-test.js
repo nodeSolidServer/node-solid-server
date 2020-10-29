@@ -15,7 +15,7 @@ const ResourceMapper = require('../../lib/resource-mapper')
 const testAccountsDir = path.join(__dirname, '../resources/accounts')
 const accountTemplatePath = path.join(__dirname, '../../default-templates/new-account')
 
-var host
+let host
 
 beforeEach(() => {
   host = SolidHost.from({ serverUri: 'https://example.com' })

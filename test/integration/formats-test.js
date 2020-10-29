@@ -1,4 +1,4 @@
-var path = require('path')
+const path = require('path')
 const assert = require('chai').assert
 const { setupSupertestServer } = require('../utils')
 
@@ -21,8 +21,8 @@ describe('formats', function () {
   describe('JSON-LD', function () {
     function isCorrectSubject (idFragment) {
       return (res) => {
-        var payload = JSON.parse(res.text)
-        var id = payload[0]['@id']
+        const payload = JSON.parse(res.text)
+        const id = payload[0]['@id']
         assert(id.endsWith(idFragment), 'The subject of the JSON-LD graph is correct')
       }
     }

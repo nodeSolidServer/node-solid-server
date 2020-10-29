@@ -1,6 +1,6 @@
-var assert = require('chai').assert
+const assert = require('chai').assert
 
-var options = require('../../bin/lib/options')
+const options = require('../../bin/lib/options')
 
 describe('Command line options', function () {
   describe('options', function () {

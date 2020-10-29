@@ -23,7 +23,7 @@ const serverOptions = {
 }
 
 describe('PATCH', () => {
-  var request
+  let request
   let server
 
   // Start the server
@@ -427,7 +427,7 @@ describe('PATCH', () => {
     { status = 200, text, result }) {
     return () => {
       const filename = `patch${path}`
-      var originalContents
+      let originalContents
       // Back up and restore an existing file
       if (exists) {
         before(() => backup(filename))
@@ -443,7 +443,7 @@ describe('PATCH', () => {
       }
 
       // Create the request and obtain the response
-      var response
+      let response
       before((done) => {
         request.patch(path)
           .set('Content-Type', contentType)
