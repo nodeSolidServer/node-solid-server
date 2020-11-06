@@ -47,12 +47,12 @@ describe('OIDC error handling', function () {
           .expect(401)
       })
 
-      it('should return an html login page', () => {
+      it('should return an html data browser page', () => {
         return server.get('/profile/')
           .set('Accept', 'text/html')
           .expect('Content-Type', 'text/html; charset=utf-8')
           .then(res => {
-            expect(res.text).to.match(/Log in/)
+            expect(res.text).to.match(/Solid Data Browser/)
           })
       })
     })

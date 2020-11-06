@@ -1,6 +1,7 @@
 var assert = require('chai').assert
 
 var utils = require('../../lib/utils')
+var { Headers } = require('node-fetch')
 
 describe('Utility functions', function () {
   describe('pathBasename', function () {
