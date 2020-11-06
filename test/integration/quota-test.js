@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-expressions */
 
-var expect = require('chai').expect
+const expect = require('chai').expect
 const getQuota = require('../../lib/utils').getQuota
 const overQuota = require('../../lib/utils').overQuota
 const path = require('path')
@@ -9,7 +9,7 @@ const root = 'accounts-acl/config/templates/new-account/'
 // const $rdf = require('rdflib')
 
 describe('Get Quota', function () {
-  var prefs = read(path.join(root, 'settings/serverSide.ttl'))
+  const prefs = read(path.join(root, 'settings/serverSide.ttl'))
   it('from file to check that it is readable and has predicate', function () {
     expect(prefs).to.be.a('string')
     expect(prefs).to.match(/storageQuota/)

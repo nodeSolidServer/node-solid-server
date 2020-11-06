@@ -1,5 +1,5 @@
-var solid = require('../') // or require('solid')
-var path = require('path')
+const solid = require('../') // or require('solid')
+const path = require('path')
 
 solid
   .createServer({

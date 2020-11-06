@@ -1,4 +1,4 @@
-var path = require('path')
+const path = require('path')
 const { read, setupSupertestServer } = require('./../utils')
 
 describe('Error pages', function () {
@@ -17,8 +17,8 @@ describe('Error pages', function () {
   })
 
   function defaultErrorPage (filepath, expected) {
-    var handler = function (res) {
-      var errorFile = read(filepath)
+    const handler = function (res) {
+      const errorFile = read(filepath)
       if (res.text === errorFile && !expected) {
         console.log('Not default text')
       }
@@ -27,7 +27,7 @@ describe('Error pages', function () {
   }
 
   describe('noErrorPages', function () {
-    var file404 = 'errorPages/404.html'
+    const file404 = 'errorPages/404.html'
     it('Should return 404 express default page', function (done) {
       noErrorServer.get('/non-existent-file.html')
         .expect(defaultErrorPage(file404, false))
@@ -36,7 +36,7 @@ describe('Error pages', function () {
   })
 
   describe('errorPages set', function () {
-    var file404 = 'errorPages/404.html'
+    const file404 = 'errorPages/404.html'
     it('Should return 404 custom page if exists', function (done) {
       errorServer.get('/non-existent-file.html')
         .expect(defaultErrorPage(file404, true))
