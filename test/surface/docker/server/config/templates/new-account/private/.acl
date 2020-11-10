@@ -1,0 +1,10 @@
+# ACL resource for the private folder
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+
+# The owner has all permissions
+<#owner>
+    a acl:Authorization;
+    acl:agent <{{webId}}>;
+    acl:accessTo <./>;
+    acl:defaultForNew <./>;
+    acl:mode acl:Read, acl:Write, acl:Control.

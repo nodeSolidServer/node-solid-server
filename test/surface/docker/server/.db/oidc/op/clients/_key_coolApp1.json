@@ -1,0 +1,1 @@
+{"redirect_uris":["http://localhost:3001/redirect"],"client_id":"coolApp1","client_secret":"9ae94c0a2f86a02a5dfa8d0a522f8176","response_types":["code"],"grant_types":["authorization_code"],"application_type":"web","id_token_signed_response_alg":"RS256","token_endpoint_auth_method":"client_secret_basic"}

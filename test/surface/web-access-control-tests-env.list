@@ -1,0 +1,6 @@
+WEBID_ALICE=https://server/profile/card#me
+OIDC_ISSUER_ALICE=https://server
+STORAGE_ROOT_ALICE=https://server/
+WEBID_BOB=https://thirdparty/profile/card#me
+OIDC_ISSUER_BOB=https://thirdparty
+STORAGE_ROOT_BOB=https://thirdparty/
