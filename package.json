@@ -109,7 +109,7 @@
     "webid": "^0.3.11"
   },
   "devDependencies": {
-    "@solid/oidc-op": "^0.9.0",
+    "@solid/oidc-op": "^0.10.2",
     "@solid/solid-auth-oidc": "^0.3.0",
     "chai": "^4.2.0",
     "chai-as-promised": "^7.1.1",
