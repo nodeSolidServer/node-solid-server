@@ -9,7 +9,7 @@ RUN openssl req -new -x509 -days 365 -nodes \
   -subj "/C=RO/ST=Bucharest/L=Bucharest/O=IT/CN=www.example.ro"
 EXPOSE 443
 ADD config.json .
-ADD config ./config
-ADD data ./data
-ADD .db ./.db
+ADD config-test ./config-test
+ADD data-test ./data-test
+ADD .db-test ./.db-test
 CMD ./bin/solid-test start
