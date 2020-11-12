@@ -110,7 +110,7 @@
   },
   "devDependencies": {
     "@solid/oidc-op": "0.10.2",
-    "@solid/solid-auth-oidc": "0.3.0",
+    "@solid/solid-auth-oidc": "0.5.2",
     "chai": "4.2.0",
     "chai-as-promised": "7.1.1",
     "cross-env": "7.0.2",
