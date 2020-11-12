@@ -1,0 +1,5 @@
+ALICE_WEBID=https://server/profile/card#me
+SERVER_ROOT=https://server
+USERNAME=alice
+PASSWORD=123
+ACL_CACHE_TIME=5
