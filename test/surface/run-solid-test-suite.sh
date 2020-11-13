@@ -28,8 +28,8 @@ done
 
 docker ps -a
 docker logs server
-export COOKIE_ALICE="`docker run -e SERVER_ROOT="https://server" --network=testnet cookie`"
-export COOKIE_BOB="`docker run -e SERVER_ROOT="https://thirdparty" --network=testnet cookie`"
+export COOKIE_ALICE="`docker run --rm -e SERVER_ROOT="https://server" --network=testnet cookie`"
+export COOKIE_BOB="`docker run --rm -e SERVER_ROOT="https://thirdparty" --network=testnet cookie`"
 
 docker run --rm --network=testnet --env COOKIE="$COOKIE_ALICE" --env-file test/surface/webid-provider-tests-env.list webid-provider
 # docker run --rm --network=testnet --env COOKIE="$COOKIE" --env-file /tmp/env-vars-for-test-image.list solid-crud
