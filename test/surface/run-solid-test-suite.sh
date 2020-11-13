@@ -35,7 +35,7 @@ export COOKIE_ALICE="`docker run --rm -e SERVER_ROOT="https://server" --network=
 export COOKIE_BOB="`docker run --rm -e SERVER_ROOT="https://thirdparty" --network=testnet cookie`"
 
 docker run --rm --network=testnet --env COOKIE="$COOKIE_ALICE" --env-file test/surface/webid-provider-tests-env.list webid-provider
-# docker run --rm --network=testnet --env COOKIE="$COOKIE_ALICE" --env-file test/surface/solid-crud-tests-env.list solid-crud
+docker run --rm --network=testnet --env COOKIE="$COOKIE_ALICE" --env-file test/surface/solid-crud-tests-env.list solid-crud
 docker run --rm --network=testnet --env COOKIE_ALICE="$COOKIE_ALICE" --env COOKIE_BOB="$COOKIE_BOB" --env-file test/surface/web-access-control-tests-env.list web-access-control
 
 docker stop server
