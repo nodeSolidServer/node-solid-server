@@ -47,7 +47,7 @@ teardown || true
 setup
 startNss server
 # runTests webid-provider
-runTests solid-crud
-# startNss thirdparty
-# runTests web-access-control
+# runTests solid-crud
+startNss thirdparty
+runTests web-access-control
 teardown
