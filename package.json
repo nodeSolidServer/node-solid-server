@@ -124,7 +124,7 @@
     "randombytes": "2.1.0",
     "sinon": "9.2.1",
     "sinon-chai": "3.5.0",
-    "snyk": "1.425.3",
+    "snyk": "1.427.1",
     "standard": "16.0.2",
     "supertest": "6.0.1",
     "turtle-validator": "1.1.1",
