@@ -5,12 +5,8 @@ function setup {
   docker network create testnet
   docker build -t server test/surface/docker/server
   docker build -t cookie test/surface/docker/cookie
-  docker pull solidtestsuite/webid-provider-tests:latest
-  docker tag solidtestsuite/webid-provider-tests:latest webid-provider-tests
-  docker pull solidtestsuite/solid-crud-tests:nss-skips
-  docker tag solidtestsuite/solid-crud-tests:nss-skips solid-crud-tests
-  docker pull solidtestsuite/web-access-control-tests:latest
-  docker tag solidtestsuite/web-access-control-tests:latest web-access-control-tests
+  docker run -d --env-file test/surface/server-env.list --name server --network=testnet -v `pwd`:/travis -w /node-solid-server server /travis/bin/solid-test start --config-file /node-solid-server/config.json
+  docker run -d --env-file test/surface/thirdparty-env.list --name thirdparty --network=testnet -v `pwd`/test/surface:/surface server /node-solid-server/bin/solid-test start --config-file /surface/thirdparty-config.json
 }
 function teardown {
   docker stop `docker ps --filter network=testnet -q`
@@ -18,8 +14,7 @@ function teardown {
   docker network remove testnet
 }
 
-function startNss {
-  docker run -d --env-file test/surface/$1-env.list --name $1 --network=testnet -v `pwd`:/travis -w /node-solid-server server /travis/bin/solid-test start --config-file /node-solid-server/config.json
+function waitForNss {
   until docker run --rm --network=testnet solidtestsuite/webid-provider-tests curl -kI https://$1 2> /dev/null > /dev/null
   do
     echo Waiting for $1 to start, this can take up to a minute ...
@@ -34,20 +29,29 @@ function startNss {
 }
 
 function runTests {
-  echo "Running $1 tests against server with cookie $COOKIE_server"
+  docker pull solidtestsuite/$1:$2
+  
+  echo "Running $1 against server with cookie $COOKIE_server"
   docker run --rm --network=testnet \
     --env COOKIE="$COOKIE_server" \
     --env COOKIE_ALICE="$COOKIE_server" \
     --env COOKIE_BOB="$COOKIE_thirdparty" \
-    --env-file test/surface/$1-tests-env.list $1-tests
+    --env-file test/surface/$1-env.list solidtestsuite/$1:$2
 }
 
 # ...
 teardown || true
 setup
-startNss server
-# runTests webid-provider
-# runTests solid-crud
-startNss thirdparty
-runTests web-access-control
-teardown
+waitForNss server
+# runTests webid-provider-tests latest
+# runTests solid-crud-tests nss-skips
+waitForNss thirdparty
+env
+docker run -it --network=testnet \
+    --env COOKIE="$COOKIE_server" \
+    --env COOKIE_ALICE="$COOKIE_server" \
+    --env COOKIE_BOB="$COOKIE_thirdparty" \
+    --env-file test/surface/$1-env.list 
+  solidtestsuite/web-access-control-tests:latest /bin/bash
+# runTests web-access-control-tests latest
+# teardown
