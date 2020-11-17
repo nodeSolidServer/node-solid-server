@@ -5,9 +5,12 @@ function setup {
   docker network create testnet
   docker build -t server test/surface/docker/server
   docker build -t cookie test/surface/docker/cookie
-  docker pull solidtestsuite/webid-provider-tests:v1.2.0
+  docker pull solidtestsuite/webid-provider-tests:latest
+  docker tag solidtestsuite/webid-provider-tests:latest webid-provider-tests
   docker pull solidtestsuite/solid-crud-tests:nss-skips
+  docker tag solidtestsuite/solid-crud-tests:nss-skips solid-crud-tests
   docker pull solidtestsuite/web-access-control-tests:latest
+  docker tag solidtestsuite/web-access-control-tests:latest web-access-control-tests
 }
 function teardown {
   docker stop `docker ps --filter network=testnet -q`
@@ -27,7 +30,7 @@ function startNss {
 
   docker logs $1
   echo Getting cookie for $1...
-  export COOKIE_$1="`docker run --cap-add=SYS_ADMIN --network=testnet --env-file ./env-vars-$1.list cookie`"
+  export COOKIE_$1="`docker run --cap-add=SYS_ADMIN --network=testnet --env-file test/surface/$1-env.list cookie`"
 }
 
 function runTests {
@@ -36,15 +39,15 @@ function runTests {
     --env COOKIE="$COOKIE_server" \
     --env COOKIE_ALICE="$COOKIE_server" \
     --env COOKIE_BOB="$COOKIE_thirdparty" \
-    --env-file test/surface/$1-tests-env.list solidtestsuite/$1-tests
+    --env-file test/surface/$1-tests-env.list $1-tests
 }
 
 # ...
 teardown || true
 setup
 startNss server
-runTests webid-provider
-# runTests solid-crud
+# runTests webid-provider
+runTests solid-crud
 # startNss thirdparty
 # runTests web-access-control
 teardown
