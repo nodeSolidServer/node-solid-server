@@ -43,15 +43,18 @@ function runTests {
 teardown || true
 setup
 waitForNss server
-# runTests webid-provider-tests latest
-# runTests solid-crud-tests nss-skips
+runTests webid-provider-tests latest
+runTests solid-crud-tests nss-skips
 waitForNss thirdparty
-env
-docker run -it --network=testnet \
-    --env COOKIE="$COOKIE_server" \
-    --env COOKIE_ALICE="$COOKIE_server" \
-    --env COOKIE_BOB="$COOKIE_thirdparty" \
-    --env-file test/surface/$1-env.list 
-  solidtestsuite/web-access-control-tests:latest /bin/bash
-# runTests web-access-control-tests latest
-# teardown
+runTests web-access-control-tests nss-skips
+teardown
+
+# To debug, e.g. running web-access-control-tests jest interactively,
+# comment out `teardown` and uncomment this instead:
+# env
+# docker run -it --network=testnet \
+#     --env COOKIE="$COOKIE_server" \
+#     --env COOKIE_ALICE="$COOKIE_server" \
+#     --env COOKIE_BOB="$COOKIE_thirdparty" \
+#     --env-file test/surface/$1-env.list
+#   solidtestsuite/web-access-control-tests:latest /bin/bash
