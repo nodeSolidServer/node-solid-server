@@ -45,7 +45,7 @@ teardown || true
 setup
 waitForNss server
 runTests webid-provider-tests latest
-runTests solid-crud-tests nss-skips
+runTests solid-crud-tests latest
 waitForNss thirdparty
 runTests web-access-control-tests nss-skips
 teardown
