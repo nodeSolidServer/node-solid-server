@@ -47,7 +47,7 @@ waitForNss server
 runTests webid-provider-tests latest
 runTests solid-crud-tests nss-skips
 waitForNss thirdparty
-runTests web-access-control-tests nss-skips
+runTests web-access-control-tests latest
 teardown
 
 # To debug, e.g. running web-access-control-tests jest interactively,
