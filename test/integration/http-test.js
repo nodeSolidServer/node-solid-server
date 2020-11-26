@@ -481,6 +481,12 @@ describe('HTTP APIs', function () {
         .set('content-type', 'text/turtle')
         .expect(201, done)
     })
+    it('should fail if no contentType', function (done) {
+      server.put('/put-resource-1.ttl')
+        .send(putRequestBody)
+        .set('content-type', '')
+        .expect(415, done)
+    })
     it('should reject create .acl resource, if contentType not text/turtle', function (done) {
       server.put('/put-resource-1.acl')
         .send(putRequestBody)
