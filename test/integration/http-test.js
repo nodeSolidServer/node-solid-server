@@ -522,6 +522,20 @@ describe('HTTP APIs', function () {
       ])
     })
 
+    it('should return 405 status when deleting root folder', function (done) {
+      server.delete('/')
+        .expect(405)
+        .end((err, res) => {
+          if (err) return done(err)
+          try {
+            assert.equal(res.get('allow').includes('DELETE'), false) // ,'res methods')
+          } catch (err) {
+            return done(err)
+          }
+          done()
+        })
+    })
+
     it('should return 404 status when deleting a file that does not exists',
       function (done) {
         server.delete('/false-file-48484848')
