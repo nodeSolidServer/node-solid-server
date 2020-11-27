@@ -160,7 +160,7 @@ describe('LDP', function () {
     it('should fail if no content type is passed', () => {
       const stream = stringToStream('hello world')
       return ldp.put('/resources/testPut.txt', stream, null).catch(err => {
-        assert.equal(err.status, 415)
+        assert.equal(err.status, 400)
       })
     })
 

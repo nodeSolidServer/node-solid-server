@@ -481,11 +481,11 @@ describe('HTTP APIs', function () {
         .set('content-type', 'text/turtle')
         .expect(201, done)
     })
-    it('should fail if no contentType', function (done) {
+    it('should fail with 400 if no contentType', function (done) {
       server.put('/put-resource-1.ttl')
         .send(putRequestBody)
         .set('content-type', '')
-        .expect(415, done)
+        .expect(400, done)
     })
     it('should reject create .acl resource, if contentType not text/turtle', function (done) {
       server.put('/put-resource-1.acl')
@@ -619,23 +619,23 @@ describe('HTTP APIs', function () {
         .expect('location', /.*\.ttl/)
         .expect(201, done)
     })
-    it('should error with 415 if the body is empty and no content type is provided', function (done) {
+    it('should error with 400 if the body is empty and no content type is provided', function (done) {
       server.post('/post-tests/')
         .set('slug', 'post-resource-empty-fail')
-        .expect(415, done)
+        .expect(400, done)
     })
-    it('should error with 415 if the body is provided but there is no content-type header', function (done) {
+    it('should error with 400 if the body is provided but there is no content-type header', function (done) {
       server.post('/post-tests/')
         .set('slug', 'post-resource-rdf-no-content-type')
         .send(postRequest1Body)
         .set('content-type', '')
-        .expect(415, done)
+        .expect(400, done)
     })
     it('should error with 415 if file.acl and contentType not text/turtle', function (done) {
       server.post('/post-tests/')
         .set('slug', 'post-acl-no-content-type.acl')
         .send(postRequest1Body)
-        .set('content-type', '')
+        .set('content-type', 'text/plain')
         .expect(415, done)
     })
     it('should create new resource even if no trailing / is in the target',
