@@ -56,7 +56,9 @@
   "bugs": "https://github.com/solid/node-solid-server/issues",
   "dependencies": {
     "@solid/acl-check": "^0.4.3",
-    "@solid/oidc-auth-manager": "^0.23.4",
+    "@solid/oidc-auth-manager": "^0.24.0",
+    "@solid/oidc-op": "0.11.0",
+    "@solid/solid-auth-oidc": "^0.3.0",
     "async-lock": "^1.2.4",
     "body-parser": "^1.19.0",
     "bootstrap": "^3.4.1",
@@ -108,11 +110,9 @@
     "webid": "^0.3.11"
   },
   "devDependencies": {
-    "@solid/oidc-op": "0.10.3",
-    "@solid/solid-auth-oidc": "^0.3.0",
     "chai": "4.2.0",
     "chai-as-promised": "7.1.1",
-    "cross-env": "7.0.2",
+    "cross-env": "7.0.3",
     "dirty-chai": "2.0.1",
     "localstorage-memory": "1.0.3",
     "mocha": "8.2.1",
@@ -123,7 +123,7 @@
     "randombytes": "2.1.0",
     "sinon": "9.2.1",
     "sinon-chai": "3.5.0",
-    "snyk": "1.432.0",
+    "snyk": "1.434.0",
     "standard": "16.0.3",
     "supertest": "6.0.1",
     "turtle-validator": "1.1.1",
