@@ -529,7 +529,7 @@ describe('HTTP APIs', function () {
         .end((err, res) => {
           if (err) return done(err)
           try {
-            assert.equal(res.get('allow').includes('DELETE'), false) // ,'res methods')
+            assert.equal(res.get('allow').includes('DELETE'), false)
           } catch (err) {
             return done(err)
           }

@@ -32,6 +32,20 @@ describe('LDP', function () {
     webid: false
   })
 
+  describe('cannot delete podRoot', function () {
+    it('should error 405 when deleting podRoot', () => {
+      return ldp.delete('/').catch(err => {
+        assert.equal(err.status, 405)
+      })
+    })
+    it.skip('should error 405 when deleting podRoot/.acl', async () => {
+      await ldp.put('/.acl', '', 'text/turtle')
+      return ldp.delete('/.acl').catch(err => {
+        assert.equal(err.status, 405)
+      })
+    })
+  })
+
   describe('readResource', function () {
     it('return 404 if file does not exist', () => {
       return ldp.readResource('/resources/unexistent.ttl').catch(err => {
