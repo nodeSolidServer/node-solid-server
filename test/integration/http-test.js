@@ -518,6 +518,7 @@ describe('HTTP APIs', function () {
       // Ensure all these are finished before running tests
       return Promise.all([
         rm('/false-file-48484848'),
+        createTestResource('/.acl'),
         createTestResource('/delete-test-empty-container/.meta.acl'),
         createTestResource('/put-resource-1.ttl'),
         createTestResource('/put-resource-with-acl.ttl'),
@@ -526,6 +527,34 @@ describe('HTTP APIs', function () {
         createTestResource('/put-resource-with-acl.txt.acl'),
         createTestResource('/delete-test-non-empty/test.ttl')
       ])
+    })
+
+    it('should return 405 status when deleting root folder', function (done) {
+      server.delete('/')
+        .expect(405)
+        .end((err, res) => {
+          if (err) return done(err)
+          try {
+            assert.equal(res.get('allow').includes('DELETE'), false)
+          } catch (err) {
+            return done(err)
+          }
+          done()
+        })
+    })
+
+    it('should return 405 status when deleting root acl', function (done) {
+      server.delete('/' + suffixAcl)
+        .expect(405)
+        .end((err, res) => {
+          if (err) return done(err)
+          try {
+            assert.equal(res.get('allow').includes('DELETE'), false) // ,'res methods')
+          } catch (err) {
+            return done(err)
+          }
+          done()
+        })
     })
 
     it('should return 404 status when deleting a file that does not exists',
