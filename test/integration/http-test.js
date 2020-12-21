@@ -624,19 +624,31 @@ describe('HTTP APIs', function () {
         .set('slug', 'post-resource-empty-fail')
         .expect(400, done)
     })
-    it('should error with 400 if the body is provided but there is no content-type header', function (done) {
+    it('should error with 403 if auxiliary resource file.acl', function (done) {
       server.post('/post-tests/')
-        .set('slug', 'post-resource-rdf-no-content-type')
+        .set('slug', 'post-acl-no-content-type.acl')
+        .send(postRequest1Body)
+        .set('content-type', '')
+        .expect(403, done)
+    })
+    it('should error with 403 if auxiliary resource .meta', function (done) {
+      server.post('/post-tests/')
+        .set('slug', '.meta')
         .send(postRequest1Body)
         .set('content-type', '')
         .expect(400, done)
     })
-    it('should error with 415 if file.acl and contentType not text/turtle', function (done) {
+    it('should error with 403 if the body is empty and no content type is provided', function (done) {
       server.post('/post-tests/')
-        .set('slug', 'post-acl-no-content-type.acl')
+        .set('slug', 'post-resource-empty-fail')
+        .expect(403, done)
+    })
+    it('should error with 403 if the body is provided but there is no content-type header', function (done) {
+      server.post('/post-tests/')
+        .set('slug', 'post-resource-rdf-no-content-type')
         .send(postRequest1Body)
-        .set('content-type', 'text/plain')
-        .expect(415, done)
+        .set('content-type', '')
+        .expect(403, done)
     })
     it('should create new resource even if no trailing / is in the target',
       function (done) {
