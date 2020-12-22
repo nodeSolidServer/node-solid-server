@@ -1,0 +1,15 @@
+# ACL for the default .well-known/ resource
+# Server operators will be able to override it as they wish
+# Public-readable
+
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+
+<#public>
+    a acl:Authorization;
+
+    acl:agentClass foaf:Agent;  # everyone
+
+    acl:accessTo </.well-known/>;
+
+    acl:mode acl:Read.
