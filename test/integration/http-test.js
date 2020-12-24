@@ -23,7 +23,7 @@ const { assert, expect } = require('chai')
  * @param containerName {String} Container name used as slug, no leading `/`
  * @return {Promise} Promise obj, for use with Mocha's `before()` etc
  */
-function createTestContainer (containerName) {
+/* function createTestContainer (containerName) {
   return new Promise(function (resolve, reject) {
     server.post('/')
       .set('content-type', 'text/turtle')
@@ -34,7 +34,7 @@ function createTestContainer (containerName) {
         error ? reject(error) : resolve(res)
       })
   })
-}
+} */
 
 /**
  * Creates a new turtle test resource via an LDP PUT
@@ -522,10 +522,42 @@ describe('HTTP APIs', function () {
         .expect(hasHeader('acl', 'bar' + suffixAcl))
         .expect(200, done)
     })
-    it('should return 409 code when trying to put to a container',
+    /* it('should return 409 code when trying to put to a container',
       function (done) {
         server.put('/')
           .expect(409, done)
+      }
+    ) */
+    it('should return 400 when trying to put to a container without BasicContainer link',
+      function (done) {
+        server.put('/foo/bar/test/')
+          .set('content-type', 'text/turtle')
+          // .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
+          .expect(400, done)
+      }
+    )
+    it('should return 201 when trying to put to a container without content-type',
+      function (done) {
+        server.put('/foo/bar/test/')
+          // .set('content-type', 'text/turtle')
+          .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
+          .expect(201, done)
+      }
+    )
+    it('should return 201 code when trying to put to a container',
+      function (done) {
+        server.put('/foo/bar/test/')
+          .set('content-type', 'text/turtle')
+          .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
+          .expect(201, done)
+      }
+    )
+    it('should return 400 code when trying to put to a container without end /',
+      function (done) {
+        server.put('/foo/bar/test')
+          .set('content-type', 'text/turtle')
+          .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
+          .expect(400, done)
       }
     )
     // Cleanup
@@ -636,9 +668,10 @@ describe('HTTP APIs', function () {
     before(function () {
       // Ensure all these are finished before running tests
       return Promise.all([
-        createTestContainer('post-tests'),
-        rm('post-test-target.ttl'),
-        createTestResource('/post-tests/put-resource')
+        createTestResource('/post-tests/put-resource'),
+        // createTestContainer('post-tests'),
+        rm('post-test-target.ttl') // ,
+        // createTestResource('/post-tests/put-resource')
       ])
     })
 
