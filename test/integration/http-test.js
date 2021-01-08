@@ -517,6 +517,38 @@ describe('HTTP APIs', function () {
           .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
           .expect(201, done)
       }
+    ) */
+    it('should return 400 when trying to put to a container without BasicContainer link',
+      function (done) {
+        server.put('/foo/bar/test/')
+          .set('content-type', 'text/turtle')
+          // .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
+          .expect(400, done)
+      }
+    )
+    it('should return 201 when trying to put to a container without content-type',
+      function (done) {
+        server.put('/foo/bar/test/')
+          // .set('content-type', 'text/turtle')
+          .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
+          .expect(201, done)
+      }
+    )
+    it('should return 201 code when trying to put to a container',
+      function (done) {
+        server.put('/foo/bar/test/')
+          .set('content-type', 'text/turtle')
+          .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
+          .expect(201, done)
+      }
+    )
+    it('should return 400 code when trying to put to a container without end /',
+      function (done) {
+        server.put('/foo/bar/test')
+          .set('content-type', 'text/turtle')
+          .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
+          .expect(400, done)
+      }
     )
     // Cleanup
     after(function () {
