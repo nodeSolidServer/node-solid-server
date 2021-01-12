@@ -475,7 +475,7 @@ describe('HTTP APIs', function () {
         .end(function (err) {
           if (err) return done(err)
           if (fs.existsSync(path.join(__dirname, '../resources/put-resource-1.ttl$.txt'))) {
-            return done(new Error('Can read old file that should be deleted'))
+            return done(new Error('Can read old file that should have been deleted'))
           }
           done()
         })
@@ -494,7 +494,7 @@ describe('HTTP APIs', function () {
         .expect(hasHeader('acl', 'baz.ttl' + suffixAcl))
         .expect(201, done)
     })
-    it('should not create new resource if folder with same name', function (done) {
+    it('should not create new resource if folder with same name exists', function (done) {
       server.put('/foo/bar')
         .send(putRequestBody)
         .set('content-type', 'text/turtle')
@@ -517,14 +517,6 @@ describe('HTTP APIs', function () {
           .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
           .expect(201, done)
       }
-    ) */
-    it('should return 400 when trying to put to a container without BasicContainer link',
-      function (done) {
-        server.put('/foo/bar/test/')
-          .set('content-type', 'text/turtle')
-          // .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
-          .expect(400, done)
-      }
     )
     it('should return 201 when trying to put to a container without content-type',
       function (done) {
@@ -540,14 +532,6 @@ describe('HTTP APIs', function () {
           .set('content-type', 'text/turtle')
           .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
           .expect(201, done)
-      }
-    )
-    it('should return 400 code when trying to put to a container without end /',
-      function (done) {
-        server.put('/foo/bar/test')
-          .set('content-type', 'text/turtle')
-          .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
-          .expect(400, done)
       }
     )
     // Cleanup
@@ -692,7 +676,7 @@ describe('HTTP APIs', function () {
         .expect('location', /.*\.ttl/)
         .expect(201, done)
     })
-    it('should error with 404 to create folder with same name than a resource', function (done) {
+    it('should error with 404 to create folder with same name as a resource', function (done) {
       server.post('/post-tests/')
         .set('content-type', 'text/turtle')
         .set('slug', 'put-resource')
@@ -803,7 +787,7 @@ describe('HTTP APIs', function () {
         .expect('content-type', /text\/turtle/)
         .expect(200, done)
     })
-    it('should error with 404 to create resource with same name than a container', function (done) {
+    it('should error with 404 to create resource with same name as a container', function (done) {
       server.post('/post-tests/')
         .send(postRequest1Body)
         .set('content-type', 'text/turtle')
