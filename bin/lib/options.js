@@ -50,7 +50,7 @@ module.exports = [
   },
   {
     name: 'config-path',
-    question: 'Path to the config directory (for example: /etc/solid-server)',
+    question: 'Path to the config directory (for example: ./config)',
     default: './config',
     prompt: true
   },
