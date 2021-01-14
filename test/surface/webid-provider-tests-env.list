@@ -1,0 +1,4 @@
+ALICE_WEBID=https://server/profile/card#me
+SERVER_ROOT=https://server
+USERNAME=alice
+PASSWORD=123

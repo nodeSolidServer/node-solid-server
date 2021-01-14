@@ -15,7 +15,7 @@ const EmailService = require('../../lib/services/email-service')
 
 const templatePath = path.join(__dirname, '../../default-templates/emails')
 
-var host, accountManager, emailService
+let host, accountManager, emailService
 
 beforeEach(() => {
   host = SolidHost.from({ serverUri: 'https://example.com' })

@@ -1,10 +1,10 @@
-var assert = require('chai').assert
-var path = require('path')
-var nock = require('nock')
-var { checkDnsSettings, setupSupertestServer } = require('../utils')
+const assert = require('chai').assert
+const path = require('path')
+const nock = require('nock')
+const { checkDnsSettings, setupSupertestServer } = require('../utils')
 
 describe('CORS Proxy', () => {
-  var server = setupSupertestServer({
+  const server = setupSupertestServer({
     root: path.join(__dirname, '../resources'),
     corsProxy: '/proxy',
     webid: false

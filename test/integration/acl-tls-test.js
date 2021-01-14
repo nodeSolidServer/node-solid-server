@@ -1,9 +1,9 @@
-var assert = require('chai').assert
-var fs = require('fs-extra')
-var $rdf = require('rdflib')
-var request = require('request')
-var path = require('path')
-var { cleanDir } = require('../utils')
+const assert = require('chai').assert
+const fs = require('fs-extra')
+const $rdf = require('rdflib')
+const request = require('request')
+const path = require('path')
+const { cleanDir } = require('../utils')
 
 /**
  * Note: this test suite requires an internet connection, since it actually
@@ -11,13 +11,13 @@ var { cleanDir } = require('../utils')
  */
 
 // Helper functions for the FS
-var rm = require('../utils').rm
+const rm = require('../utils').rm
 // var write = require('./utils').write
 // var cp = require('./utils').cp
 // var read = require('./utils').read
 
-var ldnode = require('../../index')
-var ns = require('solid-namespace')($rdf)
+const ldnode = require('../../index')
+const ns = require('solid-namespace')($rdf)
 
 const port = 7777
 const serverUri = 'https://localhost:7777'
@@ -25,24 +25,24 @@ const rootPath = path.join(__dirname, '../resources/acl-tls')
 const dbPath = path.join(rootPath, 'db')
 const configPath = path.join(rootPath, 'config')
 
-var aclExtension = '.acl'
-var metaExtension = '.meta'
+const aclExtension = '.acl'
+const metaExtension = '.meta'
 
-var testDir = 'acl-tls/testDir'
-var testDirAclFile = testDir + '/' + aclExtension
-var testDirMetaFile = testDir + '/' + metaExtension
+const testDir = 'acl-tls/testDir'
+const testDirAclFile = testDir + '/' + aclExtension
+const testDirMetaFile = testDir + '/' + metaExtension
 
-var abcFile = testDir + '/abc.ttl'
+const abcFile = testDir + '/abc.ttl'
 
-var globFile = testDir + '/*'
+const globFile = testDir + '/*'
 
-var origin1 = 'http://example.org/'
-var origin2 = 'http://example.com/'
+const origin1 = 'http://example.org/'
+const origin2 = 'http://example.com/'
 
-var user1 = 'https://tim.localhost:7777/profile/card#me'
-var user2 = 'https://nicola.localhost:7777/profile/card#me'
-var address = 'https://tim.localhost:7777'
-var userCredentials = {
+const user1 = 'https://tim.localhost:7777/profile/card#me'
+const user2 = 'https://nicola.localhost:7777/profile/card#me'
+const address = 'https://tim.localhost:7777'
+const userCredentials = {
   user1: {
     cert: fs.readFileSync(path.join(__dirname, '../keys/user1-cert.pem')),
     key: fs.readFileSync(path.join(__dirname, '../keys/user1-key.pem'))
@@ -61,8 +61,8 @@ var userCredentials = {
 // username/password pair or other login method) to "bridge" from webid-tls to
 // webid-oidc.
 describe.skip('ACL with WebID+TLS', function () {
-  var ldpHttpsServer
-  var serverConfig = {
+  let ldpHttpsServer
+  const serverConfig = {
     root: rootPath,
     serverUri,
     dbPath,
@@ -77,7 +77,7 @@ describe.skip('ACL with WebID+TLS', function () {
     strictOrigin: true,
     host: { serverUri }
   }
-  var ldp = ldnode.createServer(serverConfig)
+  const ldp = ldnode.createServer(serverConfig)
 
   before(function (done) {
     ldpHttpsServer = ldp.listen(port, () => {
@@ -93,7 +93,7 @@ describe.skip('ACL with WebID+TLS', function () {
   })
 
   function createOptions (path, user) {
-    var options = {
+    const options = {
       url: address + path,
       headers: {
         accept: 'text/turtle',
@@ -109,7 +109,7 @@ describe.skip('ACL with WebID+TLS', function () {
   describe('no ACL', function () {
     it('should return 500 for any resource', function (done) {
       rm('.acl')
-      var options = createOptions('/acl-tls/no-acl/', 'user1')
+      const options = createOptions('/acl-tls/no-acl/', 'user1')
       request(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 500)
@@ -119,7 +119,7 @@ describe.skip('ACL with WebID+TLS', function () {
 
     it('should have `User` set in the Response Header', function (done) {
       rm('.acl')
-      var options = createOptions('/acl-tls/no-acl/', 'user1')
+      const options = createOptions('/acl-tls/no-acl/', 'user1')
       request(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.headers.user, 'https://user1.databox.me/profile/card#me')
@@ -146,7 +146,7 @@ describe.skip('ACL with WebID+TLS', function () {
   describe('empty .acl', function () {
     describe('with no default in parent path', function () {
       it('should give no access', function (done) {
-        var options = createOptions('/acl-tls/empty-acl/test-folder', 'user1')
+        const options = createOptions('/acl-tls/empty-acl/test-folder', 'user1')
         options.body = ''
         request.put(options, function (error, response, body) {
           assert.equal(error, null)
@@ -155,7 +155,7 @@ describe.skip('ACL with WebID+TLS', function () {
         })
       })
       it('should not let edit the .acl', function (done) {
-        var options = createOptions('/acl-tls/empty-acl/.acl', 'user1')
+        const options = createOptions('/acl-tls/empty-acl/.acl', 'user1')
         options.headers = {
           'content-type': 'text/turtle'
         }
@@ -167,7 +167,7 @@ describe.skip('ACL with WebID+TLS', function () {
         })
       })
       it('should not let read the .acl', function (done) {
-        var options = createOptions('/acl-tls/empty-acl/.acl', 'user1')
+        const options = createOptions('/acl-tls/empty-acl/.acl', 'user1')
         options.headers = {
           accept: 'text/turtle'
         }
@@ -188,7 +188,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
 
       it('should fail to create a container', function (done) {
-        var options = createOptions('/acl-tls/write-acl/empty-acl/test-folder/', 'user1')
+        const options = createOptions('/acl-tls/write-acl/empty-acl/test-folder/', 'user1')
         options.body = ''
         request.put(options, function (error, response, body) {
           assert.equal(error, null)
@@ -197,7 +197,7 @@ describe.skip('ACL with WebID+TLS', function () {
         })
       })
       it('should not allow creation of new files', function (done) {
-        var options = createOptions('/acl-tls/write-acl/empty-acl/test-file', 'user1')
+        const options = createOptions('/acl-tls/write-acl/empty-acl/test-file', 'user1')
         options.body = ''
         request.put(options, function (error, response, body) {
           assert.equal(error, null)
@@ -206,7 +206,7 @@ describe.skip('ACL with WebID+TLS', function () {
         })
       })
       it('should not allow creation of new files in deeper paths', function (done) {
-        var options = createOptions('/acl-tls/write-acl/empty-acl/test-folder/test-file', 'user1')
+        const options = createOptions('/acl-tls/write-acl/empty-acl/test-folder/test-file', 'user1')
         options.body = ''
         request.put(options, function (error, response, body) {
           assert.equal(error, null)
@@ -215,7 +215,7 @@ describe.skip('ACL with WebID+TLS', function () {
         })
       })
       it('Should not create empty acl file', function (done) {
-        var options = createOptions('/acl-tls/write-acl/empty-acl/another-empty-folder/test-file.acl', 'user1')
+        const options = createOptions('/acl-tls/write-acl/empty-acl/another-empty-folder/test-file.acl', 'user1')
         options.headers = {
           'content-type': 'text/turtle'
         }
@@ -227,7 +227,7 @@ describe.skip('ACL with WebID+TLS', function () {
         })
       })
       it('should not return text/turtle for the acl file', function (done) {
-        var options = createOptions('/acl-tls/write-acl/.acl', 'user1')
+        const options = createOptions('/acl-tls/write-acl/.acl', 'user1')
         options.headers = {
           accept: 'text/turtle'
         }
@@ -239,7 +239,7 @@ describe.skip('ACL with WebID+TLS', function () {
         })
       })
       it('should create test file', function (done) {
-        var options = createOptions('/acl-tls/write-acl/test-file', 'user1')
+        const options = createOptions('/acl-tls/write-acl/test-file', 'user1')
         options.headers = {
           'content-type': 'text/turtle'
         }
@@ -251,7 +251,7 @@ describe.skip('ACL with WebID+TLS', function () {
         })
       })
       it("should create test file's acl file", function (done) {
-        var options = createOptions('/acl-tls/write-acl/test-file.acl', 'user1')
+        const options = createOptions('/acl-tls/write-acl/test-file.acl', 'user1')
         options.headers = {
           'content-type': 'text/turtle'
         }
@@ -263,7 +263,7 @@ describe.skip('ACL with WebID+TLS', function () {
         })
       })
       it("should not access test file's acl file", function (done) {
-        var options = createOptions('/acl-tls/write-acl/test-file.acl', 'user1')
+        const options = createOptions('/acl-tls/write-acl/test-file.acl', 'user1')
         options.headers = {
           accept: 'text/turtle'
         }
@@ -291,7 +291,7 @@ describe.skip('ACL with WebID+TLS', function () {
     })
 
     it('should PUT new ACL file', function (done) {
-      var options = createOptions('/acl-tls/origin/test-folder/.acl', 'user1', 'text/turtle')
+      const options = createOptions('/acl-tls/origin/test-folder/.acl', 'user1', 'text/turtle')
       options.headers = {
         'content-type': 'text/turtle'
       }
@@ -314,7 +314,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it('user1 should be able to access test directory', function (done) {
-      var options = createOptions('/acl-tls/origin/test-folder/', 'user1')
+      const options = createOptions('/acl-tls/origin/test-folder/', 'user1')
       options.headers.origin = origin1
 
       request.head(options, function (error, response, body) {
@@ -325,7 +325,7 @@ describe.skip('ACL with WebID+TLS', function () {
     })
     it('user1 should be able to access to test directory when origin is valid',
       function (done) {
-        var options = createOptions('/acl-tls/origin/test-folder/', 'user1')
+        const options = createOptions('/acl-tls/origin/test-folder/', 'user1')
         options.headers.origin = origin1
 
         request.head(options, function (error, response, body) {
@@ -336,7 +336,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     it('user1 should not be able to access test directory when origin is invalid',
       function (done) {
-        var options = createOptions('/acl-tls/origin/test-folder/', 'user1')
+        const options = createOptions('/acl-tls/origin/test-folder/', 'user1')
         options.headers.origin = origin2
 
         request.head(options, function (error, response, body) {
@@ -346,7 +346,7 @@ describe.skip('ACL with WebID+TLS', function () {
         })
       })
     it('agent not should be able to access test directory', function (done) {
-      var options = createOptions('/acl-tls/origin/test-folder/')
+      const options = createOptions('/acl-tls/origin/test-folder/')
       options.headers.origin = origin1
 
       request.head(options, function (error, response, body) {
@@ -357,7 +357,7 @@ describe.skip('ACL with WebID+TLS', function () {
     })
     it('agent should be able to access to test directory when origin is valid',
       function (done) {
-        var options = createOptions('/acl-tls/origin/test-folder/', 'user1')
+        const options = createOptions('/acl-tls/origin/test-folder/', 'user1')
         options.headers.origin = origin1
 
         request.head(options, function (error, response, body) {
@@ -368,7 +368,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     it('agent should not be able to access test directory when origin is invalid',
       function (done) {
-        var options = createOptions('/acl-tls/origin/test-folder/')
+        const options = createOptions('/acl-tls/origin/test-folder/')
         options.headers.origin = origin2
 
         request.head(options, function (error, response, body) {
@@ -389,7 +389,7 @@ describe.skip('ACL with WebID+TLS', function () {
     })
 
     it('should PUT new ACL file', function (done) {
-      var options = createOptions('/acl-tls/origin/test-folder/.acl', 'user1', 'text/turtle')
+      const options = createOptions('/acl-tls/origin/test-folder/.acl', 'user1', 'text/turtle')
       options.headers = {
         'content-type': 'text/turtle'
       }
@@ -415,7 +415,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it('user1 should be able to access test directory', function (done) {
-      var options = createOptions('/acl-tls/origin/test-folder/', 'user1')
+      const options = createOptions('/acl-tls/origin/test-folder/', 'user1')
       options.headers.origin = origin1
 
       request.head(options, function (error, response, body) {
@@ -426,7 +426,7 @@ describe.skip('ACL with WebID+TLS', function () {
     })
     it('user1 should be able to access to test directory when origin is valid',
       function (done) {
-        var options = createOptions('/acl-tls/origin/test-folder/', 'user1')
+        const options = createOptions('/acl-tls/origin/test-folder/', 'user1')
         options.headers.origin = origin1
 
         request.head(options, function (error, response, body) {
@@ -437,7 +437,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     it('user1 should not be able to access test directory when origin is invalid',
       function (done) {
-        var options = createOptions('/acl-tls/origin/test-folder/', 'user1')
+        const options = createOptions('/acl-tls/origin/test-folder/', 'user1')
         options.headers.origin = origin2
 
         request.head(options, function (error, response, body) {
@@ -447,7 +447,7 @@ describe.skip('ACL with WebID+TLS', function () {
         })
       })
     it('agent should not be able to access test directory for logged in users', function (done) {
-      var options = createOptions('/acl-tls/origin/test-folder/')
+      const options = createOptions('/acl-tls/origin/test-folder/')
       options.headers.origin = origin1
 
       request.head(options, function (error, response, body) {
@@ -458,7 +458,7 @@ describe.skip('ACL with WebID+TLS', function () {
     })
     it('agent should be able to access to test directory when origin is valid',
       function (done) {
-        var options = createOptions('/acl-tls/origin/test-folder/', 'user1')
+        const options = createOptions('/acl-tls/origin/test-folder/', 'user1')
         options.headers.origin = origin1
 
         request.head(options, function (error, response, body) {
@@ -469,7 +469,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     it('agent should not be able to access test directory when origin is invalid',
       function (done) {
-        var options = createOptions('/acl-tls/origin/test-folder/')
+        const options = createOptions('/acl-tls/origin/test-folder/')
         options.headers.origin = origin2
 
         request.head(options, function (error, response, body) {
@@ -485,9 +485,9 @@ describe.skip('ACL with WebID+TLS', function () {
   })
 
   describe('Read-only', function () {
-    var body = fs.readFileSync(path.join(__dirname, '../resources/acl-tls/tim.localhost/read-acl/.acl'))
+    const body = fs.readFileSync(path.join(__dirname, '../resources/acl-tls/tim.localhost/read-acl/.acl'))
     it('user1 should be able to access ACL file', function (done) {
-      var options = createOptions('/acl-tls/read-acl/.acl', 'user1')
+      const options = createOptions('/acl-tls/read-acl/.acl', 'user1')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 200)
@@ -495,7 +495,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it('user1 should be able to access test directory', function (done) {
-      var options = createOptions('/acl-tls/read-acl/', 'user1')
+      const options = createOptions('/acl-tls/read-acl/', 'user1')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 200)
@@ -503,7 +503,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it('user1 should be able to modify ACL file', function (done) {
-      var options = createOptions('/acl-tls/read-acl/.acl', 'user1')
+      const options = createOptions('/acl-tls/read-acl/.acl', 'user1')
       options.headers = {
         'content-type': 'text/turtle'
       }
@@ -515,7 +515,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it('user2 should be able to access test directory', function (done) {
-      var options = createOptions('/acl-tls/read-acl/', 'user2')
+      const options = createOptions('/acl-tls/read-acl/', 'user2')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 200)
@@ -523,7 +523,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it('user2 should not be able to access ACL file', function (done) {
-      var options = createOptions('/acl-tls/read-acl/.acl', 'user2')
+      const options = createOptions('/acl-tls/read-acl/.acl', 'user2')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 403)
@@ -531,7 +531,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it('user2 should not be able to modify ACL file', function (done) {
-      var options = createOptions('/acl-tls/read-acl/.acl', 'user2')
+      const options = createOptions('/acl-tls/read-acl/.acl', 'user2')
       options.headers = {
         'content-type': 'text/turtle'
       }
@@ -543,7 +543,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it('agent should be able to access test direcotory', function (done) {
-      var options = createOptions('/acl-tls/read-acl/')
+      const options = createOptions('/acl-tls/read-acl/')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 200)
@@ -551,7 +551,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it('agent should not be able to modify ACL file', function (done) {
-      var options = createOptions('/acl-tls/read-acl/.acl')
+      const options = createOptions('/acl-tls/read-acl/.acl')
       options.headers = {
         'content-type': 'text/turtle'
       }
@@ -566,31 +566,31 @@ describe.skip('ACL with WebID+TLS', function () {
 
   describe.skip('Glob', function () {
     it('user2 should be able to send glob request', function (done) {
-      var options = createOptions(globFile, 'user2')
+      const options = createOptions(globFile, 'user2')
       request.get(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 200)
-        var globGraph = $rdf.graph()
+        const globGraph = $rdf.graph()
         $rdf.parse(body, globGraph, address + testDir + '/', 'text/turtle')
-        var authz = globGraph.the(undefined, undefined, ns.acl('Authorization'))
+        const authz = globGraph.the(undefined, undefined, ns.acl('Authorization'))
         assert.equal(authz, null)
         done()
       })
     })
     it('user1 should be able to send glob request', function (done) {
-      var options = createOptions(globFile, 'user1')
+      const options = createOptions(globFile, 'user1')
       request.get(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 200)
-        var globGraph = $rdf.graph()
+        const globGraph = $rdf.graph()
         $rdf.parse(body, globGraph, address + testDir + '/', 'text/turtle')
-        var authz = globGraph.the(undefined, undefined, ns.acl('Authorization'))
+        const authz = globGraph.the(undefined, undefined, ns.acl('Authorization'))
         assert.equal(authz, null)
         done()
       })
     })
     it('user1 should be able to delete ACL file', function (done) {
-      var options = createOptions(testDirAclFile, 'user1')
+      const options = createOptions(testDirAclFile, 'user1')
       request.del(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 200)
@@ -602,7 +602,7 @@ describe.skip('ACL with WebID+TLS', function () {
   describe('Append-only', function () {
     // var body = fs.readFileSync(__dirname + '/resources/acl-tls/append-acl/abc.ttl.acl')
     it("user1 should be able to access test file's ACL file", function (done) {
-      var options = createOptions('/acl-tls/append-acl/abc.ttl.acl', 'user1')
+      const options = createOptions('/acl-tls/append-acl/abc.ttl.acl', 'user1')
       request.head(options, function (error, response) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 200)
@@ -610,7 +610,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it.skip('user1 should be able to PATCH a resource', function (done) {
-      var options = createOptions('/acl-tls/append-inherited/test.ttl', 'user1')
+      const options = createOptions('/acl-tls/append-inherited/test.ttl', 'user1')
       options.headers = {
         'content-type': 'application/sparql-update'
       }
@@ -622,7 +622,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it('user1 should be able to access test file', function (done) {
-      var options = createOptions('/acl-tls/append-acl/abc.ttl', 'user1')
+      const options = createOptions('/acl-tls/append-acl/abc.ttl', 'user1')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 200)
@@ -631,7 +631,7 @@ describe.skip('ACL with WebID+TLS', function () {
     })
     // TODO POST instead of PUT
     it('user1 should be able to modify test file', function (done) {
-      var options = createOptions('/acl-tls/append-acl/abc.ttl', 'user1')
+      const options = createOptions('/acl-tls/append-acl/abc.ttl', 'user1')
       options.headers = {
         'content-type': 'text/turtle'
       }
@@ -643,7 +643,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it("user2 should not be able to access test file's ACL file", function (done) {
-      var options = createOptions('/acl-tls/append-acl/abc.ttl.acl', 'user2')
+      const options = createOptions('/acl-tls/append-acl/abc.ttl.acl', 'user2')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 403)
@@ -651,7 +651,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it('user2 should not be able to access test file', function (done) {
-      var options = createOptions('/acl-tls/append-acl/abc.ttl', 'user2')
+      const options = createOptions('/acl-tls/append-acl/abc.ttl', 'user2')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 403)
@@ -659,7 +659,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it('user2 (with append permission) cannot use PUT to append', function (done) {
-      var options = createOptions('/acl-tls/append-acl/abc.ttl', 'user2')
+      const options = createOptions('/acl-tls/append-acl/abc.ttl', 'user2')
       options.headers = {
         'content-type': 'text/turtle'
       }
@@ -671,7 +671,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it('agent should not be able to access test file', function (done) {
-      var options = createOptions('/acl-tls/append-acl/abc.ttl')
+      const options = createOptions('/acl-tls/append-acl/abc.ttl')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 401)
@@ -679,7 +679,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it('agent (with append permissions) should not PUT', function (done) {
-      var options = createOptions('/acl-tls/append-acl/abc.ttl')
+      const options = createOptions('/acl-tls/append-acl/abc.ttl')
       options.headers = {
         'content-type': 'text/turtle'
       }
@@ -696,7 +696,7 @@ describe.skip('ACL with WebID+TLS', function () {
   })
 
   describe('Restricted', function () {
-    var body = '<#Owner> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
+    const body = '<#Owner> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
       ' <http://www.w3.org/ns/auth/acl#accessTo> <./abc2.ttl>;\n' +
       ' <http://www.w3.org/ns/auth/acl#agent> <' + user1 + '>;\n' +
       ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Control> .\n' +
@@ -705,7 +705,7 @@ describe.skip('ACL with WebID+TLS', function () {
       ' <http://www.w3.org/ns/auth/acl#agent> <' + user2 + '>;\n' +
       ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>.\n'
     it("user1 should be able to modify test file's ACL file", function (done) {
-      var options = createOptions('/acl-tls/append-acl/abc2.ttl.acl', 'user1')
+      const options = createOptions('/acl-tls/append-acl/abc2.ttl.acl', 'user1')
       options.headers = {
         'content-type': 'text/turtle'
       }
@@ -717,7 +717,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it("user1 should be able to access test file's ACL file", function (done) {
-      var options = createOptions('/acl-tls/append-acl/abc2.ttl.acl', 'user1')
+      const options = createOptions('/acl-tls/append-acl/abc2.ttl.acl', 'user1')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 200)
@@ -725,7 +725,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it('user1 should be able to access test file', function (done) {
-      var options = createOptions('/acl-tls/append-acl/abc2.ttl', 'user1')
+      const options = createOptions('/acl-tls/append-acl/abc2.ttl', 'user1')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 200)
@@ -733,7 +733,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it('user1 should be able to modify test file', function (done) {
-      var options = createOptions('/acl-tls/append-acl/abc2.ttl', 'user1')
+      const options = createOptions('/acl-tls/append-acl/abc2.ttl', 'user1')
       options.headers = {
         'content-type': 'text/turtle'
       }
@@ -745,7 +745,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it('user2 should be able to access test file', function (done) {
-      var options = createOptions('/acl-tls/append-acl/abc2.ttl', 'user2')
+      const options = createOptions('/acl-tls/append-acl/abc2.ttl', 'user2')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 200)
@@ -753,7 +753,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it("user2 should not be able to access test file's ACL file", function (done) {
-      var options = createOptions('/acl-tls/append-acl/abc2.ttl.acl', 'user2')
+      const options = createOptions('/acl-tls/append-acl/abc2.ttl.acl', 'user2')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 403)
@@ -761,7 +761,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it('user2 should be able to modify test file', function (done) {
-      var options = createOptions('/acl-tls/append-acl/abc2.ttl', 'user2')
+      const options = createOptions('/acl-tls/append-acl/abc2.ttl', 'user2')
       options.headers = {
         'content-type': 'text/turtle'
       }
@@ -773,7 +773,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it('agent should not be able to access test file', function (done) {
-      var options = createOptions('/acl-tls/append-acl/abc2.ttl')
+      const options = createOptions('/acl-tls/append-acl/abc2.ttl')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 401)
@@ -781,7 +781,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it('agent should not be able to modify test file', function (done) {
-      var options = createOptions('/acl-tls/append-acl/abc2.ttl')
+      const options = createOptions('/acl-tls/append-acl/abc2.ttl')
       options.headers = {
         'content-type': 'text/turtle'
       }
@@ -800,7 +800,7 @@ describe.skip('ACL with WebID+TLS', function () {
       rm('/acl-tls/write-acl/default-for-new/test-file.ttl')
     })
 
-    var body = '<#Owner> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
+    const body = '<#Owner> a <http://www.w3.org/ns/auth/acl#Authorization>;\n' +
       ' <http://www.w3.org/ns/auth/acl#accessTo> <./>;\n' +
       ' <http://www.w3.org/ns/auth/acl#agent> <' + user1 + '>;\n' +
       ' <http://www.w3.org/ns/auth/acl#default> <./>;\n' +
@@ -811,7 +811,7 @@ describe.skip('ACL with WebID+TLS', function () {
       ' <http://www.w3.org/ns/auth/acl#agentClass> <http://xmlns.com/foaf/0.1/Agent>;\n' +
       ' <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read> .\n'
     it("user1 should be able to modify test directory's ACL file", function (done) {
-      var options = createOptions('/acl-tls/write-acl/default-for-new/.acl', 'user1')
+      const options = createOptions('/acl-tls/write-acl/default-for-new/.acl', 'user1')
       options.headers = {
         'content-type': 'text/turtle'
       }
@@ -823,7 +823,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it("user1 should be able to access test direcotory's ACL file", function (done) {
-      var options = createOptions('/acl-tls/write-acl/default-for-new/.acl', 'user1')
+      const options = createOptions('/acl-tls/write-acl/default-for-new/.acl', 'user1')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 200)
@@ -831,7 +831,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it('user1 should be able to create new test file', function (done) {
-      var options = createOptions('/acl-tls/write-acl/default-for-new/test-file.ttl', 'user1')
+      const options = createOptions('/acl-tls/write-acl/default-for-new/test-file.ttl', 'user1')
       options.headers = {
         'content-type': 'text/turtle'
       }
@@ -843,7 +843,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it('user1 should be able to access new test file', function (done) {
-      var options = createOptions('/acl-tls/write-acl/default-for-new/test-file.ttl', 'user1')
+      const options = createOptions('/acl-tls/write-acl/default-for-new/test-file.ttl', 'user1')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 200)
@@ -851,7 +851,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it("user2 should not be able to access test direcotory's ACL file", function (done) {
-      var options = createOptions('/acl-tls/write-acl/default-for-new/.acl', 'user2')
+      const options = createOptions('/acl-tls/write-acl/default-for-new/.acl', 'user2')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 403)
@@ -859,7 +859,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it('user2 should be able to access new test file', function (done) {
-      var options = createOptions('/acl-tls/write-acl/default-for-new/test-file.ttl', 'user2')
+      const options = createOptions('/acl-tls/write-acl/default-for-new/test-file.ttl', 'user2')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 200)
@@ -867,7 +867,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it('user2 should not be able to modify new test file', function (done) {
-      var options = createOptions('/acl-tls/write-acl/default-for-new/test-file.ttl', 'user2')
+      const options = createOptions('/acl-tls/write-acl/default-for-new/test-file.ttl', 'user2')
       options.headers = {
         'content-type': 'text/turtle'
       }
@@ -879,7 +879,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it('agent should be able to access new test file', function (done) {
-      var options = createOptions('/acl-tls/write-acl/default-for-new/test-file.ttl')
+      const options = createOptions('/acl-tls/write-acl/default-for-new/test-file.ttl')
       request.head(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 200)
@@ -887,7 +887,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
     it('agent should not be able to modify new test file', function (done) {
-      var options = createOptions('/acl-tls/write-acl/default-for-new/test-file.ttl')
+      const options = createOptions('/acl-tls/write-acl/default-for-new/test-file.ttl')
       options.headers = {
         'content-type': 'text/turtle'
       }
@@ -908,7 +908,7 @@ describe.skip('ACL with WebID+TLS', function () {
   describe('WebID delegation tests', function () {
     it('user1 should be able delegate to user2', function (done) {
       // var body = '<' + user1 + '> <http://www.w3.org/ns/auth/acl#delegates> <' + user2 + '> .'
-      var options = {
+      const options = {
         url: user1,
         headers: {
           'content-type': 'text/turtle'

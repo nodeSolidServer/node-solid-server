@@ -1,0 +1,14 @@
+{
+  "name": "get-nss-cookie",
+  "version": "1.0.0",
+  "description": "Get a cookie from a node-solid-server instance",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "node-fetch": "^2.6.1"
+  }
+}

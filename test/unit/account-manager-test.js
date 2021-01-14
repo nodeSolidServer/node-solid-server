@@ -22,7 +22,7 @@ const ResourceMapper = require('../../lib/resource-mapper')
 
 const testAccountsDir = path.join(__dirname, '../resources/accounts')
 
-var host
+let host
 
 beforeEach(() => {
   host = SolidHost.from({ serverUri: 'https://example.com' })

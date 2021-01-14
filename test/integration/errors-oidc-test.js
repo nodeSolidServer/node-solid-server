@@ -6,7 +6,7 @@ const expect = require('chai').expect
 
 describe('OIDC error handling', function () {
   const serverUri = 'https://localhost:3457'
-  var ldpHttpsServer
+  let ldpHttpsServer
   const rootPath = path.join(__dirname, '../resources/accounts/errortests')
   const configPath = path.join(__dirname, '../resources/config')
   const dbPath = path.join(__dirname, '../resources/accounts/db')

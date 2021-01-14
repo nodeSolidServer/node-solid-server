@@ -1,21 +1,21 @@
 // Integration tests for PATCH with application/sparql-update
 
-var ldnode = require('../../index')
-var supertest = require('supertest')
-var assert = require('chai').assert
-var path = require('path')
+const ldnode = require('../../index')
+const supertest = require('supertest')
+const assert = require('chai').assert
+const path = require('path')
 
 // Helper functions for the FS
-var { rm, write, read } = require('../utils')
+const { rm, write, read } = require('../utils')
 
 describe('PATCH through application/sparql-update', function () {
   // Starting LDP
-  var ldp = ldnode({
+  const ldp = ldnode({
     root: path.join(__dirname, '../resources/sampleContainer'),
     mount: '/test',
     webid: false
   })
-  var server = supertest(ldp)
+  const server = supertest(ldp)
 
   it('should create a new file if file does not exist', function (done) {
     rm('sampleContainer/notExisting.ttl')
@@ -51,7 +51,7 @@ describe('PATCH through application/sparql-update', function () {
     })
 
     it('should delete a single triple from a pad document', function (done) {
-      var expected = `\
+      const expected = `\
 @prefix : </existingTriple.ttl#>.
 @prefix dc: <http://purl.org/dc/elements/1.1/>.
 @prefix mee: <http://www.w3.org/ns/pim/meeting#>.
