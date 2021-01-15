@@ -13,7 +13,7 @@
     a acl:Authorization;
     acl:agentClass foaf:Agent;
     acl:accessTo <./> ;
-    acl:defaultForNew <./> ;
+    acl:default <./> ;
     acl:mode acl:Read.
 :folks
     a acl:Authorization;
