@@ -6,5 +6,5 @@
     a acl:Authorization;
     acl:agent </profile/card#me>;
     acl:accessTo <./>;
-    acl:defaultForNew <./>;
+    acl:default <./>;
     acl:mode acl:Read, acl:Write, acl:Control.
