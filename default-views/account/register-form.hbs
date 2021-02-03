@@ -63,21 +63,6 @@
             <span class="help-block">Your email will only be used for account recovery</span>
           </div>
 
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" name="connectExternalWebId" value="true" id="ConnectExternalWebId" {{#if connectExternalWebId}}checked{{/if}}/>
-              Connect to External WebID (<strong>Advanced feature</strong>)
-            </label>
-          </div>
-
-          <div class="form-group hidden" id="ExternalWebId">
-            <label class="control-label" for="externalWebId">External WebID:</label>
-            <input type="text" class="form-control" name="externalWebId" id="externalWebId" value="{{externalWebId}}"/>
-            <span class="help-block">
-              By connecting this account with an existing WebID, you can use that WebID to authenticate with the new account.
-            </span>
-          </div>
-
           {{#if enforceToc}}
             {{#if tocUri}}
               <div class="checkbox">
