@@ -486,6 +486,24 @@ describe('HTTP APIs', function () {
         .set('content-type', 'text/plain')
         .expect(415, done)
     })
+    it('should reject create .acl resource, if body is not valid turtle', function (done) {
+      server.put('/put-resource-1.acl')
+        .send('bad turtle content')
+        .set('content-type', 'text/turtle')
+        .expect(400, done)
+    })
+    it('should reject create .meta resource, if contentType not text/turtle', function (done) {
+      server.put('/.meta')
+        .send(putRequestBody)
+        .set('content-type', 'text/plain')
+        .expect(415, done)
+    })
+    it('should reject create .meta resource, if body is not valid turtle', function (done) {
+      server.put('/.meta')
+        .send(JSON.stringify({}))
+        .set('content-type', 'text/turtle')
+        .expect(400, done)
+    })
     it('should create directories if they do not exist', function (done) {
       server.put('/foo/bar/baz.ttl')
         .send(putRequestBody)
