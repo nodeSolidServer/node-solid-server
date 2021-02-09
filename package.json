@@ -105,8 +105,7 @@
     "uuid": "^8.3.2",
     "valid-url": "^1.0.9",
     "validator": "^13.5.2",
-    "vhost": "^3.0.2",
-    "webid": "^0.3.11"
+    "vhost": "^3.0.2"
   },
   "devDependencies": {
     "@solid/solid-auth-oidc": "^0.3.0",
