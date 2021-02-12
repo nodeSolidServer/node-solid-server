@@ -44,10 +44,10 @@ function runTests {
 teardown || true
 setup
 waitForNss server
-runTests webid-provider-tests v2.0.3 #latest
-runTests solid-crud-tests v2.0.4 #nss-skips
+runTests webid-provider-tests v2.0.3
+runTests solid-crud-tests v2.1.1
 waitForNss thirdparty
-runTests web-access-control-tests v2.1.3 #nss-skips
+runTests web-access-control-tests v2.1.3
 teardown
 
 # To debug, e.g. running web-access-control-tests jest interactively,
