@@ -52,6 +52,17 @@ describe('ResourceMapper', () => {
         contentType: 'text/html'
       })
 
+    itMapsUrl(mapper, 'a Url and a contentType with charset',
+      {
+        url: 'http://localhost/space/foo.txt',
+        contentType: 'text/plain; charset=utf-8',
+        createIfNotExists: true
+      },
+      {
+        path: `${rootPath}space/foo.txt`,
+        contentType: 'text/plain'
+      })
+
     // Additional PUT cases
 
     itMapsUrl(mapper, 'a URL without content type',
