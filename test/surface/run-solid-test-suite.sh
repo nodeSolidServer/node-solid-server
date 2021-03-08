@@ -45,9 +45,9 @@ teardown || true
 setup
 waitForNss server
 runTests webid-provider-tests v2.0.3
-runTests solid-crud-tests latest
+runTests solid-crud-tests v5.0.0
 waitForNss thirdparty
-runTests web-access-control-tests latest
+runTests web-access-control-tests v5.0.0
 teardown
 
 # To debug, e.g. running web-access-control-tests jest interactively,
