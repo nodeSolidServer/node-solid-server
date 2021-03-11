@@ -57,7 +57,7 @@
   "dependencies": {
     "@solid/acl-check": "^0.4.5",
     "@solid/oidc-auth-manager": "^0.24.1",
-    "@solid/oidc-op": "0.11.3",
+    "@solid/oidc-op": "0.11.1",
     "async-lock": "^1.2.8",
     "body-parser": "^1.19.0",
     "bootstrap": "^4.6.0",
@@ -108,7 +108,7 @@
     "vhost": "^3.0.2"
   },
   "devDependencies": {
-    "@solid/solid-auth-oidc": "^0.5.5",
+    "@solid/solid-auth-oidc": "^0.3.0",
     "chai": "4.3.3",
     "chai-as-promised": "7.1.1",
     "cross-env": "7.0.3",
