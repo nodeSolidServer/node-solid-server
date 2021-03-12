@@ -1,7 +1,7 @@
 {
   "name": "solid-server",
   "description": "Solid server on top of the file-system",
-  "version": "5.6.5",
+  "version": "5.6.6",
   "author": {
     "name": "Tim Berners-Lee",
     "email": "timbl@w3.org"
@@ -60,7 +60,7 @@
     "@solid/oidc-op": "0.11.3",
     "async-lock": "^1.2.8",
     "body-parser": "^1.19.0",
-    "bootstrap": "^4.6.0",
+    "bootstrap": "^3.4.1",
     "busboy": "^0.3.1",
     "cached-path-relative": "^1.0.2",
     "camelize": "^1.0.0",
