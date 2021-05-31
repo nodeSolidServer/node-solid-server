@@ -53,32 +53,31 @@ describe('PATCH through application/sparql-update', function () {
     it('should delete a single triple from a pad document', function (done) {
       const expected = `\
 @prefix : </existingTriple.ttl#>.
+@prefix cal: <http://www.w3.org/2002/12/cal/ical#>.
 @prefix dc: <http://purl.org/dc/elements/1.1/>.
-@prefix mee: <http://www.w3.org/ns/pim/meeting#>.
-@prefix c: <https://www.w3.org/People/Berners-Lee/card#>.
-@prefix XML: <http://www.w3.org/2001/XMLSchema#>.
-@prefix p: <http://www.w3.org/ns/pim/pad#>.
-@prefix ind: </parent/index.ttl#>.
-@prefix n: <http://rdfs.org/sioc/ns#>.
-@prefix flow: <http://www.w3.org/2005/01/wf/flow#>.
-@prefix ic: <http://www.w3.org/2002/12/cal/ical#>.
+@prefix meeting: <http://www.w3.org/ns/pim/meeting#>.
+@prefix pad: <http://www.w3.org/ns/pim/pad#>.
+@prefix sioc: <http://rdfs.org/sioc/ns#>.
 @prefix ui: <http://www.w3.org/ns/ui#>.
+@prefix wf: <http://www.w3.org/2005/01/wf/flow#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#>.
+@prefix c: <https://www.w3.org/People/Berners-Lee/card#>.
+@prefix ind: </parent/index.ttl#>.
 
-:id1477502276660 dc:author c:i; n:content ""; p:next :this.
+:id1477502276660 dc:author c:i; sioc:content ""; pad:next :this.
 
-:id1477522707481\n    ic:dtstart "2016-10-26T22:58:27Z"^^XML:dateTime;
-    flow:participant c:i;
+:id1477522707481\n    cal:dtstart "2016-10-26T22:58:27Z"^^xsd:dateTime;
+    wf:participant c:i;
     ui:backgroundColor "#c1d0c8".
 :this
-    a p:Notepad;
+    a pad:Notepad;
     dc:author c:i;
-    dc:created "2016-10-25T15:44:42Z"^^XML:dateTime;
+    dc:created "2016-10-25T15:44:42Z"^^xsd:dateTime;
     dc:title "Shared Notes";
-    p:next :id1477502276660.
-ind:this flow:participation :id1477522707481; mee:sharedNotes :this.
+    pad:next :id1477502276660.
+ind:this wf:participation :id1477522707481; meeting:sharedNotes :this.
 
 `
-
       write(`\n\
 
         @prefix dc: <http://purl.org/dc/elements/1.1/>.
