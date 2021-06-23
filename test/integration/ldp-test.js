@@ -65,30 +65,39 @@ describe('LDP', function () {
 
   describe('readContainerMeta', () => {
     it('should return 404 if .meta is not found', () => {
-      return ldp.readContainerMeta('/resources/').catch(err => {
+      return ldp.readContainerMeta('/resources/sampleContainer/').catch(err => {
         assert.equal(err.status, 404)
       })
     })
 
     it('should return content if metaFile exists', () => {
       // file can be empty as well
-      write('This function just reads this, does not parse it', '.meta')
-      return ldp.readContainerMeta('/resources/').then(metaFile => {
-        rm('.meta')
+      write('This function just reads this, does not parse it', 'sampleContainer/.meta')
+      return ldp.readContainerMeta('/resources/sampleContainer/').then(metaFile => {
+        rm('sampleContainer/.meta')
         assert.equal(metaFile, 'This function just reads this, does not parse it')
       })
     })
 
     it('should work also if trailing `/` is not passed', () => {
       // file can be empty as well
-      write('This function just reads this, does not parse it', '.meta')
-      return ldp.readContainerMeta('/resources').then(metaFile => {
-        rm('.meta')
+      write('This function just reads this, does not parse it', 'sampleContainer/.meta')
+      return ldp.readContainerMeta('/resources/sampleContainer').then(metaFile => {
+        rm('sampleContainer/.meta')
         assert.equal(metaFile, 'This function just reads this, does not parse it')
       })
     })
   })
 
+  describe('getOwner', () => {
+    it('should return acl:owner', () => {
+      const owner1 = 'https://tim.localhost:7777/profile/card#me'
+      return ldp.getOwner('/resources/')
+        .then(owner => {
+          assert.equal(owner, owner1)
+        })
+    })
+  })
   describe('getGraph', () => {
     it('should read and parse an existing file', () => {
       const uri = 'https://localhost:8443/resources/sampleContainer/example1.ttl'
