@@ -362,7 +362,7 @@ In order to really get a feel for the Solid platform, and to test out `solid`,
 you will need the following:
 
 1. A WebID profile and browser certificate from one of the Solid-compliant
-    identity providers, such as [solid.community](https://solid.community).
+    identity providers, such as [solidcommunity.net](https://solidcommunity.net).
 
 2. A server-side SSL certificate for `solid` to use (see the section below
     on creating a self-signed certificate for testing).
