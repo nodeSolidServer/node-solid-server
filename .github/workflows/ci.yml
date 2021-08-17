@@ -28,7 +28,7 @@ jobs:
       run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
 
     # print branch name
-    - name: Get branch name 
+    - name: Get branch name
       run: echo 'The branch name is' $BRANCH_NAME
 
 #    - name: Use Node.js ${{ matrix.node-version }}
