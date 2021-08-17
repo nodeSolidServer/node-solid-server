@@ -21,6 +21,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: git-branch-name
+      uses: EthanSK/git-branch-name-action@v1
+    - name: Echo the branch name
+      run: echo "Branch name ${GIT_BRANCH_NAME}"
     - run: git branch --show-current
     - run: git reflog show | head -1 | awk '{print $1;}'
 #     - name: Use Node.js ${{ matrix.node-version }}
