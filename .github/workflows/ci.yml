@@ -21,6 +21,21 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    # extract branch name
+    - name: Extract branch name
+      if: github.event_name != 'pull_request'
+      shell: bash
+      run: echo "::set-env name=BRANCH_NAME::$(echo ${GITHUB_REF#refs/heads/})"
+      id: extract_branch
+
+    # extract branch name on pull request
+    - name: Print branch name
+      if: github.event_name == 'pull_request'
+      run: echo "::set-env name=BRANCH_NAME::$(echo ${GITHUB_HEAD_REF})"
+
+    # print branch name
+    - name: Get branch name
+      run: echo 'The branch name is' $BRANCH_NAME
 #    - name: Use Node.js ${{ matrix.node-version }}
 #      uses: actions/setup-node@v1
 #      with:
@@ -35,4 +50,4 @@ jobs:
 #    - run: npm install -g solid-server-*.tgz
 #    - run: echo running on branch ${GITHUB_REF##*/}
     # Run the Solid test-suite
-    - run: bash test/surface/run-solid-test-suite.sh `git reflog show | head -1 | awk '{print $1;}'`
+    - run: bash test/surface/run-solid-test-suite.sh $BRANCH_NAME
