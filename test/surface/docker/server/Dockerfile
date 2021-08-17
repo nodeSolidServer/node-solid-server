@@ -1,8 +1,9 @@
+ARG BRANCH=main
 FROM node:latest
 RUN git clone https://github.com/solid/node-solid-server
 WORKDIR node-solid-server
-RUN echo Testing branch ${GITHUB_REF##*/} of NSS
-RUN git checkout ${GITHUB_REF##*/}
+RUN echo Testing branch ${BRANCH} of NSS
+RUN git checkout ${BRANCH}
 RUN npm install
 RUN openssl req -new -x509 -days 365 -nodes \
   -out ./server.cert \

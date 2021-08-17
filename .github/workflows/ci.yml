@@ -33,5 +33,6 @@ jobs:
     # Test global install of the package
     - run: npm pack .
     - run: npm install -g solid-server-*.tgz
+    - run: echo running on branch ${GITHUB_REF##*/}
     # Run the Solid test-suite
-    - run: bash test/surface/run-solid-test-suite.sh
+    - run: bash test/surface/run-solid-test-suite.sh ${GITHUB_REF##*/}

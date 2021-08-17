@@ -1,9 +1,12 @@
 #!/bin/bash
 set -e
 
+echo Branch name outside bash: $1
+echo Branch name inside bash: ${GITHUB_REF##*/}
+
 function setup {
   docker network create testnet
-  docker build -t server test/surface/docker/server
+  docker build -t server --build-arg BRANCH=${GITHUB_REF##*/} test/surface/docker/server
   docker build -t cookie test/surface/docker/cookie
   docker run -d --env-file test/surface/server-env.list --name server --network=testnet -v `pwd`:/travis -w /node-solid-server server /travis/bin/solid-test start --config-file /node-solid-server/config.json
   docker run -d --env-file test/surface/thirdparty-env.list --name thirdparty --network=testnet -v `pwd`/test/surface:/surface server /node-solid-server/bin/solid-test start --config-file /surface/thirdparty-config.json
