@@ -44,7 +44,7 @@ function runTests {
 
 # ...
 teardown || true
-setup
+setup $1
 waitForNss server
 runTests webid-provider-tests v2.0.3
 runTests solid-crud-tests nss-skips
