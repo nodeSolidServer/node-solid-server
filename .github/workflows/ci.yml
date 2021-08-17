@@ -31,17 +31,17 @@ jobs:
     - name: Get branch name
       run: echo 'The branch name is' $BRANCH_NAME
 
-#    - name: Use Node.js ${{ matrix.node-version }}
-#      uses: actions/setup-node@v1
-#      with:
-#        node-version: ${{ matrix.node-version }}
-#    - run: npm ci
-#    # test code
-#    - run: npm run standard
-#    - run: npm run validate
-#    - run: npm run nyc
-#    # Test global install of the package
-#    - run: npm pack .
-#    - run: npm install -g solid-server-*.tgz
-#    # Run the Solid test-suite
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ matrix.node-version }}
+    - run: npm ci
+    # test code
+    - run: npm run standard
+    - run: npm run validate
+    - run: npm run nyc
+    # Test global install of the package
+    - run: npm pack .
+    - run: npm install -g solid-server-*.tgz
+    # Run the Solid test-suite
     - run: bash test/surface/run-solid-test-suite.sh $BRANCH_NAME
