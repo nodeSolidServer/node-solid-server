@@ -21,22 +21,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    # extract commit ref
-    - name: Extract git ref
-      shell: bash
-      run: echo "##[set-output name=ref;]$(git reflog show | head -1 | awk '{print $1;}')"
-      id: extract_gitref
-#    - name: Use Node.js ${{ matrix.node-version }}
-#      uses: actions/setup-node@v1
-#      with:
-#        node-version: ${{ matrix.node-version }}
-#    - run: npm ci
-#    # test code
-#    - run: npm run standard
-#    - run: npm run validate
-#    - run: npm run nyc
-#    # Test global install of the package
-#    - run: npm pack .
-#    - run: npm install -g solid-server-*.tgz
-    # Run the Solid test-suite
-    - run: bash test/surface/run-solid-test-suite.sh ${{ steps.extract_gitref.outputs.ref }}
+    # extract branch name
+    - if: github.event_name == 'pull_request'
+      run: echo "BRANCH_NAME=${GITHUB_HEAD_REF}" >> $GITHUB_ENV
+    - if: github.event_name != 'pull_request'
+      run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
+    # print branch name
+    - name: Get branch name 
+      run: echo 'The branch name is' $BRANCH_NAME
