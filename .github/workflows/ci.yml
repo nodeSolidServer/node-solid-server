@@ -21,18 +21,18 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm ci
-    # test code
-    - run: npm run standard
-    - run: npm run validate
-    - run: npm run nyc
-    # Test global install of the package
-    - run: npm pack .
-    - run: npm install -g solid-server-*.tgz
-    - run: echo running on branch ${GITHUB_REF##*/}
+#    - name: Use Node.js ${{ matrix.node-version }}
+#      uses: actions/setup-node@v1
+#      with:
+#        node-version: ${{ matrix.node-version }}
+#    - run: npm ci
+#    # test code
+#    - run: npm run standard
+#    - run: npm run validate
+#    - run: npm run nyc
+#    # Test global install of the package
+#    - run: npm pack .
+#    - run: npm install -g solid-server-*.tgz
+#    - run: echo running on branch ${GITHUB_REF##*/}
     # Run the Solid test-suite
     - run: bash test/surface/run-solid-test-suite.sh `git reflog show | head -1 | awk '{print $1;}'`
