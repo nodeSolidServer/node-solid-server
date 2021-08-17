@@ -26,21 +26,17 @@ jobs:
       shell: bash
       run: echo "##[set-output name=ref;]$(git reflog show | head -1 | awk '{print $1;}')"
       id: extract_gitref
-    # print git ref
-    - name: Get git ref
-      run: echo 'The git ref is' ${{ steps.extract_gitref.outputs.ref }}
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: npm ci
-    # test code
-    - run: npm run standard
-    - run: npm run validate
-    - run: npm run nyc
-    # Test global install of the package
-    - run: npm pack .
-    - run: npm install -g solid-server-*.tgz
-    - run: echo running on branch ${GITHUB_REF##*/}
+#    - name: Use Node.js ${{ matrix.node-version }}
+#      uses: actions/setup-node@v1
+#      with:
+#        node-version: ${{ matrix.node-version }}
+#    - run: npm ci
+#    # test code
+#    - run: npm run standard
+#    - run: npm run validate
+#    - run: npm run nyc
+#    # Test global install of the package
+#    - run: npm pack .
+#    - run: npm install -g solid-server-*.tgz
     # Run the Solid test-suite
-    - run: bash test/surface/run-solid-test-suite.sh $BRANCH_NAME
+    - run: bash test/surface/run-solid-test-suite.sh ${{ steps.extract_gitref.outputs.ref }}
