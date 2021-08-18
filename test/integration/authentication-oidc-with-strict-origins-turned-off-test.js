@@ -385,7 +385,7 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
       bob.get('/shared-with-alice.txt')
         .end((err, { status, text }) => {
           expect(status).to.equal(401)
-          expect(text).to.contain('Log in')
+          expect(text).to.contain('GlobalDashboard')
           done(err)
         })
     })
