@@ -13,7 +13,8 @@ module.exports = {
   webid: true,
   strictOrigin: true,
   trustedOrigins: [],
-  dataBrowserPath: 'default'
+  dataBrowserPath: 'default',
+  // paymentOracle: 'http://localhost:8402'
 
   // For use in Enterprises to configure a HTTP proxy for all outbound HTTP requests from the SOLID server (we use
   // https://www.npmjs.com/package/global-tunnel-ng).
