@@ -223,7 +223,7 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
                 })
             })
 
-            it('should return a 200', () => expect(response).to.have.property('status', 200))
+            it('should return a 401 even with a cookie', () => expect(response).to.have.property('status', 401))
           })
           describe('and our origin', () => {
             before(done => {
@@ -236,7 +236,7 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
                 })
             })
 
-            it('should return a 200', () => expect(response).to.have.property('status', 200))
+            it('should return a 401 even with a cookie', () => expect(response).to.have.property('status', 401))
           })
           describe('and trusted origin', () => {
             before(done => {
@@ -382,7 +382,7 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
 
   describe('Browser login workflow', () => {
     it('401 Unauthorized asking the user to log in', (done) => {
-      bob.get('/shared-with-alice.txt')
+      bob.get('/shared-with-alice.txt', { headers: { accept: 'text/html' } })
         .end((err, { status, text }) => {
           expect(status).to.equal(401)
           expect(text).to.contain('GlobalDashboard')
