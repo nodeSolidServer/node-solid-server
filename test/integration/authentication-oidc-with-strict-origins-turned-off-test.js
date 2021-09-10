@@ -223,7 +223,7 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
                 })
             })
 
-            it('should return a 401 even with a cookie', () => expect(response).to.have.property('status', 401))
+            it('should return a 200', () => expect(response).to.have.property('status', 200))
           })
           describe('and our origin', () => {
             before(done => {
@@ -236,7 +236,7 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
                 })
             })
 
-            it('should return a 401 even with a cookie', () => expect(response).to.have.property('status', 401))
+            it('should return a 200', () => expect(response).to.have.property('status', 200))
           })
           describe('and trusted origin', () => {
             before(done => {
