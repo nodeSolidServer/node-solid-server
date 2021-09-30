@@ -1,7 +1,7 @@
 {
   "name": "solid-server",
   "description": "Solid server on top of the file-system",
-  "version": "5.6.9-alpha-d9bd19aa",
+  "version": "5.6.9-alpha-23942afd",
   "author": {
     "name": "Tim Berners-Lee",
     "email": "timbl@w3.org"
@@ -85,7 +85,7 @@
     "ip-range-check": "0.2.0",
     "is-ip": "^3.1.0",
     "li": "^1.3.0",
-    "mashlib": "1.7.5-alpha-d9bd19aa",
+    "mashlib": "1.7.5-alpha-23942afd",
     "mime-types": "^2.1.31",
     "negotiator": "^0.6.2",
     "node-fetch": "^2.6.1",
