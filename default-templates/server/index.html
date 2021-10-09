@@ -27,9 +27,7 @@
         document.getElementById('prototype').style.display = "none";
         var podRoot = user.uri.replace(/profile.*$/,'');
         podRoot = UI.rdf.sym(podRoot)
-        panes.runDataBrowser();
-        var outliner = panes.getOutliner(document)
-        outliner.GotoSubject(podRoot, true, undefined, true, undefined)  
+        panes.runDataBrowser(podRoot);
       }
       else {
         document.getElementById('prototype').style.display = "block";
