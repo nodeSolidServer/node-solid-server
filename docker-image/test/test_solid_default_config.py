@@ -13,7 +13,7 @@ def container(client, image):
         tty=True
     )
     # give the solid process some seconds to create the directory structure before making assertions
-    time.sleep(2)
+    time.sleep(10)
     yield container
     container.remove(force=True)
 
