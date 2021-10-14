@@ -57,24 +57,24 @@ jobs:
 
       - uses: actions/checkout@v2
 
+      - uses: olegtarasov/get-tag@v2.1
+        id: tagName
+        with:
+          tagRegex: "v?(?<version>.*)"
+
       - name: Lint dockerfile
         working-directory: docker-image
         run: pwd && ls -lah && make lint
 
       - name: Run tests
         working-directory: docker-image
-        run: make test
+        run: SOLID_SERVER_VERSION=${{ steps.tagName.outputs.version }} make test
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
-
-      - uses: olegtarasov/get-tag@v2.1
-        id: tagName
-        with:
-          tagRegex: "(?<version>.*)"
 
       - name: Docker meta
         id: meta
