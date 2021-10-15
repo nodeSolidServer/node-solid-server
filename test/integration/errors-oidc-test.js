@@ -52,7 +52,7 @@ describe('OIDC error handling', function () {
           .set('Accept', 'text/html')
           .expect('Content-Type', 'text/html; charset=utf-8')
           .then(res => {
-            expect(res.text).to.match(/Log in/)
+            expect(res.text).to.match(/GlobalDashboard/)
           })
       })
     })

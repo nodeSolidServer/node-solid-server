@@ -90,7 +90,7 @@ describe('PATCH', () => {
                  solid:inserts { <x> <y> <z>. }.`
     }, { // expected:
       status: 403,
-      text: 'No permission'
+      text: 'GlobalDashboard'
     }))
 
     describe('on a resource with append-only access', describePatch({
@@ -144,7 +144,7 @@ describe('PATCH', () => {
                  solid:where   { ?a <b> <c>. }.`
     }, { // expected:
       status: 403,
-      text: 'No permission'
+      text: 'GlobalDashboard'
     }))
 
     describe('on a resource with append-only access', describePatch({
@@ -154,7 +154,7 @@ describe('PATCH', () => {
                  solid:where   { ?a <b> <c>. }.`
     }, { // expected:
       status: 403,
-      text: 'No permission'
+      text: 'GlobalDashboard'
     }))
 
     describe('on a resource with write-only access', describePatch({
@@ -167,7 +167,7 @@ describe('PATCH', () => {
       // thereby inappropriately giving the user (guess-based) read access;
       // therefore, we need to return 403.
       status: 403,
-      text: 'No permission'
+      text: 'GlobalDashboard'
     }))
 
     describe('on a resource with read-append access', () => {
@@ -234,7 +234,7 @@ describe('PATCH', () => {
                  solid:deletes { <a> <b> <c>. }.`
     }, { // expected:
       status: 403,
-      text: 'No permission'
+      text: 'GlobalDashboard'
     }))
 
     describe('on a resource with append-only access', describePatch({
@@ -243,7 +243,7 @@ describe('PATCH', () => {
                  solid:deletes { <a> <b> <c>. }.`
     }, { // expected:
       status: 403,
-      text: 'No permission'
+      text: 'GlobalDashboard'
     }))
 
     describe('on a resource with write-only access', describePatch({
@@ -255,7 +255,7 @@ describe('PATCH', () => {
       // thereby inappropriately giving the user (guess-based) read access;
       // therefore, we need to return 403.
       status: 403,
-      text: 'No permission'
+      text: 'GlobalDashboard'
     }))
 
     describe('on a resource with read-append access', describePatch({
@@ -264,7 +264,7 @@ describe('PATCH', () => {
                  solid:deletes { <a> <b> <c>. }.`
     }, { // expected:
       status: 403,
-      text: 'No permission'
+      text: 'GlobalDashboard'
     }))
 
     describe('on a resource with read-write access', () => {
@@ -329,7 +329,7 @@ describe('PATCH', () => {
                  solid:deletes { <a> <b> <c>. }.`
     }, { // expected:
       status: 403,
-      text: 'No permission'
+      text: 'GlobalDashboard'
     }))
 
     describe('on a resource with append-only access', describePatch({
@@ -339,7 +339,7 @@ describe('PATCH', () => {
                  solid:deletes { <a> <b> <c>. }.`
     }, { // expected:
       status: 403,
-      text: 'No permission'
+      text: 'GlobalDashboard'
     }))
 
     describe('on a resource with write-only access', describePatch({
@@ -352,7 +352,7 @@ describe('PATCH', () => {
       // thereby inappropriately giving the user (guess-based) read access;
       // therefore, we need to return 403.
       status: 403,
-      text: 'No permission'
+      text: 'GlobalDashboard'
     }))
 
     describe('on a resource with read-append access', describePatch({
@@ -362,7 +362,7 @@ describe('PATCH', () => {
                  solid:deletes { <a> <b> <c>. }.`
     }, { // expected:
       status: 403,
-      text: 'No permission'
+      text: 'GlobalDashboard'
     }))
 
     describe('on a resource with read-write access', () => {
