@@ -2,6 +2,7 @@ test: ## run testinfra tests against the project
 	docker run --rm -t \
 		-v $(shell pwd):/project \
 		-v /var/run/docker.sock:/var/run/docker.sock:ro \
+		-e SOLID_SERVER_VERSION="${SOLID_SERVER_VERSION}" \
 		aveltens/docker-testinfra
 
 lint: ## run hadolint against the Dockerfile

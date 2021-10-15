@@ -1,5 +1,6 @@
 FROM node:10-alpine
 
+# hadolint ignore=DL3018
 RUN apk add --no-cache openssl
 
 ARG SOLID_SERVER_VERSION=latest
