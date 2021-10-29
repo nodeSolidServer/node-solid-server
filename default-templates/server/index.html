@@ -1,23 +1,62 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Welcome to Solid</title>
+<!doctype html><html><head>
+  <meta charset="utf-8"/>
   <link rel="stylesheet" href="/common/css/bootstrap.min.css">
   <link rel="stylesheet" href="/common/css/solid.css">
-</head>
-<body>
-<div class="container">
-  <div class="page-header">
-    <div class="pull-right">
-      <button id="register" type="button" class="btn btn-primary">Register</button>
-      <button id="login"    type="button" class="hidden btn btn-default btn-success">Log in</button>
-      <button id="logout"   type="button" class="hidden btn btn-danger">Log out</button>
-    </div>
+  <script>
+    var keyname = 'SolidServerRootRedirectLink';
+    function register(){ alert(2); window.location.href="/register"; }
+    document.addEventListener('DOMContentLoaded', async function() {
+      if (!UI.authn.currentUser()) await UI.authn.checkUser();
+      let user = UI.authn.currentUser();
 
-    <h1>Welcome to the Solid Prototype</h1>
-  </div>
+// IF LOGGED IN: SET COOKIE. LOGOUT
+//
+      if( user ) {
+        window.localStorage.setItem(keyname,user.uri);
+        await UI.authn.authSession.logout();
+      }
+      else {
+        let webId = window.localStorage.getItem(keyname);
+
+// IF NOT LOGGED IN AND COOKIE EXISTS: REMOVE COOKIE, HIDE WELCOME, SHOW LINK TO PROFILE
+//
+        if( webId ) {
+          window.localStorage.removeItem(keyname);
+          document.getElementById('prototype').style.display = "none";
+          document.getElementById('loggedIn').style.display = "block";
+          document.getElementById('loggedIn').innerHTML = `<p>Your WebID and profile address are</p> <p> &lt;${webId}&gt.</p><a href="${webId}">Visit your profile to log in.</a></div>`;
+        }
+
+// IF NOT LOGGED IN AND COOKIE DOES NOT EXIST  
+//     SHOW WELCOME, SHOW LOGIN BUTTON
+//     HIDE LOGIN BUTTON, ADD REGISTER BUTTON
+//
+        else {
+          let loginArea = document.getElementById('loginStatusArea');
+          document.getElementById('prototype').style.display = "block";
+          let html = `<input type="button" onclick="window.location.href='/register'" value="register" style="padding: 1em; border-radius:0.5em; font-size: 100%;background-color: #efe;">`
+          let span = document.createElement("SPAN")
+          span.innerHTML=html
+          loginArea.appendChild(span);
+          loginArea.appendChild(UI.authn.loginStatusBox(document, null, {}))
+          const signUpButton = loginArea.querySelectorAll('input')[2];
+          signUpButton.style.display="none";
+        }                    
+      }
+    })
+  </script>
+  <link href="/mash.css" rel="stylesheet">
+</head><body class="db-layout">
+
+<h3 style="padding:2em; border:8px solid #7C4DFF; display:none" id="loggedIn" class="container"></h3>
+
+<div id="prototype" class="container">
+
+  <div class="page-header" style="display: inline-flex;">
+     <h1>Welcome to the Solid Prototype</h1>
+       <div id="loginStatusArea" class="pull-right" style="display: inline-flex;float: right;margin: 10px;"></div>
+     
+ </div>
 
   <p class="lead">
     This is a prototype implementation of a Solid server.
@@ -27,14 +66,9 @@
     If you have not already done so, please create an account.
   </p>
 
-  <p class="lead hidden" id="loggedIn">
-    You are logged in as
-    <a href="#" id="profileLink"></a>.
-  </p>
-
   <section>
     {{#if serverLogo}}
-    <img src="{{serverLogo}}" />
+    <img src="{{serverLogo}}" /> 
     {{/if}}
     <h2>Server info</h2>
     <dl>
@@ -49,7 +83,26 @@
     </dl>
   </section>
 </div>
-<script src="/common/js/solid-auth-client.bundle.js"></script>
-<script src="/common/js/auth-buttons.js"></script>
-</body>
-</html>
+  <header class="db-layout__header header" id="PageHeader"></header>
+  <div class="TabulatorOutline db-layout__content" id="DummyUUID" role="main">
+    <table id="outline"></table>
+    <div id="GlobalDashboard"></div>
+  </div><footer class="db-layout__footer" id="PageFooter"></footer>
+  <style>
+  #prototype {
+    margin : 2em;
+    padding : 1em;
+  }
+  #prototype input {
+    margin : 1em;
+    padding : 0.5em !important;
+  }
+  #loginStatusArea {
+    float:right;
+    clear:right;
+    margin-top:-5em;
+  }
+  </style>
+
+  <script src="/mashlib.js"></script>
+</body></html> 
