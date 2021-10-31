@@ -39,6 +39,8 @@
 
   // Log the user in on the client and the server
   async function login () {
+    alert(`login from this page is no more possible.\n\nYou must ask the pod owner to modify this page or remove it.`)
+    /* deprecated since inrupt/solid-auth-client
     const session = await auth.popupLogin()
     if (session) {
       // Make authenticated request to the server to establish a session cookie
@@ -48,7 +50,7 @@
         await auth.logout()
       }
       location.reload()
-    }
+    } */
   }
 
   // Log the user out from the client and the server
