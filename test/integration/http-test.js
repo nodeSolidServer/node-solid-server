@@ -76,6 +76,30 @@ describe('HTTP APIs', function () {
         .expect('content-type', /text\/turtle/)
         .expect(200, done)
     })
+    it('should contain space:Storage triple', function (done) {
+      server.get('/')
+        .expect('content-type', /text\/turtle/)
+        .expect(200, done)
+        .expect((res) => {
+          const turtle = res.text
+          assert.match(turtle, /space:Storage/)
+          const kb = rdf.graph()
+          rdf.parse(turtle, kb, 'https://localhost/', 'text/turtle')
+
+          assert(kb.match(undefined,
+            rdf.namedNode('http://www.w3.org/1999/02/22-rdf-syntax-ns#type'),
+            rdf.namedNode('http://www.w3.org/ns/pim/space#Storage')
+          ).length, 'Must contain a triple space:Storage')
+        })
+    })
+    it('should have set Link as Container/BasicContainer/Storage', function (done) {
+      server.get('/')
+        .expect('content-type', /text\/turtle/)
+        .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#BasicContainer>; rel="type"/)
+        .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Container>; rel="type"/)
+        .expect('Link', /<http:\/\/www.w3.org\/ns\/pim\/space#Storage>; rel="type"/)
+        .expect(200, done)
+    })
   })
 
   describe('OPTIONS API', function () {
