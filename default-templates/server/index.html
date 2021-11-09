@@ -1,108 +1,68 @@
-<!doctype html><html><head>
+<!doctype html>
+<html>
+  <head>
   <meta charset="utf-8"/>
-  <link rel="stylesheet" href="/common/css/bootstrap.min.css">
   <link rel="stylesheet" href="/common/css/solid.css">
-  <script>
-    var keyname = 'SolidServerRootRedirectLink';
-    function register(){ alert(2); window.location.href="/register"; }
-    document.addEventListener('DOMContentLoaded', async function() {
-      if (!UI.authn.currentUser()) await UI.authn.checkUser();
-      let user = UI.authn.currentUser();
+  </head>
+<body>
+  <div class="header">
+    <div class="header-left">
+      <a href="https://solidos.solidcommunity.net/"><img class="logo-img" src="/common/img/solid-emblem.svg"></a>
+    </div>
+    <div class="header-center">
+      <h1 class="title">Welcome to Solid prototype</h1>
+    </div>
+    <div class="header-right" id="loginStatusArea"></div>
+  </div>
 
-// IF LOGGED IN: SET COOKIE. LOGOUT
-//
-      if( user ) {
-        window.localStorage.setItem(keyname,user.uri);
-        await UI.authn.authSession.logout();
-      }
-      else {
-        let webId = window.localStorage.getItem(keyname);
+  <div class="container" id="prototype">
 
-// IF NOT LOGGED IN AND COOKIE EXISTS: REMOVE COOKIE, HIDE WELCOME, SHOW LINK TO PROFILE
-//
-        if( webId ) {
-          window.localStorage.removeItem(keyname);
-          document.getElementById('prototype').style.display = "none";
-          document.getElementById('loggedIn').style.display = "block";
-          document.getElementById('loggedIn').innerHTML = `<p>Your WebID and profile address are</p> <p> &lt;${webId}&gt.</p><a href="${webId}">Visit your profile to log in.</a></div>`;
-        }
+    <h3 style="display:none" id="loggedIn" class="webId"></h3>
 
-// IF NOT LOGGED IN AND COOKIE DOES NOT EXIST  
-//     SHOW WELCOME, SHOW LOGIN BUTTON
-//     HIDE LOGIN BUTTON, ADD REGISTER BUTTON
-//
-        else {
-          let loginArea = document.getElementById('loginStatusArea');
-          document.getElementById('prototype').style.display = "block";
-          let html = `<input type="button" onclick="window.location.href='/register'" value="register" style="padding: 1em; border-radius:0.5em; font-size: 100%;background-color: #efe;">`
-          let span = document.createElement("SPAN")
-          span.innerHTML=html
-          loginArea.appendChild(span);
-          loginArea.appendChild(UI.authn.loginStatusBox(document, null, {}))
-          const signUpButton = loginArea.querySelectorAll('input')[2];
-          signUpButton.style.display="none";
-        }                    
-      }
-    })
-  </script>
-  <link href="/mash.css" rel="stylesheet">
-</head><body class="db-layout">
+    <div class="content">
 
-<h3 style="padding:2em; border:8px solid #7C4DFF; display:none" id="loggedIn" class="container"></h3>
+      <p class="lead">
+        This is a prototype implementation of a Solid server.
+        It is a fully functional server, but there are no security or stability guarantees.
+        If you have not already done so, please register. When registering you will get a Pod and a WebID from solidcommunity.net.
+        If you want to register on a different server check out <a href="https://solidproject.org/users/get-a-pod">the available list of providers</a>.
+      </p>
+      <p class="lead">
+      <ul>
+        <li>Read more about Solid at <a href="https://solidproject.org/" target="_blank">https://solidproject.org/</a>. </li>
+        <li>There is a vibrant community around Solid gathering on the <a href="https://forum.solidproject.org/" target="_blank">forum</a>, <a href="https://gitter.im/solid/home" target="_blank">chat</a> or at <a href="https://solidproject.org/events" target="_blank">a Solid event</a>. </li>
+        <li>If you are interested to host your own server, read about <a href="https://github.com/solid/community-server/blob/main/README.md" target="_blank">the Community Server</a>.</li>
+      </ul>
+    </p>
+    <p class="lead">
+      License: <a href="https://github.com/solid/node-solid-server/blob/main/LICENSE.md" target="_blank">MIT</a>.
+    </p>
+    
+      <section>
+        {{#if serverLogo}}
+        <img src="{{serverLogo}}" /> 
+        {{/if}}
+        <h2>Server info</h2>
+        <dl>
+          <dt>Name</dt>
+          <dd>{{serverName}}</dd>
+          {{#if serverDescription}}
+          <dt>Description</dt>
+          <dd>{{serverDescription}}</dd>
+          {{/if}}
+          <dt>Details</dt>
+          <dd>Running on <a href="https://github.com/solid/node-solid-server/releases/tag/v{{serverVersion}}">Node Solid Server {{serverVersion}}</a></dd>
+        </dl>
+      </section>
 
-<div id="prototype" class="container">
+    </div> <!-- end content-->
 
-  <div class="page-header" style="display: inline-flex;">
-     <h1>Welcome to the Solid Prototype</h1>
-       <div id="loginStatusArea" class="pull-right" style="display: inline-flex;float: right;margin: 10px;"></div>
-     
- </div>
+  </div> <!-- end container-->
 
-  <p class="lead">
-    This is a prototype implementation of a Solid server.
-
-    It is a fully functional server, but there are no security or stability guarantees.
-
-    If you have not already done so, please create an account.
-  </p>
-
-  <section>
-    {{#if serverLogo}}
-    <img src="{{serverLogo}}" /> 
-    {{/if}}
-    <h2>Server info</h2>
-    <dl>
-      <dt>Name</dt>
-      <dd>{{serverName}}</dd>
-      {{#if serverDescription}}
-      <dt>Description</dt>
-      <dd>{{serverDescription}}</dd>
-      {{/if}}
-      <dt>Details</dt>
-      <dd>Running on <a href="https://github.com/solid/node-solid-server/releases/tag/v{{serverVersion}}">Solid {{serverVersion}}</a></dd>
-    </dl>
-  </section>
-</div>
-  <header class="db-layout__header header" id="PageHeader"></header>
-  <div class="TabulatorOutline db-layout__content" id="DummyUUID" role="main">
-    <table id="outline"></table>
-    <div id="GlobalDashboard"></div>
-  </div><footer class="db-layout__footer" id="PageFooter"></footer>
-  <style>
-  #prototype {
-    margin : 2em;
-    padding : 1em;
-  }
-  #prototype input {
-    margin : 1em;
-    padding : 0.5em !important;
-  }
-  #loginStatusArea {
-    float:right;
-    clear:right;
-    margin-top:-5em;
-  }
-  </style>
+  <footer class="pageFooter"></footer>
 
   <script src="/mashlib.js"></script>
-</body></html> 
+  <script src="/common/js/index-buttons.js"></script>
+
+</body>
+</html> 
