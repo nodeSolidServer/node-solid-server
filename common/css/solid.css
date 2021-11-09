@@ -33,6 +33,7 @@
   .header-right {
     display: inline-flex;
     margin-top: 0.67em;
+    min-width: 19%;
   }
 
   .logo-img {
