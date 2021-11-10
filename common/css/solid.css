@@ -1,7 +1,7 @@
-  body {
+  .index-page {
     background-color: #f8f8f8;
     font-size: 1em;
-    font-family: sans-serif;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
   }
   
   .header {
@@ -54,7 +54,6 @@
     margin: auto;
     width: 50%;
     line-height: 1.6;
-    min-height: 87vh;
   }
 
   .content {
@@ -77,21 +76,6 @@
     background-color: #efe; 
     margin-right: 1em;
   }
-
-  .pageFooter {
-    clear: both;
-    width: 100%;
-    bottom: 0;
-    left: 0;
-    z-index:1;
-    margin: 0;
-    overflow: hidden;
-    padding-top: 1em;
-    padding-bottom: 1em;
-    background-color: #333;
-    color: #eee;
-    
-}
 
 .panel-login-tls,
 .panel-already-registered{

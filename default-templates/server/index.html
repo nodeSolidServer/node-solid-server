@@ -4,10 +4,12 @@
   <meta charset="utf-8"/>
   <link rel="stylesheet" href="/common/css/solid.css">
   </head>
-<body>
+<body class="index-page">
   <div class="header">
     <div class="header-left">
-      <a href="https://solidos.solidcommunity.net/"><img class="logo-img" src="/common/img/solid-emblem.svg"></a>
+      {{#if serverLogo}}
+        <img class="logo-img" src="{{serverLogo}}" /> 
+      {{/if}}
     </div>
     <div class="header-center">
       <h1 class="title">Welcome to Solid prototype</h1>
@@ -24,24 +26,10 @@
       <p class="lead">
         This is a prototype implementation of a Solid server.
         It is a fully functional server, but there are no security or stability guarantees.
-        If you have not already done so, please register. When registering you will get a Pod and a WebID from solidcommunity.net.
-        If you want to register on a different server check out <a href="https://solidproject.org/users/get-a-pod">the available list of providers</a>.
+        If you have not already done so, please register.
       </p>
-      <p class="lead">
-      <ul>
-        <li>Read more about Solid at <a href="https://solidproject.org/" target="_blank">https://solidproject.org/</a>. </li>
-        <li>There is a vibrant community around Solid gathering on the <a href="https://forum.solidproject.org/" target="_blank">forum</a>, <a href="https://gitter.im/solid/home" target="_blank">chat</a> or at <a href="https://solidproject.org/events" target="_blank">a Solid event</a>. </li>
-        <li>If you are interested to host your own server, read about <a href="https://github.com/solid/community-server/blob/main/README.md" target="_blank">the Community Server</a>.</li>
-      </ul>
-    </p>
-    <p class="lead">
-      License: <a href="https://github.com/solid/node-solid-server/blob/main/LICENSE.md" target="_blank">MIT</a>.
-    </p>
     
       <section>
-        {{#if serverLogo}}
-        <img src="{{serverLogo}}" /> 
-        {{/if}}
         <h2>Server info</h2>
         <dl>
           <dt>Name</dt>
@@ -58,8 +46,6 @@
     </div> <!-- end content-->
 
   </div> <!-- end container-->
-
-  <footer class="pageFooter"></footer>
 
   <script src="/mashlib.js"></script>
   <script src="/common/js/index-buttons.js"></script>

@@ -1,3 +1,4 @@
+'use strict'
 var keyname = 'SolidServerRootRedirectLink';
 function register() { 
     alert(2); window.location.href = "/register"; 
@@ -17,9 +18,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         // IF NOT LOGGED IN AND COOKIE EXISTS: REMOVE COOKIE, HIDE WELCOME, SHOW LINK TO PROFILE
         if( webId ) {
         window.localStorage.removeItem(keyname);
-        //document.getElementById('prototype').style.display = "none";
         document.getElementById('loggedIn').style.display = "block";
-        document.getElementById('loggedIn').innerHTML = `<p>Your WebID is: <a href="${webId}">&lt;${webId}&gt</a>. Visit your profile to log into your Pod.</p>`;
+        document.getElementById('loggedIn').innerHTML = `<p>Your WebID is: <a href="${webId}">${webId}</a>. Visit your profile to log into your Pod.</p>`;
         }
 
         // IF NOT LOGGED IN AND COOKIE DOES NOT EXIST  
@@ -27,7 +27,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         //     HIDE LOGIN BUTTON, ADD REGISTER BUTTON
         else {
         let loginArea = document.getElementById('loginStatusArea');
-        //document.getElementById('prototype').style.display = "block";
         let html = `<input type="button" onclick="window.location.href='/register'" value="Register to get a Pod" class="register-button">`
         let span = document.createElement("span")
         span.innerHTML = html
