@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         window.localStorage.removeItem(keyname);
         //document.getElementById('prototype').style.display = "none";
         document.getElementById('loggedIn').style.display = "block";
-        document.getElementById('loggedIn').innerHTML = `<p>Your WebID is: <a href="${webId}">&lt;${webId}&gt</a>. Visit your profile to log into your Pod.</p>`;
+        document.getElementById('loggedIn').innerHTML = `<p>Your WebID is : <a href="${webId}">${webId}</a>. Visit your profile to log into your Pod.</p>`;
         }
 
         // IF NOT LOGGED IN AND COOKIE DOES NOT EXIST  
