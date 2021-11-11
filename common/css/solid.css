@@ -1,3 +1,90 @@
+  .index-page {
+    background-color: #f8f8f8;
+    font-size: 1em;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  }
+
+  .index-page dt {
+    font-weight: bold;
+  }
+
+  .index-page dd {
+    margin: 0;
+  }
+  
+  .header {
+    box-shadow: 0px 1px 4px rgba(0,0.0,0.2) !important;
+    -webkit-box-shadow: 0px 1px 4px rgba(0,0.0,0.2) !important;
+    text-align: center !important;
+    color: #7C4DFF;
+    padding: 10px;
+    display: inline-flex;
+    width: 99%;
+  }
+
+  .header-left {
+    text-align: left;
+    margin-top: 0.67em;
+    width: 19%;
+  }
+
+  .header-center {
+    margin: auto;
+  }
+
+  @media screen and (max-width: 1000px) {
+    .header-right {
+      display: block !important;
+    }
+  }
+
+  .header-right {
+    display: inline-flex;
+    margin-top: 0.67em;
+    min-width: 19%;
+  }
+
+  .logo-img {
+    width: 50px;
+  }
+  
+  .title {
+      color: #7C4DFF;
+      font-size: 2em;
+      line-height: 1em;
+  }
+  
+  .container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: row wrap;
+    margin: auto;
+    width: 50%;
+    line-height: 1.6;
+  }
+
+  .content {
+    display: block;
+  }
+
+  .webId {
+    text-align: center;
+    -webkit-box-shadow: 0px 1px 4px #7C4DFF !important;
+  }
+  
+  .logo {
+    color: #f8f8f8;
+  }
+
+  .register-button {
+    padding: 1em; 
+    border-radius:0.5em; 
+    font-size: 100%;
+    background-color: #efe; 
+    margin-right: 1em;
+  }
+
 .panel-login-tls,
 .panel-already-registered{
     text-align: center;
