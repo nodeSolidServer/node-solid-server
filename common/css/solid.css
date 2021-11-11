@@ -3,6 +3,14 @@
     font-size: 1em;
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
   }
+
+  .index-page dt {
+    font-weight: bold;
+  }
+
+  .index-page dd {
+    margin: 0;
+  }
   
   .header {
     box-shadow: 0px 1px 4px rgba(0,0.0,0.2) !important;
