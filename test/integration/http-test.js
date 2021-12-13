@@ -167,7 +167,7 @@ describe('HTTP APIs', function () {
         .end(done)
     })
 
-    it('should have set Link as Container/BasicContainer on a implicit index page', function (done) {
+    it('should have set Link as Container/BasicContainer on an implicit index page', function (done) {
       server.options('/sampleContainer/')
         .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#BasicContainer>; rel="type"/)
         .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Container>; rel="type"/)
