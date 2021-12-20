@@ -239,6 +239,15 @@ We have automatic builds set up, so commits to master will trigger a build of ht
 
 If you want to use Docker in development, then you can build it locally with:
 
+Using docker-compose
+```bash
+git clone https://github.com/solid/node-solid-server
+cd node-solid-server
+docker-compose up -d
+```
+
+or build image manually and run it:
+
 ```bash
 git clone https://github.com/solid/node-solid-server
 cd node-solid-server
