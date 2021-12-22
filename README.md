@@ -237,7 +237,7 @@ We have automatic builds set up, so commits to master will trigger a build of ht
 
 ### Development usage
 
-If you want to use Docker in development, you can build and run the image locally with either docker-compose:
+If you want to use Docker in development, you can build and run the image locally with either docker-compose —
 
 ```bash
 git clone https://github.com/solid/node-solid-server
@@ -245,7 +245,7 @@ cd node-solid-server
 docker-compose up -d
 ```
 
-or these manual commands:
+ — or these manual commands —
 
 ```bash
 git clone https://github.com/solid/node-solid-server
