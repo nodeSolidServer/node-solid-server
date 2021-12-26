@@ -60,7 +60,7 @@ describe('PATCH', () => {
       patch: '<> a solid:Patch.'
     }, { // expected:
       status: 400,
-      text: 'No n3-patch found' // patch for https://tim.localhost:7777/read-write.ttl found'
+      text: 'No n3-patch found'
     }))
 
     describe('with neither insert nor delete', describePatch({
