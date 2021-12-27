@@ -45,6 +45,10 @@
       "name": "Arne Hassel",
       "email": "arne.hassel@inrupt.com",
       "url": "https://icanhasweb.net/"
+    },
+    {
+      "name": "Alain Bourgeois",
+      "url": "https://github.com/bourgeoa/"
     }
   ],
   "license": "MIT",
