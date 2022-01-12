@@ -4,13 +4,13 @@ function register() {
     alert(2); window.location.href = "/register"; 
 }
 document.addEventListener('DOMContentLoaded', async function() {
-    if (!UI.authn.currentUser()) await UI.authn.checkUser();
-    let user = UI.authn.currentUser();
+    if (!authn.currentUser()) await authn.checkUser();
+    let user = authn.currentUser();
 
     // IF LOGGED IN: SET SolidServerRootRedirectLink. LOGOUT
     if( user ) {
         window.localStorage.setItem(keyname, user.uri);
-        await UI.authn.authSession.logout();
+        await authn.authSession.logout();
     }
     else {
         let webId = window.localStorage.getItem(keyname);
