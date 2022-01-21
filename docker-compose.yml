@@ -1,0 +1,10 @@
+version: "3"
+services:
+  solid-server:
+    build: .
+    container_name: solid
+    ports:
+      - "8443:8443"
+    entrypoint: npm run solid start -- --no-reject-unauthorized
+    environment:
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
