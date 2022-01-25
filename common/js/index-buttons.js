@@ -4,13 +4,17 @@ function register() {
     alert(2); window.location.href = "/register"; 
 }
 document.addEventListener('DOMContentLoaded', async function() {
+    const solidLogicLib = UI.solidLogicLib
+    const authn = solidLogicLib.authn
+    const authSession = solidLogicLib.authSession
+
     if (!authn.currentUser()) await authn.checkUser();
     let user = authn.currentUser();
 
     // IF LOGGED IN: SET SolidServerRootRedirectLink. LOGOUT
     if( user ) {
         window.localStorage.setItem(keyname, user.uri);
-        await authn.authSession.logout();
+        await authSession.logout();
     }
     else {
         let webId = window.localStorage.getItem(keyname);
@@ -31,7 +35,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         let span = document.createElement("span")
         span.innerHTML = html
         loginArea.appendChild(span);
-        loginArea.appendChild(UI.authn.loginStatusBox(document, null, {}))
+        loginArea.appendChild(UI.login.loginStatusBox(document, null, {}))
         const logInButton = loginArea.querySelectorAll('input')[1];
         logInButton.value = "Log in to see your WebID";
         const signUpButton = loginArea.querySelectorAll('input')[2];
