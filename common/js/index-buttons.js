@@ -4,9 +4,8 @@ function register() {
     alert(2); window.location.href = "/register"; 
 }
 document.addEventListener('DOMContentLoaded', async function() {
-    const solidLogicLib = UI.solidLogicLib
-    const authn = solidLogicLib.authn
-    const authSession = solidLogicLib.authSession
+    const authn = UI.authn
+    const authSession = UI.authSession
 
     if (!authn.currentUser()) await authn.checkUser();
     let user = authn.currentUser();

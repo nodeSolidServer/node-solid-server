@@ -1,0 +1,18 @@
+{
+  "root": "/Users/imyshor/Projects/solid/solidos/workspaces/node-solid-server/bin/data",
+  "port": "8443",
+  "serverUri": "https://localhost:8443",
+  "webid": false,
+  "mount": "/",
+  "configPath": "./config",
+  "configFile": "./config.json",
+  "dbPath": "./.db",
+  "sslKey": "../",
+  "sslCert": "../",
+  "multiuser": false,
+  "server": {
+    "name": "localhost",
+    "description": "",
+    "logo": ""
+  }
+}
