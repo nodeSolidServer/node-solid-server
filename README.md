@@ -237,18 +237,24 @@ We have automatic builds set up, so commits to master will trigger a build of ht
 
 ### Development usage
 
-If you want to use Docker in development, then you can build it locally with:
+If you want to use Docker in development, you can build and run the image locally with either docker-compose —
+
+```bash
+git clone https://github.com/solid/node-solid-server
+cd node-solid-server
+docker-compose up -d
+```
+
+ — or these manual commands —
 
 ```bash
 git clone https://github.com/solid/node-solid-server
 cd node-solid-server
 docker build -t node-solid-server .
-```
 
-Run with:
-```bash
 docker run -p 8443:8443 --name solid node-solid-server
 ```
+
 
 This will enable you to login to solid on https://localhost:8443 and then create a new account
 but not yet use that account. After a new account is made you will need to create an entry for 

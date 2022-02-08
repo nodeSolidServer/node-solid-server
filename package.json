@@ -1,7 +1,7 @@
 {
   "name": "solid-server",
   "description": "Solid server on top of the file-system",
-  "version": "5.6.18",
+  "version": "5.6.20",
   "author": {
     "name": "Tim Berners-Lee",
     "email": "timbl@w3.org"
@@ -92,13 +92,13 @@
     "mashlib": "file:../mashlib",
     "mime-types": "^2.1.34",
     "negotiator": "^0.6.2",
-    "node-fetch": "^2.6.6",
-    "node-forge": "^0.10.0",
+    "node-fetch": "^2.6.7",
+    "node-forge": "^1.2.1",
     "node-mailer": "^0.1.1",
     "nodemailer": "^6.7.2",
     "oidc-op-express": "^0.0.3",
     "owasp-password-strength-test": "^1.3.0",
-    "rdflib": "^2.2.15",
+    "rdflib": "^2.2.17",
     "recursive-readdir": "^2.2.2",
     "request": "^2.88.2",
     "rimraf": "^3.0.2",
