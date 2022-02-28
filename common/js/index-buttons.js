@@ -5,7 +5,7 @@ function register() {
 }
 document.addEventListener('DOMContentLoaded', async function() {
     const authn = UI.authn
-    const authSession = UI.authSession
+    const authSession = UI.authn.authSession
 
     if (!authn.currentUser()) await authn.checkUser();
     let user = authn.currentUser();
