@@ -29,8 +29,8 @@ def container(client, image):
 
 def test_container_fails_with_errors(container):
   assert container.status == "created"
-  logs = container.logs()
-  assert "✗ /root not readable by node" in logs
-  assert "✗ /etc/shadow not readable by node" in logs
+  logs = str(container.logs())
+  assert "/root not readable by node" in logs
+  assert "/etc/shadow not readable by node" in logs
   assert "Finished: ERROR" in logs
   assert not "Finished: SUCCESS" in logs
