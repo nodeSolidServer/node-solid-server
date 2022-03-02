@@ -29,8 +29,8 @@ def test_solid_home_dir_exists_and_owned_by_node(host):
 def test_node_command_is_available(host):
     assert host.exists("node")
 
-def test_node_version_is_10(host):
-    assert host.check_output("node --version").startswith('v10')
+def test_node_version_is_16(host):
+    assert host.check_output("node --version").startswith('v16')
 
 def test_openssl_command_is_available(host):
     assert host.exists("openssl")
