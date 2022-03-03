@@ -132,6 +132,8 @@ describe.skip('AccountManager', () => {
         .then(() => {
           const profile = fs.readFileSync(path.join(accountDir, '/profile/card$.ttl'), 'utf8')
           expect(profile).to.include('"Alice Q."')
+          expect(profile).to.include('solid:oidcIssuer')
+          expect(profile).to.include('<https://localhost:8443>')
 
           const rootAcl = fs.readFileSync(path.join(accountDir, '.acl'), 'utf8')
           expect(rootAcl).to.include('<mailto:alice@')
