@@ -31,11 +31,11 @@ def container(client, image):
 
 def test_container_fails_with_errors(container):
   assert container.status == "created"
-  logs = container.logs()
-  assert "✗ /opt/solid/config not writable by node" in logs
-  assert "✗ /opt/solid/data not writable by node" in logs
-  assert "✗ /opt/solid/.db not writable by node" in logs
-  assert "✗ /missing/key does not exist" in logs
-  assert "✗ /missing/cert does not exist" in logs
+  logs = str(container.logs())
+  assert "/opt/solid/config not writable by node" in logs
+  assert "/opt/solid/data not writable by node" in logs
+  assert "/opt/solid/.db not writable by node" in logs
+  assert "/missing/key does not exist" in logs
+  assert "/missing/cert does not exist" in logs
   assert "Finished: ERROR" in logs
   assert not "Finished: SUCCESS" in logs
