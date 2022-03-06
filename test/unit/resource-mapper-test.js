@@ -226,7 +226,7 @@ describe('ResourceMapper', () => {
 
     itMapsUrl(mapper, 'a URL of a new file with encoded characters',
       {
-        url: 'http://localhost/space%2Ffoo%20bar%20bar.html',
+        url: 'http://localhost/space/foo%20bar%20bar.html',
         contentType: 'text/html',
         createIfNotExists: true
       },
@@ -234,6 +234,14 @@ describe('ResourceMapper', () => {
         path: `${rootPath}space/foo bar bar.html`,
         contentType: 'text/html'
       })
+
+    itMapsUrl(mapper, 'a URL of a new file with encoded characters',
+      {
+        url: 'http://localhost/space%2Ffoo%20bar%20bar.html',
+        contentType: 'text/html',
+        createIfNotExists: true
+      },
+      new Error('Url cannot contain %2F (%encoded /)'))
 
     itMapsUrl(mapper, 'a URL of an existing .acl file',
       {
@@ -413,7 +421,7 @@ describe('ResourceMapper', () => {
       {
         url: 'http://localhost/space%2F..%2Fbar'
       },
-      new Error('Disallowed /.. segment in URL'))
+      new Error('Url cannot contain %2F (%encoded /)'))
 
     // File to URL mapping
 
