@@ -17,6 +17,7 @@
 
     solid:account </> ;  # link to the account uri
     pim:storage </> ;    # root storage
+    solid:oidcIssuer <{{idp}}> ; # identity provider
 
     ldp:inbox </inbox/> ;
 

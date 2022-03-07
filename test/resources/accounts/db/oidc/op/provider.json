@@ -1,6 +1,10 @@
 {
   "issuer": "https://localhost:3457",
   "jwks_uri": "https://localhost:3457/jwks",
+  "scopes_supported": [
+    "openid",
+    "offline_access"
+  ],
   "response_types_supported": [
     "code",
     "code token",
