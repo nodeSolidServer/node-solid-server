@@ -20,16 +20,6 @@ describe('Header handler', () => {
     request = supertest(server)
   })
 
-  describe('MS-Author-Via', () => {
-    describeHeaderTest('read/append for the public', {
-      resource: '/public-ra',
-      headers: {
-        'MS-Author-Via': 'SPARQL',
-        'Access-Control-Expose-Headers': /(^|,\s*)MS-Author-Via(,|$)/
-      }
-    })
-  })
-
   describe('WAC-Allow', () => {
     describeHeaderTest('read/append for the public', {
       resource: '/public-ra',
