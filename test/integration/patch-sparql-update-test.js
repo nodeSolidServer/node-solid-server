@@ -74,7 +74,7 @@ describe('PATCH through application/sparql-update', function () {
     dc:author c:i;
     dc:created "2016-10-25T15:44:42Z"^^xsd:dateTime;
     dc:title "Shared Notes";
-    pad:next :id1477502276660.
+    pad:next :id1477502276660 .
 ind:this wf:participation :id1477522707481; meeting:sharedNotes :this.
 
 `
