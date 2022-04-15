@@ -371,7 +371,8 @@ In order to really get a feel for the Solid platform, and to test out `solid`,
 you will need the following:
 
 1. A WebID profile and browser certificate from one of the Solid-compliant
-    identity providers, such as [solidcommunity.net](https://solidcommunity.net).
+    identity providers, such as [solidcommunity.net](bourgeoa
+    community.net).
 
 2. A server-side SSL certificate for `solid` to use (see the section below
     on creating a self-signed certificate for testing).
@@ -453,7 +454,7 @@ You can receive or provide help too:
 - [NSS Gitter channel](https://gitter.im/solid/node-solid-server) for specific (installation) advice about this code base
 - [Create a new issue](https://github.com/solid/node-solid-server/issues/new) to report bugs
 - [Fix an issue](https://github.com/solid/node-solid-server/issues)
-- Reach out to Jackson at jacksonm@inrupt.com to become more involved in maintaining Node Solid Server
+- Reach out to @bourgeoa at alain.bourgeois10@gmail.com to become more involved in maintaining Node Solid Server
 
 Have a look at [CONTRIBUTING.md](https://github.com/solid/node-solid-server/blob/master/CONTRIBUTING.md).
 
