@@ -224,14 +224,14 @@ describe('ResourceMapper', () => {
         contentType: 'text/html'
       })
 
-    itMapsUrl(mapper, 'a URL of a new file with encoded characters',
+    itMapsUrl(mapper, 'a URL of a new file with encoded characters and encoded /',
       {
-        url: 'http://localhost/space%2Ffoo%20bar%20bar.html',
+        url: 'http://localhost/%25252fspace%2Ffoo%20bar%20bar.html',
         contentType: 'text/html',
         createIfNotExists: true
       },
-      { // alain
-        path: `${rootPath}space%2Ffoo bar bar.html`,
+      {
+        path: `${rootPath}%25252fspace%2Ffoo bar bar.html`,
         contentType: 'text/html'
       })
 
@@ -333,15 +333,6 @@ describe('ResourceMapper', () => {
         contentType: 'application/octet-stream'
       })
 
-    itMapsUrl(mapper, 'a URL ending with an encoded slash to a folder when no index is available',
-      {
-        url: 'http://localhost/space/'
-      },
-      {
-        path: `${rootPath}space/`,
-        contentType: 'application/octet-stream'
-      })
-
     itMapsUrl(mapper, 'a URL of that has an accompanying acl file, but no actual file',
       {
         url: 'http://localhost/space/'
@@ -417,14 +408,6 @@ describe('ResourceMapper', () => {
         url: 'http://localhost/space/../bar'
       },
       new Error('Disallowed /.. segment in URL'))
-
-    /* itMapsUrl(mapper, 'a URL with an encoded /.. path segment',
-      {
-        url: 'http://localhost/space%2F..%2Fbar'
-      },
-      new Error('Disallowed /.. segment in URL'))
-      */
-    // File to URL mapping
 
     itMapsFile(mapper, 'an HTML file',
       { path: `${rootPath}space/foo.html` },
@@ -511,9 +494,9 @@ describe('ResourceMapper', () => {
       })
 
     itMapsFile(mapper, 'a file with %encoded /',
-      { path: `${rootPath}%2Fspace/foo%2f.html` },
+      { path: `${rootPath}%2Fspace/%25252Ffoo%2f.html` },
       {
-        url: 'http://localhost/%2Fspace/foo%2f.html',
+        url: 'http://localhost/%2Fspace/%25252Ffoo%2f.html',
         contentType: 'text/html'
       })
 
