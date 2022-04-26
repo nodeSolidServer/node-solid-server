@@ -224,7 +224,7 @@ describe('ResourceMapper', () => {
         contentType: 'text/html'
       })
 
-    itMapsUrl(mapper, 'a URL of a new file with encoded characters and encoded /',
+    itMapsUrl(mapper, 'a URL of a new file with encoded characters and encoded slash ("/")',
       {
         url: 'http://localhost/%25252fspace%2Ffoo%20bar%20bar.html',
         contentType: 'text/html',
