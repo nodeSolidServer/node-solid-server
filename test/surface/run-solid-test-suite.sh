@@ -1,7 +1,6 @@
 #!/bin/bash
 set -e
 
-
 function setup {
   echo Branch name: $1
   docker network create testnet
