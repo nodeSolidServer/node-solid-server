@@ -1,7 +1,6 @@
 #!/bin/bash
 set -e
 
-
 function setup {
   echo Branch name: $1
   docker network create testnet
@@ -47,9 +46,9 @@ teardown || true
 setup $1
 waitForNss server
 runTests webid-provider-tests v2.0.3
-runTests solid-crud-tests nss-skips
+runTests solid-crud-tests v6.0.0
 waitForNss thirdparty
-runTests web-access-control-tests v6.0.0
+runTests web-access-control-tests v7.1.0
 teardown
 
 # To debug, e.g. running web-access-control-tests jest interactively,
