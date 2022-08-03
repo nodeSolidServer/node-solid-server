@@ -21,12 +21,12 @@ describe('ResourceMapper', () => {
 
     itMapsUrl(mapper, 'a URL with an extension that matches the content type',
       {
-        url: 'http://localhost/space/foo.html',
+        url: 'http://localhost/space/%20foo .html',
         contentType: 'text/html',
         createIfNotExists: true
       },
       {
-        path: `${rootPath}space/foo.html`,
+        path: `${rootPath}space/ foo .html`,
         contentType: 'text/html'
       })
 
