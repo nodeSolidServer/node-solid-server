@@ -84,7 +84,7 @@ describe('PATCH', () => {
       result: '@prefix : </new.ttl#>.\n@prefix tim: </>.\n\ntim:x tim:y tim:z.\n\n'
     }))
 
-    describe('on a non-existing jsonld file', describePatch({
+    describe('on a non-existent JSON-LD file', describePatch({
       path: '/new.jsonld',
       exists: false,
       patch: `<> a solid:InsertDeletePatch;
