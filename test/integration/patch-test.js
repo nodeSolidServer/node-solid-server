@@ -84,6 +84,17 @@ describe('PATCH', () => {
       result: '@prefix : </new.ttl#>.\n@prefix tim: </>.\n\ntim:x tim:y tim:z.\n\n'
     }))
 
+    describe('on a non-existing jsonld file', describePatch({
+      path: '/new.jsonld',
+      exists: false,
+      patch: `<> a solid:InsertDeletePatch;
+                 solid:inserts { <x> <y> <z>. }.`
+    }, { // expected:
+      status: 200,
+      text: 'Patch applied successfully',
+      result: '[{"@id":"https://tim.localhost:7777/x","https://tim.localhost:7777/y":[{"@id":"https://tim.localhost:7777/z"}]}]'
+    }))
+
     describe('on a resource with read-only access', describePatch({
       path: '/read-only.ttl',
       patch: `<> a solid:InsertDeletePatch;
