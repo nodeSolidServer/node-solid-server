@@ -21,12 +21,12 @@ describe('ResourceMapper', () => {
 
     itMapsUrl(mapper, 'a URL with an extension that matches the content type',
       {
-        url: 'http://localhost/space/foo.html',
+        url: 'http://localhost/space/%20foo .html',
         contentType: 'text/html',
         createIfNotExists: true
       },
       {
-        path: `${rootPath}space/foo.html`,
+        path: `${rootPath}space/ foo .html`,
         contentType: 'text/html'
       })
 
@@ -164,13 +164,13 @@ describe('ResourceMapper', () => {
 
     itMapsUrl(mapper, 'an extensionless URL of an existing file',
       {
-        url: 'http://localhost/space/foo'
+        url: 'http://localhost/space/%2Ffoo%2f'
       },
       [
-        `${rootPath}space/foo$.html`
+        `${rootPath}space/%2Ffoo%2f$.html`
       ],
       {
-        path: `${rootPath}space/foo$.html`,
+        path: `${rootPath}space/%2Ffoo%2f$.html`,
         contentType: 'text/html'
       })
 
@@ -224,14 +224,14 @@ describe('ResourceMapper', () => {
         contentType: 'text/html'
       })
 
-    itMapsUrl(mapper, 'a URL of a new file with encoded characters',
+    itMapsUrl(mapper, 'a URL of a new file with encoded characters and encoded /',
       {
-        url: 'http://localhost/space%2Ffoo%20bar%20bar.html',
+        url: 'http://localhost/%25252fspace%2Ffoo%20bar%20bar.html',
         contentType: 'text/html',
         createIfNotExists: true
       },
       {
-        path: `${rootPath}space/foo bar bar.html`,
+        path: `${rootPath}%25252fspace%2Ffoo bar bar.html`,
         contentType: 'text/html'
       })
 
@@ -358,15 +358,15 @@ describe('ResourceMapper', () => {
 
     itMapsUrl(mapper, 'a URL of that has an accompanying meta file, but no actual file',
       {
-        url: 'http://localhost/space/',
+        url: 'http://localhost/space%2F/',
         contentType: 'text/html',
         createIfNotExists: true
       },
       [
-        `${rootPath}space/index.meta`
+        `${rootPath}space%2F/index.meta`
       ],
       {
-        path: `${rootPath}space/index.html`,
+        path: `${rootPath}space%2F/index.html`,
         contentType: 'text/html'
       })
 
@@ -408,14 +408,6 @@ describe('ResourceMapper', () => {
         url: 'http://localhost/space/../bar'
       },
       new Error('Disallowed /.. segment in URL'))
-
-    itMapsUrl(mapper, 'a URL with an encoded /.. path segment',
-      {
-        url: 'http://localhost/space%2F..%2Fbar'
-      },
-      new Error('Disallowed /.. segment in URL'))
-
-    // File to URL mapping
 
     itMapsFile(mapper, 'an HTML file',
       { path: `${rootPath}space/foo.html` },
@@ -474,9 +466,9 @@ describe('ResourceMapper', () => {
       })
 
     itMapsFile(mapper, 'an extensionless unknown file type',
-      { path: `${rootPath}space/foo$.bar` },
+      { path: `${rootPath}space/%2ffoo%2F$.bar` },
       {
-        url: 'http://localhost/space/foo',
+        url: 'http://localhost/space/%2ffoo%2F',
         contentType: 'application/octet-stream'
       })
 
@@ -501,10 +493,17 @@ describe('ResourceMapper', () => {
         contentType: 'text/html'
       })
 
-    itMapsFile(mapper, 'a file with even stranger disallowed IRI characters',
-      { path: `${rootPath}space/Blog discovery for the future? · Issue #96 · scripting:Scripting-News · GitHub.pdf` },
+    itMapsFile(mapper, 'a file with %encoded /',
+      { path: `${rootPath}%2Fspace/%25252Ffoo%2f.html` },
       {
-        url: 'http://localhost/space/Blog%20discovery%20for%20the%20future%3F%20%C2%B7%20Issue%20%2396%20%C2%B7%20scripting%3AScripting-News%20%C2%B7%20GitHub.pdf',
+        url: 'http://localhost/%2Fspace/%25252Ffoo%2f.html',
+        contentType: 'text/html'
+      })
+
+    itMapsFile(mapper, 'a file with even stranger disallowed IRI characters',
+      { path: `${rootPath}%2fspace%2F/Blog discovery for the future? · Issue #96 · scripting:Scripting-News · GitHub.pdf` },
+      {
+        url: 'http://localhost/%2fspace%2F/Blog%20discovery%20for%20the%20future%3F%20%C2%B7%20Issue%20%2396%20%C2%B7%20scripting%3AScripting-News%20%C2%B7%20GitHub.pdf',
         contentType: 'application/pdf'
       })
   })

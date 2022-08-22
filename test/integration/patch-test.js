@@ -84,6 +84,44 @@ describe('PATCH', () => {
       result: '@prefix : </new.ttl#>.\n@prefix tim: </>.\n\ntim:x tim:y tim:z.\n\n'
     }))
 
+    describe('on a non-existent JSON-LD file', describePatch({
+      path: '/new.jsonld',
+      exists: false,
+      patch: `<> a solid:InsertDeletePatch;
+                 solid:inserts { <x> <y> <z>. }.`
+    }, { // expected:
+      status: 200,
+      text: 'Patch applied successfully',
+      result: '[{"@id":"https://tim.localhost:7777/x","https://tim.localhost:7777/y":[{"@id":"https://tim.localhost:7777/z"}]}]'
+    }))
+
+    describe('on a non-existent RDF+XML file', describePatch({
+      path: '/new.rdf',
+      exists: false,
+      patch: `<> a solid:InsertDeletePatch;
+                 solid:inserts { <x> <y> <z>. }.`
+    }, { // expected:
+      status: 200,
+      text: 'Patch applied successfully',
+      result: `<rdf:RDF
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:tim="https://tim.localhost:7777/">
+   <rdf:Description rdf:about="/x"><tim:y rdf:resource="/z"/></rdf:Description>
+</rdf:RDF>
+`
+    }))
+
+    describe('on a non-existent N3 file', describePatch({
+      path: '/new.n3',
+      exists: false,
+      patch: `<> a solid:InsertDeletePatch;
+                 solid:inserts { <x> <y> <z>. }.`
+    }, { // expected:
+      status: 200,
+      text: 'Patch applied successfully',
+      result: '@prefix : </new.n3#>.\n@prefix tim: </>.\n\ntim:x tim:y tim:z.\n\n'
+    }))
+
     describe('on a resource with read-only access', describePatch({
       path: '/read-only.ttl',
       patch: `<> a solid:InsertDeletePatch;
