@@ -587,6 +587,7 @@ describe('HTTP APIs', function () {
       return Promise.all([
         rm('/false-file-48484848'),
         createTestResource('/.acl'),
+        createTestResource('/profile/card$.ttl'),
         createTestResource('/delete-test-empty-container/.meta.acl'),
         createTestResource('/put-resource-1.ttl'),
         createTestResource('/put-resource-with-acl.ttl'),
@@ -613,6 +614,20 @@ describe('HTTP APIs', function () {
 
     it('should return 405 status when deleting root acl', function (done) {
       server.delete('/' + suffixAcl)
+        .expect(405)
+        .end((err, res) => {
+          if (err) return done(err)
+          try {
+            assert.equal(res.get('allow').includes('DELETE'), false) // ,'res methods')
+          } catch (err) {
+            return done(err)
+          }
+          done()
+        })
+    })
+
+    it('should return 405 status when deleting /profile/card', function (done) {
+      server.delete('/profile/card')
         .expect(405)
         .end((err, res) => {
           if (err) return done(err)
@@ -672,6 +687,7 @@ describe('HTTP APIs', function () {
 
     after(function () {
       // Clean up after DELETE API tests
+      rm('/profile/')
       rm('/put-resource-1.ttl')
       rm('/delete-test-non-empty/')
       rm('/delete-test-empty-container/test.txt.acl')
