@@ -92,7 +92,7 @@ describe('PATCH', () => {
     }, { // expected:
       status: 200,
       text: 'Patch applied successfully',
-      result: '[{"@id":"https://tim.localhost:7777/x","https://tim.localhost:7777/y":[{"@id":"https://tim.localhost:7777/z"}]}]'
+      result: '{\n  "@id": "/x",\n  "/y": {\n    "@id": "/z"\n  }\n}'
     }))
 
     describe('on a non-existent RDF+XML file', describePatch({

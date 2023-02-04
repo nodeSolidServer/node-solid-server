@@ -22,7 +22,7 @@ describe('formats', function () {
     function isCorrectSubject (idFragment) {
       return (res) => {
         const payload = JSON.parse(res.text)
-        const id = payload[0]['@id']
+        const id = payload['@id']
         assert(id.endsWith(idFragment), 'The subject of the JSON-LD graph is correct')
       }
     }

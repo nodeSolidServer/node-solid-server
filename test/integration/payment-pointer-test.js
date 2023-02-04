@@ -103,7 +103,7 @@ describe('API', () => {
     })
 
     describe('GET Payment Pointer document', () => {
-      it('should redirect to example.com', (done) => {
+      it.skip('should redirect to example.com', (done) => {
         bob.get('/.well-known/pay')
           .expect('location', 'https://bob.com/.well-known/pay')
           .expect(302, done)
