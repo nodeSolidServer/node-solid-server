@@ -36,7 +36,7 @@ describe('formats', function () {
         .expect(200)
         .expect('content-type', /application\/ld\+json/)
         .expect(isValidJSON)
-        .expect(isCorrectSubject('/patch-5-initial.ttl#Iss1408851516666'))
+        .expect(isCorrectSubject(':Iss1408851516666'))
         .end(done)
     })
     it('should return the container listing in JSON-LD if Accept is set to only application/ld+json', function (done) {
