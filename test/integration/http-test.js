@@ -535,7 +535,7 @@ describe('HTTP APIs', function () {
         .expect(hasHeader('acl', 'baz.ttl' + suffixAcl))
         .expect(201, done)
     })
-    it('should not create a resource with % encoded $.ext', function (done) {
+    it('should not create a resource with percent-encoded $.ext', function (done) {
       server.put('/foo/bar/baz%24.ttl')
         .send(putRequestBody)
         .set('content-type', 'text/turtle')
