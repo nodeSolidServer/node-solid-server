@@ -535,15 +535,15 @@ describe('HTTP APIs', function () {
         .expect(hasHeader('acl', 'baz.ttl' + suffixAcl))
         .expect(201, done)
     })
-    it('should not create a resource with $.ext', function (done) { // alain
-      server.put('/foo/bar/baz$.ttl')
+    it('should not create a resource with % encoded $.ext', function (done) {
+      server.put('/foo/bar/baz%24.ttl')
         .send(putRequestBody)
         .set('content-type', 'text/turtle')
         // .expect(hasHeader('describedBy', 'baz.ttl' + suffixMeta))
         // .expect(hasHeader('acl', 'baz.ttl' + suffixAcl))
         .expect(400, done) // 404
     })
-    it('should not create a resource with $.ext', function (done) { // alain
+    it('should create a resource without extension', function (done) {
       server.put('/foo/bar/baz')
         .send(putRequestBody)
         .set('content-type', 'text/turtle')
