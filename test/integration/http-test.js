@@ -535,13 +535,29 @@ describe('HTTP APIs', function () {
         .expect(hasHeader('acl', 'baz.ttl' + suffixAcl))
         .expect(201, done)
     })
-    it('should not create new resource if folder with same name exists', function (done) {
-      server.put('/foo/bar')
+    it('should not create a resource with percent-encoded $.ext', function (done) {
+      server.put('/foo/bar/baz%24.ttl')
         .send(putRequestBody)
         .set('content-type', 'text/turtle')
-        .expect(hasHeader('describedBy', 'bar' + suffixMeta))
-        .expect(hasHeader('acl', 'bar' + suffixAcl))
-        .expect(200, done)
+        // .expect(hasHeader('describedBy', 'baz.ttl' + suffixMeta))
+        // .expect(hasHeader('acl', 'baz.ttl' + suffixAcl))
+        .expect(400, done) // 404
+    })
+    it('should create a resource without extension', function (done) {
+      server.put('/foo/bar/baz')
+        .send(putRequestBody)
+        .set('content-type', 'text/turtle')
+        .expect(hasHeader('describedBy', 'baz' + suffixMeta))
+        .expect(hasHeader('acl', 'baz' + suffixAcl))
+        .expect(201, done)
+    })
+    it('should not create new resource if a folder/resource with same name will exist in tree', function (done) {
+      server.put('/foo/bar/baz/test.ttl')
+        .send(putRequestBody)
+        .set('content-type', 'text/turtle')
+        .expect(hasHeader('describedBy', 'test.ttl' + suffixMeta))
+        .expect(hasHeader('acl', 'test.ttl' + suffixAcl))
+        .expect(404, done)
     })
     it('should return 201 when trying to put to a container without content-type',
       function (done) {
@@ -587,7 +603,7 @@ describe('HTTP APIs', function () {
       return Promise.all([
         rm('/false-file-48484848'),
         createTestResource('/.acl'),
-        createTestResource('/profile/card$.ttl'),
+        createTestResource('/profile/card'),
         createTestResource('/delete-test-empty-container/.meta.acl'),
         createTestResource('/put-resource-1.ttl'),
         createTestResource('/put-resource-with-acl.ttl'),

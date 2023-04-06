@@ -162,13 +162,13 @@ describe('LDP', function () {
 
     it.skip('with a larger file to exceed allowed quota', function () {
       const randstream = stringToStream(randomBytes(2100))
-      return ldp.put('localhost', '/resources/testQuota.txt', randstream).catch((err) => {
+      return ldp.put('/localhost', '/resources/testQuota.txt', randstream).catch((err) => {
         assert.notOk(err)
       })
     })
     it('should fail if a over quota', function () {
       const hellostream = stringToStream('hello world')
-      return ldp.put('localhost', '/resources/testOverQuota.txt', hellostream).catch((err) => {
+      return ldp.put('/localhost', '/resources/testOverQuota.txt', hellostream).catch((err) => {
         assert.equal(err.status, 413)
       })
     })
