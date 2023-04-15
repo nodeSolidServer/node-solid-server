@@ -97,6 +97,13 @@ describe('LDP', function () {
           assert.equal(isOwner, true)
         })
     })
+    it('should return acl:owner false', () => {
+      const owner = 'https://tim.localhost:7777/profile/card'
+      return ldp.isOwner(owner, '/resources/')
+        .then(isOwner => {
+          assert.equal(isOwner, false)
+        })
+    })
   })
   describe('getGraph', () => {
     it('should read and parse an existing file', () => {
