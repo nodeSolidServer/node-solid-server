@@ -551,7 +551,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it.skip('user1 should be able to PATCH a resource', function (done) {
+    it('user1 should be able to PATCH a non existing resource', function (done) {
       const options = createOptions('/append-inherited/test.ttl', 'user1')
       options.body = 'INSERT DATA { :test  :hello 456 .}'
       options.headers['content-type'] = 'application/sparql-update'
@@ -586,6 +586,16 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 201)
+        done()
+      })
+    })
+    it('user2 should be able to PATCH insert on a non existing resource', function (done) {
+      const options = createOptions('/append-inherited/new.ttl', 'user2')
+      options.body = 'INSERT DATA { :test  :hello 789 .}'
+      options.headers['content-type'] = 'application/sparql-update'
+      request.patch(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 200)
         done()
       })
     })
@@ -648,6 +658,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
     })
     after(function () {
       rm('/accounts-acl/tim.localhost/append-inherited/test.ttl')
+      rm('/accounts-acl/tim.localhost/append-inherited/new.ttl')
     })
   })
 
