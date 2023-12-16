@@ -2,5 +2,6 @@ FROM solidtestsuite/web-access-control-tests
 # RUN git fetch origin
 RUN git fetch https://github.com/solid-contrib/web-access-control-tests.git
 RUN git pull https://github.com/solid-contrib/web-access-control-tests.git
+RUN git stash
 RUN git checkout patchAppendNewDocument
 RUN git pull https://github.com/solid-contrib/web-access-control-tests.git
