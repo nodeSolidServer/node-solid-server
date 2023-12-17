@@ -42,9 +42,9 @@ function runTests {
 }
 
 # ...
-docker build -t web-access-control test/surface/docker/web-access-control
 teardown || true
 setup $1
+docker build -t web-access-control test/surface/docker/web-access-control
 waitForNss server
 runTests webid-provider-tests v2.0.3
 runTests solid-crud-tests v6.0.0
