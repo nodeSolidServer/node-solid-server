@@ -51,7 +51,8 @@ waitForNss thirdparty
 # runTests web-access-control-tests nss-skips # patchAppendNewDocument # v7.1.0
 # docker run --rm --network=testnet --env COOKIE_ALICE="$COOKIE_ALICE" --env COOKIE_BOB="$COOKIE_BOB" --env-file test/surface/web-access-control-tests-env.list web-access-control
 echo "Running web-access-control-tests against server with cookie $COOKIE_server"
-docker build -t web-access-control test/surface/docker/web-access-control
+# docker build -t web-access-control test/surface/docker/web-access-control
+docker build https://github.com/solid-contrib/web-access-control-tests.git#patchAppendNewDocument -t web-access-control
 docker run --rm --network=testnet \
   --env COOKIE="$COOKIE_server" \
   --env COOKIE_ALICE="$COOKIE_server" \
