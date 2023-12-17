@@ -41,23 +41,26 @@ function runTests {
     --env-file test/surface/$1-env.list solidtestsuite/$1:$2
 }
 
+function runTestsFromGit {
+  docker build https://github.com/solid-contrib/$1.git#$2 -t $1
+
+  echo "Running web-access-control-tests against server with cookie $COOKIE_server"
+  docker run --rm --network=testnet \
+    --env COOKIE="$COOKIE_server" \
+    --env COOKIE_ALICE="$COOKIE_server" \
+    --env COOKIE_BOB="$COOKIE_thirdparty" \
+    --env-file test/surface/$1-env.list $1
+}
+
 # ...
 teardown || true
 setup $1
 waitForNss server
-# runTests webid-provider-tests v2.0.3
-# runTests solid-crud-tests v6.0.0
+runTests webid-provider-tests v2.0.3
+runTests solid-crud-tests v6.0.0
 waitForNss thirdparty
-# runTests web-access-control-tests nss-skips # patchAppendNewDocument # v7.1.0
-# docker run --rm --network=testnet --env COOKIE_ALICE="$COOKIE_ALICE" --env COOKIE_BOB="$COOKIE_BOB" --env-file test/surface/web-access-control-tests-env.list web-access-control
-echo "Running web-access-control-tests against server with cookie $COOKIE_server"
-# docker build -t web-access-control test/surface/docker/web-access-control
-docker build https://github.com/solid-contrib/web-access-control-tests.git#patchAppendNewDocument -t web-access-control
-docker run --rm --network=testnet \
-  --env COOKIE="$COOKIE_server" \
-  --env COOKIE_ALICE="$COOKIE_server" \
-  --env COOKIE_BOB="$COOKIE_thirdparty" \
-  --env-file test/surface/web-access-control-tests-env.list web-access-control
+# runTests web-access-control-tests v7.1.0
+runTestsFromGit web-access-control-tests patchAppendNewDocument
 teardown
 
 # To debug, e.g. running web-access-control-tests jest interactively,
