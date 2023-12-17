@@ -55,7 +55,7 @@ exports.checkDnsSettings = function () {
   return Promise.all(TEST_HOSTS.map(hostname => {
     return new Promise((resolve, reject) => {
       dns.lookup(hostname, (error, ip) => {
-        if (error || ip !== '127.0.0.1') {
+        if (error || (ip !== '127.0.0.1' && ip !== '::1')) {
           reject(error)
         } else {
           resolve(true)
