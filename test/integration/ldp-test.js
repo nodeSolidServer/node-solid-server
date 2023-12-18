@@ -89,12 +89,19 @@ describe('LDP', function () {
     })
   })
 
-  describe('getOwner', () => {
-    it('should return acl:owner', () => {
-      const owner1 = 'https://tim.localhost:7777/profile/card#me'
-      return ldp.getOwner('/resources/')
-        .then(owner => {
-          assert.equal(owner, owner1)
+  describe('isOwner', () => {
+    it('should return acl:owner true', () => {
+      const owner = 'https://tim.localhost:7777/profile/card#me'
+      return ldp.isOwner(owner, '/resources/')
+        .then(isOwner => {
+          assert.equal(isOwner, true)
+        })
+    })
+    it('should return acl:owner false', () => {
+      const owner = 'https://tim.localhost:7777/profile/card'
+      return ldp.isOwner(owner, '/resources/')
+        .then(isOwner => {
+          assert.equal(isOwner, false)
         })
     })
   })
