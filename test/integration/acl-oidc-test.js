@@ -138,7 +138,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
           done()
         })
       })
-      it('user1 as solid:owner should let edit the .acl', function (done) {
+      it('user1 as solid:owner should let edit the .acl', function (done) { // alain
         const options = createOptions('/empty-acl/.acl', 'user1', 'text/turtle')
         options.body = ''
         request.put(options, function (error, response, body) {
@@ -209,7 +209,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
           done()
         })
       })
-      it('Should not create empty acl file', function (done) {
+      it('Should not create empty acl file', function (done) { // alain
         const options = createOptions('/write-acl/empty-acl/another-empty-folder/.acl', 'user1', 'text/turtle')
         options.body = ''
         request.put(options, function (error, response, body) {
@@ -273,7 +273,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
   })
 
   describe('no-control', function () {
-    it('user1 as owner should edit acl file', function (done) {
+    it('user1 as owner should edit acl file', function (done) { // alain
       const options = createOptions('/no-control/.acl', 'user1', 'text/turtle')
       options.body = '<#0>' +
       '\n a <http://www.w3.org/ns/auth/acl#Authorization>;' +
@@ -571,6 +571,27 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
+    it('user1 should be able to PUT (which CREATEs) (non existent resource)', function (done) {
+      const options = createOptions('/append-inherited/test1.ttl', 'user1')
+      options.body = '<a> <b> <c> .\n'
+      options.headers['content-type'] = 'text/turtle'
+      request.put(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 201)
+        done()
+      })
+    })
+    it('user2 should not be able to PUT with Append (existing resource)', function (done) {
+      const options = createOptions('/append-inherited/test1.ttl', 'user2')
+      options.body = '<a> <b> <c> .\n'
+      options.headers['content-type'] = 'text/turtle'
+      request.put(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 403)
+        assert.include(response.statusMessage, 'User Unauthorized')
+        done()
+      })
+    })
     it('user1 should be able to access test file', function (done) {
       const options = createOptions('/append-acl/abc.ttl', 'user1')
       request.head(options, function (error, response, body) {
@@ -596,6 +617,16 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       request.patch(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 200)
+        done()
+      })
+    })
+    it('user2 should be able to PUT to (which CREATEs) a non existent resource', function (done) { // alain
+      const options = createOptions('/append-inherited/new1.ttl', 'user1')
+      options.body = '<a> <b> <c> .\n'
+      options.headers['content-type'] = 'text/turtle'
+      request.put(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 201)
         done()
       })
     })
@@ -627,13 +658,13 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it('user2 (with append permission) cannot use PUT to append', function (done) {
+    it('user2 (with append permission) cannot use PUT on an existing resource', function (done) {
       const options = createOptions('/append-acl/abc.ttl', 'user2', 'text/turtle')
       options.body = '<d> <e> <f> .\n'
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 403)
-        assert.equal(response.statusMessage, 'User Unauthorized')
+        assert.include(response.statusMessage, 'Can\'t write file/folder: User Unauthorized')
         done()
       })
     })
@@ -652,13 +683,15 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 401)
-        assert.equal(response.statusMessage, 'Unauthenticated')
+        assert.include(response.statusMessage, 'Can\'t write file/folder: Unauthenticated')
         done()
       })
     })
     after(function () {
       rm('/accounts-acl/tim.localhost/append-inherited/test.ttl')
+      rm('/accounts-acl/tim.localhost/append-inherited/test1.ttl')
       rm('/accounts-acl/tim.localhost/append-inherited/new.ttl')
+      rm('/accounts-acl/tim.localhost/append-inherited/new1.ttl')
     })
   })
 
