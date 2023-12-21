@@ -16,6 +16,26 @@ describe('formats', function () {
         .expect(/Hello, world!/)
         .expect(200, done)
     })
+    describe('HTML dataIsland', function () {
+      it('should return 404 if Accept is set to only text/turtle and no dataIsland', function (done) {
+        server.get('/hello.html')
+          .set('accept', 'text/turtle')
+          .expect(404, done)
+      })
+      it('should return text/turtle if dataIsland and Accept is set to only text/turtle', function (done) {
+        server.get('/hello-with-data-island.html')
+          .set('accept', 'text/turtle')
+          .expect('Content-type', /text\/turtle/)
+          .expect(/<> a "test"./)
+          .expect(200, done)
+      })
+      it('should return JSON-LD if dataIsland and Accept is set to only application/ld+json', function (done) {
+        server.get('/hello-with-data-island.html')
+          .set('accept', 'application/ld+json')
+          .expect('Content-type', 'application/ld+json; charset=utf-8')
+          .expect(200, done)
+      })
+    })
   })
 
   describe('JSON-LD', function () {

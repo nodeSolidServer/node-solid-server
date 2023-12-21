@@ -469,6 +469,63 @@ describe('PATCH', () => {
     })
   })
 
+  describe('HTML data island', () => {
+    describe('on a non-existent HTML dataIsland', describePatch({
+      path: '/data-island-new.html',
+      // exists: false,
+      patch: `<> a solid:InsertDeletePatch;
+                solid:inserts { <x> <y> <z>. }.`
+    }, { // expected:
+      status: 200,
+      text: 'Patch applied successfully',
+      result: `<html>\r
+<head>
+<script type="text/turtle" id="data">
+@prefix : </data-island-new.html#>.
+@prefix tim: </>.
+
+tim:x tim:y tim:z.
+
+</script>
+</head>
+<body>Hello, world!</body>\r
+</html>\r
+`
+    }))
+
+    describe('with a matching WHERE clause', describePatch({
+      path: '/data-island.html',
+      patch: `<> a solid:InsertDeletePatch;
+                solid:where   { ?a <b> <c>. };
+                solid:inserts { ?a <y> <z>. };
+                solid:deletes { ?a <b> <c>. }.`
+    }, { // expected:
+      status: 200,
+      text: 'Patch applied successfully',
+      result: `<html>
+<head>
+
+<script type="text/turtle" id="data">
+@prefix : </data-island.html#>.\n@prefix tim: </>.\n\ntim:a tim:y tim:z.\n\ntim:d tim:e tim:f.\n
+</script>
+</head>
+<body>Hello, world!</body>
+</html>
+`
+    }))
+
+    describe('with a non-matching WHERE clause', describePatch({
+      path: '/data-island.html',
+      patch: `<> a solid:InsertDeletePatch;
+                solid:where   { ?a <y> <z>. };
+                solid:inserts { ?a <y> <z>. };
+                solid:deletes { ?a <b> <c>. }.`
+    }, { // expected:
+      status: 409,
+      text: 'The patch could not be applied'
+    }))
+  })
+
   // Creates a PATCH test for the given resource with the given expected outcomes
   function describePatch ({ path, exists = true, patch, contentType = 'text/n3' },
     { status = 200, text, result }) {
