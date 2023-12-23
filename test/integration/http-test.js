@@ -551,8 +551,16 @@ describe('HTTP APIs', function () {
         .expect(hasHeader('acl', 'baz' + suffixAcl))
         .expect(201, done)
     })
+    it('should not create a container if a document with same name exists in tree', function (done) {
+      server.put('/foo/bar/baz/')
+        .send(putRequestBody)
+        // .set('content-type', 'text/turtle')
+        // .expect(hasHeader('describedBy', suffixMeta))
+        // .expect(hasHeader('acl', suffixAcl))
+        .expect(404, done)
+    })
     it('should not create new resource if a folder/resource with same name will exist in tree', function (done) {
-      server.put('/foo/bar/baz/test.ttl')
+      server.put('/foo/bar/baz/baz1/test.ttl')
         .send(putRequestBody)
         .set('content-type', 'text/turtle')
         .expect(hasHeader('describedBy', 'test.ttl' + suffixMeta))
@@ -730,7 +738,7 @@ describe('HTTP APIs', function () {
       '../resources/sampleContainer/post2.ttl'), {
       encoding: 'utf8'
     })
-    it('should create new resource', function (done) {
+    it('should create new document resource', function (done) {
       server.post('/post-tests/')
         .send(postRequest1Body)
         .set('content-type', 'text/turtle')
@@ -749,21 +757,13 @@ describe('HTTP APIs', function () {
         .expect('location', /.*\.ttl/)
         .expect(201, done)
     })
-    it('should error with 404 to create folder with same name as a resource', function (done) {
+    it('should create container with new slug as a resource', function (done) {
       server.post('/post-tests/')
         .set('content-type', 'text/turtle')
         .set('slug', 'put-resource')
         .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
         .send(postRequest2Body)
-        .expect(404)
-        .end(function (err, res) {
-          const name = res.headers.location
-          const folderPath = path.join(__dirname, '../resources/post-tests/put-resource/')
-          const is = fs.existsSync(folderPath)
-          if (!is) {
-            return done()
-          } else done(new Error('Can read folder, should not' + name + err))
-        })
+        .expect(201, done())
     })
     it('should error with 403 if auxiliary resource file.acl', function (done) {
       server.post('/post-tests/')
@@ -860,22 +860,13 @@ describe('HTTP APIs', function () {
         .expect('content-type', /text\/turtle/)
         .expect(200, done)
     })
-    it('should error with 404 to create resource with same name as a container', function (done) {
+    it('should create a new slug if there is a container with same name', function (done) {
       server.post('/post-tests/')
         .send(postRequest1Body)
         .set('content-type', 'text/turtle')
         .set('slug', 'loans')
-        .expect(404)
-        .end(function (err, res) {
-          let name = 'loans.ttl'
-          if (err) name = res.headers.location
-          const filePath = path.join(__dirname, '../resources/post-tests/' + name)
-          const stats = fs.statSync(filePath)
-          if (!stats.isDirectory()) {
-            return done(new Error('Can read file, should not' + name))
-          }
-          done()
-        })
+        .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
+        .expect(201, done())
     })
     it('should create a container with a name hex decoded from the slug', (done) => {
       const containerName = 'Film%4011'
