@@ -763,7 +763,7 @@ describe('HTTP APIs', function () {
         .set('slug', 'put-resource')
         .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
         .send(postRequest2Body)
-        .expect(201, done())
+        .expect(201, done)
     })
     it('should error with 403 if auxiliary resource file.acl', function (done) {
       server.post('/post-tests/')
@@ -866,7 +866,7 @@ describe('HTTP APIs', function () {
         .set('content-type', 'text/turtle')
         .set('slug', 'loans')
         .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
-        .expect(201, done())
+        .expect(201, done)
     })
     it('should create a container with a name hex decoded from the slug', (done) => {
       const containerName = 'Film%4011'
