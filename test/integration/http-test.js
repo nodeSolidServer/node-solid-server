@@ -557,7 +557,7 @@ describe('HTTP APIs', function () {
         // .set('content-type', 'text/turtle')
         // .expect(hasHeader('describedBy', suffixMeta))
         // .expect(hasHeader('acl', suffixAcl))
-        .expect(404, done)
+        .expect(409, done)
     })
     it('should not create new resource if a folder/resource with same name will exist in tree', function (done) {
       server.put('/foo/bar/baz/baz1/test.ttl')
@@ -565,7 +565,7 @@ describe('HTTP APIs', function () {
         .set('content-type', 'text/turtle')
         .expect(hasHeader('describedBy', 'test.ttl' + suffixMeta))
         .expect(hasHeader('acl', 'test.ttl' + suffixAcl))
-        .expect(404, done)
+        .expect(409, done)
     })
     it('should return 201 when trying to put to a container without content-type',
       function (done) {
