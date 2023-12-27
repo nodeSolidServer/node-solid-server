@@ -44,7 +44,7 @@ function runTests {
 function runTestsFromGit {
   docker build https://github.com/solid-contrib/$1.git#$2 -t $1
 
-  echo "Running web-access-control-tests against server with cookie $COOKIE_server"
+  echo "Running $1 branch $2 against server with cookie $COOKIE_server"
   docker run --rm --network=testnet \
     --env COOKIE="$COOKIE_server" \
     --env COOKIE_ALICE="$COOKIE_server" \
@@ -57,6 +57,7 @@ teardown || true
 setup $1
 waitForNss server
 runTests webid-provider-tests v2.0.3
+# runTests solid-crud-tests v6.0.0
 runTestsFromGit solid-crud-tests v6.0.0
 waitForNss thirdparty
 # runTests web-access-control-tests v7.1.0
