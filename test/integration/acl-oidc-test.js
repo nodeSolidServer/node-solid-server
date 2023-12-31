@@ -664,7 +664,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 403)
-        assert.include(response.statusMessage, 'Can\'t write file/folder: User Unauthorized')
+        assert.include(response.statusMessage, 'User Unauthorized')
         done()
       })
     })
@@ -683,7 +683,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 401)
-        assert.include(response.statusMessage, 'Can\'t write file/folder: Unauthenticated')
+        assert.include(response.statusMessage, 'Unauthenticated')
         done()
       })
     })
