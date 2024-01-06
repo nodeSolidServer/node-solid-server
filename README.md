@@ -69,6 +69,15 @@ $ solid start --root path/to/folder --port 8443 --ssl-key path/to/ssl-key.pem --
 # Solid server (solid v0.2.24) running on https://localhost:8443/
 ```
 
+By default `solid` runs in debug all mode. To stop the debug logs use `-q`, the quiet parameter.
+
+```bash
+$ DEBUG="solid:*" solid start -q
+# use quiet mode and set debug to all
+# DEBUG="solid:ACL" logs only debug.ACL's
+
+```
+
 ### Running in development environments
 
 Solid requires SSL certificates to be valid, so you cannot use self-signed certificates. To switch off this security feature in development environments, you can use the `bin/solid-test` executable, which unsets the `NODE_TLS_REJECT_UNAUTHORIZED` flag and sets the `rejectUnauthorized` option.
