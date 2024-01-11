@@ -69,7 +69,7 @@ $ solid start --root path/to/folder --port 8443 --ssl-key path/to/ssl-key.pem --
 # Solid server (solid v0.2.24) running on https://localhost:8443/
 ```
 
-By default `solid` runs in debug all mode. To stop the debug logs use `-q`, the quiet parameter.
+By default, `solid` runs in `debug all` mode. To stop the debug logs, use `-q`, the quiet parameter.
 
 ```bash
 $ DEBUG="solid:*" solid start -q
