@@ -197,6 +197,21 @@ describe('HTTP APIs', function () {
     })
   })
 
+  describe('Not allowed method should return 405 and allow header', function (done) {
+    it('TRACE should return 405', function (done) {
+      server.trace('/sampleContainer2/')
+        // .expect(hasHeader('allow', 'OPTIONS, HEAD, GET, PATCH, POST, PUT, DELETE'))
+        .expect(405)
+        .end((err, res) => {
+          if (err) done(err)
+          const allow = res.headers.allow
+          console.log(allow)
+          if (allow === 'OPTIONS, HEAD, GET, PATCH, POST, PUT, DELETE') done()
+          else done(new Error('no allow header'))
+        })
+    })
+  })
+
   describe('GET API', function () {
     it('should have the same size of the file on disk', function (done) {
       server.get('/sampleContainer/solid.png')
