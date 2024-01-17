@@ -426,6 +426,11 @@ describe('HTTP APIs', function () {
         .expect('Content-Type', 'application/octet-stream; charset=utf-8')
         .end(done)
     })
+    it('should return content-type text/turtle for container', function (done) {
+      server.head('/sampleContainer2/')
+        .expect('Content-Type', 'text/turtle; charset=utf-8')
+        .end(done)
+    })
     it('should have set content-type for turtle files',
       function (done) {
         server.head('/sampleContainer2/example1.ttl')
@@ -456,7 +461,7 @@ describe('HTTP APIs', function () {
         .expect(200, done)
     })
     it('should have set Updates-Via to use WebSockets', function (done) {
-      server.get('/sampleContainer2/example1.ttl')
+      server.head('/sampleContainer2/example1.ttl')
         .expect('updates-via', /wss?:\/\//)
         .expect(200, done)
     })
@@ -467,21 +472,27 @@ describe('HTTP APIs', function () {
     })
     it('should have set acl and describedBy Links for resource',
       function (done) {
-        server.get('/sampleContainer2/example1.ttl')
+        server.head('/sampleContainer2/example1.ttl') // get
           .expect(hasHeader('acl', 'example1.ttl' + suffixAcl))
           .expect(hasHeader('describedBy', 'example1.ttl' + suffixMeta))
           .end(done)
       })
+    it('should have set Content-Type as text/turtle for Container',
+      function (done) {
+        server.head('/sampleContainer2/')
+          .expect('Content-Type', 'text/turtle; charset=utf-8')
+          .expect(200, done)
+      })
     it('should have set Link as Container/BasicContainer',
       function (done) {
-        server.get('/sampleContainer2/')
+        server.head('/sampleContainer2/')
           .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#BasicContainer>; rel="type"/)
           .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Container>; rel="type"/)
           .expect(200, done)
       })
     it('should have set acl and describedBy Links for container',
       function (done) {
-        server.get('/sampleContainer2/')
+        server.head('/sampleContainer2/')
           .expect(hasHeader('acl', suffixAcl))
           .expect(hasHeader('describedBy', suffixMeta))
           .end(done)
