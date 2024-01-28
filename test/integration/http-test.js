@@ -504,11 +504,19 @@ describe('HTTP APIs', function () {
       '../resources/sampleContainer/put1.ttl'), {
       encoding: 'utf8'
     })
-    it('should create new resource', function (done) {
+    it('should create new resource with if-none-match on non existing resource', function (done) {
       server.put('/put-resource-1.ttl')
         .send(putRequestBody)
+        .set('if-none-match', '*')
         .set('content-type', 'text/plain')
         .expect(201, done)
+    })
+    it('should fail with 412 with precondition on existing resource', function (done) {
+      server.put('/put-resource-1.ttl')
+        .send(putRequestBody)
+        .set('if-none-match', '*')
+        .set('content-type', 'text/plain')
+        .expect(412, done)
     })
     it('should fail with 400 if not content-type', function (done) {
       server.put('/put-resource-1.ttl')
