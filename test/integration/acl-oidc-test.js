@@ -138,7 +138,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
           done()
         })
       })
-      it('user1 as solid:owner should let edit the .acl', function (done) { // alain
+      it('user1 as solid:owner should let edit the .acl', function (done) {
         const options = createOptions('/empty-acl/.acl', 'user1', 'text/turtle')
         options.body = ''
         request.put(options, function (error, response, body) {
@@ -209,7 +209,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
           done()
         })
       })
-      it('Should not create empty acl file', function (done) { // alain
+      it('Should not create empty acl file', function (done) {
         const options = createOptions('/write-acl/empty-acl/another-empty-folder/.acl', 'user1', 'text/turtle')
         options.body = ''
         request.put(options, function (error, response, body) {
@@ -273,7 +273,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
   })
 
   describe('no-control', function () {
-    it('user1 as owner should edit acl file', function (done) { // alain
+    it('user1 as owner should edit acl file', function (done) {
       const options = createOptions('/no-control/.acl', 'user1', 'text/turtle')
       options.body = '<#0>' +
       '\n a <http://www.w3.org/ns/auth/acl#Authorization>;' +
@@ -551,7 +551,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it('user1 should be able to PATCH (which CREATEs) a nonexistent resource', function (done) {
+    it('user1 should be able to PATCH a nonexistent resource (which CREATEs)', function (done) {
       const options = createOptions('/append-inherited/test.ttl', 'user1')
       options.body = 'INSERT DATA { :test  :hello 456 .}'
       options.headers['content-type'] = 'application/sparql-update'
@@ -571,7 +571,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it('user1 should be able to PUT (which CREATEs) (non existent resource)', function (done) {
+    it('user1 should be able to PUT to non existent resource (which CREATEs)', function (done) {
       const options = createOptions('/append-inherited/test1.ttl', 'user1')
       options.body = '<a> <b> <c> .\n'
       options.headers['content-type'] = 'text/turtle'
@@ -610,7 +610,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it('user2 should be able to PATCH INSERT to (which CREATEs) a nonexistent resource', function (done) {
+    it('user2 should be able to PATCH INSERT to a nonexistent resource (which CREATEs)', function (done) {
       const options = createOptions('/append-inherited/new.ttl', 'user2')
       options.body = 'INSERT DATA { :test  :hello 789 .}'
       options.headers['content-type'] = 'application/sparql-update'
@@ -620,7 +620,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it('user2 should be able to PUT to (which CREATEs) a non existent resource', function (done) { // alain
+    it('user2 should be able to PUT to a non existent resource (which CREATEs)', function (done) {
       const options = createOptions('/append-inherited/new1.ttl', 'user1')
       options.body = '<a> <b> <c> .\n'
       options.headers['content-type'] = 'text/turtle'

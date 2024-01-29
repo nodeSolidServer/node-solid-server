@@ -472,7 +472,7 @@ describe('HTTP APIs', function () {
     })
     it('should have set acl and describedBy Links for resource',
       function (done) {
-        server.head('/sampleContainer2/example1.ttl') // get
+        server.head('/sampleContainer2/example1.ttl')
           .expect(hasHeader('acl', 'example1.ttl' + suffixAcl))
           .expect(hasHeader('describedBy', 'example1.ttl' + suffixMeta))
           .end(done)

@@ -282,7 +282,7 @@ describe('ResourceMapper', () => {
       ],
       {
         path: `${rootPath}space/`,
-        contentType: 'text/turtle' // 'application/octet-stream'
+        contentType: 'text/turtle'
       })
 
     itMapsUrl(mapper, 'a URL ending with a slash when index$.html is available',
@@ -295,7 +295,7 @@ describe('ResourceMapper', () => {
       ],
       {
         path: `${rootPath}space/`,
-        contentType: 'text/turtle' // 'application/octet-stream'
+        contentType: 'text/turtle'
       })
 
     itMapsUrl(mapper, 'a URL ending with a slash when index$.ttl is available',
@@ -307,7 +307,7 @@ describe('ResourceMapper', () => {
       ],
       {
         path: `${rootPath}space/`,
-        contentType: 'text/turtle' // 'application/octet-stream'
+        contentType: 'text/turtle'
       })
 
     itMapsUrl(mapper, 'a URL ending with a slash to a folder when index.html is available but index is skipped',
@@ -321,7 +321,7 @@ describe('ResourceMapper', () => {
       ],
       {
         path: `${rootPath}space/`,
-        contentType: 'text/turtle' // 'application/octet-stream'
+        contentType: 'text/turtle'
       })
 
     itMapsUrl(mapper, 'a URL ending with a slash to a folder when no index is available',
@@ -330,7 +330,7 @@ describe('ResourceMapper', () => {
       },
       {
         path: `${rootPath}space/`,
-        contentType: 'text/turtle' // 'application/octet-stream'
+        contentType: 'text/turtle'
       })
 
     itMapsUrl(mapper, 'a URL of that has an accompanying acl file, but no actual file',
@@ -342,7 +342,7 @@ describe('ResourceMapper', () => {
       ],
       {
         path: `${rootPath}space/`,
-        contentType: 'text/turtle' // 'application/octet-stream'
+        contentType: 'text/turtle'
       })
 
     itMapsUrl(mapper, 'a URL ending with a slash for text/html when index.html is not available',
@@ -373,13 +373,13 @@ describe('ResourceMapper', () => {
     itMapsUrl(mapper, 'a URL ending with a slash to a folder when index is skipped',
       {
         url: 'http://localhost/space/',
-        contentType: 'text/turtle', // 'application/octet-stream',
+        contentType: 'text/turtle',
         createIfNotExists: true,
         searchIndex: false
       },
       {
         path: `${rootPath}space/`,
-        contentType: 'text/turtle' // 'application/octet-stream'
+        contentType: 'text/turtle'
       })
 
     itMapsUrl(mapper, 'a URL ending with a slash for text/turtle',
