@@ -742,12 +742,12 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it('We should have a 500 with invalid group listings', function (done) {
+    it('We should have a 406 with invalid group listings', function (done) {
       const options = createOptions('/group/test-folder/some-other-file.txt', 'user2')
 
       request.get(options, function (error, response, body) {
         assert.equal(error, null)
-        assert.equal(response.statusCode, 500)
+        assert.equal(response.statusCode, 406)
         done()
       })
     })
