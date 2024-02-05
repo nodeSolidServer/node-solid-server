@@ -20,12 +20,22 @@ describe('Header handler', () => {
     request = supertest(server)
   })
 
-  describe('MS-Author-Via', () => {
+  describe('MS-Author-Via', () => { // deprecated
     describeHeaderTest('read/append for the public', {
       resource: '/public-ra',
       headers: {
         'MS-Author-Via': 'SPARQL',
         'Access-Control-Expose-Headers': /(^|,\s*)MS-Author-Via(,|$)/
+      }
+    })
+  })
+
+  describe('Accept-Patch', () => {
+    describeHeaderTest('read/append for the public', {
+      resource: '/public-ra',
+      headers: {
+        'Accept-Patch': 'text/n3, application/sparql-update, application/sparql-update-single-match',
+        'Access-Control-Expose-Headers': /(^|,\s*)Accept-Patch(,|$)/
       }
     })
   })

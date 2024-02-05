@@ -22,7 +22,7 @@ const serverOptions = {
   forceUser: `${serverUri}/profile/card#me`
 }
 
-describe('PATCH', () => {
+describe('PATCH through text/n3', () => {
   let request
   let server
 
