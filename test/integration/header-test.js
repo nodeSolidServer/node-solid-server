@@ -40,6 +40,16 @@ describe('Header handler', () => {
     })
   })
 
+  describe('Accept-Post', () => {
+    describeHeaderTest('read/append for the public', {
+      resource: '/public-ra',
+      headers: {
+        'Accept-Post': '*/*',
+        'Access-Control-Expose-Headers': /(^|,\s*)Accept-Post(,|$)/
+      }
+    })
+  })
+
   describe('WAC-Allow', () => {
     describeHeaderTest('read/append for the public', {
       resource: '/public-ra',
