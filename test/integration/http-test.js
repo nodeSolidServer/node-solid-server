@@ -110,26 +110,32 @@ describe('HTTP APIs', function () {
           .expect('Access-Control-Allow-Origin', 'http://example.com')
           .expect('Access-Control-Allow-Credentials', 'true')
           .expect('Access-Control-Allow-Methods', 'OPTIONS,HEAD,GET,PATCH,POST,PUT,DELETE')
-          .expect('Access-Control-Expose-Headers', 'Authorization, User, Location, Link, Vary, Last-Modified, ETag, Accept-Patch, Accept-Post, Updates-Via, Allow, WAC-Allow, Content-Length, WWW-Authenticate, MS-Author-Via, X-Powered-By')
+          .expect('Access-Control-Expose-Headers', 'Authorization, User, Location, Link, Vary, Last-Modified, ETag, Accept-Patch, Accept-Post, Accept-Put, Updates-Via, Allow, WAC-Allow, Content-Length, WWW-Authenticate, MS-Author-Via, X-Powered-By')
           .expect(204, done)
       })
 
-    describe('Accept-Patch header', function () {
+    describe('Accept-* headers', function () {
       it('should be present for resources', function (done) {
         server.options('/sampleContainer/example1.ttl')
-          .expect('Accept-Patch', 'application/sparql-update')
+          .expect('Accept-Patch', 'text/n3, application/sparql-update, application/sparql-update-single-match')
+          .expect('Accept-Post', '*/*')
+          .expect('Accept-Put', '*/*')
           .expect(204, done)
       })
 
       it('should be present for containers', function (done) {
         server.options('/sampleContainer/')
-          .expect('Accept-Patch', 'application/sparql-update')
+          .expect('Accept-Patch', 'text/n3, application/sparql-update, application/sparql-update-single-match')
+          .expect('Accept-Post', '*/*')
+          .expect('Accept-Put', '*/*')
           .expect(204, done)
       })
 
       it('should be present for non-rdf resources', function (done) {
         server.options('/sampleContainer/solid.png')
-          .expect('Accept-Patch', 'application/sparql-update')
+          .expect('Accept-Patch', 'text/n3, application/sparql-update, application/sparql-update-single-match')
+          .expect('Accept-Post', '*/*')
+          .expect('Accept-Put', '*/*')
           .expect(204, done)
       })
     })
@@ -314,6 +320,11 @@ describe('HTTP APIs', function () {
       server.get('/invalidfile.foo')
         .expect(404, done)
     })
+    it('should return 404 for non-existent container', function (done) { // alain
+      server.get('/inexistant/')
+        .expect('Accept-Put', 'text/turtle')
+        .expect(404, done)
+    })
     it('should return basic container link for directories', function (done) {
       server.get('/')
         .expect('Link', /http:\/\/www.w3.org\/ns\/ldp#BasicContainer/)
@@ -396,13 +407,39 @@ describe('HTTP APIs', function () {
         .expect('content-type', /text\/turtle/)
         .end(done)
     })
-    it('should still redirect to the right container URI if missing / and HTML is requested',
-      function (done) {
-        server.get('/sampleContainer')
-          .set('accept', 'text/html')
-          .expect('location', /\/sampleContainer\//)
-          .expect(301, done)
+    it('should still redirect to the right container URI if missing / and HTML is requested', function (done) {
+      server.get('/sampleContainer')
+        .set('accept', 'text/html')
+        .expect('location', /\/sampleContainer\//)
+        .expect(301, done)
+    })
+
+    describe('Accept-* headers', function () {
+      it('should return 404 for non-existent resource', function (done) {
+        server.get('/invalidfile.foo')
+          .expect('Accept-Patch', 'text/n3, application/sparql-update, application/sparql-update-single-match')
+          .expect('Accept-Post', '*/*')
+          .expect('Accept-put', '*/*')
+          .expect(404, done)
       })
+      it('Accept-Put=text/turtle for non-existent container', function (done) {
+        server.get('/inexistant/')
+          .expect('Accept-Patch', 'text/n3, application/sparql-update, application/sparql-update-single-match')
+          .expect('Accept-Post', '*/*')
+          .expect('Accept-Put', 'text/turtle')
+          .expect(404, done)
+      })
+      it('Accept-Put header do not exist for existing container', (done) => {
+        server.get('/sampleContainer/')
+          .expect(200)
+          .expect('Accept-Patch', 'text/n3, application/sparql-update, application/sparql-update-single-match')
+          .expect('Accept-Post', '*/*')
+          .expect((res) => {
+            if (res.headers['Accept-Put']) return done(new Error('Accept-Put header should not exist'))
+          })
+          .end(done)
+      })
+    })
   })
 
   describe('HEAD API', function () {

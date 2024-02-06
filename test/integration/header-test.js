@@ -30,22 +30,14 @@ describe('Header handler', () => {
     })
   })
 
-  describe('Accept-Patch', () => {
+  describe('Accept-* for a resource document', () => {
     describeHeaderTest('read/append for the public', {
       resource: '/public-ra',
       headers: {
         'Accept-Patch': 'text/n3, application/sparql-update, application/sparql-update-single-match',
-        'Access-Control-Expose-Headers': /(^|,\s*)Accept-Patch(,|$)/
-      }
-    })
-  })
-
-  describe('Accept-Post', () => {
-    describeHeaderTest('read/append for the public', {
-      resource: '/public-ra',
-      headers: {
         'Accept-Post': '*/*',
-        'Access-Control-Expose-Headers': /(^|,\s*)Accept-Post(,|$)/
+        'Accept-Put': '*/*',
+        'Access-Control-Expose-Headers': /(^|,\s*)Accept-Patch, Accept-Post, Accept-Put(,|$)/
       }
     })
   })
