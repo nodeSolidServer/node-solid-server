@@ -1,7 +1,7 @@
 {
   "name": "solid-server",
   "description": "Solid server on top of the file-system",
-  "version": "5.7.8",
+  "version": "5.7.9-beta",
   "author": {
     "name": "Tim Berners-Lee",
     "email": "timbl@w3.org"
@@ -121,7 +121,7 @@
     "dirty-chai": "2.0.1",
     "eslint": "^7.32.0",
     "localstorage-memory": "1.0.3",
-    "mocha": "^9.2.2",
+    "mocha": "^10.2.0",
     "nock": "^13.4.0",
     "node-mocks-http": "^1.14.0",
     "nyc": "15.1.0",
