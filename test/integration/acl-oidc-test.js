@@ -551,7 +551,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it('user1 should be able to PATCH (which CREATEs) a nonexistent resource', function (done) {
+    it('user1 should be able to PATCH a nonexistent resource (which CREATEs)', function (done) {
       const options = createOptions('/append-inherited/test.ttl', 'user1')
       options.body = 'INSERT DATA { :test  :hello 456 .}'
       options.headers['content-type'] = 'application/sparql-update'
@@ -568,6 +568,27 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       request.patch(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 200)
+        done()
+      })
+    })
+    it('user1 should be able to PUT to non existent resource (which CREATEs)', function (done) {
+      const options = createOptions('/append-inherited/test1.ttl', 'user1')
+      options.body = '<a> <b> <c> .\n'
+      options.headers['content-type'] = 'text/turtle'
+      request.put(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 201)
+        done()
+      })
+    })
+    it('user2 should not be able to PUT with Append (existing resource)', function (done) {
+      const options = createOptions('/append-inherited/test1.ttl', 'user2')
+      options.body = '<a> <b> <c> .\n'
+      options.headers['content-type'] = 'text/turtle'
+      request.put(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 403)
+        assert.include(response.statusMessage, 'User Unauthorized')
         done()
       })
     })
@@ -589,13 +610,23 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it('user2 should be able to PATCH INSERT to (which CREATEs) a nonexistent resource', function (done) {
+    it('user2 should be able to PATCH INSERT to a nonexistent resource (which CREATEs)', function (done) {
       const options = createOptions('/append-inherited/new.ttl', 'user2')
       options.body = 'INSERT DATA { :test  :hello 789 .}'
       options.headers['content-type'] = 'application/sparql-update'
       request.patch(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 200)
+        done()
+      })
+    })
+    it('user2 should be able to PUT to a non existent resource (which CREATEs)', function (done) {
+      const options = createOptions('/append-inherited/new1.ttl', 'user1')
+      options.body = '<a> <b> <c> .\n'
+      options.headers['content-type'] = 'text/turtle'
+      request.put(options, function (error, response, body) {
+        assert.equal(error, null)
+        assert.equal(response.statusCode, 201)
         done()
       })
     })
@@ -627,13 +658,13 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         done()
       })
     })
-    it('user2 (with append permission) cannot use PUT to append', function (done) {
+    it('user2 (with append permission) cannot use PUT on an existing resource', function (done) {
       const options = createOptions('/append-acl/abc.ttl', 'user2', 'text/turtle')
       options.body = '<d> <e> <f> .\n'
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 403)
-        assert.equal(response.statusMessage, 'User Unauthorized')
+        assert.include(response.statusMessage, 'User Unauthorized')
         done()
       })
     })
@@ -652,13 +683,15 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
         assert.equal(response.statusCode, 401)
-        assert.equal(response.statusMessage, 'Unauthenticated')
+        assert.include(response.statusMessage, 'Unauthenticated')
         done()
       })
     })
     after(function () {
       rm('/accounts-acl/tim.localhost/append-inherited/test.ttl')
+      rm('/accounts-acl/tim.localhost/append-inherited/test1.ttl')
       rm('/accounts-acl/tim.localhost/append-inherited/new.ttl')
+      rm('/accounts-acl/tim.localhost/append-inherited/new1.ttl')
     })
   })
 

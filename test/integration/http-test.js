@@ -197,6 +197,21 @@ describe('HTTP APIs', function () {
     })
   })
 
+  describe('Not allowed method should return 405 and allow header', function (done) {
+    it('TRACE should return 405', function (done) {
+      server.trace('/sampleContainer2/')
+        // .expect(hasHeader('allow', 'OPTIONS, HEAD, GET, PATCH, POST, PUT, DELETE'))
+        .expect(405)
+        .end((err, res) => {
+          if (err) done(err)
+          const allow = res.headers.allow
+          console.log(allow)
+          if (allow === 'OPTIONS, HEAD, GET, PATCH, POST, PUT, DELETE') done()
+          else done(new Error('no allow header'))
+        })
+    })
+  })
+
   describe('GET API', function () {
     it('should have the same size of the file on disk', function (done) {
       server.get('/sampleContainer/solid.png')
@@ -411,6 +426,11 @@ describe('HTTP APIs', function () {
         .expect('Content-Type', 'application/octet-stream; charset=utf-8')
         .end(done)
     })
+    it('should return content-type text/turtle for container', function (done) {
+      server.head('/sampleContainer2/')
+        .expect('Content-Type', 'text/turtle; charset=utf-8')
+        .end(done)
+    })
     it('should have set content-type for turtle files',
       function (done) {
         server.head('/sampleContainer2/example1.ttl')
@@ -441,7 +461,7 @@ describe('HTTP APIs', function () {
         .expect(200, done)
     })
     it('should have set Updates-Via to use WebSockets', function (done) {
-      server.get('/sampleContainer2/example1.ttl')
+      server.head('/sampleContainer2/example1.ttl')
         .expect('updates-via', /wss?:\/\//)
         .expect(200, done)
     })
@@ -452,21 +472,27 @@ describe('HTTP APIs', function () {
     })
     it('should have set acl and describedBy Links for resource',
       function (done) {
-        server.get('/sampleContainer2/example1.ttl')
+        server.head('/sampleContainer2/example1.ttl')
           .expect(hasHeader('acl', 'example1.ttl' + suffixAcl))
           .expect(hasHeader('describedBy', 'example1.ttl' + suffixMeta))
           .end(done)
       })
+    it('should have set Content-Type as text/turtle for Container',
+      function (done) {
+        server.head('/sampleContainer2/')
+          .expect('Content-Type', 'text/turtle; charset=utf-8')
+          .expect(200, done)
+      })
     it('should have set Link as Container/BasicContainer',
       function (done) {
-        server.get('/sampleContainer2/')
+        server.head('/sampleContainer2/')
           .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#BasicContainer>; rel="type"/)
           .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Container>; rel="type"/)
           .expect(200, done)
       })
     it('should have set acl and describedBy Links for container',
       function (done) {
-        server.get('/sampleContainer2/')
+        server.head('/sampleContainer2/')
           .expect(hasHeader('acl', suffixAcl))
           .expect(hasHeader('describedBy', suffixMeta))
           .end(done)
@@ -478,11 +504,19 @@ describe('HTTP APIs', function () {
       '../resources/sampleContainer/put1.ttl'), {
       encoding: 'utf8'
     })
-    it('should create new resource', function (done) {
+    it('should create new resource with if-none-match on non existing resource', function (done) {
       server.put('/put-resource-1.ttl')
         .send(putRequestBody)
+        .set('if-none-match', '*')
         .set('content-type', 'text/plain')
         .expect(201, done)
+    })
+    it('should fail with 412 with precondition on existing resource', function (done) {
+      server.put('/put-resource-1.ttl')
+        .send(putRequestBody)
+        .set('if-none-match', '*')
+        .set('content-type', 'text/plain')
+        .expect(412, done)
     })
     it('should fail with 400 if not content-type', function (done) {
       server.put('/put-resource-1.ttl')
@@ -551,13 +585,21 @@ describe('HTTP APIs', function () {
         .expect(hasHeader('acl', 'baz' + suffixAcl))
         .expect(201, done)
     })
+    it('should not create a container if a document with same name exists in tree', function (done) {
+      server.put('/foo/bar/baz/')
+        .send(putRequestBody)
+        // .set('content-type', 'text/turtle')
+        // .expect(hasHeader('describedBy', suffixMeta))
+        // .expect(hasHeader('acl', suffixAcl))
+        .expect(409, done)
+    })
     it('should not create new resource if a folder/resource with same name will exist in tree', function (done) {
-      server.put('/foo/bar/baz/test.ttl')
+      server.put('/foo/bar/baz/baz1/test.ttl')
         .send(putRequestBody)
         .set('content-type', 'text/turtle')
         .expect(hasHeader('describedBy', 'test.ttl' + suffixMeta))
         .expect(hasHeader('acl', 'test.ttl' + suffixAcl))
-        .expect(404, done)
+        .expect(409, done)
     })
     it('should return 201 when trying to put to a container without content-type',
       function (done) {
@@ -712,6 +754,7 @@ describe('HTTP APIs', function () {
   })
 
   describe('POST API', function () {
+    let postLocation
     before(function () {
       // Ensure all these are finished before running tests
       return Promise.all([
@@ -730,7 +773,13 @@ describe('HTTP APIs', function () {
       '../resources/sampleContainer/post2.ttl'), {
       encoding: 'utf8'
     })
-    it('should create new resource', function (done) {
+    // Capture the resource name generated by server by parsing Location: header
+    let postedResourceName
+    const getResourceName = function (res) {
+      postedResourceName = res.header.location
+    }
+
+    it('should create new document resource', function (done) {
       server.post('/post-tests/')
         .send(postRequest1Body)
         .set('content-type', 'text/turtle')
@@ -749,21 +798,30 @@ describe('HTTP APIs', function () {
         .expect('location', /.*\.ttl/)
         .expect(201, done)
     })
-    it('should error with 404 to create folder with same name as a resource', function (done) {
+    it('should create container with new slug as a resource', function (done) {
       server.post('/post-tests/')
         .set('content-type', 'text/turtle')
         .set('slug', 'put-resource')
         .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
         .send(postRequest2Body)
-        .expect(404)
-        .end(function (err, res) {
-          const name = res.headers.location
-          const folderPath = path.join(__dirname, '../resources/post-tests/put-resource/')
-          const is = fs.existsSync(folderPath)
-          if (!is) {
-            return done()
-          } else done(new Error('Can read folder, should not' + name + err))
+        .expect(201)
+        .end((err, res) => {
+          if (err) return done(err)
+          try {
+            postLocation = res.headers.location
+            console.log('location ' + postLocation)
+            const createdDir = fs.statSync(path.join(__dirname, '../resources', postLocation.slice(0, -1)))
+            assert(createdDir.isDirectory(), 'Container should have been created')
+          } catch (err) {
+            return done(err)
+          }
+          done()
         })
+    })
+    it('should get newly created container with new slug', function (done) {
+      console.log('location' + postLocation)
+      server.get(postLocation)
+        .expect(200, done)
     })
     it('should error with 403 if auxiliary resource file.acl', function (done) {
       server.post('/post-tests/')
@@ -821,11 +879,6 @@ describe('HTTP APIs', function () {
       server.delete('/post-tests/post-resource-1.ttl')
         .expect(200, done)
     })
-    // Capture the resource name generated by server by parsing Location: header
-    let postedResourceName
-    const getResourceName = function (res) {
-      postedResourceName = res.header.location
-    }
     it('should create new resource without slug header', function (done) {
       server.post('/post-tests/')
         .send(postRequest1Body)
@@ -860,22 +913,19 @@ describe('HTTP APIs', function () {
         .expect('content-type', /text\/turtle/)
         .expect(200, done)
     })
-    it('should error with 404 to create resource with same name as a container', function (done) {
+    it('should create a new slug if there is a container with same name', function (done) {
       server.post('/post-tests/')
         .send(postRequest1Body)
         .set('content-type', 'text/turtle')
-        .set('slug', 'loans')
-        .expect(404)
-        .end(function (err, res) {
-          let name = 'loans.ttl'
-          if (err) name = res.headers.location
-          const filePath = path.join(__dirname, '../resources/post-tests/' + name)
-          const stats = fs.statSync(filePath)
-          if (!stats.isDirectory()) {
-            return done(new Error('Can read file, should not' + name))
-          }
-          done()
-        })
+        .set('slug', 'loans.ttl')
+        .expect(201)
+        .expect(getResourceName)
+        .end(done)
+    })
+    it('should get newly created document resource with new slug', function (done) {
+      console.log(postedResourceName)
+      server.get(postedResourceName)
+        .expect(200, done)
     })
     it('should create a container with a name hex decoded from the slug', (done) => {
       const containerName = 'Film%4011'
