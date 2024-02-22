@@ -90,7 +90,7 @@ describe('PasswordAuthenticator', () => {
       pwAuth.findValidUser()
         .catch(error => {
           expect(error.statusCode).to.equal(400)
-          expect(error.message).to.equal('No user found for that username')
+          expect(error.message).to.equal('Invalid username/password combination.')
           done()
         })
     })
@@ -111,7 +111,7 @@ describe('PasswordAuthenticator', () => {
       pwAuth.findValidUser()
         .catch(error => {
           expect(error.statusCode).to.equal(400)
-          expect(error.message).to.equal('User found but no password match')
+          expect(error.message).to.equal('Invalid username/password combination.')
           done()
         })
     })
