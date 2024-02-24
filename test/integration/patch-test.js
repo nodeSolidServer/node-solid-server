@@ -84,6 +84,16 @@ describe('PATCH through text/n3', () => {
       result: '@prefix : </new.ttl#>.\n@prefix tim: </>.\n\ntim:x tim:y tim:z.\n\n'
     }))
 
+    describe('on a non-existing dot file', describePatch({
+      path: '/.ttl',
+      exists: false,
+      patch: `<> a solid:InsertDeletePatch;
+                 solid:inserts { <x> <y> <z>. }.`
+    }, { // expected:
+      status: 403,
+      text: 'GlobalDashboard'
+    }))
+
     describe('on a non-existent JSON-LD file', describePatch({
       path: '/new.jsonld',
       exists: false,

@@ -704,6 +704,7 @@ describe('HTTP APIs', function () {
         createTestResource('/.acl'),
         createTestResource('/profile/card'),
         createTestResource('/delete-test-empty-container/.meta.acl'),
+        createTestResource('/delete-test-empty-container/.tmp'),
         createTestResource('/put-resource-1.ttl'),
         createTestResource('/put-resource-with-acl.ttl'),
         createTestResource('/put-resource-with-acl.ttl.acl'),
