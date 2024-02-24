@@ -335,10 +335,18 @@ describe('HTTP APIs', function () {
       server.get('/invalidfile.foo')
         .expect(404, done)
     })
-    it('should return 404 for non-existent container', function (done) { // alain
+    it('should return 404 for non-existent container', function (done) {
       server.get('/inexistant/')
         .expect('Accept-Put', 'text/turtle')
         .expect(404, done)
+    })
+    it('should return 403 for existing dot filename', function (done) {
+      server.get('/sampleContainer/.tmp')
+        .expect(403, done)
+    })
+    it('should return 403 for non existing dot filename', function (done) {
+      server.get('/.foo')
+        .expect(403, done)
     })
     it('should return basic container link for directories', function (done) {
       server.get('/')
@@ -560,6 +568,18 @@ describe('HTTP APIs', function () {
         .send(putRequestBody)
         .set('content-type', '')
         .expect(400, done)
+    })
+    it('should fail with 403 for existing dot file', function (done) {
+      server.put('/sampleContainer/.tmp')
+        .send(putRequestBody)
+        .set('content-type', 'text/turtle')
+        .expect(403, done)
+    })
+    it('should fail with 403 for non existing dot file', function (done) {
+      server.put('/.foo')
+        .send(putRequestBody)
+        .set('content-type', 'text/turtle')
+        .expect(403, done)
     })
     it('should create new resource and delete old path if different', function (done) {
       server.put('/put-resource-1.ttl')

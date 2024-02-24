@@ -365,7 +365,7 @@ describe('LDP', function () {
         })
     })
 
-    it('should ldp:contains the same files in dir', () => {
+    it('should ldp:contains the same files in dir (excluding dot files)', () => {
       ldp.listContainer(path.join(__dirname, '../resources/sampleContainer/'), 'https://server.tld/resources/sampleContainer/', '', 'server.tld')
         .then(data => {
           fs.readdir(path.join(__dirname, '../resources/sampleContainer/'), function (err, expectedFiles) {
@@ -385,6 +385,8 @@ describe('LDP', function () {
 
             files.sort()
             expectedFiles.sort()
+            const firstItem = expectedFiles.shift()
+            assert.deepEqual(firstItem, '.tmp')
             assert.deepEqual(files, expectedFiles)
           })
         })
