@@ -143,14 +143,14 @@ describe('ResourceMapper', () => {
 
     // GET/HEAD/POST/DELETE/PATCH base cases
 
-    itMapsUrl(mapper, 'a URL of a non-existing folder',
+    itMapsUrl(mapper, 'a URL of a non-existent folder',
       {
         url: 'http://localhost/space/foo/'
       },
       [/* no files */],
       new Error('/space/foo/ Resource not found'))
 
-    itMapsUrl(mapper, 'a URL of a non-existing file',
+    itMapsUrl(mapper, 'a URL of a non-existent file',
       {
         url: 'http://localhost/space/foo.html'
       },
