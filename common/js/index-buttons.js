@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         //     HIDE LOGIN BUTTON, ADD REGISTER BUTTON
         else {
         let loginArea = document.getElementById('loginStatusArea');
-        let html = `<input type="button" onclick="window.location.href='/register'" value="Register to get a Pod" class="register-button"> style="padding: 1em; border-radius:0.2em; font-size: 100%;margin: 0.75em 0 0.75em 0.5em !important; padding: 0.5em !important;background-color: #efe;"`
+        let html = `<input type="button" onclick="window.location.href='/register'" value="Register to get a Pod" class="register-button" style="padding: 1em; border-radius:0.2em; font-size: 100%;margin: 0.75em 0 0.75em 0.5em !important; padding: 0.5em !important;background-color: #efe;"`>
         let span = document.createElement("span")
         span.innerHTML = html
         loginArea.appendChild(span);
