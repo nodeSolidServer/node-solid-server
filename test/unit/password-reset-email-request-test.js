@@ -101,10 +101,9 @@ describe('PasswordResetEmailRequest', () => {
 
       PasswordResetEmailRequest.post(req, res)
         .then(() => {
-          expect(PasswordResetEmailRequest.handlePost).to.have.been.called();
+          expect(PasswordResetEmailRequest.handlePost).to.have.been.called()
         })
     })
-
   })
 
   describe('validate()', () => {
@@ -178,8 +177,8 @@ describe('PasswordResetEmailRequest', () => {
       return PasswordResetEmailRequest.handlePost(request)
         .then(() => {
           expect(request.validate).to.have.been.called()
-          expect(request.loadUser).to.have.been.called();
-          expect(request.loadUser).to.throw();
+          expect(request.loadUser).to.have.been.called()
+          expect(request.loadUser).to.throw()
         }).catch(() => {
           expect(request.error).to.have.been.called()
           expect(response.render).to.have.been.calledWith('auth/reset-link-sent')
@@ -216,10 +215,11 @@ describe('PasswordResetEmailRequest', () => {
       const options = { accountManager, username }
       const request = new PasswordResetEmailRequest(options)
 
+      sinon.spy(request, 'renderSuccess')
+
       request.loadUser()
-        .catch(error => {
-          expect(error.code).to.equal('ACCOUNT_MISSING');
-          expect(error.message).to.equal('Account not found for that username')
+        .catch(() => {
+          expect(request.renderSuccess).to.have.been.called()
           done()
         })
     })
