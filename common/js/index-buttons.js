@@ -8,14 +8,14 @@ document.addEventListener('DOMContentLoaded', async function () {
   const authSession = UI.authn.authSession
 
   if (!authn.currentUser()) await authn.checkUser()
-  const user = authn.currentUser()
+  let user = authn.currentUser()
 
   // IF LOGGED IN: SET SolidServerRootRedirectLink. LOGOUT
   if (user) {
     window.localStorage.setItem(keyname, user.uri)
     await authSession.logout()
   } else {
-    const webId = window.localStorage.getItem(keyname)
+    let webId = window.localStorage.getItem(keyname)
 
     // IF NOT LOGGED IN AND COOKIE EXISTS: REMOVE COOKIE, HIDE WELCOME, SHOW LINK TO PROFILE
     if (webId) {
@@ -28,9 +28,9 @@ document.addEventListener('DOMContentLoaded', async function () {
     //     SHOW WELCOME, SHOW LOGIN BUTTON
     //     HIDE LOGIN BUTTON, ADD REGISTER BUTTON
     else {
-      const loginArea = document.getElementById('loginStatusArea')
-      const html = '<input type="button" onclick="window.location.href=\'/register\'" value="Register to get a Pod" class="register-button">'
-      const span = document.createElement('span')
+      let loginArea = document.getElementById('loginStatusArea')
+      let html = '<input type="button" onclick="window.location.href=\'/register\'" value="Register to get a Pod" class="register-button">'
+      let span = document.createElement('span')
       span.innerHTML = html
       loginArea.appendChild(span)
       loginArea.appendChild(UI.login.loginStatusBox(document, null, {}))
