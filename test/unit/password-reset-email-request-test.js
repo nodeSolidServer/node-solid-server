@@ -215,11 +215,11 @@ describe('PasswordResetEmailRequest', () => {
       const options = { accountManager, username }
       const request = new PasswordResetEmailRequest(options)
 
-      sinon.spy(request, 'renderSuccess')
+      sinon.spy(request, 'resetLinkMessage')
 
       request.loadUser()
         .catch(() => {
-          expect(request.renderSuccess).to.have.been.called()
+          expect(request.resetLinkMessage).to.have.been.called()
           done()
         })
     })
