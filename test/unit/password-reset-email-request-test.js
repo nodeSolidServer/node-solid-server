@@ -14,6 +14,7 @@ const HttpMocks = require('node-mocks-http')
 const PasswordResetEmailRequest = require('../../lib/requests/password-reset-email-request')
 const AccountManager = require('../../lib/models/account-manager')
 const SolidHost = require('../../lib/models/solid-host')
+const EmailService = require('../../lib/services/email-service')
 
 describe('PasswordResetEmailRequest', () => {
   describe('constructor()', () => {
@@ -153,6 +154,39 @@ describe('PasswordResetEmailRequest', () => {
           expect(request.error).to.not.have.been.called()
         })
     })
+
+    it('should hande a reset request with no username without privacy leakage', () => {
+      const host = SolidHost.from({ serverUri: 'https://example.com' })
+      const store = { suffixAcl: '.acl' }
+      const accountManager = AccountManager.from({ host, multiuser: true, store })
+      accountManager.loadAccountRecoveryEmail = sinon.stub().resolves('alice@example.com')
+      accountManager.sendPasswordResetEmail = sinon.stub().resolves()
+      accountManager.accountExists = sinon.stub().resolves(false)
+
+      const returnToUrl = 'https://example.com/resource'
+      const username = 'alice'
+      const response = HttpMocks.createResponse()
+      response.render = sinon.stub()
+
+      const options = { accountManager, username, returnToUrl, response }
+      const request = new PasswordResetEmailRequest(options)
+
+      sinon.spy(request, 'error')
+      sinon.spy(request, 'validate')
+      sinon.spy(request, 'loadUser')
+
+      return PasswordResetEmailRequest.handlePost(request)
+        .then(() => {
+          expect(request.validate).to.have.been.called()
+          expect(request.loadUser).to.have.been.called()
+          expect(request.loadUser).to.throw()
+        }).catch(() => {
+          expect(request.error).to.have.been.called()
+          expect(response.render).to.have.been.calledWith('auth/reset-link-sent')
+          expect(accountManager.loadAccountRecoveryEmail).to.not.have.been.called()
+          expect(accountManager.sendPasswordResetEmail).to.not.have.been.called()
+        })
+    })
   })
 
   describe('loadUser()', () => {
@@ -175,16 +209,26 @@ describe('PasswordResetEmailRequest', () => {
     it('should throw an error if the user does not exist', done => {
       const host = SolidHost.from({ serverUri: 'https://example.com' })
       const store = { suffixAcl: '.acl' }
-      const accountManager = AccountManager.from({ host, multiuser: true, store })
+      const emailService = sinon.stub().returns(EmailService)
+      const accountManager = AccountManager.from({ host, multiuser: true, store, emailService })
       accountManager.accountExists = sinon.stub().resolves(false)
       const username = 'alice'
-
       const options = { accountManager, username }
       const request = new PasswordResetEmailRequest(options)
 
+      sinon.spy(request, 'resetLinkMessage')
+      sinon.spy(accountManager, 'userAccountFrom')
+      sinon.spy(accountManager, 'verifyEmailDependencies')
+
       request.loadUser()
-        .catch(error => {
-          expect(error.message).to.equal('Account not found for that username')
+        .then(() => {
+          expect(accountManager.userAccountFrom).to.have.been.called()
+          expect(accountManager.verifyEmailDependencies).to.have.been.called()
+          expect(accountManager.verifyEmailDependencies).to.throw()
+          done()
+        })
+        .catch(() => {
+          expect(request.resetLinkMessage).to.have.been.called()
           done()
         })
     })
