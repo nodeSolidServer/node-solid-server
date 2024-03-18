@@ -1,4 +1,3 @@
-
 const fs = require('fs')
 const Handlebars = require('handlebars')
 const path = require('path')
