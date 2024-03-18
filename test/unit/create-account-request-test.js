@@ -107,7 +107,7 @@ describe('CreateAccountRequest', () => {
 
       const requests = invalidUsernames.map((username) => {
         const aliceData = {
-          username: username, password: '1234'
+          username, password: '1234'
         }
 
         const req = HttpMocks.createRequest({ app: { locals }, body: aliceData })

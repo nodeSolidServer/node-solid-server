@@ -43,8 +43,8 @@ describe('HTTP COPY API', function () {
 
   function createOptions (method, url, user) {
     const options = {
-      method: method,
-      url: url,
+      method,
+      url,
       headers: {}
     }
     if (user) {
