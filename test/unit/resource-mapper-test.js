@@ -143,12 +143,19 @@ describe('ResourceMapper', () => {
 
     // GET/HEAD/POST/DELETE/PATCH base cases
 
-    itMapsUrl(mapper, 'a URL of a non-existing file',
+    itMapsUrl(mapper, 'a URL of a non-existent folder',
+      {
+        url: 'http://localhost/space/foo/'
+      },
+      [/* no files */],
+      new Error('/space/foo/ Resource not found'))
+
+    itMapsUrl(mapper, 'a URL of a non-existent file',
       {
         url: 'http://localhost/space/foo.html'
       },
       [/* no files */],
-      new Error('Resource not found: /space/foo.html'))
+      new Error('/space/foo.html Resource not found'))
 
     itMapsUrl(mapper, 'a URL of an existing file with extension',
       {
@@ -328,6 +335,9 @@ describe('ResourceMapper', () => {
       {
         url: 'http://localhost/space/'
       },
+      [
+        `${rootPath}space/.meta` // fs.readdir mock needs one file
+      ],
       {
         path: `${rootPath}space/`,
         contentType: 'text/turtle'
@@ -673,6 +683,7 @@ function mapsUrl (it, mapper, label, options, files, expected) {
   function mockReaddir () {
     mapper._readdir = async (path) => {
       expect(path.startsWith(`${rootPath}space/`)).to.equal(true)
+      if (!files.length) return
       return files.map(f => f.replace(/.*\//, ''))
     }
   }
