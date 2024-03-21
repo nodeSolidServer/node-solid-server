@@ -670,6 +670,23 @@ describe('HTTP APIs', function () {
           .expect(201, done)
       }
     )
+    it('should return a 400 error when trying to put a container that contains a reserved suffix',
+      function (done) {
+        server.put('/foo/bar.acl/test/')
+          .set('content-type', 'text/turtle')
+          .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
+          .expect(400, done)
+      }
+    )
+    it('should return a 400 error when trying to put a resource that contains a reserved suffix',
+      function (done) {
+        server.put('/foo/bar.acl/test.ttl')
+          .send(putRequestBody)
+          .set('content-type', 'text/turtle')
+          .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
+          .expect(400, done)
+      }
+    )
     // Cleanup
     after(function () {
       rm('/foo/')
@@ -846,7 +863,7 @@ describe('HTTP APIs', function () {
           if (err) return done(err)
           try {
             postLocation = res.headers.location
-            console.log('location ' + postLocation)
+            // console.log('location ' + postLocation)
             const createdDir = fs.statSync(path.join(__dirname, '../resources', postLocation.slice(0, -1)))
             assert(createdDir.isDirectory(), 'Container should have been created')
           } catch (err) {
