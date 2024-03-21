@@ -131,6 +131,16 @@ describe('PATCH through text/n3', () => {
       result: '@prefix : </new.n3#>.\n@prefix tim: </>.\n\ntim:x tim:y tim:z.\n\n'
     }))
 
+    describe('on an N3 file that has an invalid uri', describePatch({
+      path: '/foo/bar.acl/test.n3',
+      exists: false,
+      patch: `<> a solid:InsertDeletePatch;
+                 solid:inserts { <x> <y> <z>. }.`
+    }, {
+      status: 400,
+      text: '/foo/bar.acl/test.n3 contained reserved suffixes in path'
+    }))
+
     describe('on a resource with read-only access', describePatch({
       path: '/read-only.ttl',
       patch: `<> a solid:InsertDeletePatch;
