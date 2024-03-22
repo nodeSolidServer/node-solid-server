@@ -891,6 +891,13 @@ describe('HTTP APIs', function () {
         .set('content-type', 'text/turtle')
         .expect(403, done)
     })
+    it('should error with 400 if slug contains invalid suffix', function (done) {
+      server.post('/post-tests/')
+        .set('slug', 'put-resource.acl.ttl')
+        .send(postRequest1Body)
+        .set('content-type', 'text-turtle')
+        .expect(400, done)
+    })
     it('should error with 400 if the body is empty and no content type is provided', function (done) {
       server.post('/post-tests/')
         .set('slug', 'post-resource-empty-fail')
