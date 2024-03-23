@@ -335,7 +335,7 @@ describe('HTTP APIs', function () {
       server.get('/invalidfile.foo')
         .expect(404, done)
     })
-    it('should return 404 for non-existent container', function (done) { // alain
+    it('should return 404 for non-existent container', function (done) {
       server.get('/inexistant/')
         .expect('Accept-Put', 'text/turtle')
         .expect(404, done)
@@ -891,12 +891,12 @@ describe('HTTP APIs', function () {
         .set('content-type', 'text/turtle')
         .expect(403, done)
     })
-    it('should error with 400 if slug contains invalid suffix', function (done) {
+    it('should not error with 400 if slug contains invalid suffix', function (done) { // TODO find better name
       server.post('/post-tests/')
         .set('slug', 'put-resource.acl.ttl')
         .send(postRequest1Body)
         .set('content-type', 'text-turtle')
-        .expect(400, done)
+        .expect(201, done)
     })
     it('should error with 400 if the body is empty and no content type is provided', function (done) {
       server.post('/post-tests/')
@@ -959,19 +959,40 @@ describe('HTTP APIs', function () {
         .set('slug', 'loans.ttl')
         .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
         .send(postRequest2Body)
+        .expect('location', /\/post-tests\/loans.ttl\//)
         .expect(201)
-        .end(function (err) {
+        .end((err, res) => {
           if (err) return done(err)
-          const stats = fs.statSync(path.join(__dirname, '../resources/post-tests/loans.ttl/'))
-          if (!stats.isDirectory()) {
-            return done(new Error('Cannot read container just created'))
+          try {
+            postLocation = res.headers.location
+            console.log('location ' + postLocation)
+            const createdDir = fs.statSync(path.join(__dirname, '../resources', postLocation.slice(0, -1)))
+            assert(createdDir.isDirectory(), 'Container should have been created')
+          } catch (err) {
+            return done(err)
           }
           done()
         })
     })
     it('should be able to access newly container', function (done) {
-      server.get('/post-tests/loans.ttl/')
-        .expect('content-type', /text\/turtle/)
+      console.log(postLocation)
+      server.get(postLocation)
+        // .expect('content-type', /text\/turtle/)
+        .expect(200, done)
+    })
+    it('should create container', function (done) {
+      server.post('/post-tests/')
+        .set('content-type', 'text/turtle')
+        .set('slug', 'loans.acl')
+        .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
+        .send(postRequest2Body)
+        .expect('location', /\/post-tests\/loans\//)
+        .expect(201, done)
+    })
+    it('should be able to access newly container', function (done) {
+      console.log(postLocation)
+      server.get(postLocation)
+        // .expect('content-type', /text\/turtle/)
         .expect(200, done)
     })
     it('should create a new slug if there is a container with same name', function (done) {

@@ -138,7 +138,7 @@ describe('PATCH through text/n3', () => {
                  solid:inserts { <x> <y> <z>. }.`
     }, {
       status: 400,
-      text: '/foo/bar.acl/test.n3 contained reserved suffixes in path'
+      text: 'contained reserved suffixes in path'
     }))
 
     describe('on a resource with read-only access', describePatch({
