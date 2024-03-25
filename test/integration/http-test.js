@@ -891,13 +891,6 @@ describe('HTTP APIs', function () {
         .set('content-type', 'text/turtle')
         .expect(403, done)
     })
-    it('should not error with 400 if slug contains invalid suffix', function (done) { // TODO find better name
-      server.post('/post-tests/')
-        .set('slug', 'put-resource.acl.ttl')
-        .send(postRequest1Body)
-        .set('content-type', 'text-turtle')
-        .expect(201, done)
-    })
     it('should error with 400 if the body is empty and no content type is provided', function (done) {
       server.post('/post-tests/')
         .set('slug', 'post-resource-empty-fail')
@@ -921,6 +914,15 @@ describe('HTTP APIs', function () {
           .expect(hasHeader('acl', suffixAcl))
           .expect(201, done)
       })
+    it('should create new resource even if slug contains invalid suffix', function (done) {
+      server.post('/post-tests/')
+        .set('slug', 'put-resource.acl.ttl')
+        .send(postRequest1Body)
+        .set('content-type', 'text-turtle')
+        .expect(hasHeader('describedBy', suffixMeta))
+        .expect(hasHeader('acl', suffixAcl))
+        .expect(201, done)
+    })
     it('should fail return 404 if no parent container found', function (done) {
       server.post('/hello.html/')
         .send(postRequest1Body)
