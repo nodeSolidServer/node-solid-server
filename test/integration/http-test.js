@@ -983,13 +983,23 @@ describe('HTTP APIs', function () {
     it('should create container', function (done) {
       server.post('/post-tests/')
         .set('content-type', 'text/turtle')
-        .set('slug', 'loans.acl')
+        .set('slug', 'loans.acl.meta')
         .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
         .send(postRequest2Body)
         .expect('location', /\/post-tests\/loans\//)
-        .expect(201, done)
+        .expect(201)
+        .end((err, res) => {
+          if (err) return done(err)
+          try {
+            postLocation = res.headers.location
+            assert(!postLocation.endsWith('.acl/') && !postLocation.endsWith('.meta/'), 'Container name should not end with .acl or .meta')
+          } catch (err) {
+            return done(err)
+          }
+          done()
+        })
     })
-    it('should be able to access newly container', function (done) {
+    it('should be able to access newly created container', function (done) {
       console.log(postLocation)
       server.get(postLocation)
         // .expect('content-type', /text\/turtle/)
