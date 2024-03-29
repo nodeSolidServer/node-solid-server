@@ -923,6 +923,15 @@ describe('HTTP APIs', function () {
         .expect(hasHeader('acl', suffixAcl))
         .expect(201, done)
     })
+    it('should do something', function (done) {
+      server.post('/post-tests/')
+        .set('content-type', 'text/turtle')
+        .set('slug', 'foo.bar.acl.meta')
+        .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
+        .send(postRequest2Body)
+        .expect('location', /\/post-tests\/foo.bar\//)
+        .expect(201, done)
+    })
     it('should fail return 404 if no parent container found', function (done) {
       server.post('/hello.html/')
         .send(postRequest1Body)
