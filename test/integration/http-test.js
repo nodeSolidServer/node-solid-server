@@ -923,7 +923,7 @@ describe('HTTP APIs', function () {
         .expect(hasHeader('acl', suffixAcl))
         .expect(201, done)
     })
-    it('should do something', function (done) {
+    it('create container with recursive example', function (done) {
       server.post('/post-tests/')
         .set('content-type', 'text/turtle')
         .set('slug', 'foo.bar.acl.meta')
