@@ -678,7 +678,7 @@ describe('HTTP APIs', function () {
           .expect(400, done)
       }
     )
-    it('should return a 400 error when trying to put a resource that contains a reserved suffix',
+    it('should return a 400 error when trying to PUT a resource with a name that contains a reserved suffix',
       function (done) {
         server.put('/foo/bar.acl/test.ttl')
           .send(putRequestBody)
