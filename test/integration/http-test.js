@@ -1003,7 +1003,7 @@ describe('HTTP APIs', function () {
           if (err) return done(err)
           try {
             postLocation = res.headers.location
-            assert(!postLocation.endsWith('.acl/') && !postLocation.endsWith('.meta/'), 'Container name should not end with ".acl" or ".meta"')
+            assert(!postLocation.endsWith('.acl/') && !postLocation.endsWith('.meta/'), 'Container name cannot end with ".acl" or ".meta"')
           } catch (err) {
             return done(err)
           }
