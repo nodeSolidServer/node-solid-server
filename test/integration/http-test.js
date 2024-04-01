@@ -670,7 +670,7 @@ describe('HTTP APIs', function () {
           .expect(201, done)
       }
     )
-    it('should return a 400 error when trying to put a container that contains a reserved suffix',
+    it('should return a 400 error when trying to PUT a container with a name that contains a reserved suffix',
       function (done) {
         server.put('/foo/bar.acl/test/')
           .set('content-type', 'text/turtle')
