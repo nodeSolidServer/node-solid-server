@@ -60,6 +60,7 @@
   "bugs": "https://github.com/solid/node-solid-server/issues",
   "dependencies": {
     "@fastify/busboy": "^1.2.1",
+    "@kaciras/deasync": "^1.0.3",
     "@solid/acl-check": "^0.4.5",
     "@solid/oidc-auth-manager": "^0.24.3",
     "@solid/oidc-op": "^0.11.6",
@@ -74,7 +75,10 @@
     "cors": "^2.8.5",
     "debug": "^4.3.4",
     "express": "^4.18.3",
+    "express-accept-events": "github:cxres/express-accept-events-temp",
+    "express-events-negotiate": "github:cxres/express-events-negotiate-temp",
     "express-handlebars": "^5.3.5",
+    "express-prep": "github:cxres/express-prep-temp",
     "express-session": "^1.18.0",
     "extend": "^3.0.2",
     "from2": "^2.3.0",
