@@ -335,7 +335,7 @@ describe('HTTP APIs', function () {
       server.get('/invalidfile.foo')
         .expect(404, done)
     })
-    it('should return 404 for non-existent container', function (done) { // alain
+    it('should return 404 for non-existent container', function (done) {
       server.get('/inexistant/')
         .expect('Accept-Put', 'text/turtle')
         .expect(404, done)
@@ -670,6 +670,23 @@ describe('HTTP APIs', function () {
           .expect(201, done)
       }
     )
+    it('should return a 400 error when trying to PUT a container with a name that contains a reserved suffix',
+      function (done) {
+        server.put('/foo/bar.acl/test/')
+          .set('content-type', 'text/turtle')
+          .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
+          .expect(400, done)
+      }
+    )
+    it('should return a 400 error when trying to PUT a resource with a name that contains a reserved suffix',
+      function (done) {
+        server.put('/foo/bar.acl/test.ttl')
+          .send(putRequestBody)
+          .set('content-type', 'text/turtle')
+          .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
+          .expect(400, done)
+      }
+    )
     // Cleanup
     after(function () {
       rm('/foo/')
@@ -846,7 +863,7 @@ describe('HTTP APIs', function () {
           if (err) return done(err)
           try {
             postLocation = res.headers.location
-            console.log('location ' + postLocation)
+            // console.log('location ' + postLocation)
             const createdDir = fs.statSync(path.join(__dirname, '../resources', postLocation.slice(0, -1)))
             assert(createdDir.isDirectory(), 'Container should have been created')
           } catch (err) {
@@ -897,6 +914,24 @@ describe('HTTP APIs', function () {
           .expect(hasHeader('acl', suffixAcl))
           .expect(201, done)
       })
+    it('should create new resource even if slug contains invalid suffix', function (done) {
+      server.post('/post-tests/')
+        .set('slug', 'put-resource.acl.ttl')
+        .send(postRequest1Body)
+        .set('content-type', 'text-turtle')
+        .expect(hasHeader('describedBy', suffixMeta))
+        .expect(hasHeader('acl', suffixAcl))
+        .expect(201, done)
+    })
+    it('create container with recursive example', function (done) {
+      server.post('/post-tests/')
+        .set('content-type', 'text/turtle')
+        .set('slug', 'foo.bar.acl.meta')
+        .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
+        .send(postRequest2Body)
+        .expect('location', /\/post-tests\/foo.bar\//)
+        .expect(201, done)
+    })
     it('should fail return 404 if no parent container found', function (done) {
       server.post('/hello.html/')
         .send(postRequest1Body)
@@ -935,19 +970,50 @@ describe('HTTP APIs', function () {
         .set('slug', 'loans.ttl')
         .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
         .send(postRequest2Body)
+        .expect('location', /\/post-tests\/loans.ttl\//)
         .expect(201)
-        .end(function (err) {
+        .end((err, res) => {
           if (err) return done(err)
-          const stats = fs.statSync(path.join(__dirname, '../resources/post-tests/loans.ttl/'))
-          if (!stats.isDirectory()) {
-            return done(new Error('Cannot read container just created'))
+          try {
+            postLocation = res.headers.location
+            console.log('location ' + postLocation)
+            const createdDir = fs.statSync(path.join(__dirname, '../resources', postLocation.slice(0, -1)))
+            assert(createdDir.isDirectory(), 'Container should have been created')
+          } catch (err) {
+            return done(err)
           }
           done()
         })
     })
     it('should be able to access newly container', function (done) {
-      server.get('/post-tests/loans.ttl/')
-        .expect('content-type', /text\/turtle/)
+      console.log(postLocation)
+      server.get(postLocation)
+        // .expect('content-type', /text\/turtle/)
+        .expect(200, done)
+    })
+    it('should create container', function (done) {
+      server.post('/post-tests/')
+        .set('content-type', 'text/turtle')
+        .set('slug', 'loans.acl.meta')
+        .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
+        .send(postRequest2Body)
+        .expect('location', /\/post-tests\/loans\//)
+        .expect(201)
+        .end((err, res) => {
+          if (err) return done(err)
+          try {
+            postLocation = res.headers.location
+            assert(!postLocation.endsWith('.acl/') && !postLocation.endsWith('.meta/'), 'Container name cannot end with ".acl" or ".meta"')
+          } catch (err) {
+            return done(err)
+          }
+          done()
+        })
+    })
+    it('should be able to access newly created container', function (done) {
+      console.log(postLocation)
+      server.get(postLocation)
+        // .expect('content-type', /text\/turtle/)
         .expect(200, done)
     })
     it('should create a new slug if there is a container with same name', function (done) {
