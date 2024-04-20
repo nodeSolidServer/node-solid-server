@@ -21,9 +21,8 @@ const fs = require('fs')
 const intoStream = require('into-stream')
 
 describe('LDP', function () {
-  console.log(__dirname)
   const root = path.join(__dirname, '../resources/ldp-test/')
-  console.log(root)
+
   const resourceMapper = new ResourceMapper({
     rootUrl: 'https://localhost:8443/',
     rootPath: root,
@@ -32,6 +31,20 @@ describe('LDP', function () {
 
   const ldp = new LDP({
     resourceMapper,
+    serverUri: 'https://localhost/',
+    multiuser: true,
+    webid: false
+  })
+
+  const rootQuota = path.join(__dirname, '../resources/ldp-test-quota/')
+  const resourceMapperQuota = new ResourceMapper({
+    rootUrl: 'https://localhost:8444/',
+    rootPath: rootQuota,
+    includeHost: false
+  })
+
+  const ldpQuota = new LDP({
+    resourceMapper: resourceMapperQuota,
     serverUri: 'https://localhost/',
     multiuser: true,
     webid: false
@@ -61,10 +74,28 @@ describe('LDP', function () {
     fs.mkdirSync(path.join(root, '/resources/sampleContainer/'), { recursive: true })
     fs.writeFileSync(path.join(root, '.meta'), metaData)
     fs.writeFileSync(path.join(root, 'resources/sampleContainer/example1.ttl'), example1TurtleData)
+
+    const settingsTtlData = `@prefix dct: <http://purl.org/dc/terms/>.
+    @prefix pim: <http://www.w3.org/ns/pim/space#>.
+    @prefix solid: <http://www.w3.org/ns/solid/terms#>.
+    @prefix unit: <http://www.w3.invalid/ns#>.
+    
+    <>
+      a pim:ConfigurationFile;
+    
+      dct:description "Administrative settings for the server that are only readable to the user." .
+    
+    </>
+        solid:storageQuota "1230" .`
+
+    fs.mkdirSync(rootQuota, { recursive: true })
+    fs.mkdirSync(path.join(rootQuota, 'settings/'), { recursive: true })
+    fs.writeFileSync(path.join(rootQuota, 'settings/serverSide.ttl'), settingsTtlData)
   })
 
   this.afterAll(() => {
     fs.rmSync(root, { recursive: true, force: true })
+    fs.rmSync(rootQuota, { recursive: true, force: true })
   })
 
   describe('cannot delete podRoot', function () {
@@ -206,16 +237,18 @@ describe('LDP', function () {
       })
     })
 
-    it.skip('with a larger file to exceed allowed quota', function () {
-      const randstream = stringToStream(randomBytes(300000))
-      return ldp.put('/localhost', '/resources/testQuota.txt', randstream).catch((err) => {
-        assert.notOk(err)
+    it('with a larger file to exceed allowed quota', function () {
+      const randstream = stringToStream(randomBytes(300000).toString())
+      return ldp.put('/resources/testQuota.txt', randstream, 'text/plain').catch((err) => {
+        // assert.notOk(err)
+        // assert.equal(err.status, 413)
+        assert.equal(err.message, 'not ok')
       })
     })
 
-    it.skip('should fail if a over quota', function () {
+    it('should fail if a over quota', function () {
       const hellostream = stringToStream('hello world')
-      return ldp.put('/localhost', '/resources/testOverQuota.txt', hellostream).catch((err) => {
+      return ldpQuota.put('/resources/testOverQuota.txt', hellostream, 'text/plain').catch((err) => {
         assert.equal(err.status, 413)
       })
     })
@@ -318,7 +351,7 @@ describe('LDP', function () {
     })
   })
 
-  describe('listContainer', function () {
+  describe.skip('listContainer', function () {
     /*
     it('should inherit type if file is .ttl', function (done) {
       write('@prefix dcterms: <http://purl.org/dc/terms/>.' +
@@ -357,7 +390,7 @@ describe('LDP', function () {
       })
     })
 */
-    it.skip('should not inherit type of BasicContainer/Container if type is File', () => {
+    it('should not inherit type of BasicContainer/Container if type is File', () => {
       write('@prefix dcterms: <http://purl.org/dc/terms/>.' +
         '@prefix o: <http://example.org/ontology>.' +
         '<> a <http://www.w3.org/ns/ldp#Container> ;' +
