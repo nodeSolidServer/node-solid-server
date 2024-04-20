@@ -188,17 +188,18 @@ describe('LDP', function () {
     })
   })
 
-  describe.skip('put', function () {
-    it.skip('should write a file in an existing dir', () => {
+  describe('put', function () {
+    it('should write a file in an existing dir', () => {
       const stream = stringToStream('hello world')
       return ldp.put('/resources/testPut.txt', stream, 'text/plain').then(() => {
-        const found = read('testPut.txt')
-        rm('testPut.txt')
+        const found = fs.readFileSync(path.join(root, '/resources/testPut.txt'))
+        // const found = read('testPut.txt')
+        // rm('testPut.txt')
         assert.equal(found, 'hello world')
       })
     })
 
-    it.skip('should fail if a trailing `/` is passed', () => {
+    it('should fail if a trailing `/` is passed', () => {
       const stream = stringToStream('hello world')
       return ldp.put('/resources/', stream, 'text/plain').catch(err => {
         assert.equal(err.status, 409)
@@ -206,19 +207,20 @@ describe('LDP', function () {
     })
 
     it.skip('with a larger file to exceed allowed quota', function () {
-      const randstream = stringToStream(randomBytes(2100))
+      const randstream = stringToStream(randomBytes(300000))
       return ldp.put('/localhost', '/resources/testQuota.txt', randstream).catch((err) => {
         assert.notOk(err)
       })
     })
-    it('should fail if a over quota', function () {
+
+    it.skip('should fail if a over quota', function () {
       const hellostream = stringToStream('hello world')
       return ldp.put('/localhost', '/resources/testOverQuota.txt', hellostream).catch((err) => {
         assert.equal(err.status, 413)
       })
     })
 
-    it.skip('should fail if a trailing `/` is passed without content type', () => {
+    it('should fail if a trailing `/` is passed without content type', () => {
       const stream = stringToStream('hello world')
       return ldp.put('/resources/', stream, null).catch(err => {
         assert.equal(err.status, 409)
@@ -235,8 +237,10 @@ describe('LDP', function () {
 
   describe('delete', function () {
     // FIXME: https://github.com/solid/node-solid-server/issues/1502
+    // has to be changed from testPut.txt because depending on
+    // other files in tests is bad practice.
     it('should error when deleting a non-existing file', () => {
-      return assert.isRejected(ldp.delete('/resources/testPut.txt'))
+      return assert.isRejected(ldp.delete('/resources/testPut2.txt'))
     })
 
     it('should delete a file with ACL in an existing dir', async () => {
@@ -314,7 +318,7 @@ describe('LDP', function () {
     })
   })
 
-  describe.skip('listContainer', function () {
+  describe('listContainer', function () {
     /*
     it('should inherit type if file is .ttl', function (done) {
       write('@prefix dcterms: <http://purl.org/dc/terms/>.' +
@@ -353,7 +357,7 @@ describe('LDP', function () {
       })
     })
 */
-    it('should not inherit type of BasicContainer/Container if type is File', () => {
+    it.skip('should not inherit type of BasicContainer/Container if type is File', () => {
       write('@prefix dcterms: <http://purl.org/dc/terms/>.' +
         '@prefix o: <http://example.org/ontology>.' +
         '<> a <http://www.w3.org/ns/ldp#Container> ;' +
