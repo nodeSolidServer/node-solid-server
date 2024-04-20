@@ -8,7 +8,7 @@ const path = require('path')
 const fs = require('fs-extra')
 
 // FIXME: #1502
-describe.skip('AccountManager (OIDC account creation tests)', function () {
+describe('AccountManager (OIDC account creation tests)', function () {
   const port = 3457
   const serverUri = `https://localhost:${port}`
   const host = `localhost:${port}`
