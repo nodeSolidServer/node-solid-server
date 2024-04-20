@@ -22,7 +22,7 @@ const intoStream = require('into-stream')
 
 describe('LDP', function () {
   console.log(__dirname)
-  const root = path.join(__dirname, '../resources/ldp-test/')
+  const root = path.join(__dirname, '../resources/ldp-test')
   console.log(root)
   const resourceMapper = new ResourceMapper({
     rootUrl: 'https://localhost:8443/',
@@ -39,7 +39,8 @@ describe('LDP', function () {
 
   this.beforeAll(() => {
     fs.mkdirSync(root, { recursive: true })
-    fs.mkdirSync(`${root}/resources/`, { recursive: true })
+    fs.mkdirSync(path.join(root, '/resources/'), { recursive: true })
+    fs.mkdirSync(path.join(root, '/resources/sampleContainer/'), { recursive: true })
   })
 
   this.afterAll(() => {
@@ -70,7 +71,7 @@ describe('LDP', function () {
 
     it('return file if file exists', () => {
       // file can be empty as well
-      fs.writeFileSync(`${root}/resources/fileExists.txt`, 'hello world')
+      fs.writeFileSync(path.join(root, '/resources/fileExists.txt'), 'hello world')
       return ldp.readResource('/resources/fileExists.txt').then(file => {
         assert.equal(file, 'hello world')
       })
@@ -86,18 +87,20 @@ describe('LDP', function () {
 
     it('should return content if metaFile exists', () => {
       // file can be empty as well
-      write('This function just reads this, does not parse it', 'sampleContainer/.meta')
+      // write('This function just reads this, does not parse it', 'sampleContainer/.meta')
+      fs.writeFileSync(path.join(root, 'resources/sampleContainer/.meta'), 'This function just reads this, does not parse it')
       return ldp.readContainerMeta('/resources/sampleContainer/').then(metaFile => {
-        rm('sampleContainer/.meta')
+        // rm('sampleContainer/.meta')
         assert.equal(metaFile, 'This function just reads this, does not parse it')
       })
     })
 
     it('should work also if trailing `/` is not passed', () => {
       // file can be empty as well
-      write('This function just reads this, does not parse it', 'sampleContainer/.meta')
+      // write('This function just reads this, does not parse it', 'sampleContainer/.meta')
+      fs.writeFileSync(path.join(root, 'resources/sampleContainer/.meta'), 'This function just reads this, does not parse it')
       return ldp.readContainerMeta('/resources/sampleContainer').then(metaFile => {
-        rm('sampleContainer/.meta')
+        // rm('sampleContainer/.meta')
         assert.equal(metaFile, 'This function just reads this, does not parse it')
       })
     })
