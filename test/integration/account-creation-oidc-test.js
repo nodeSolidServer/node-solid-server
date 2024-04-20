@@ -262,7 +262,7 @@ describe('Single User signup page', () => {
 })
 
 // FIXME: #1502
-describe.skip('Signup page where Terms & Conditions are not being enforced', () => {
+describe('Signup page where Terms & Conditions are not being enforced', () => {
   const port = 3457
   const host = `localhost:${port}`
   const root = path.join(__dirname, '../resources/accounts/')
