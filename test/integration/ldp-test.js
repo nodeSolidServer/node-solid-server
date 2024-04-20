@@ -43,10 +43,24 @@ describe('LDP', function () {
     <https://tim.localhost:7777/profile/card#me>
       <http://www.w3.org/ns/solid/terms#account>
       </>.`
+
+    const example1TurtleData = `@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+    @prefix dc: <http://purl.org/dc/elements/1.1/> .
+    @prefix ex: <http://example.org/stuff/1.0/> .
+    
+    <#this> dc:title "Test title" .
+    
+    <http://www.w3.org/TR/rdf-syntax-grammar>
+      dc:title "RDF/XML Syntax Specification (Revised)" ;
+      ex:editor [
+        ex:fullname "Dave Beckett";
+        ex:homePage <http://purl.org/net/dajobe/>
+      ] .`
     fs.mkdirSync(root, { recursive: true })
-    fs.writeFileSync(path.join(root, '.meta'), metaData)
     fs.mkdirSync(path.join(root, '/resources/'), { recursive: true })
     fs.mkdirSync(path.join(root, '/resources/sampleContainer/'), { recursive: true })
+    fs.writeFileSync(path.join(root, '.meta'), metaData)
+    fs.writeFileSync(path.join(root, 'resources/sampleContainer/example1.ttl'), example1TurtleData)
   })
 
   this.afterAll(() => {
