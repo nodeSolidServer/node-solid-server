@@ -233,13 +233,13 @@ describe('LDP', function () {
     })
   })
 
-  describe.skip('delete', function () {
+  describe('delete', function () {
     // FIXME: https://github.com/solid/node-solid-server/issues/1502
-    it.skip('should error when deleting a non-existing file', () => {
+    it('should error when deleting a non-existing file', () => {
       return assert.isRejected(ldp.delete('/resources/testPut.txt'))
     })
 
-    it.skip('should delete a file with ACL in an existing dir', async () => {
+    it('should delete a file with ACL in an existing dir', async () => {
       // First create a dummy file
       const stream = stringToStream('hello world')
       await ldp.put('/resources/testPut.txt', stream, 'text/plain')
@@ -271,7 +271,7 @@ describe('LDP', function () {
       })
     })
 
-    it.skip('should fail to delete a non-empty folder', async () => {
+    it('should fail to delete a non-empty folder', async () => {
       // First create a dummy file
       const stream = stringToStream('hello world')
       await ldp.put('/resources/dummy/testPutBlocking.txt', stream, 'text/plain')
@@ -286,7 +286,7 @@ describe('LDP', function () {
       return assert.isRejected(ldp.delete('/resources/dummy/'))
     })
 
-    it.skip('should fail to delete nested non-empty folders', async () => {
+    it('should fail to delete nested non-empty folders', async () => {
       // First create a dummy file
       const stream = stringToStream('hello world')
       await ldp.put('/resources/dummy/dummy2/testPutBlocking.txt', stream, 'text/plain')
@@ -313,6 +313,7 @@ describe('LDP', function () {
       }
     })
   })
+
   describe.skip('listContainer', function () {
     /*
     it('should inherit type if file is .ttl', function (done) {
