@@ -224,7 +224,7 @@ describe('AccountManager (OIDC account creation tests)', function () {
 })
 
 // FIXME: #1502
-describe.skip('Single User signup page', () => {
+describe('Single User signup page', () => {
   const serverUri = 'https://localhost:7457'
   const port = 7457
   let ldpHttpsServer
@@ -253,7 +253,7 @@ describe.skip('Single User signup page', () => {
     fs.removeSync(rootDir)
   })
 
-  it.skip('should return a 406 not acceptable without accept text/html', done => {
+  it('should return a 406 not acceptable without accept text/html', done => {
     server.get('/')
       .set('accept', 'text/plain')
       .expect(406)
