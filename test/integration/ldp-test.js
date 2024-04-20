@@ -22,7 +22,7 @@ const intoStream = require('into-stream')
 
 describe('LDP', function () {
   console.log(__dirname)
-  const root = path.join(__dirname, '../resources/ldp-test')
+  const root = path.join(__dirname, '../resources/ldp-test/')
   console.log(root)
   const resourceMapper = new ResourceMapper({
     rootUrl: 'https://localhost:8443/',
@@ -32,13 +32,19 @@ describe('LDP', function () {
 
   const ldp = new LDP({
     resourceMapper,
-    serverUri: 'https://localhost',
+    serverUri: 'https://localhost/',
     multiuser: true,
     webid: false
   })
 
   this.beforeAll(() => {
+    const metaData = `# Root Meta resource for the user account
+    # Used to discover the account's WebID URI, given the account URI
+    <https://tim.localhost:7777/profile/card#me>
+      <http://www.w3.org/ns/solid/terms#account>
+      </>.`
     fs.mkdirSync(root, { recursive: true })
+    fs.writeFileSync(path.join(root, '.meta'), metaData)
     fs.mkdirSync(path.join(root, '/resources/'), { recursive: true })
     fs.mkdirSync(path.join(root, '/resources/sampleContainer/'), { recursive: true })
   })
@@ -106,7 +112,7 @@ describe('LDP', function () {
     })
   })
 
-  describe.skip('isOwner', () => {
+  describe('isOwner', () => {
     it('should return acl:owner true', () => {
       const owner = 'https://tim.localhost:7777/profile/card#me'
       return ldp.isOwner(owner, '/resources/')
@@ -122,7 +128,8 @@ describe('LDP', function () {
         })
     })
   })
-  describe.skip('getGraph', () => {
+
+  describe('getGraph', () => {
     it('should read and parse an existing file', () => {
       const uri = 'https://localhost:8443/resources/sampleContainer/example1.ttl'
       return ldp.getGraph(uri)
