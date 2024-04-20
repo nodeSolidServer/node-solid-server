@@ -166,7 +166,7 @@ describe('LDP', function () {
     })
   })
 
-  describe.skip('putGraph', () => {
+  describe('putGraph', () => {
     it('should serialize and write a graph to a file', () => {
       const originalResource = '/resources/sampleContainer/example1.ttl'
       const newResource = '/resources/sampleContainer/example1-copy.ttl'
