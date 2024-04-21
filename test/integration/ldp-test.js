@@ -14,7 +14,7 @@ const rm = require('./../utils').rm
 // this write function destroys
 // the flexibility of this test unit
 // highly recommend removing it
-const write = require('./../utils').write
+// const write = require('./../utils').write
 // var cp = require('./utils').cp
 const read = require('./../utils').read
 const fs = require('fs')
@@ -351,7 +351,7 @@ describe('LDP', function () {
     })
   })
 
-  describe.skip('listContainer', function () {
+  describe('listContainer', function () {
     /*
     it('should inherit type if file is .ttl', function (done) {
       write('@prefix dcterms: <http://purl.org/dc/terms/>.' +
@@ -391,19 +391,20 @@ describe('LDP', function () {
     })
 */
     it('should not inherit type of BasicContainer/Container if type is File', () => {
-      write('@prefix dcterms: <http://purl.org/dc/terms/>.' +
-        '@prefix o: <http://example.org/ontology>.' +
-        '<> a <http://www.w3.org/ns/ldp#Container> ;' +
-        '   dcterms:title "This is a container" ;' +
-        '   o:limit 500000.00 .', 'sampleContainer/containerFile.ttl')
+      const containerFileData = `'@prefix dcterms: <http://purl.org/dc/terms/>.' +
+      '@prefix o: <http://example.org/ontology>.' +
+      '<> a <http://www.w3.org/ns/ldp#Container> ;' +
+      '   dcterms:title "This is a container" ;' +
+      '   o:limit 500000.00 .'`
+      fs.writeFileSync(path.join(root, '/resources/sampleContainer/containerFile.ttl'), containerFileData)
+      const basicContainerFileData = `'@prefix dcterms: <http://purl.org/dc/terms/>.' +
+      '@prefix o: <http://example.org/ontology>.' +
+      '<> a <http://www.w3.org/ns/ldp#BasicContainer> ;' +
+      '   dcterms:title "This is a container" ;' +
+      '   o:limit 500000.00 .'`
+      fs.writeFileSync(path.join(root, '/resources/sampleContainer/basicContainerFile.ttl'), basicContainerFileData)
 
-      write('@prefix dcterms: <http://purl.org/dc/terms/>.' +
-        '@prefix o: <http://example.org/ontology>.' +
-        '<> a <http://www.w3.org/ns/ldp#BasicContainer> ;' +
-        '   dcterms:title "This is a container" ;' +
-        '   o:limit 500000.00 .', 'sampleContainer/basicContainerFile.ttl')
-
-      return ldp.listContainer(path.join(__dirname, '../resources/sampleContainer/'), 'https://server.tld/resources/sampleContainer/', '', 'server.tld')
+      return ldp.listContainer(path.join(root, '/resources/sampleContainer/'), 'https://server.tld/resources/sampleContainer/', '', 'server.tld')
         .then(data => {
           const graph = $rdf.graph()
           $rdf.parse(
@@ -411,15 +412,11 @@ describe('LDP', function () {
             graph,
             'https://localhost:8443/resources/sampleContainer',
             'text/turtle')
-
-          const basicContainerStatements = graph
-            .each(
-              $rdf.sym('https://localhost:8443/resources/sampleContainer/basicContainerFile.ttl'),
-              ns.rdf('type'),
-              undefined
-            )
-            .map(d => { return d.uri })
-
+          const basicContainerStatements = graph.each(
+            $rdf.sym('https://localhost:8443/resources/sampleContainer/basicContainerFile.ttl'),
+            ns.rdf('type'),
+            null
+          ).map(d => { return d.uri })
           const expectedStatements = [
             'http://www.w3.org/ns/iana/media-types/text/turtle#Resource',
             'http://www.w3.org/ns/ldp#Resource'
@@ -433,7 +430,6 @@ describe('LDP', function () {
               undefined
             )
             .map(d => { return d.uri })
-
           assert.deepEqual(containerStatements.sort(), expectedStatements)
 
           rm('sampleContainer/containerFile.ttl')
