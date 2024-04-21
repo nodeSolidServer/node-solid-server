@@ -27,6 +27,10 @@ afterEach(() => {
 
 // FIXME #1502
 describe('AccountManager', () => {
+  after(() => {
+    fs.removeSync(path.join(__dirname, '../resources/accounts/alice.localhost'))
+  })
+
   describe('accountExists()', () => {
     const host = SolidHost.from({ serverUri: 'https://localhost' })
 
