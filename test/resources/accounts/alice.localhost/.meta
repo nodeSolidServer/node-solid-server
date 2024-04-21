@@ -1,0 +1,5 @@
+# Root Meta resource for the user account
+# Used to discover the account's WebID URI, given the account URI
+<https://alice.localhost:8443/profile/card#me>
+  <http://www.w3.org/ns/solid/terms#account>
+  </>.

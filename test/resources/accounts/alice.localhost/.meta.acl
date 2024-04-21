@@ -1,0 +1,25 @@
+# ACL resource for the Root Meta
+# Should be public-readable (since the root meta is used for WebID discovery)
+
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+
+<#owner>
+    a acl:Authorization;
+
+    acl:agent
+        <https://alice.localhost:8443/profile/card#me>;
+
+    acl:accessTo </.meta>;
+
+    acl:mode
+        acl:Read, acl:Write, acl:Control.
+
+<#public>
+    a acl:Authorization;
+
+    acl:agentClass foaf:Agent;  # everyone
+
+    acl:accessTo </.meta>;
+
+    acl:mode acl:Read.
