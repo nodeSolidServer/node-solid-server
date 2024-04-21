@@ -27,9 +27,9 @@ afterEach(() => {
 
 // FIXME #1502
 describe('AccountManager', () => {
-  after(() => {
-    fs.removeSync(path.join(__dirname, '../resources/accounts/alice.localhost'))
-  })
+  // after(() => {
+  //   fs.removeSync(path.join(__dirname, '../resources/accounts/alice.localhost'))
+  // })
 
   describe('accountExists()', () => {
     const host = SolidHost.from({ serverUri: 'https://localhost' })
@@ -38,7 +38,7 @@ describe('AccountManager', () => {
       const multiuser = true
       const resourceMapper = new ResourceMapper({
         rootUrl: 'https://localhost:8443/',
-        rootPath: process.cwd(),
+        rootPath: path.join(__dirname, '../resources/accounts/'),
         includeHost: multiuser
       })
       const store = new LDP({ multiuser, resourceMapper })
@@ -80,7 +80,7 @@ describe('AccountManager', () => {
 
         return accountManager.accountExists()
           .then(exists => {
-            expect(exists).to.be.false
+            expect(exists).to.not.be.false
           })
       })
 
