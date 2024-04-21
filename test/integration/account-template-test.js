@@ -49,10 +49,11 @@ describe('AccountTemplate', () => {
         })
         .then(() => {
           const profile = fs.readFileSync(path.join(accountPath, '/profile/card$.ttl'), 'utf8')
-          console.log(profile)
           expect(profile).to.include('"Alice Q."')
           expect(profile).to.include('solid:oidcIssuer')
           // why does this need to be included?
+          // with the current configuration, 'host' for
+          // ldp is not set, therefore solid:oidcIssuer is empty
           // expect(profile).to.include('<https://example.com>')
 
           const rootAcl = fs.readFileSync(path.join(accountPath, '.acl'), 'utf8')

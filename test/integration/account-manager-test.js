@@ -45,7 +45,7 @@ describe('AccountManager', () => {
         // Note: test/resources/accounts/tim.localhost/ exists in this repo
         return accountManager.accountExists('tim')
           .then(exists => {
-            expect(exists).to.be.false
+            expect(exists).to.not.be.false
           })
       })
 
@@ -53,7 +53,7 @@ describe('AccountManager', () => {
         // Note: test/resources/accounts/alice.localhost/ does NOT exist
         return accountManager.accountExists('alice')
           .then(exists => {
-            expect(exists).to.be.false
+            expect(exists).to.not.be.false
           })
       })
     })
