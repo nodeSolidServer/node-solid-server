@@ -60,13 +60,13 @@ describe('Header handler', () => {
     })
 
     // FIXME: https://github.com/solid/node-solid-server/issues/1502
-    //  describeHeaderTest('read/write/append/control for the user, nothing for the public', {
-    //    resource: '/user-rwac-public-0',
-    //    headers: {
-    //      'WAC-Allow': 'user="read write append control",public=""',
-    //      'Access-Control-Expose-Headers': /(^|,\s*)WAC-Allow(,|$)/
-    //    }
-    //  })
+    describeHeaderTest('read/write/append/control for the user, nothing for the public', {
+      resource: '/user-rwac-public-0',
+      headers: {
+        'WAC-Allow': 'user="read write append control",public=""',
+        'Access-Control-Expose-Headers': /(^|,\s*)WAC-Allow(,|$)/
+      }
+    })
   })
 
   function describeHeaderTest (label, { resource, headers }) {

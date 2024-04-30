@@ -8,7 +8,7 @@ const path = require('path')
 const fs = require('fs-extra')
 
 // FIXME: #1502
-describe.skip('AccountManager (OIDC account creation tests)', function () {
+describe('AccountManager (OIDC account creation tests)', function () {
   const port = 3457
   const serverUri = `https://localhost:${port}`
   const host = `localhost:${port}`
@@ -224,7 +224,7 @@ describe.skip('AccountManager (OIDC account creation tests)', function () {
 })
 
 // FIXME: #1502
-describe.skip('Single User signup page', () => {
+describe('Single User signup page', () => {
   const serverUri = 'https://localhost:7457'
   const port = 7457
   let ldpHttpsServer
@@ -253,7 +253,7 @@ describe.skip('Single User signup page', () => {
     fs.removeSync(rootDir)
   })
 
-  it.skip('should return a 406 not acceptable without accept text/html', done => {
+  it('should return a 406 not acceptable without accept text/html', done => {
     server.get('/')
       .set('accept', 'text/plain')
       .expect(406)
@@ -262,7 +262,7 @@ describe.skip('Single User signup page', () => {
 })
 
 // FIXME: #1502
-describe.skip('Signup page where Terms & Conditions are not being enforced', () => {
+describe('Signup page where Terms & Conditions are not being enforced', () => {
   const port = 3457
   const host = `localhost:${port}`
   const root = path.join(__dirname, '../resources/accounts/')
