@@ -92,5 +92,10 @@ function createServer (options) {
 exports.setupSupertestServer = setupSuperServer
 function setupSuperServer (options) {
   const ldpServer = createServer(options)
+  if (ldpServer.notMgr) {
+    const stServer = supertest(ldpServer)
+    stServer.notMgr = ldpServer.notMgr
+    return stServer
+  }
   return supertest(ldpServer)
 }

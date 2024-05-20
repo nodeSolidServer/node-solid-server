@@ -15,6 +15,17 @@ const server = setupSupertestServer({
   webid: false
 })
 const { assert, expect } = require('chai')
+const NotificationsManager = require('../../lib/models/notifications-manager')
+
+const notMgr = new NotificationsManager()
+const serverWithNotifs = setupSupertestServer({
+  live: true,
+  dataBrowserPath: 'default',
+  root: path.join(__dirname, '../resources'),
+  auth: 'oidc',
+  webid: false,
+  notMgr: notMgr
+})
 
 /**
  * Creates a new turtle test resource via an LDP PUT
@@ -690,6 +701,28 @@ describe('HTTP APIs', function () {
     // Cleanup
     after(function () {
       rm('/foo/')
+    })
+  })
+
+  describe('DELETE API with notifications', () => {
+    before(() => {
+      return Promise.all([
+        createTestResource('/put-notif-resource.ttl')
+      ])
+    })
+
+    it('should delete the resource', (done) => {
+      serverWithNotifs.notMgr.on('delete', (message) => {
+        console.log('emitted')
+        console.log(message)
+      })
+      serverWithNotifs.delete('/put-notif-resource.ttl')
+        .expect(200, done)
+    })
+
+    after(function () {
+      // Clean up after DELETE API tests
+      rm('/put-notif-resource.ttl')
     })
   })
 
