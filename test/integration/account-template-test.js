@@ -76,6 +76,18 @@ describe('AccountTemplate', () => {
       expect(substitutions.webId).to.equal('https://alice.example.com/#me')
     })
 
+    it('should not update the nested webid', () => {
+      const userAccount = new UserAccount({
+        webId: 'https://alice.example.com/alice/#me',
+        email: 'alice@example.com',
+        name: 'Alice Q.'
+      })
+
+      const substitutions = AccountTemplate.templateSubstitutionsFor(userAccount)
+
+      expect(substitutions.webId).to.equal('https://alice.example.com/alice/#me')
+    })
+
     it('should update the webid', () => {
       const userAccount = new UserAccount({
         webId: 'http://localhost:8443/alice/#me',
