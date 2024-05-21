@@ -65,8 +65,6 @@ describe('AccountTemplate', () => {
 
   describe('templateSubtitutionsFor()', () => {
     it('should not update the webid', () => {
-      AccountTemplate.registerHostname('https://offexample.com/')
-
       const userAccount = new UserAccount({
         webId: 'https://alice.example.com/#me',
         email: 'alice@example.com',
@@ -79,8 +77,6 @@ describe('AccountTemplate', () => {
     })
 
     it('should update the webid', () => {
-      AccountTemplate.registerHostname('http://localhost:8443/')
-
       const userAccount = new UserAccount({
         webId: 'http://localhost:8443/alice/#me',
         email: 'alice@example.com',
@@ -95,8 +91,6 @@ describe('AccountTemplate', () => {
 
   describe('creating account where webId does match server Uri?', () => {
     it('should have a relative uri for the base path rather than a complete uri', () => {
-      AccountTemplate.registerHostname('http://localhost:8443/')
-
       const userAccount = new UserAccount({
         webId: 'http://localhost:8443/alice/#me',
         email: 'alice@example.com',
