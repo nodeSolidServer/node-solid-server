@@ -565,7 +565,7 @@ describe('HTTP APIs', function () {
       server.put('/put-resource-1.ttl')
         .send(putRequestBody)
         .set('content-type', 'text/turtle')
-        .expect(201)
+        .expect(204)
         .end(function (err) {
           if (err) return done(err)
           if (fs.existsSync(path.join(__dirname, '../resources/put-resource-1.ttl$.txt'))) {
@@ -646,28 +646,28 @@ describe('HTTP APIs', function () {
           .expect(201, done)
       }
     )
-    it('should return 201 code when trying to put to a container',
+    it('should return 204 code when trying to put to a container',
       function (done) {
         server.put('/foo/bar/test/')
           .set('content-type', 'text/turtle')
           .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
-          .expect(201, done)
+          .expect(204, done)
       }
     )
-    it('should return 201 when trying to put to a container without content-type',
+    it('should return 204 when trying to put to a container without content-type',
       function (done) {
         server.put('/foo/bar/test/')
           // .set('content-type', 'text/turtle')
           .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
-          .expect(201, done)
+          .expect(204, done)
       }
     )
-    it('should return 201 code when trying to put to a container',
+    it('should return 204 code when trying to put to a container',
       function (done) {
         server.put('/foo/bar/test/')
           .set('content-type', 'text/turtle')
           .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
-          .expect(201, done)
+          .expect(204, done)
       }
     )
     it('should return a 400 error when trying to PUT a container with a name that contains a reserved suffix',
