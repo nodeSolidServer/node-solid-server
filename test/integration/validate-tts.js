@@ -20,7 +20,7 @@ describe('HTTP requests with invalid Turtle syntax', () => {
       server.put('/invalid1.ttl')
         .send(invalidTurtleBody)
         .set('content-type', 'text/turtle')
-        .expect(201, done)
+        .expect(204, done)
     })
 
     it('is not allowed with invalid ACL files', (done) => {
