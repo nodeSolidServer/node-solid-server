@@ -79,7 +79,7 @@ describe('PATCH through text/n3', () => {
       patch: `<> a solid:InsertDeletePatch;
                  solid:inserts { <x> <y> <z>. }.`
     }, { // expected:
-      status: 200,
+      status: 201,
       text: 'Patch applied successfully',
       result: '@prefix : </new.ttl#>.\n@prefix tim: </>.\n\ntim:x tim:y tim:z.\n\n'
     }))
@@ -90,7 +90,7 @@ describe('PATCH through text/n3', () => {
       patch: `<> a solid:InsertDeletePatch;
                  solid:inserts { <x> <y> <z>. }.`
     }, { // expected:
-      status: 200,
+      status: 201,
       text: 'Patch applied successfully',
       // result: '{\n  "@id": "/x",\n  "/y": {\n    "@id": "/z"\n  }\n}'
       result: `{
@@ -110,7 +110,7 @@ describe('PATCH through text/n3', () => {
       patch: `<> a solid:InsertDeletePatch;
                  solid:inserts { <x> <y> <z>. }.`
     }, { // expected:
-      status: 200,
+      status: 201,
       text: 'Patch applied successfully',
       result: `<rdf:RDF
  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
@@ -126,7 +126,7 @@ describe('PATCH through text/n3', () => {
       patch: `<> a solid:InsertDeletePatch;
                  solid:inserts { <x> <y> <z>. }.`
     }, { // expected:
-      status: 200,
+      status: 201,
       text: 'Patch applied successfully',
       result: '@prefix : </new.n3#>.\n@prefix tim: </>.\n\ntim:x tim:y tim:z.\n\n'
     }))
@@ -186,7 +186,7 @@ describe('PATCH through text/n3', () => {
       patch: `<> a solid:InsertDeletePatch;
         solid:inserts { <x> <y> <z>. }.`
     }, {
-      status: 200,
+      status: 201,
       text: 'Patch applied successfully',
       result: '@prefix : <#>.\n@prefix fol: <./>.\n\nfol:x fol:y fol:z.\n\n'
     }))
