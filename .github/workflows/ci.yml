@@ -17,11 +17,11 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [22.x]
         os: [ubuntu-latest]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
     # extract branch name
     - if: github.event_name == 'pull_request'
       run: echo "BRANCH_NAME=${GITHUB_HEAD_REF}" >> $GITHUB_ENV
@@ -56,7 +56,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - uses: olegtarasov/get-tag@v2.1
         id: tagName
