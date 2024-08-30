@@ -118,6 +118,7 @@
   },
   "devDependencies": {
     "@solid/solid-auth-oidc": "0.3.0",
+    "c8": "^10.1.2",
     "chai": "^4.4.1",
     "chai-as-promised": "7.1.1",
     "cross-env": "7.0.3",
@@ -127,7 +128,6 @@
     "mocha": "^10.3.0",
     "nock": "^13.5.4",
     "node-mocks-http": "^1.14.1",
-    "nyc": "15.1.0",
     "pre-commit": "1.2.2",
     "randombytes": "2.1.0",
     "sinon": "12.0.1",
@@ -147,7 +147,7 @@
     "solid": "node --experimental-require-module ./bin/solid",
     "standard": "standard \"{bin,examples,lib,test}/**/*.js\"",
     "validate": "node ./test/validate-turtle.js",
-    "nyc": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 nyc --reporter=text-summary mocha -n experimental-require-module --recursive test/integration/ test/unit/",
+    "c8": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 c8 --reporter=text-summary mocha -n experimental-require-module --recursive test/integration/ test/unit/",
     "mocha": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 mocha -n experimental-require-module --recursive test/integration/ test/unit/",
     "mocha-integration": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 mocha -n experimental-require-module --recursive test/integration/http-test.js",
     "mocha-account-creation-oidc": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 mocha --recursive test/integration/account-creation-oidc-test.js",
@@ -159,11 +159,11 @@
     "mocha-ldp": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 mocha --recursive test/integration/ldp-test.js",
     "prepublishOnly": "npm test",
     "postpublish": "git push --follow-tags",
-    "test": "npm run standard && npm run validate && npm run nyc",
+    "test": "npm run standard && npm run validate && npm run c8",
     "clean": "rimraf config/templates config/views",
     "reset": "rimraf .db data && npm run clean"
   },
-  "nyc": {
+  "c8": {
     "reporter": [
       "html",
       "text-summary"
