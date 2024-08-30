@@ -74,7 +74,10 @@
     "cors": "^2.8.5",
     "debug": "^4.3.4",
     "express": "^4.18.3",
+    "express-accept-events": "^0.2.2",
     "express-handlebars": "^5.3.5",
+    "express-negotiate-events": "^0.2.1",
+    "express-prep": "^0.5.0",
     "express-session": "^1.18.0",
     "extend": "^3.0.2",
     "from2": "^2.3.0",
@@ -141,12 +144,12 @@
   "main": "index.js",
   "scripts": {
     "build": "echo nothing to build",
-    "solid": "node ./bin/solid",
+    "solid": "node --experimental-require-module ./bin/solid",
     "standard": "standard \"{bin,examples,lib,test}/**/*.js\"",
     "validate": "node ./test/validate-turtle.js",
-    "nyc": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 nyc --reporter=text-summary mocha --recursive test/integration/ test/unit/",
-    "mocha": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 mocha --recursive test/integration/ test/unit/",
-    "mocha-integration": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 mocha --recursive test/integration/http-test.js",
+    "nyc": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 nyc --reporter=text-summary mocha -n experimental-require-module --recursive test/integration/ test/unit/",
+    "mocha": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 mocha -n experimental-require-module --recursive test/integration/ test/unit/",
+    "mocha-integration": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 mocha -n experimental-require-module --recursive test/integration/http-test.js",
     "mocha-account-creation-oidc": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 mocha --recursive test/integration/account-creation-oidc-test.js",
     "mocha-account-manager": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 mocha --recursive test/integration/account-manager-test.js",
     "mocha-account-template": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 mocha --recursive test/integration/account-template-test.js",
@@ -181,6 +184,6 @@
     "solid": "bin/solid"
   },
   "engines": {
-    "node": ">=12.0"
+    "node": ">=22.0"
   }
 }
