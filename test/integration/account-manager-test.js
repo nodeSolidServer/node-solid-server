@@ -139,7 +139,7 @@ describe('AccountManager', () => {
 
           const rootAcl = fs.readFileSync(path.join(accountDir, '.acl'), 'utf8')
           expect(rootAcl).to.include('<mailto:alice@')
-          expect(rootAcl).to.include('<https://alice.example.com/profile/card#me>')
+          expect(rootAcl).to.include('</profile/card#me>')
         })
     })
   })
