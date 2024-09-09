@@ -1,7 +1,8 @@
 FROM node:latest
 ARG BRANCH=main
+ARG REPO=nodeSolidServer/node-solid-server
 RUN echo Testing branch ${BRANCH} of NSS
-RUN git clone https://github.com/nodeSolidServer/node-solid-server
+RUN git clone https://github.com/${REPO}
 WORKDIR node-solid-server
 RUN git checkout ${BRANCH}
 RUN git status

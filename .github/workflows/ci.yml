@@ -22,11 +22,24 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+
+    # extract repository name
+    - if: github.event_name == 'pull_request'
+      run: echo "REPO_NAME=${{ github.event.pull_request.head.repo.full_name }}" >> $GITHUB_ENV
+
+    - if: github.event_name != 'pull_request'
+      run: echo "REPO_NAME=${GITHUB_REPOSITORY}" >> $GITHUB_ENV
+
     # extract branch name
     - if: github.event_name == 'pull_request'
       run: echo "BRANCH_NAME=${GITHUB_HEAD_REF}" >> $GITHUB_ENV
+
     - if: github.event_name != 'pull_request'
       run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
+    # print repository name
+    - name: Get repository name
+      run: echo 'The repository name is' $REPO_NAME
 
     # print branch name
     - name: Get branch name
@@ -45,7 +58,7 @@ jobs:
     - run: npm pack .
     - run: npm install -g solid-server-*.tgz
     # Run the Solid test-suite
-    - run: bash test/surface/run-solid-test-suite.sh $BRANCH_NAME
+    - run: bash test/surface/run-solid-test-suite.sh $BRANCH_NAME $REPO_NAME
 
   # TODO: The pipeline should automate publication to npm, so that the docker build gets the correct version
   #       This job will only dockerize solid-server@latest / solid-server@<tag-name> from npmjs.com!
