@@ -77,7 +77,7 @@
     "express-accept-events": "^0.2.2",
     "express-handlebars": "^5.3.5",
     "express-negotiate-events": "^0.2.1",
-    "express-prep": "^0.5.0",
+    "express-prep": "^0.5.4",
     "express-session": "^1.18.0",
     "extend": "^3.0.2",
     "from2": "^2.3.0",
