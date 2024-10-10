@@ -143,6 +143,12 @@ module.exports = [
     flag: true,
     default: false
   },
+  {
+    name: 'no-prep',
+    help: 'Disable Per Resource Events',
+    flag: true,
+    default: false
+  },
   // {
   //   full: 'default-app',
   //   help: 'URI to use as a default app for resources (default: https://linkeddata.github.io/warp/#/list/)'

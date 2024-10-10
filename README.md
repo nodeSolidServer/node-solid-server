@@ -138,7 +138,7 @@ Your users will have a dedicated folder under `./data` at `./data/<username>.<yo
 > To use Gmail you may need to configure ["Allow Less Secure Apps"](https://www.google.com/settings/security/lesssecureapps) in your Gmail account unless you are using 2FA in which case you would have to create an [Application Specific](https://security.google.com/settings/security/apppasswords) password. You also may need to unlock your account with ["Allow access to your Google account"](https://accounts.google.com/DisplayUnlockCaptcha) to use SMTP.
 
 also add to `config.json`
-``` 
+```
   "useEmail": true,
   "emailHost": "smtp.gmail.com",
   "emailPort": "465",
@@ -206,6 +206,7 @@ $ solid start --help
     --multiuser                   Enable multi-user mode
     --idp [value]                 Obsolete; use --multiuser
     --no-live                     Disable live support through WebSockets
+    --no-prep                     Disable Per Resource Events
     --proxy [value]               Obsolete; use --corsProxy
     --cors-proxy [value]          Serve the CORS proxy on this path
     --suppress-data-browser       Suppress provision of a data browser
@@ -271,7 +272,7 @@ docker run -p 8443:8443 --name solid node-solid-server
 
 
 This will enable you to login to solid on https://localhost:8443 and then create a new account
-but not yet use that account. After a new account is made you will need to create an entry for 
+but not yet use that account. After a new account is made you will need to create an entry for
 it in your local (/etc/)hosts file in line with the account and subdomain, i.e. --
 
 ```pre
@@ -280,16 +281,16 @@ it in your local (/etc/)hosts file in line with the account and subdomain, i.e. 
 
 You can modify the config within the docker container as follows:
 
- - Copy the `config.json` to the current directory with: 
+ - Copy the `config.json` to the current directory with:
    ```bash
    docker cp solid:/usr/src/app/config.json .
    ```
  - Edit the `config.json` file
- - Copy the file back with 
+ - Copy the file back with
    ```bash
    docker cp config.json solid:/usr/src/app/
    ```
- - Restart the server with 
+ - Restart the server with
    ```bash
    docker restart solid
    ```
