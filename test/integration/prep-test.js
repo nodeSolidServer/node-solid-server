@@ -17,7 +17,8 @@ describe('Per Resource Events Protocol', function () {
       dataBrowserPath: 'default',
       root: path.join(__dirname, '../resources'),
       auth: 'oidc',
-      webid: false
+      webid: false,
+      prep: true
     })
     server.listen(8443, done)
   })
