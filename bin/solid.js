@@ -1,3 +1,3 @@
-#!/usr/bin/env node
+#!/usr/bin/env -S node --experimental-require-module
 const startCli = require('./lib/cli')
 startCli()
