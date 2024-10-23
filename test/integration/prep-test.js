@@ -24,6 +24,7 @@ describe('Per Resource Events Protocol', function () {
   })
 
   after(() => {
+    fs.rmSync(path.join(samplePath, 'example-post'), { recursive: true })
     server.close()
   })
 
@@ -127,6 +128,25 @@ solid:inserts { <u> <v> <z>. }.`
           expect(notification.type).to.equal('Remove')
           expect(notification.object).to.match(/sampleContainer\/$/)
           expect(notification.origin).to.match(/sampleContainer\/.*example-prep.ttl$/)
+        })
+
+      it('when a container is created by POST',
+        async function () {
+          await fetch('http://localhost:8443/sampleContainer/', {
+            method: 'POST',
+            headers: {
+              slug: 'example-post',
+              link: '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"',
+              'content-type': 'text/turtle'
+            }
+          })
+          const { value } = await notificationsIterator.next()
+          expect(value.headers.get('content-type')).to.match(/application\/ld\+json/)
+          const notification = await value.json()
+          expect(notification).to.haveOwnProperty('published')
+          expect(notification.type).to.equal('Add')
+          expect(notification.object).to.match(/sampleContainer\/$/)
+          expect(notification.target).to.match(/sampleContainer\/.*example-post\/$/)
         })
 
       it('when resource is created by POST',
