@@ -144,6 +144,7 @@ solid:inserts { <u> <v> <z>. }.`
           expect(notification).to.haveOwnProperty('published')
           expect(notification.type).to.equal('Add')
           expect(notification.object).to.match(/sampleContainer\/$/)
+          expect(notification.target).to.match(/sampleContainer\/.*example-prep.ttl$/)
           controller.abort()
         })
     })
