@@ -126,6 +126,7 @@ solid:inserts { <u> <v> <z>. }.`
           expect(notification).to.haveOwnProperty('published')
           expect(notification.type).to.equal('Remove')
           expect(notification.object).to.match(/sampleContainer\/$/)
+          expect(notification.origin).to.match(/sampleContainer\/.*example-prep.ttl$/)
         })
 
       it('when resource is created by POST',
