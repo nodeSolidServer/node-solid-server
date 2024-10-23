@@ -130,6 +130,35 @@ solid:inserts { <u> <v> <z>. }.`
           expect(notification.origin).to.match(/sampleContainer\/.*example-prep.ttl$/)
         })
 
+      it('when a contained container is created', async function () {
+        await fetch('http://localhost:8443/sampleContainer/example-prep/', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'text/turtle'
+          }
+        })
+        const { value } = await notificationsIterator.next()
+        expect(value.headers.get('content-type')).to.match(/application\/ld\+json/)
+        const notification = await value.json()
+        expect(notification).to.haveOwnProperty('published')
+        expect(notification.type).to.equal('Add')
+        expect(notification.target).to.match(/sampleContainer\/example-prep\/$/)
+        expect(notification.object).to.match(/sampleContainer\/$/)
+      })
+
+      it('when a contained container is deleted', async function () {
+        await fetch('http://localhost:8443/sampleContainer/example-prep/', {
+          method: 'DELETE'
+        })
+        const { value } = await notificationsIterator.next()
+        expect(value.headers.get('content-type')).to.match(/application\/ld\+json/)
+        const notification = await value.json()
+        expect(notification).to.haveOwnProperty('published')
+        expect(notification.type).to.equal('Remove')
+        expect(notification.origin).to.match(/sampleContainer\/example-prep\/$/)
+        expect(notification.object).to.match(/sampleContainer\/$/)
+      })
+
       it('when a container is created by POST',
         async function () {
           await fetch('http://localhost:8443/sampleContainer/', {
