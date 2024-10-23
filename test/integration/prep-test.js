@@ -142,7 +142,7 @@ solid:inserts { <u> <v> <z>. }.`
           expect(value.headers.get('content-type')).to.match(/application\/ld\+json/)
           const notification = await value.json()
           expect(notification).to.haveOwnProperty('published')
-          expect(notification.type).to.equal('Update')
+          expect(notification.type).to.equal('Add')
           expect(notification.object).to.match(/sampleContainer\/$/)
           controller.abort()
         })
