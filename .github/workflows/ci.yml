@@ -17,16 +17,29 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
+        node-version: [ '>=20.17.0' ]
         os: [ubuntu-latest]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
+
+    # extract repository name
+    - if: github.event_name == 'pull_request'
+      run: echo "REPO_NAME=${{ github.event.pull_request.head.repo.full_name }}" >> $GITHUB_ENV
+
+    - if: github.event_name != 'pull_request'
+      run: echo "REPO_NAME=${GITHUB_REPOSITORY}" >> $GITHUB_ENV
+
     # extract branch name
     - if: github.event_name == 'pull_request'
       run: echo "BRANCH_NAME=${GITHUB_HEAD_REF}" >> $GITHUB_ENV
+
     - if: github.event_name != 'pull_request'
       run: echo "BRANCH_NAME=${GITHUB_REF#refs/heads/}" >> $GITHUB_ENV
+
+    # print repository name
+    - name: Get repository name
+      run: echo 'The repository name is' $REPO_NAME
 
     # print branch name
     - name: Get branch name
@@ -40,12 +53,12 @@ jobs:
     # test code
     - run: npm run standard
     - run: npm run validate
-    - run: npm run nyc
+    - run: npm run c8
     # Test global install of the package
     - run: npm pack .
     - run: npm install -g solid-server-*.tgz
     # Run the Solid test-suite
-    - run: bash test/surface/run-solid-test-suite.sh $BRANCH_NAME
+    - run: bash test/surface/run-solid-test-suite.sh $BRANCH_NAME $REPO_NAME
 
   # TODO: The pipeline should automate publication to npm, so that the docker build gets the correct version
   #       This job will only dockerize solid-server@latest / solid-server@<tag-name> from npmjs.com!
@@ -56,7 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - uses: olegtarasov/get-tag@v2.1
         id: tagName
