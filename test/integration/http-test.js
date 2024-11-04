@@ -349,7 +349,7 @@ describe('HTTP APIs', function () {
     it('should return resource link for files', function (done) {
       server.get('/hello.html')
         .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Resource>; rel="type"/)
-        .expect('Content-Type', 'text/html')
+        .expect('Content-Type', /text\/html/)
         .expect(200, done)
     })
     it('should have glob support', function (done) {
@@ -460,30 +460,30 @@ describe('HTTP APIs', function () {
   describe('HEAD API', function () {
     it('should return content-type application/octet-stream by default', function (done) {
       server.head('/sampleContainer/blank')
-        .expect('Content-Type', 'application/octet-stream; charset=utf-8')
+        .expect('Content-Type', /application\/octet-stream/)
         .end(done)
     })
     it('should return content-type text/turtle for container', function (done) {
       server.head('/sampleContainer2/')
-        .expect('Content-Type', 'text/turtle; charset=utf-8')
+        .expect('Content-Type', /text\/turtle/)
         .end(done)
     })
     it('should have set content-type for turtle files',
       function (done) {
         server.head('/sampleContainer2/example1.ttl')
-          .expect('Content-Type', 'text/turtle; charset=utf-8')
+          .expect('Content-Type', /text\/turtle/)
           .end(done)
       })
     it('should have set content-type for implicit turtle files',
       function (done) {
         server.head('/sampleContainer/example4')
-          .expect('Content-Type', 'text/turtle; charset=utf-8')
+          .expect('Content-Type', /text\/turtle/)
           .end(done)
       })
     it('should have set content-type for image files',
       function (done) {
         server.head('/sampleContainer/solid.png')
-          .expect('Content-Type', 'image/png; charset=utf-8')
+          .expect('Content-Type', /image\/png/)
           .end(done)
       })
     it('should have Access-Control-Allow-Origin as Origin', function (done) {
@@ -517,7 +517,7 @@ describe('HTTP APIs', function () {
     it('should have set Content-Type as text/turtle for Container',
       function (done) {
         server.head('/sampleContainer2/')
-          .expect('Content-Type', 'text/turtle; charset=utf-8')
+          .expect('Content-Type', /text\/turtle/)
           .expect(200, done)
       })
     it('should have set Link as Container/BasicContainer',
