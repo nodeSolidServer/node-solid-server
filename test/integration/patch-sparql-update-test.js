@@ -22,7 +22,7 @@ describe('PATCH through application/sparql-update', function () {
     server.patch('/notExisting.ttl')
       .set('content-type', 'application/sparql-update')
       .send('INSERT DATA { :test  :hello 456 .}')
-      .expect(200)
+      .expect(201)
       .end(function (err, res, body) {
         assert.equal(
           read('sampleContainer/notExisting.ttl'),
