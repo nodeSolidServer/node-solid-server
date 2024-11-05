@@ -54,7 +54,7 @@ describe('AccountTemplate', () => {
       const substitutions = AccountTemplate.templateSubstitutionsFor(userAccount)
       expect(substitutions.name).to.equal('Alice Q.')
       expect(substitutions.email).to.equal('alice@example.com')
-      expect(substitutions.webId).to.equal('https://alice.example.com/profile/card#me')
+      expect(substitutions.webId).to.equal('/profile/card#me')
     })
   })
 })
