@@ -97,8 +97,8 @@ describe('Per Resource Events Protocol', function () {
         expect(notification.published).to.match(dateTimeRegex)
         expect(isNaN((new Date(notification.published)).valueOf())).to.equal(false)
         expect(notification.type).to.equal('Add')
-        expect(notification.target).to.match(/sampleContainer\/example-prep\.ttl$/)
-        expect(notification.object).to.match(/sampleContainer\/$/)
+        expect(notification.target).to.match(/sampleContainer\/$/)
+        expect(notification.object).to.match(/sampleContainer\/example-prep\.ttl$/)
       })
 
       it('when contained resource is modified', async function () {
@@ -131,8 +131,8 @@ solid:inserts { <u> <v> <z>. }.`
           expect(notification.published).to.match(dateTimeRegex)
           expect(isNaN((new Date(notification.published)).valueOf())).to.equal(false)
           expect(notification.type).to.equal('Remove')
-          expect(notification.object).to.match(/sampleContainer\/$/)
-          expect(notification.origin).to.match(/sampleContainer\/.*example-prep.ttl$/)
+          expect(notification.origin).to.match(/sampleContainer\/$/)
+          expect(notification.object).to.match(/sampleContainer\/.*example-prep.ttl$/)
         })
 
       it('when a contained container is created', async function () {
@@ -148,8 +148,8 @@ solid:inserts { <u> <v> <z>. }.`
         expect(notification.published).to.match(dateTimeRegex)
         expect(isNaN((new Date(notification.published)).valueOf())).to.equal(false)
         expect(notification.type).to.equal('Add')
-        expect(notification.target).to.match(/sampleContainer\/example-prep\/$/)
-        expect(notification.object).to.match(/sampleContainer\/$/)
+        expect(notification.target).to.match(/sampleContainer\/$/)
+        expect(notification.object).to.match(/sampleContainer\/example-prep\/$/)
       })
 
       it('when a contained container is deleted', async function () {
@@ -162,8 +162,8 @@ solid:inserts { <u> <v> <z>. }.`
         expect(notification.published).to.match(dateTimeRegex)
         expect(isNaN((new Date(notification.published)).valueOf())).to.equal(false)
         expect(notification.type).to.equal('Remove')
-        expect(notification.origin).to.match(/sampleContainer\/example-prep\/$/)
-        expect(notification.object).to.match(/sampleContainer\/$/)
+        expect(notification.origin).to.match(/sampleContainer\/$/)
+        expect(notification.object).to.match(/sampleContainer\/example-prep\/$/)
       })
 
       it('when a container is created by POST',
@@ -182,8 +182,8 @@ solid:inserts { <u> <v> <z>. }.`
           expect(notification.published).to.match(dateTimeRegex)
           expect(isNaN((new Date(notification.published)).valueOf())).to.equal(false)
           expect(notification.type).to.equal('Add')
-          expect(notification.object).to.match(/sampleContainer\/$/)
-          expect(notification.target).to.match(/sampleContainer\/.*example-post\/$/)
+          expect(notification.target).to.match(/sampleContainer\/$/)
+          expect(notification.object).to.match(/sampleContainer\/.*example-post\/$/)
         })
 
       it('when resource is created by POST',
@@ -202,8 +202,8 @@ solid:inserts { <u> <v> <z>. }.`
           expect(notification.published).to.match(dateTimeRegex)
           expect(isNaN((new Date(notification.published)).valueOf())).to.equal(false)
           expect(notification.type).to.equal('Add')
-          expect(notification.object).to.match(/sampleContainer\/$/)
-          expect(notification.target).to.match(/sampleContainer\/.*example-prep.ttl$/)
+          expect(notification.target).to.match(/sampleContainer\/$/)
+          expect(notification.object).to.match(/sampleContainer\/.*example-prep.ttl$/)
           controller.abort()
         })
     })
