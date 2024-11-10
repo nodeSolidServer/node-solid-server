@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+const uuid = require('uuid')
 const { expect } = require('chai')
 const { parseDictionary } = require('structured-headers')
 const prepFetch = require('prep-fetch').default
@@ -99,6 +100,8 @@ describe('Per Resource Events Protocol', function () {
         expect(notification.type).to.equal('Add')
         expect(notification.target).to.match(/sampleContainer\/$/)
         expect(notification.object).to.match(/sampleContainer\/example-prep\.ttl$/)
+        expect(uuid.validate(notification.id.substring(9))).to.equal(true)
+        expect(notification.state).to.match(/\w{6}/)
       })
 
       it('when contained resource is modified', async function () {
@@ -118,6 +121,8 @@ solid:inserts { <u> <v> <z>. }.`
         expect(isNaN((new Date(notification.published)).valueOf())).to.equal(false)
         expect(notification.type).to.equal('Update')
         expect(notification.object).to.match(/sampleContainer\/$/)
+        expect(uuid.validate(notification.id.substring(9))).to.equal(true)
+        expect(notification.state).to.match(/\w{6}/)
       })
 
       it('when contained resource is deleted',
@@ -133,6 +138,8 @@ solid:inserts { <u> <v> <z>. }.`
           expect(notification.type).to.equal('Remove')
           expect(notification.origin).to.match(/sampleContainer\/$/)
           expect(notification.object).to.match(/sampleContainer\/.*example-prep.ttl$/)
+          expect(uuid.validate(notification.id.substring(9))).to.equal(true)
+          expect(notification.state).to.match(/\w{6}/)
         })
 
       it('when a contained container is created', async function () {
@@ -150,6 +157,8 @@ solid:inserts { <u> <v> <z>. }.`
         expect(notification.type).to.equal('Add')
         expect(notification.target).to.match(/sampleContainer\/$/)
         expect(notification.object).to.match(/sampleContainer\/example-prep\/$/)
+        expect(uuid.validate(notification.id.substring(9))).to.equal(true)
+        expect(notification.state).to.match(/\w{6}/)
       })
 
       it('when a contained container is deleted', async function () {
@@ -164,6 +173,8 @@ solid:inserts { <u> <v> <z>. }.`
         expect(notification.type).to.equal('Remove')
         expect(notification.origin).to.match(/sampleContainer\/$/)
         expect(notification.object).to.match(/sampleContainer\/example-prep\/$/)
+        expect(uuid.validate(notification.id.substring(9))).to.equal(true)
+        expect(notification.state).to.match(/\w{6}/)
       })
 
       it('when a container is created by POST',
@@ -184,6 +195,8 @@ solid:inserts { <u> <v> <z>. }.`
           expect(notification.type).to.equal('Add')
           expect(notification.target).to.match(/sampleContainer\/$/)
           expect(notification.object).to.match(/sampleContainer\/.*example-post\/$/)
+          expect(uuid.validate(notification.id.substring(9))).to.equal(true)
+          expect(notification.state).to.match(/\w{6}/)
         })
 
       it('when resource is created by POST',
@@ -204,6 +217,8 @@ solid:inserts { <u> <v> <z>. }.`
           expect(notification.type).to.equal('Add')
           expect(notification.target).to.match(/sampleContainer\/$/)
           expect(notification.object).to.match(/sampleContainer\/.*example-prep.ttl$/)
+          expect(uuid.validate(notification.id.substring(9))).to.equal(true)
+          expect(notification.state).to.match(/\w{6}/)
           controller.abort()
         })
     })
@@ -265,9 +280,10 @@ solid:inserts { <u> <v> <z>. }.`
         const notification = await value.json()
         expect(notification.published).to.match(dateTimeRegex)
         expect(isNaN((new Date(notification.published)).valueOf())).to.equal(false)
-        expect(notification).to.haveOwnProperty('state')
         expect(notification.type).to.equal('Update')
         expect(notification.object).to.match(/sampleContainer\/example-prep\.ttl$/)
+        expect(uuid.validate(notification.id.substring(9))).to.equal(true)
+        expect(notification.state).to.match(/\w{6}/)
       })
 
       it('when removed with DELETE, it should also close the connection',
@@ -280,9 +296,10 @@ solid:inserts { <u> <v> <z>. }.`
           const notification = await value.json()
           expect(notification.published).to.match(dateTimeRegex)
           expect(isNaN((new Date(notification.published)).valueOf())).to.equal(false)
-          expect(notification).to.haveOwnProperty('state')
           expect(notification.type).to.equal('Delete')
           expect(notification.object).to.match(/sampleContainer\/example-prep\.ttl$/)
+          expect(uuid.validate(notification.id.substring(9))).to.equal(true)
+          expect(notification.state).to.match(/\w{6}/)
           const { done } = await notificationsIterator.next()
           expect(done).to.equal(true)
         })
