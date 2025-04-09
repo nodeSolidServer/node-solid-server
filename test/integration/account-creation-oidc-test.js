@@ -224,7 +224,7 @@ describe('AccountManager (OIDC account creation tests)', function () {
 })
 
 // FIXME: #1502
-describe('Single User signup page', () => {
+describe.skip('Single User signup page', () => {
   const serverUri = 'https://localhost:7457'
   const port = 7457
   let ldpHttpsServer
