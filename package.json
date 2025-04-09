@@ -149,7 +149,7 @@
     "solid": "node ./bin/solid",
     "standard": "standard \"{bin,examples,lib,test}/**/*.js\"",
     "validate": "node ./test/validate-turtle.js",
-    "c8": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 c8 --reporter=text-summary mocha -n --recursive test/integration/ test/unit/",
+    "c8": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 c8 --reporter=text-summary mocha -n experimental-require-module --recursive test/integration/ test/unit/",
     "mocha": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 mocha --recursive test/integration/ test/unit/",
     "mocha-integration": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 mocha --recursive test/integration/http-test.js",
     "mocha-account-creation-oidc": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 mocha --recursive test/integration/account-creation-oidc-test.js",
