@@ -53,6 +53,8 @@ jobs:
     # test code
     - run: npm run standard
     - run: npm run validate
+    - name: Clean up test directories
+      run: if [ -d test/resources/accounts/single-user ] then rm -rf test/resources/accounts/single-user
     - run: npm run c8
     # Test global install of the package
     - run: npm pack .
