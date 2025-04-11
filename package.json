@@ -149,7 +149,7 @@
     "solid": "node ./bin/solid",
     "standard": "standard \"{bin,examples,lib,test}/**/*.js\"",
     "validate": "node ./test/validate-turtle.js",
-    "nyc": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 nyc --reporter=text-summary mocha --recursive test/unit/",
+    "nyc": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 nyc --reporter=text-summary mocha --recursive test/integration/ test/unit/",
     "mocha": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 mocha --recursive test/integration/ test/unit/",
     "mocha-integration": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 mocha --recursive test/integration/http-test.js",
     "mocha-account-creation-oidc": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 mocha --recursive test/integration/account-creation-oidc-test.js",
