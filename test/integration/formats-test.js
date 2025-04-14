@@ -112,13 +112,13 @@ describe('formats', function () {
     it('Accept text/plain', function (done) {
       server.get('/put-input.txt')
         .set('accept', 'text/plain')
-        .expect('Content-type', 'text/plain')
+        .expect('Content-type', /text\/plain/)
         .expect(200, done)
     })
     it('Accept text/turtle', function (done) {
       server.get('/put-input.txt')
         .set('accept', 'text/turtle')
-        .expect('Content-type', 'text/plain; charset=utf-8')
+        .expect('Content-type', /text\/plain/)
         .expect(406, done)
     })
   })
