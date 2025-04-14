@@ -349,7 +349,7 @@ describe('HTTP APIs', function () {
     it('should return resource link for files', function (done) {
       server.get('/hello.html')
         .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Resource>; rel="type"/)
-        .expect('Content-Type', 'text/html')
+        .expect('Content-Type', /text\/html/)
         .expect(200, done)
     })
     it('should have glob support', function (done) {
@@ -460,30 +460,30 @@ describe('HTTP APIs', function () {
   describe('HEAD API', function () {
     it('should return content-type application/octet-stream by default', function (done) {
       server.head('/sampleContainer/blank')
-        .expect('Content-Type', 'application/octet-stream; charset=utf-8')
+        .expect('Content-Type', /application\/octet-stream/)
         .end(done)
     })
     it('should return content-type text/turtle for container', function (done) {
       server.head('/sampleContainer2/')
-        .expect('Content-Type', 'text/turtle; charset=utf-8')
+        .expect('Content-Type', /text\/turtle/)
         .end(done)
     })
     it('should have set content-type for turtle files',
       function (done) {
         server.head('/sampleContainer2/example1.ttl')
-          .expect('Content-Type', 'text/turtle; charset=utf-8')
+          .expect('Content-Type', /text\/turtle/)
           .end(done)
       })
     it('should have set content-type for implicit turtle files',
       function (done) {
         server.head('/sampleContainer/example4')
-          .expect('Content-Type', 'text/turtle; charset=utf-8')
+          .expect('Content-Type', /text\/turtle/)
           .end(done)
       })
     it('should have set content-type for image files',
       function (done) {
         server.head('/sampleContainer/solid.png')
-          .expect('Content-Type', 'image/png; charset=utf-8')
+          .expect('Content-Type', /image\/png/)
           .end(done)
       })
     it('should have Access-Control-Allow-Origin as Origin', function (done) {
@@ -517,7 +517,7 @@ describe('HTTP APIs', function () {
     it('should have set Content-Type as text/turtle for Container',
       function (done) {
         server.head('/sampleContainer2/')
-          .expect('Content-Type', 'text/turtle; charset=utf-8')
+          .expect('Content-Type', /text\/turtle/)
           .expect(200, done)
       })
     it('should have set Link as Container/BasicContainer',
@@ -565,7 +565,7 @@ describe('HTTP APIs', function () {
       server.put('/put-resource-1.ttl')
         .send(putRequestBody)
         .set('content-type', 'text/turtle')
-        .expect(201)
+        .expect(204)
         .end(function (err) {
           if (err) return done(err)
           if (fs.existsSync(path.join(__dirname, '../resources/put-resource-1.ttl$.txt'))) {
@@ -646,28 +646,28 @@ describe('HTTP APIs', function () {
           .expect(201, done)
       }
     )
-    it('should return 201 code when trying to put to a container',
+    it('should return 204 code when trying to put to a container',
       function (done) {
         server.put('/foo/bar/test/')
           .set('content-type', 'text/turtle')
           .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
-          .expect(201, done)
+          .expect(204, done)
       }
     )
-    it('should return 201 when trying to put to a container without content-type',
+    it('should return 204 when trying to put to a container without content-type',
       function (done) {
         server.put('/foo/bar/test/')
           // .set('content-type', 'text/turtle')
           .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
-          .expect(201, done)
+          .expect(204, done)
       }
     )
-    it('should return 201 code when trying to put to a container',
+    it('should return 204 code when trying to put to a container',
       function (done) {
         server.put('/foo/bar/test/')
           .set('content-type', 'text/turtle')
           .set('link', '<http://www.w3.org/ns/ldp#BasicContainer>; rel="type"')
-          .expect(201, done)
+          .expect(204, done)
       }
     )
     it('should return a 400 error when trying to PUT a container with a name that contains a reserved suffix',

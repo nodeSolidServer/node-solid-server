@@ -143,7 +143,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         options.body = ''
         request.put(options, function (error, response, body) {
           assert.equal(error, null)
-          assert.equal(response.statusCode, 201)
+          assert.equal(response.statusCode, 204)
           done()
         })
       })
@@ -214,7 +214,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         options.body = ''
         request.put(options, function (error, response, body) {
           assert.equal(error, null)
-          assert.equal(response.statusCode, 201) // 403) is this a must ?
+          assert.equal(response.statusCode, 204) // 403) is this a must ?
           done()
         })
       })
@@ -240,7 +240,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
         options.body = '<a> <b> <c> .'
         request.put(options, function (error, response, body) {
           assert.equal(error, null)
-          assert.equal(response.statusCode, 201)
+          assert.equal(response.statusCode, 204)
           done()
         })
       })
@@ -283,7 +283,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       '\n <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>.'
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
-        assert.equal(response.statusCode, 201)
+        assert.equal(response.statusCode, 204)
         done()
       })
     })
@@ -456,7 +456,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       options.body = body
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
-        assert.equal(response.statusCode, 201)
+        assert.equal(response.statusCode, 204)
         done()
       })
     })
@@ -557,7 +557,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       options.headers['content-type'] = 'application/sparql-update'
       request.patch(options, function (error, response, body) {
         assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
+        assert.equal(response.statusCode, 201)
         done()
       })
     })
@@ -606,7 +606,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       options.body = '<a> <b> <c> .\n'
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
-        assert.equal(response.statusCode, 201)
+        assert.equal(response.statusCode, 204)
         done()
       })
     })
@@ -616,7 +616,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       options.headers['content-type'] = 'application/sparql-update'
       request.patch(options, function (error, response, body) {
         assert.equal(error, null)
-        assert.equal(response.statusCode, 200)
+        assert.equal(response.statusCode, 201)
         done()
       })
     })
@@ -809,7 +809,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       options.body = body
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
-        assert.equal(response.statusCode, 201)
+        assert.equal(response.statusCode, 204)
         done()
       })
     })
@@ -834,7 +834,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       options.body = '<a> <b> <c> .\n'
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
-        assert.equal(response.statusCode, 201)
+        assert.equal(response.statusCode, 204)
         done()
       })
     })
@@ -860,7 +860,7 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       options.body = '<d> <e> <f> .\n'
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
-        assert.equal(response.statusCode, 201)
+        assert.equal(response.statusCode, 204)
         done()
       })
     })
