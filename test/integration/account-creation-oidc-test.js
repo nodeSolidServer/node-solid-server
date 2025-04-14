@@ -224,42 +224,43 @@ describe('AccountManager (OIDC account creation tests)', function () {
 })
 
 // FIXME: #1502
-// describe('Single User signup page', () => {
-//  const serverUri = 'https://localhost:7457'
-//  const port = 7457
-//  let ldpHttpsServer
-//  const rootDir = path.join(__dirname, '../resources/accounts/single-user/')
-//  const configPath = path.join(__dirname, '../resources/config')
-//  const ldp = ldnode.createServer({
-//    port,
-//    root: rootDir,
-//    configPath,
-//    sslKey: path.join(__dirname, '../keys/key.pem'),
-//    sslCert: path.join(__dirname, '../keys/cert.pem'),
-//    webid: true,
-//    multiuser: false,
-//    strictOrigin: true
-//  })
-//  const server = supertest(serverUri)
-//
-//  before(function (done) {
-//    ldpHttpsServer = ldp.listen(port, () => server.post('/api/accounts/new')
-//      .send('username=foo&password=12345&acceptToc=true')
-//      .end(done))
-//  })
-//
-//  after(function () {
-//    if (ldpHttpsServer) ldpHttpsServer.close()
-//    fs.removeSync(rootDir)
-//  })
-//
-//  it('should return a 406 not acceptable without accept text/html', done => {
-//    server.get('/')
-//      .set('accept', 'text/plain')
-//      .expect(406)
-//      .end(done)
-//  })
-// })
+describe('Single User signup page', () => {
+  const serverUri = 'https://localhost:7457'
+  const port = 7457
+  let ldpHttpsServer
+  rm('resources/accounts/single-user/')
+  const rootDir = path.join(__dirname, '../resources/accounts/single-user/')
+  const configPath = path.join(__dirname, '../resources/config')
+  const ldp = ldnode.createServer({
+    port,
+    root: rootDir,
+    configPath,
+    sslKey: path.join(__dirname, '../keys/key.pem'),
+    sslCert: path.join(__dirname, '../keys/cert.pem'),
+    webid: true,
+    multiuser: false,
+    strictOrigin: true
+  })
+  const server = supertest(serverUri)
+
+  before(function (done) {
+    ldpHttpsServer = ldp.listen(port, () => server.post('/api/accounts/new')
+      .send('username=foo&password=12345&acceptToc=true')
+      .end(done))
+  })
+
+  after(function () {
+    if (ldpHttpsServer) ldpHttpsServer.close()
+    fs.removeSync(rootDir)
+  })
+
+  it('should return a 406 not acceptable without accept text/html', done => {
+    server.get('/')
+      .set('accept', 'text/plain')
+      .expect(406)
+      .end(done)
+  })
+})
 
 // FIXME: #1502
 describe('Signup page where Terms & Conditions are not being enforced', () => {
