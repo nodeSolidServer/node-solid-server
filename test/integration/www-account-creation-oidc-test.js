@@ -228,6 +228,7 @@ describe('Single User signup page', () => {
   const serverUri = 'https://localhost:7457'
   const port = 7457
   let ldpHttpsServer
+  rm('resources/accounts/single-user/')
   const rootDir = path.join(__dirname, '../resources/accounts/single-user/')
   const configPath = path.join(__dirname, '../resources/config')
   const ldp = ldnode.createServer({

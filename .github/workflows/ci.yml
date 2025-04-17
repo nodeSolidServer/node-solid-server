@@ -17,7 +17,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [ '^20.17.0' ]
+        node-version: [ '^22.14.0' ]
         os: [ubuntu-latest]
 
     steps:
@@ -53,7 +53,7 @@ jobs:
     # test code
     - run: npm run standard
     - run: npm run validate
-    - run: npm run c8
+    - run: npm run nyc
     # Test global install of the package
     - run: npm pack .
     - run: npm install -g solid-server-*.tgz
