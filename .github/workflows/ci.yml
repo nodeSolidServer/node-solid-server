@@ -51,6 +51,8 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
     # test code
+    - name: Clean up test directories
+      run: rm -rf test/resources/accounts/single-user
     - run: npm run standard
     - run: npm run validate
     - run: npm run nyc
