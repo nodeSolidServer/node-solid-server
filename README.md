@@ -21,6 +21,7 @@ The [solid test suite](https://github.com/nodeSolidServer/node-solid-server/blob
 - [x] Group members in ACL
 - [x] Email account recovery
 
+
 ## Command Line Usage
 
 ### Install
