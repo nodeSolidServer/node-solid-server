@@ -54,7 +54,7 @@ function runTestsFromGit {
 }
 
 # ...
-teardown || true
+# teardown || true
 setup $1 $2
 waitForNss server
 runTests webid-provider-tests v2.0.3
@@ -62,7 +62,7 @@ runTestsFromGit solid-crud-tests v6.0.0-issue#1743
 waitForNss thirdparty
 # runTests web-access-control-tests v7.1.0
 runTestsFromGit web-access-control-tests patchAppendNewDocument
-teardown
+# teardown
 
 # To debug, e.g. running web-access-control-tests jest interactively,
 # comment out `teardown` and uncomment this instead:
