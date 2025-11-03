@@ -120,6 +120,7 @@
   "devDependencies": {
     "@cxres/structured-headers": "^2.0.0-nesting.0",
     "@solid/solid-auth-oidc": "0.3.0",
+    "basic-request": "^3.0.4",
     "chai": "^4.5.0",
     "chai-as-promised": "7.1.2",
     "cross-env": "7.0.3",
