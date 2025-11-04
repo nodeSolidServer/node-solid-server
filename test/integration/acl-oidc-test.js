@@ -1,6 +1,50 @@
 const assert = require('chai').assert
 const fs = require('fs-extra')
-const request = require('request')
+const fetch = require('node-fetch')
+
+// Helper to mimic request's callback API for get, put, post, head, patch
+function fetchRequest (method, options, callback) {
+  // options: { url, headers, body, ... }
+  const fetchOptions = {
+    method: method.toUpperCase(),
+    headers: options.headers || {},
+    body: options.body
+  }
+  // For GET/HEAD, don't send body
+  if (['GET', 'HEAD'].includes(fetchOptions.method)) {
+    delete fetchOptions.body
+  }
+  fetch(options.url, fetchOptions)
+    .then(async res => {
+      let body = await res.text()
+      // Try to parse as JSON if content-type is json
+      if (res.headers.get('content-type') && res.headers.get('content-type').includes('json')) {
+        try { body = JSON.parse(body) } catch (e) {}
+      }
+      callback(null, {
+        statusCode: res.status,
+        headers: Object.fromEntries(res.headers.entries()),
+        body: body,
+        statusMessage: res.statusText
+      }, body)
+    })
+    .catch(err => callback(err))
+}
+
+function request (options, cb) {
+  // Allow string URL
+  if (typeof options === 'string') options = { url: options }
+  const method = (options.method || 'GET').toLowerCase()
+  return fetchRequest(method, options, cb)
+}
+
+request.get = (options, cb) => fetchRequest('get', options, cb)
+request.put = (options, cb) => fetchRequest('put', options, cb)
+request.post = (options, cb) => fetchRequest('post', options, cb)
+request.head = (options, cb) => fetchRequest('head', options, cb)
+request.patch = (options, cb) => fetchRequest('patch', options, cb)
+request.delete = (options, cb) => fetchRequest('delete', options, cb)
+request.del = request.delete
 const path = require('path')
 const { loadProvider, rm, checkDnsSettings, cleanDir } = require('../utils')
 const IDToken = require('@solid/oidc-op/src/IDToken')
