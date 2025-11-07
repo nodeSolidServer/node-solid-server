@@ -5,6 +5,8 @@ const OIDCProvider = require('@solid/oidc-op')
 const dns = require('dns')
 const ldnode = require('../index')
 const supertest = require('supertest')
+const fetch = require('node-fetch')
+const https = require('https')
 
 const TEST_HOSTS = ['nic.localhost', 'tim.localhost', 'nicola.localhost']
 
@@ -94,3 +96,68 @@ function setupSuperServer (options) {
   const ldpServer = createServer(options)
   return supertest(ldpServer)
 }
+
+// Lightweight adapter to replace `request` with `node-fetch` in tests
+// Supports signatures:
+//  - request(options, cb)
+//  - request(url, options, cb)
+// And methods: get, post, put, patch, head, delete, del
+function buildAgentFn (options = {}) {
+  const aOpts = options.agentOptions || {}
+  if (!aOpts || (!aOpts.cert && !aOpts.key)) {
+    return undefined
+  }
+  const httpsAgent = new https.Agent({
+    cert: aOpts.cert,
+    key: aOpts.key,
+    // Tests often run with NODE_TLS_REJECT_UNAUTHORIZED=0; mirror that here
+    rejectUnauthorized: false
+  })
+  return (parsedURL) => parsedURL.protocol === 'https:' ? httpsAgent : undefined
+}
+
+async function doFetch (method, url, options = {}, cb) {
+  try {
+    const headers = options.headers || {}
+    const body = options.body
+    const agent = buildAgentFn(options)
+    const res = await fetch(url, { method, headers, body, agent })
+    // Build a response object similar to `request`'s
+    const headersObj = {}
+    res.headers.forEach((value, key) => { headersObj[key] = value })
+    const response = {
+      statusCode: res.status,
+      statusMessage: res.statusText,
+      headers: headersObj
+    }
+    const hasBody = method !== 'HEAD'
+    const text = hasBody ? await res.text() : ''
+    cb(null, response, text)
+  } catch (err) {
+    cb(err)
+  }
+}
+
+function requestAdapter (arg1, arg2, arg3) {
+  let url, options, cb
+  if (typeof arg1 === 'string') {
+    url = arg1
+    options = arg2 || {}
+    cb = arg3
+  } else {
+    options = arg1 || {}
+    url = options.url
+    cb = arg2
+  }
+  const method = (options && options.method) || 'GET'
+  return doFetch(method, url, options, cb)
+}
+
+;['GET', 'POST', 'PUT', 'PATCH', 'HEAD', 'DELETE'].forEach(m => {
+  const name = m.toLowerCase()
+  requestAdapter[name] = (options, cb) => doFetch(m, options.url, options, cb)
+})
+// Alias
+requestAdapter.del = requestAdapter.delete
+
+exports.httpRequest = requestAdapter

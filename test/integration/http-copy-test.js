@@ -1,6 +1,6 @@
 const assert = require('chai').assert
 const fs = require('fs')
-const request = require('request')
+const { httpRequest: request } = require('../utils')
 const path = require('path')
 // Helper functions for the FS
 const rm = require('./../utils').rm

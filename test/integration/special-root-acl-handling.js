@@ -1,5 +1,5 @@
 const assert = require('chai').assert
-const request = require('request')
+const { httpRequest: request } = require('../utils')
 const path = require('path')
 const { checkDnsSettings, cleanDir } = require('../utils')
 

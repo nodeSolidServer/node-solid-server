@@ -1,7 +1,7 @@
 const assert = require('chai').assert
 const fs = require('fs-extra')
 const $rdf = require('rdflib')
-const request = require('request')
+const { httpRequest: request } = require('../utils')
 const path = require('path')
 const { cleanDir } = require('../utils')
 
