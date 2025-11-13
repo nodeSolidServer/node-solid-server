@@ -1,0 +1,28 @@
+# Set default behavior to automatically normalize line endings.
+* text=auto
+
+# Force bash scripts to have unix line endings
+*.sh text eol=lf
+
+# Force bin files (executable scripts) to have unix line endings  
+bin/* text eol=lf
+
+# Ensure batch files on Windows keep CRLF line endings
+*.bat text eol=crlf
+
+# Binary files should not be modified
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.zip binary
+*.tar.gz binary
+*.tgz binary
+
+# Ensure package files are treated as text
+package.json text
+package-lock.json text
+*.md text
+*.txt text
