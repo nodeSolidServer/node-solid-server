@@ -1,6 +1,3 @@
-# Set default behavior to automatically normalize line endings.
-* text=auto
-
 # Force bash scripts to have unix line endings
 *.sh text eol=lf
 
@@ -20,9 +17,3 @@ bin/* text eol=lf
 *.zip binary
 *.tar.gz binary
 *.tgz binary
-
-# Ensure package files are treated as text
-package.json text
-package-lock.json text
-*.md text
-*.txt text
