@@ -1,0 +1,4 @@
+@prefix solid: <http://www.w3.org/ns/solid/terms#>.
+<>
+    a solid:TypeIndex ;
+    a solid:ListedDocument.

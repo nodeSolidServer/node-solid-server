@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Log in</title>
+  <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/common/css/solid.css">
+</head>
+<body>
+<div class="container">
+  <div class="page-header">
+    <div class="pull-right">
+      <button id="register" type="button" class="btn btn-primary">Register</button>
+      <button id="login"    type="button" class="btn btn-success">Log in</button>
+      <button id="logout"   type="button" class="hidden btn btn-danger">Log out</button>
+    </div>
+    <h1>Log in to access this resource</h1>
+  </div>
+
+  <div class="alert alert-danger">
+    <p>
+      The resource you are trying to access
+      (<code>{{currentUrl}}</code>)
+      requires you to log in.
+    </p>
+  </div>
+
+</div>
+</div>
+<script src="/common/js/solid-auth-client.bundle.js"></script>
+<script src="/common/js/auth-buttons.js"></script>
+</body>
+</html>

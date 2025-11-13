@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login</title>
+  <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/common/css/solid.css">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+</head>
+<body>
+<div class="container-fluid">
+  <div class="page-header hidden-xs hidden-sm">
+    <h1>Login</h1>
+  </div>
+  
+
+  {{> shared/error}}
+
+  <div class="row visible-xs-inline visible-lg-block visible-md-block visible-sm-block">
+    <div class="col-md-6">
+      {{#if enablePassword}}
+        <h4 class="visible-xs visible-sm xs-header">Login</h4>
+        {{> auth/login-username-password}}
+      {{/if}}
+      <div class="visible-md visible-lg">
+        {{> shared/create-account }}
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      {{#if enableTls}}
+        {{> auth/login-tls}}
+      {{/if}}
+      <div class="visible-xs visible-sm">
+        {{> shared/create-account }}
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  // Send return URL from localStorage to server through hidden redirect_uri field
+  var returnToUrl = localStorage.getItem('returnToUrl')
+  if (returnToUrl) {
+    for (let redirect of document.getElementsByName('redirect_uri')) {
+      redirect.value = returnToUrl
+    }
+  }
+  localStorage.removeItem('returnToUrl')
+</script>
+</body>
+</html>

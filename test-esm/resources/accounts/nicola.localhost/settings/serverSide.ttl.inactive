@@ -1,0 +1,12 @@
+@prefix dct: <http://purl.org/dc/terms/>.
+@prefix pim: <http://www.w3.org/ns/pim/space#>.
+@prefix solid: <http://www.w3.org/ns/solid/terms#>.
+
+<>
+  a pim:ConfigurationFile;
+
+  dct:description "Administrative settings for the POD that the user can only read." .
+
+</>
+    solid:storageQuota "25000000" .
+    
