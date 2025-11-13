@@ -23,17 +23,19 @@ describe('Per Resource Events Protocol', function () {
       webid: false,
       prep: true
     })
-    server.listen(8443, done)
+    server.listen(8445, done)
   })
 
   after(() => {
-    fs.rmSync(path.join(samplePath, 'example-post'), { recursive: true })
+    if (fs.existsSync(path.join(samplePath, 'example-post'))) {
+      fs.rmSync(path.join(samplePath, 'example-post'), { recursive: true, force: true })
+    }
     server.close()
   })
 
   it('should set `Accept-Events` header on a GET response with "prep"',
     async function () {
-      const response = await fetch('http://localhost:8443/sampleContainer/example1.ttl')
+      const response = await fetch('http://localhost:8445/sampleContainer/example1.ttl')
       expect(response.headers.get('Accept-Events')).to.match(/^"prep"/)
       expect(response.status).to.equal(200)
     }
@@ -41,7 +43,7 @@ describe('Per Resource Events Protocol', function () {
 
   it('should send an ordinary response, if `Accept-Events` header is not specified',
     async function () {
-      const response = await fetch('http://localhost:8443/sampleContainer/example1.ttl')
+      const response = await fetch('http://localhost:8445/sampleContainer/example1.ttl')
       expect(response.headers.get('Content-Type')).to.match(/text\/turtle/)
       expect(response.headers.has('Events')).to.equal(false)
       expect(response.status).to.equal(200)
@@ -54,7 +56,7 @@ describe('Per Resource Events Protocol', function () {
     const { signal } = controller
 
     it('should set headers correctly', async function () {
-      response = await fetch('http://localhost:8443/sampleContainer/', {
+      response = await fetch('http://localhost:8445/sampleContainer/', {
         headers: {
           'Accept-Events': '"prep";accept=application/ld+json',
           Accept: 'text/turtle'
@@ -85,7 +87,7 @@ describe('Per Resource Events Protocol', function () {
       it('when a contained resource is created', async function () {
         notifications = await prepResponse.getNotifications()
         notificationsIterator = notifications.notifications()
-        await fetch('http://localhost:8443/sampleContainer/example-prep.ttl', {
+        await fetch('http://localhost:8445/sampleContainer/example-prep.ttl', {
           method: 'PUT',
           headers: {
             'Content-Type': 'text/turtle'
@@ -105,7 +107,7 @@ describe('Per Resource Events Protocol', function () {
       })
 
       it('when contained resource is modified', async function () {
-        await fetch('http://localhost:8443/sampleContainer/example-prep.ttl', {
+        await fetch('http://localhost:8445/sampleContainer/example-prep.ttl', {
           method: 'PATCH',
           headers: {
             'Content-Type': 'text/n3'
@@ -127,7 +129,7 @@ solid:inserts { <u> <v> <z>. }.`
 
       it('when contained resource is deleted',
         async function () {
-          await fetch('http://localhost:8443/sampleContainer/example-prep.ttl', {
+          await fetch('http://localhost:8445/sampleContainer/example-prep.ttl', {
             method: 'DELETE'
           })
           const { value } = await notificationsIterator.next()
@@ -143,7 +145,7 @@ solid:inserts { <u> <v> <z>. }.`
         })
 
       it('when a contained container is created', async function () {
-        await fetch('http://localhost:8443/sampleContainer/example-prep/', {
+        await fetch('http://localhost:8445/sampleContainer/example-prep/', {
           method: 'PUT',
           headers: {
             'Content-Type': 'text/turtle'
@@ -162,7 +164,7 @@ solid:inserts { <u> <v> <z>. }.`
       })
 
       it('when a contained container is deleted', async function () {
-        await fetch('http://localhost:8443/sampleContainer/example-prep/', {
+        await fetch('http://localhost:8445/sampleContainer/example-prep/', {
           method: 'DELETE'
         })
         const { value } = await notificationsIterator.next()
@@ -179,7 +181,7 @@ solid:inserts { <u> <v> <z>. }.`
 
       it('when a container is created by POST',
         async function () {
-          await fetch('http://localhost:8443/sampleContainer/', {
+          await fetch('http://localhost:8445/sampleContainer/', {
             method: 'POST',
             headers: {
               slug: 'example-post',
@@ -201,7 +203,7 @@ solid:inserts { <u> <v> <z>. }.`
 
       it('when resource is created by POST',
         async function () {
-          await fetch('http://localhost:8443/sampleContainer/', {
+          await fetch('http://localhost:8445/sampleContainer/', {
             method: 'POST',
             headers: {
               slug: 'example-prep.ttl',
@@ -229,7 +231,7 @@ solid:inserts { <u> <v> <z>. }.`
     let prepResponse
 
     it('should set headers correctly', async function () {
-      response = await fetch('http://localhost:8443/sampleContainer/example-prep.ttl', {
+      response = await fetch('http://localhost:8445/sampleContainer/example-prep.ttl', {
         headers: {
           'Accept-Events': '"prep";accept=application/ld+json',
           Accept: 'text/n3'
@@ -266,7 +268,7 @@ solid:inserts { <u> <v> <z>. }.`
       it('when modified with PATCH', async function () {
         notifications = await prepResponse.getNotifications()
         notificationsIterator = notifications.notifications()
-        await fetch('http://localhost:8443/sampleContainer/example-prep.ttl', {
+        await fetch('http://localhost:8445/sampleContainer/example-prep.ttl', {
           method: 'PATCH',
           headers: {
             'content-type': 'text/n3'
@@ -288,7 +290,7 @@ solid:inserts { <u> <v> <z>. }.`
 
       it('when removed with DELETE, it should also close the connection',
         async function () {
-          await fetch('http://localhost:8443/sampleContainer/example-prep.ttl', {
+          await fetch('http://localhost:8445/sampleContainer/example-prep.ttl', {
             method: 'DELETE'
           })
           const { value } = await notificationsIterator.next()

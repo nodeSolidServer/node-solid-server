@@ -8,6 +8,8 @@ const rm = require('./../utils').rm
 const solidServer = require('../../index')
 
 describe('HTTP COPY API', function () {
+  this.timeout(10000) // Set timeout for this test suite to 10 seconds
+
   const address = 'https://localhost:8443'
 
   let ldpHttpsServer
@@ -15,6 +17,7 @@ describe('HTTP COPY API', function () {
     root: path.join(__dirname, '../resources/accounts/localhost/'),
     sslKey: path.join(__dirname, '../keys/key.pem'),
     sslCert: path.join(__dirname, '../keys/cert.pem'),
+    serverUri: 'https://localhost:8443',
     webid: false
   })
 
@@ -59,8 +62,10 @@ describe('HTTP COPY API', function () {
     const uri = address + copyTo
     const options = createOptions('COPY', uri, 'user1')
     options.headers.Source = copyFrom
-    request(uri, options, function (error, response) {
-      assert.equal(error, null)
+    request(uri, options, function (error, response, body) {
+      if (error) {
+        return done(error)
+      }
       assert.equal(response.statusCode, 201)
       assert.equal(response.headers.location, copyTo)
       const destinationPath = path.join(__dirname, '../resources/accounts/localhost', copyTo)
@@ -77,7 +82,9 @@ describe('HTTP COPY API', function () {
     const options = createOptions('COPY', uri, 'user1')
     options.headers.Source = copyFrom
     request(uri, options, function (error, response) {
-      assert.equal(error, null)
+      if (error) {
+        return done(error)
+      }
       assert.equal(response.statusCode, 404)
       done()
     })

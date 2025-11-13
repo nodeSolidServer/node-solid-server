@@ -436,29 +436,47 @@ describe('LDP', function () {
         })
     })
 
-    it('should ldp:contains the same files in dir', () => {
+    it('should ldp:contains the same files in dir', (done) => {
       ldp.listContainer(path.join(__dirname, '../resources/sampleContainer/'), 'https://server.tld/resources/sampleContainer/', '', 'server.tld')
         .then(data => {
           fs.readdir(path.join(__dirname, '../resources/sampleContainer/'), function (err, expectedFiles) {
-            // Strip dollar extension
-            expectedFiles = expectedFiles.map(ldp.resourceMapper._removeDollarExtension)
+            try {
+              if (err) {
+                return done(err)
+              }
 
-            if (err) {
-              return Promise.reject(err)
+              // Filter out empty strings and strip dollar extension
+              expectedFiles = expectedFiles
+                .filter(file => file !== '')
+                .map(ldp.resourceMapper._removeDollarExtension)
+
+              const graph = $rdf.graph()
+              $rdf.parse(data, graph, 'https://localhost:8443/resources/sampleContainer/', 'text/turtle')
+              const statements = graph.match(null, ns.ldp('contains'), null)
+              const files = statements
+                .map(s => {
+                  const url = s.object.value
+                  const filename = url.replace(/.*\//, '')
+                  // For directories, the URL ends with '/' so after regex we get empty string
+                  // In this case, get the directory name from before the final '/'
+                  if (filename === '' && url.endsWith('/')) {
+                    return url.replace(/\/$/, '').replace(/.*\//, '')
+                  }
+                  return filename
+                })
+                .map(decodeURIComponent)
+                .filter(file => file !== '')
+
+              files.sort()
+              expectedFiles.sort()
+              assert.deepEqual(files, expectedFiles)
+              done()
+            } catch (error) {
+              done(error)
             }
-
-            const graph = $rdf.graph()
-            $rdf.parse(data, graph, 'https://localhost:8443/resources/sampleContainer/', 'text/turtle')
-            const statements = graph.match(null, ns.ldp('contains'), null)
-            const files = statements
-              .map(s => s.object.value.replace(/.*\//, ''))
-              .map(decodeURIComponent)
-
-            files.sort()
-            expectedFiles.sort()
-            assert.deepEqual(files, expectedFiles)
           })
         })
+        .catch(done)
     })
   })
 })
