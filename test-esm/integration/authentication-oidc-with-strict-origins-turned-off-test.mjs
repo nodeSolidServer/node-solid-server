@@ -1,17 +1,20 @@
-import Solid from '../../index.js'
+import solid, { createServer } from '../../index.mjs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { createRequire } from 'module'
 import fs from 'fs-extra'
 import { UserStore } from '@solid/oidc-auth-manager'
-import UserAccount from '../../lib/models/user-account.js'
-import SolidAuthOIDC from '@solid/solid-auth-oidc'
+import UserAccount from '../../lib/models/user-account.mjs'
+
+const require = createRequire(import.meta.url)
+const SolidAuthOIDC = require('@solid/solid-auth-oidc')
 
 import fetch from 'node-fetch'
 import localStorage from 'localstorage-memory'
 import { URL, URLSearchParams } from 'whatwg-url'
 global.URL = URL
 global.URLSearchParams = URLSearchParams
-import { cleanDir, cp } from '../../test/utils.js'
+import { cleanDir, cp } from '../utils/index.mjs'
 
 import supertest from 'supertest'
 import chai from 'chai'
@@ -54,7 +57,7 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
   }
 
   const aliceRootPath = path.normalize(path.join(__dirname, '../../test/resources/accounts-strict-origin-off/alice'))
-  const alicePod = Solid.createServer(
+  const alicePod = solid(
     Object.assign({
       root: aliceRootPath,
       serverUri: aliceServerUri,
@@ -62,7 +65,7 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
     }, serverConfig)
   )
   const bobRootPath = path.normalize(path.join(__dirname, '../../test/resources/accounts-strict-origin-off/bob'))
-  const bobPod = Solid.createServer(
+  const bobPod = solid(
     Object.assign({
       root: bobRootPath,
       serverUri: bobServerUri,

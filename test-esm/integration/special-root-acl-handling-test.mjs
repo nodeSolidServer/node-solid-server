@@ -1,13 +1,13 @@
 import { fileURLToPath } from 'url'
 import path from 'path'
 import { assert } from 'chai'
-import { httpRequest as request, checkDnsSettings, cleanDir } from '../../test/utils.js'
-import ldnode from '../../index.js'
+import { httpRequest as request, checkDnsSettings, cleanDir } from '../utils/index.mjs'
+import ldnode from '../../index.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const port = 7777
+const port = 7780
 const serverUri = `https://localhost:${port}`
 const root = path.join(__dirname, '../../test/resources/accounts-acl')
 const dbPath = path.join(root, 'db')

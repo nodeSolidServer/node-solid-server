@@ -1,10 +1,10 @@
 import { assert } from 'chai'
 import fs from 'fs-extra'
 import $rdf from 'rdflib'
-import { httpRequest as request } from '../../test/utils.js'
+import { httpRequest as request } from '../utils/index.mjs'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { cleanDir } from '../../test/utils.js'
+import { cleanDir } from '../utils/index.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -15,17 +15,17 @@ const __dirname = path.dirname(__filename)
  */
 
 // Helper functions for the FS
-import { rm } from '../../test/utils.js'
+import { rm } from '../utils/index.mjs'
 // var write = require('./utils').write
 // var cp = require('./utils').cp
 // var read = require('./utils').read
 
-import ldnode from '../../index.js'
+import ldnode from '../../index.mjs'
 import solidNamespace from 'solid-namespace'
 const ns = solidNamespace($rdf)
 
-const port = 7777
-const serverUri = 'https://localhost:7777'
+const port = 7779
+const serverUri = 'https://localhost:7779'
 const rootPath = path.normalize(path.join(__dirname, '../../test/resources/acl-tls'))
 const dbPath = path.join(rootPath, 'db')
 const configPath = path.join(rootPath, 'config')
@@ -44,9 +44,9 @@ const globFile = testDir + '/*'
 const origin1 = 'http://example.org/'
 const origin2 = 'http://example.com/'
 
-const user1 = 'https://tim.localhost:7777/profile/card#me'
-const user2 = 'https://nicola.localhost:7777/profile/card#me'
-const address = 'https://tim.localhost:7777'
+const user1 = `https://tim.localhost:${port}/profile/card#me`
+const user2 = `https://nicola.localhost:${port}/profile/card#me`
+const address = `https://tim.localhost:${port}`
 const userCredentials = {
   user1: {
     cert: fs.readFileSync(path.normalize(path.join(__dirname, '../../test/keys/user1-cert.pem'))),

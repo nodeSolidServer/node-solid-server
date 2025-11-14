@@ -105,8 +105,8 @@ describe('LDNODE params', function () {
   describe('forceUser', function () {
     let ldpHttpsServer
 
-    const port = 7777
-    const serverUri = 'https://localhost:7777'
+    const port = 7782
+    const serverUri = 'https://localhost:7782'
     const rootPath = path.join(__dirname, '../../test/resources/accounts-acl')
     const dbPath = path.join(rootPath, 'db')
     const configPath = path.join(rootPath, 'config')

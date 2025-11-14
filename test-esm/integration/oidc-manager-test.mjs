@@ -2,8 +2,8 @@ import { fileURLToPath } from 'url'
 import path from 'path'
 import chai from 'chai'
 import fs from 'fs-extra'
-import OidcManager from '../../lib/models/oidc-manager.js'
-import SolidHost from '../../lib/models/solid-host.js'
+import OidcManager from '../../lib/models/oidc-manager.mjs'
+import SolidHost from '../../lib/models/solid-host.mjs'
 
 const { expect } = chai
 

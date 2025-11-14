@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import supertest from 'supertest'
-import ldnode from '../../index.js'
+import ldnode from '../../index.mjs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { cleanDir, cp } from '../utils/index.mjs'

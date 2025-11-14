@@ -1,14 +1,16 @@
 import fs from 'fs-extra'
 import rimraf from 'rimraf'
-import path from 'path'
+import path, { dirname } from 'path'
 import { fileURLToPath } from 'url'
-import OIDCProvider from '@solid/oidc-op'
+import { createRequire } from 'module'
 import dns from 'dns'
-import ldnode from '../../index.js'
+import solid from '../../index.mjs'
 import supertest from 'supertest'
 import fetch from 'node-fetch'
 import https from 'https'
+import OIDCProvider from '@solid/oidc-op'
 
+const require = createRequire(import.meta.url)
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -82,7 +84,14 @@ export function checkDnsSettings () {
 export function loadProvider (configPath) {
   return Promise.resolve()
     .then(async () => {
-      const { default: config } = await import(configPath)
+      // Convert Windows absolute path to file:// URL for ESM compatibility
+      const configUrl = configPath.startsWith('file://') ? configPath : 
+        path.isAbsolute(configPath) ? `file://${configPath.replace(/\\/g, '/')}` : configPath
+      
+      // For JSON files, need to add import attribute in Node.js ESM
+      const config = configPath.endsWith('.json') ? 
+        await import(configUrl, { with: { type: 'json' } }).then(m => m.default) :
+        await import(configUrl).then(m => m.default)
 
       const provider = new OIDCProvider(config)
 
@@ -92,13 +101,31 @@ export function loadProvider (configPath) {
 
 export { createServer }
 function createServer (options) {
-  return ldnode.createServer(options)
+  process.stderr.write('=== CREATE SERVER CALLED ===\n')
+  process.stderr.write(`Options: ${JSON.stringify(options, null, 2)}\n`)
+  const app = solid(options)
+  process.stderr.write('=== SOLID APP CREATED ===\n')
+  return app
 }
 
 export { setupSupertestServer }
 function setupSupertestServer (options) {
-  const ldpServer = createServer(options)
-  return supertest(ldpServer)
+  try {
+    process.stderr.write('=== SETUP SUPERTEST SERVER START ===\n')
+    console.log('=== SETUP SUPERTEST SERVER ===')
+    console.log('Options passed to setupSupertestServer:', JSON.stringify(options, null, 2))
+    const ldpServer = createServer(options)
+    console.log('=== CREATE SERVER COMPLETED ===')
+    process.stderr.write('=== ABOUT TO CREATE SUPERTEST AGENT ===\n')
+    const supertestAgent = supertest(ldpServer)
+    console.log('=== SUPERTEST AGENT CREATED ===')
+    process.stderr.write('=== SETUP SUPERTEST SERVER COMPLETE ===\n')
+    return supertestAgent
+  } catch (error) {
+    console.error('ERROR in setupSupertestServer:', error)
+    process.stderr.write(`ERROR: ${error.message}\n`)
+    throw error
+  }
 }
 
 // Lightweight adapter to replace `request` with `node-fetch` in tests

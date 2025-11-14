@@ -1,15 +1,26 @@
 import { assert } from 'chai'
 import fs from 'fs-extra'
 import fetch from 'node-fetch'
+import fetchCookie from 'fetch-cookie'
+import { CookieJar } from 'tough-cookie'
+import https from 'https'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { loadProvider, rm, checkDnsSettings, cleanDir } from '../../test/utils.js'
-import IDToken from '@solid/oidc-op/src/IDToken.js'
+import { createRequire } from 'module'
+import { loadProvider, rm, checkDnsSettings, cleanDir } from '../utils/index.mjs'
+
+const require = createRequire(import.meta.url)
+const IDToken = require('@solid/oidc-op/src/IDToken.js')
 // import { clearAclCache } from '../../lib/acl-checker.js'
-import ldnode from '../../index.js'
+const solid = await import('../../index.mjs').then(m => m.default)
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
+
+
+// Shared cookie jar for all requests
+const cookieJar = new CookieJar()
+const fetchWithCookies = fetchCookie(fetch, cookieJar)
 
 // Helper to mimic request's callback API for get, put, post, head, patch
 function fetchRequest (method, options, callback) {
@@ -23,7 +34,15 @@ function fetchRequest (method, options, callback) {
   if (['GET', 'HEAD'].includes(fetchOptions.method)) {
     delete fetchOptions.body
   }
-  fetch(options.url, fetchOptions)
+
+  // Create an HTTPS agent that ignores SSL verification - same approach as CommonJS utils
+  if (options.url && options.url.startsWith('https:')) {
+    fetchOptions.agent = new https.Agent({
+      rejectUnauthorized: false
+    })
+  }
+
+  fetchWithCookies(options.url, fetchOptions)
     .then(async res => {
       let body = await res.text()
       // Try to parse as JSON if content-type is json
@@ -62,9 +81,9 @@ const dbPath = path.join(rootPath, 'db')
 const oidcProviderPath = path.join(dbPath, 'oidc', 'op', 'provider.json')
 const configPath = path.join(rootPath, 'config')
 
-const user1 = 'https://tim.localhost:7777/profile/card#me'
-const timAccountUri = 'https://tim.localhost:7777'
-const user2 = 'https://nicola.localhost:7777/profile/card#me'
+const user1 = `https://tim.localhost:${port}/profile/card#me`
+const timAccountUri = `https://tim.localhost:${port}`
+const user2 = `https://nicola.localhost:${port}/profile/card#me`
 
 let oidcProvider
 
@@ -108,10 +127,16 @@ const argv = {
 describe('ACL with WebID+OIDC over HTTP', function () {
   let ldp, ldpHttpsServer
 
+  // Increase timeout for setup
+  this.timeout(30000)
+
   before(checkDnsSettings)
 
   before(done => {
-    ldp = ldnode.createServer(argv)
+    console.log('=== STARTING ACL OIDC TEST SETUP ===')
+    console.log('Using solid.createServer() for proper SSL support')
+    
+    ldp = solid.createServer(argv)
 
     loadProvider(oidcProviderPath).then(provider => {
       oidcProvider = provider
@@ -124,17 +149,33 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       userCredentials.user1 = tokens[0]
       userCredentials.user2 = tokens[1]
     }).then(() => {
-      ldpHttpsServer = ldp.listen(port, done)
-    }).catch(console.error)
+      console.log('Starting server on port', port)
+      ldpHttpsServer = ldp.listen(port, () => {
+        console.log('Server started. Server details:')
+        console.log('- Protocol:', ldpHttpsServer.cert ? 'HTTPS' : 'HTTP')
+        console.log('- Port:', ldpHttpsServer.address().port)
+        done()
+      })
+    }).catch(error => {
+      console.error('ERROR in test setup:', error)
+      done(error)
+    })
   })
 
   /* afterEach(() => {
     clearAclCache()
   }) */
 
-  after(() => {
-    if (ldpHttpsServer) ldpHttpsServer.close()
-    cleanDir(rootPath)
+  after((done) => {
+    if (ldpHttpsServer && ldpHttpsServer.listening) {
+      ldpHttpsServer.close(() => {
+        cleanDir(rootPath)
+        done()
+      })
+    } else {
+      cleanDir(rootPath)
+      done()
+    }
   })
 
   const origin1 = 'http://example.org/'
@@ -158,12 +199,29 @@ describe('ACL with WebID+OIDC over HTTP', function () {
 
   describe('no ACL', function () {
     it('Should return 500 since no ACL is a server misconfig', function (done) {
+      console.log('=== Starting no ACL test ===')
       const options = createOptions('/no-acl/', 'user1')
+      console.log('Request URL:', options.url)
+      
       request(options, function (error, response, body) {
+        console.log('Request callback called')
+        if (error) {
+          console.log('Error:', error.message)
+          done(error)
+          return
+        }
+        console.log('Response status:', response.statusCode)
+        
         assert.equal(error, null)
         assert.equal(response.statusCode, 500)
         done()
       })
+      
+      // Add a safety timeout
+      setTimeout(() => {
+        console.log('Manual timeout - request took too long')
+        done(new Error('Request timeout'))
+      }, 10000)
     })
     // it('should not have the `User` set in the Response Header', function (done) {
     //   var options = createOptions('/no-acl/', 'user1')
@@ -325,9 +383,9 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       const options = createOptions('/no-control/.acl', 'user1', 'text/turtle')
       options.body = '<#0>' +
       '\n a <http://www.w3.org/ns/auth/acl#Authorization>;' +
-      '\n <http://www.w3.org/ns/auth/acl#default> <https://tim.localhost:7777/no-control/> ;' +
-      '\n <http://www.w3.org/ns/auth/acl#accessTo> <https://tim.localhost:7777/no-control/> ;' +
-      '\n <http://www.w3.org/ns/auth/acl#agent> <https://tim.localhost:7777/profile/card#me> ;' +
+      `\n <http://www.w3.org/ns/auth/acl#default> <https://tim.localhost:${port}/no-control/> ;` +
+      `\n <http://www.w3.org/ns/auth/acl#accessTo> <https://tim.localhost:${port}/no-control/> ;` +
+      `\n <http://www.w3.org/ns/auth/acl#agent> <https://tim.localhost:${port}/profile/card#me> ;` +
       '\n <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>.'
       request.put(options, function (error, response, body) {
         assert.equal(error, null)
@@ -339,9 +397,9 @@ describe('ACL with WebID+OIDC over HTTP', function () {
       const options = createOptions('/no-control/.acl', 'user2', 'text/turtle')
       options.body = '<#0>' +
       '\n a <http://www.w3.org/ns/auth/acl#Authorization>;' +
-      '\n <http://www.w3.org/ns/auth/acl#default> <https://tim.localhost:7777/no-control/> ;' +
-      '\n <http://www.w3.org/ns/auth/acl#accessTo> <https://tim.localhost:7777/no-control/> ;' +
-      '\n <http://www.w3.org/ns/auth/acl#agent> <https://tim.localhost:7777/profile/card#me> ;' +
+      `\n <http://www.w3.org/ns/auth/acl#default> <https://tim.localhost:${port}/no-control/> ;` +
+      `\n <http://www.w3.org/ns/auth/acl#accessTo> <https://tim.localhost:${port}/no-control/> ;` +
+      `\n <http://www.w3.org/ns/auth/acl#agent> <https://tim.localhost:${port}/profile/card#me> ;` +
       '\n <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>.'
       request.put(options, function (error, response, body) {
         assert.equal(error, null)

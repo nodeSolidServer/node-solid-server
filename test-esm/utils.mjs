@@ -1,50 +1,48 @@
 import fs from 'fs-extra'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import OIDCProvider from '@solid/oidc-op'
+import { createRequire } from 'module'
 import dns from 'dns'
 import supertest from 'supertest'
 import fetch from 'node-fetch'
 import https from 'https'
-import { createRequire } from 'module'
 
 const require = createRequire(import.meta.url)
-const rimraf = require('rimraf')
+import OIDCProvider from '@solid/oidc-op'
+import rimraf from 'rimraf'
+import solid from '../index.mjs'  // Use ESM version instead of CommonJS
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-
-// Import the main ldnode module (may need adjustment based on your ESM exports)
-const ldnode = require('../index.js') // or import as needed
 
 const TEST_HOSTS = ['nic.localhost', 'tim.localhost', 'nicola.localhost']
 
 export function rm (file) {
-  return rimraf.sync(path.join(__dirname, '../test/resources/' + file))
+  return rimraf.sync(path.normalize(path.join(__dirname, '../test/resources/' + file)))
 }
 
 export function cleanDir (dirPath) {
-  fs.removeSync(path.join(dirPath, '.well-known/.acl'))
-  fs.removeSync(path.join(dirPath, '.acl'))
-  fs.removeSync(path.join(dirPath, 'favicon.ico'))
-  fs.removeSync(path.join(dirPath, 'favicon.ico.acl'))
-  fs.removeSync(path.join(dirPath, 'index.html'))
-  fs.removeSync(path.join(dirPath, 'index.html.acl'))
-  fs.removeSync(path.join(dirPath, 'robots.txt'))
-  fs.removeSync(path.join(dirPath, 'robots.txt.acl'))
+  fs.removeSync(path.normalize(path.join(dirPath, '.well-known/.acl')))
+  fs.removeSync(path.normalize(path.join(dirPath, '.acl')))
+  fs.removeSync(path.normalize(path.join(dirPath, 'favicon.ico')))
+  fs.removeSync(path.normalize(path.join(dirPath, 'favicon.ico.acl')))
+  fs.removeSync(path.normalize(path.join(dirPath, 'index.html')))
+  fs.removeSync(path.normalize(path.join(dirPath, 'index.html.acl')))
+  fs.removeSync(path.normalize(path.join(dirPath, 'robots.txt')))
+  fs.removeSync(path.normalize(path.join(dirPath, 'robots.txt.acl')))
 }
 
 export function write (text, file) {
-  return fs.writeFileSync(path.join(__dirname, '../test/resources/' + file), text)
+  return fs.writeFileSync(path.normalize(path.join(__dirname, '../test/resources/' + file)), text)
 }
 
 export function cp (src, dest) {
   return fs.copySync(
-    path.join(__dirname, '../test/resources/' + src),
-    path.join(__dirname, '../test/resources/' + dest))
+    path.normalize(path.join(__dirname, '../test/resources/' + src)),
+    path.normalize(path.join(__dirname, '../test/resources/' + dest)))
 }
 
 export function read (file) {
-  return fs.readFileSync(path.join(__dirname, '../test/resources/' + file), {
+  return fs.readFileSync(path.normalize(path.join(__dirname, '../test/resources/' + file)), {
     encoding: 'utf8'
   })
 }
@@ -95,7 +93,7 @@ export function loadProvider (configPath) {
 }
 
 export function createServer (options) {
-  return ldnode.createServer(options)
+  return solid(options)  // Use ESM solid function
 }
 
 export function setupSupertestServer (options) {

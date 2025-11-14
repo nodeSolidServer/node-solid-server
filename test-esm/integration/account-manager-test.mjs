@@ -5,9 +5,9 @@ import chai from 'chai'
 const expect = chai.expect
 chai.should()
 
-import LDP from '../../lib/ldp.js'
-import SolidHost from '../../lib/models/solid-host.js'
-import AccountManager from '../../lib/models/account-manager.js'
+import LDP from '../../lib/ldp.mjs'
+import SolidHost from '../../lib/models/solid-host.mjs'
+import AccountManager from '../../lib/models/account-manager.mjs'
 import ResourceMapper from '../../lib/resource-mapper.js'
 
 // ESM __dirname equivalent

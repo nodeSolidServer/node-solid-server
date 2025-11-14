@@ -5,14 +5,14 @@ import fs from 'fs'
 
 const require = createRequire(import.meta.url)
 const { assert } = require('chai')
-const ldnode = require('../../index')
+const solid = await import('../../index.mjs').then(m => m.default)
 const supertest = require('supertest')
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 // Import utility functions from the ESM utils
-const { read, rm, backup, restore } = await import('../utils.mjs')
+const { read, rm, backup, restore, setupSupertestServer } = await import('../utils.mjs')
 
 // Server settings
 const port = 7777
@@ -32,17 +32,13 @@ const serverOptions = {
 
 describe('PATCH through text/n3', () => {
   let request
-  let server
 
   // Start the server
-  before(done => {
-    server = ldnode.createServer(serverOptions)
-    server.listen(port, done)
-    request = supertest(serverUri)
-  })
-
-  after(() => {
-    server.close()
+  before(() => {
+    console.log('=== PATCH TEST BEFORE HOOK ===')
+    console.log('Creating server with options:', JSON.stringify(serverOptions, null, 2))
+    request = setupSupertestServer(serverOptions)
+    console.log('=== PATCH TEST SERVER CREATED ===')
   })
 
   describe('with a patch document', () => {
@@ -103,7 +99,7 @@ describe('PATCH through text/n3', () => {
       // result: '{\n  "@id": "/x",\n  "/y": {\n    "@id": "/z"\n  }\n}'
       result: `{
   "@context": {
-    "tim": "https://tim.localhost:7777/"
+    "tim": "https://tim.localhost:${port}/"
   },
   "@id": "tim:x",
   "tim:y": {
@@ -122,7 +118,7 @@ describe('PATCH through text/n3', () => {
       text: 'Patch applied successfully',
       result: `<rdf:RDF
  xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
- xmlns:tim="https://tim.localhost:7777/">
+ xmlns:tim="https://tim.localhost:${port}/">
    <rdf:Description rdf:about="/x"><tim:y rdf:resource="/z"/></rdf:Description>
 </rdf:RDF>
 `

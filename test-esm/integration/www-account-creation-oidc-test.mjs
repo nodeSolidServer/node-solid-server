@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 import supertest from 'supertest'
 import rdf from 'rdflib'
-import ldnode from '../../index.js'
+import ldnode from '../../index.mjs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import fs from 'fs-extra'
@@ -87,6 +87,7 @@ describe('AccountManager (OIDC account creation tests)', function () {
     it('should not create WebID if no username is given', (done) => {
       const subdomain = supertest('https://' + host)
       subdomain.post('/api/accounts/new')
+        .type('form')
         .send('username=&password=12345')
         .expect(400, done)
     })
@@ -94,6 +95,7 @@ describe('AccountManager (OIDC account creation tests)', function () {
     it('should not create WebID if no password is given', (done) => {
       const subdomain = supertest('https://' + host)
       subdomain.post('/api/accounts/new')
+        .type('form')
         .send('username=nicola&password=')
         .expect(400, done)
     })
@@ -101,6 +103,7 @@ describe('AccountManager (OIDC account creation tests)', function () {
     it('should not create a WebID if it already exists', function (done) {
       const subdomain = supertest('https://' + host)
       subdomain.post('/api/accounts/new')
+        .type('form')
         .send('username=nicola&password=12345&acceptToc=true')
         .expect(302)
         .end((err, res) => {
@@ -108,6 +111,7 @@ describe('AccountManager (OIDC account creation tests)', function () {
             return done(err)
           }
           subdomain.post('/api/accounts/new')
+            .type('form')
             .send('username=nicola&password=12345&acceptToc=true')
             .expect(400)
             .end((err) => {
@@ -119,6 +123,7 @@ describe('AccountManager (OIDC account creation tests)', function () {
     it('should not create WebID if T&C is not accepted', (done) => {
       const subdomain = supertest('https://' + host)
       subdomain.post('/api/accounts/new')
+        .type('form')
         .send('username=nicola&password=12345&acceptToc=')
         .expect(400, done)
     })
@@ -126,6 +131,7 @@ describe('AccountManager (OIDC account creation tests)', function () {
     it('should create the default folders', function (done) {
       const subdomain = supertest('https://' + host)
       subdomain.post('/api/accounts/new')
+        .type('form')
         .send('username=nicola&password=12345&acceptToc=true')
         .expect(302)
         .end(function (err) {
@@ -155,8 +161,9 @@ describe('AccountManager (OIDC account creation tests)', function () {
     }).timeout(20000)
 
     it('should link WebID to the root account', function (done) {
-      const domain = supertest('https://' + host)
-      domain.post('/api/accounts/new')
+      const subdomain = supertest('https://' + host)
+      subdomain.post('/api/accounts/new')
+        .type('form')
         .send('username=nicola&password=12345&acceptToc=true')
         .expect(302)
         .end(function (err) {
@@ -235,7 +242,7 @@ describe('Single User signup page', () => {
   rm('resources/accounts/single-user/')
   const rootDir = path.normalize(path.join(__dirname, '../../test/resources/accounts/single-user/'))
   const configPath = path.normalize(path.join(__dirname, '../../test/resources/config'))
-  const ldp = ldnode.createServer({
+  const ldp = ldnode({
     port,
     root: rootDir,
     configPath,
@@ -273,7 +280,7 @@ describe('Signup page where Terms & Conditions are not being enforced', () => {
   const root = path.normalize(path.join(__dirname, '../../test/resources/accounts/'))
   const configPath = path.normalize(path.join(__dirname, '../../test/resources/config'))
   const dbPath = path.normalize(path.join(__dirname, '../../test/resources/accounts/db'))
-  const ldp = ldnode.createServer({
+  const ldp = ldnode({
     port,
     root,
     configPath,

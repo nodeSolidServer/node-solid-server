@@ -1,17 +1,20 @@
-import Solid from '../../index.js'
+import solid, { createServer } from '../../index.mjs'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import { createRequire } from 'module'
 import fs from 'fs-extra'
 import { UserStore } from '@solid/oidc-auth-manager'
-import UserAccount from '../../lib/models/user-account.js'
-import SolidAuthOIDC from '@solid/solid-auth-oidc'
+import UserAccount from '../../lib/models/user-account.mjs'
+
+const require = createRequire(import.meta.url)
+const SolidAuthOIDC = require('@solid/solid-auth-oidc')
 
 import fetch from 'node-fetch'
 import localStorage from 'localstorage-memory'
 import { URL, URLSearchParams } from 'whatwg-url'
 global.URL = URL
 global.URLSearchParams = URLSearchParams
-import { cleanDir, cp } from '../../test/utils.js'
+import { cleanDir, cp } from '../utils/index.mjs'
 
 import supertest from 'supertest'
 import chai from 'chai'
@@ -55,7 +58,7 @@ describe('Authentication API (OIDC)', () => {
   }
 
   const aliceRootPath = path.normalize(path.join(__dirname, '../../test/resources/accounts-scenario/alice'))
-  const alicePod = Solid.createServer(
+  const alicePod = solid(
     Object.assign({
       root: aliceRootPath,
       serverUri: aliceServerUri,
@@ -63,7 +66,7 @@ describe('Authentication API (OIDC)', () => {
     }, serverConfig)
   )
   const bobRootPath = path.normalize(path.join(__dirname, '../../test/resources/accounts-scenario/bob'))
-  const bobPod = Solid.createServer(
+  const bobPod = solid(
     Object.assign({
       root: bobRootPath,
       serverUri: bobServerUri,
@@ -72,8 +75,15 @@ describe('Authentication API (OIDC)', () => {
   )
 
   function startServer (pod, port) {
-    return new Promise((resolve) => {
-      pod.listen(port, () => { resolve() })
+    return new Promise((resolve, reject) => {
+      const server = pod.listen(port, (err) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve()
+        }
+      })
+      server.on('error', reject)
     })
   }
 
@@ -89,12 +99,32 @@ describe('Authentication API (OIDC)', () => {
     cp(path.join('accounts-scenario/bob', '.acl-override'), path.join('accounts-scenario/bob', '.acl'))
   })
 
-  after(() => {
-    alicePod.close()
-    bobPod.close()
-    fs.removeSync(path.join(aliceDbPath, 'oidc/users'))
-    cleanDir(aliceRootPath)
-    cleanDir(bobRootPath)
+  after((done) => {
+    Promise.all([
+      new Promise((resolve) => {
+        if (alicePod && alicePod.listening) {
+          alicePod.close(() => resolve())
+        } else {
+          resolve()
+        }
+      }),
+      new Promise((resolve) => {
+        if (bobPod && bobPod.listening) {
+          bobPod.close(() => resolve())
+        } else {
+          resolve()
+        }
+      })
+    ]).then(() => {
+      try {
+        fs.removeSync(path.join(aliceDbPath, 'oidc/users'))
+        cleanDir(aliceRootPath)
+        cleanDir(bobRootPath)
+      } catch (err) {
+        // Ignore cleanup errors
+      }
+      done()
+    }).catch(done)
   })
 
   describe('Login page (GET /login)', () => {

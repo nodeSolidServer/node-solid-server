@@ -5,7 +5,7 @@ import { v4 as uuidv4, validate as uuidValidate } from 'uuid'
 import { expect } from 'chai'
 import { parseDictionary } from 'structured-headers'
 import prepFetch from 'prep-fetch'
-import { createServer } from '../../test/utils.js'
+import { createServer } from '../utils/index.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)

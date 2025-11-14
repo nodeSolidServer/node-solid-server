@@ -8,8 +8,8 @@ const { expect } = chai
 chai.use(sinonChai)
 chai.should()
 
-import AccountTemplate from '../../lib/models/account-template.js'
-import UserAccount from '../../lib/models/user-account.js'
+import AccountTemplate from '../../lib/models/account-template.mjs'
+import UserAccount from '../../lib/models/user-account.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
