@@ -74,7 +74,7 @@
     "colorette": "^2.0.20",
     "commander": "^8.3.0",
     "cors": "^2.8.5",
-    "debug": "^4.4.0",
+    "debug": "^4.4.3",
     "express": "^4.21.2",
     "express-accept-events": "^0.3.0",
     "express-handlebars": "^5.3.5",

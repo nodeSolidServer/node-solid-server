@@ -1,26 +1,45 @@
 // import fs from 'fs-extra' // see fs-extra/esm and fs-extra doc
+
+import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import OIDCProvider from '@solid/oidc-op'
+// import OIDCProvider from '@solid/oidc-op'
 import dns from 'dns'
-import supertest from 'supertest'
-import fetch from 'node-fetch'
+// import supertest from 'supertest'
+// import fetch from 'node-fetch'
 import https from 'https'
 import { createRequire } from 'module'
 
 const require = createRequire(import.meta.url)
 const rimraf = require('rimraf')
+
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const fse = require('fs-extra')
+const fetch = require('node-fetch')
+const OIDCProvider = require('@solid/oidc-op')
+const supertest = require('supertest')
 
 // Import the main ldnode module (may need adjustment based on your ESM exports)
 const ldnode = require('../index.js') // or import as needed
 
 const TEST_HOSTS = ['nic.localhost', 'tim.localhost', 'nicola.localhost']
 
+// Configurable test root directory
+// For custom route
+// let TEST_ROOT = path.join(__dirname, '../test-esm/resources/')
+// For default root (process.cwd()):
+let TEST_ROOT = path.join(process.cwd(), 'test-esm/resources')
+
+export function setTestRoot(rootPath) {
+  TEST_ROOT = rootPath
+}
+export function getTestRoot() {
+  return TEST_ROOT
+}
+
 export function rm (file) {
-  return rimraf.sync(path.join(__dirname, '../test-esm/resources/' + file))
+  return rimraf.sync(path.join(TEST_ROOT, file))
 }
 
 export function cleanDir (dirPath) {
@@ -35,17 +54,20 @@ export function cleanDir (dirPath) {
 }
 
 export function write (text, file) {
-  return fse.writeFileSync(path.join(__dirname, '../test-esm/resources/' + file), text)
+  console.log('Writing to', path.join(TEST_ROOT, file))
+  // fs.mkdirSync(path.dirname(path.join(TEST_ROOT, file), { recursive: true }))
+  return fs.writeFileSync(path.join(TEST_ROOT, file), text)
 }
 
 export function cp (src, dest) {
   return fse.copySync(
-    path.join(__dirname, '../test-esm/resources/' + src),
-    path.join(__dirname, '../test-esm/resources/' + dest))
+    path.join(TEST_ROOT, src),
+    path.join(TEST_ROOT, dest))
 }
 
 export function read (file) {
-  return fse.readFileSync(path.join(__dirname, '../test-esm/resources/' + file), {
+  console.log('Reading from', path.join(TEST_ROOT, file))
+  return fse.readFileSync(path.join(TEST_ROOT, file), {
     encoding: 'utf8'
   })
 }
@@ -96,6 +118,7 @@ export function loadProvider (configPath) {
 }
 
 export function createServer (options) {
+  console.log('Creating server with root:', options.root || process.cwd())
   return ldnode.createServer(options)
 }
 

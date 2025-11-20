@@ -16,23 +16,23 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const fse = require('fs-extra');
 
-// Starting LDP
-const ldp = ldnode.createServer({
-  root: path.join(__dirname, '../resources/sampleContainer'),
-  mount: '/test-esm',
-  webid: false
-});
-const server = supertest(ldp);
-
 before(function () {
-  fse.ensureDirSync(path.join(__dirname, '../resources/sampleContainer'));
+  // fse.ensureDirSync(path.join(__dirname, '../test/resources/sampleContainer'));
 });
 
 describe('PATCH through application/sparql-update', function () {
+  // Starting LDP
+  const ldp = ldnode({
+    root: path.join(__dirname, '../resources/sampleContainer'),
+    mount: '/test-esm',
+    webid: false
+  });
+  const server = supertest(ldp);
+ 
   it('should create a new file if file does not exist', function (done) {
     rm('sampleContainer/notExisting.ttl');
-    const sampleContainerPath = path.join(__dirname, '../resources/sampleContainer');
-fse.ensureDirSync(sampleContainerPath);
+    const sampleContainerPath = path.join(__dirname, '../test-esm/resources/sampleContainer');
+    // fse.ensureDirSync(sampleContainerPath);
     server.patch('/notExisting.ttl')
       .set('content-type', 'application/sparql-update')
       .send('INSERT DATA { :test  :hello 456 .}')

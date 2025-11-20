@@ -17,8 +17,8 @@ const { read, rm, backup, restore } = await import('../utils.mjs')
 // Server settings
 const port = 7777
 const serverUri = `https://tim.localhost:${port}`
-const root = path.join(__dirname, '../../test/resources/patch')
-const configPath = path.join(__dirname, '../../test/resources/config')
+const root = path.join(__dirname, '../../test-esm/resources/patch')
+const configPath = path.join(__dirname, '../../test-esm/resources/config')
 const serverOptions = {
   root,
   configPath,
