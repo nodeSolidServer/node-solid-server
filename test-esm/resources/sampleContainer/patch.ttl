@@ -1,7 +1,0 @@
-@prefix : </patch.ttl#>.
-@prefix loc: </>.
-
-:s :p :o.
-
-loc:s loc:p2 loc:o2 .
-

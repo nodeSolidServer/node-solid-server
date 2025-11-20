@@ -1,0 +1,6 @@
+<#Owner>
+ a <http://www.w3.org/ns/auth/acl#Authorization> ;
+ <http://www.w3.org/ns/auth/acl#accessTo> <./>;
+ <http://www.w3.org/ns/auth/acl#agentClass> <http://xmlns.com/foaf/0.1/Agent>;
+ <http://www.w3.org/ns/auth/acl#default> <./>;
+ <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Control> .

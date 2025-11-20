@@ -1,0 +1,13 @@
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+
+<#authorization1>
+    a acl:Authorization;
+
+    acl:agent
+        <https://user1.databox.me/profile/card#me>;
+    acl:accessTo <./>;
+    acl:mode
+        acl:Read, acl:Write, acl:Control;
+
+    acl:default <./>.
+

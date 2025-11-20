@@ -1,4 +1,4 @@
-import fs from 'fs-extra'
+// import fs from 'fs-extra' // see fs-extra/esm and fs-extra doc
 import path from 'path'
 import { fileURLToPath } from 'url'
 import OIDCProvider from '@solid/oidc-op'
@@ -12,6 +12,7 @@ const require = createRequire(import.meta.url)
 const rimraf = require('rimraf')
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
+const fse = require('fs-extra')
 
 // Import the main ldnode module (may need adjustment based on your ESM exports)
 const ldnode = require('../index.js') // or import as needed
@@ -19,32 +20,32 @@ const ldnode = require('../index.js') // or import as needed
 const TEST_HOSTS = ['nic.localhost', 'tim.localhost', 'nicola.localhost']
 
 export function rm (file) {
-  return rimraf.sync(path.join(__dirname, '../test/resources/' + file))
+  return rimraf.sync(path.join(__dirname, '../test-esm/resources/' + file))
 }
 
 export function cleanDir (dirPath) {
-  fs.removeSync(path.join(dirPath, '.well-known/.acl'))
-  fs.removeSync(path.join(dirPath, '.acl'))
-  fs.removeSync(path.join(dirPath, 'favicon.ico'))
-  fs.removeSync(path.join(dirPath, 'favicon.ico.acl'))
-  fs.removeSync(path.join(dirPath, 'index.html'))
-  fs.removeSync(path.join(dirPath, 'index.html.acl'))
-  fs.removeSync(path.join(dirPath, 'robots.txt'))
-  fs.removeSync(path.join(dirPath, 'robots.txt.acl'))
+  fse.removeSync(path.join(dirPath, '.well-known/.acl'))
+  fse.removeSync(path.join(dirPath, '.acl'))
+  fse.removeSync(path.join(dirPath, 'favicon.ico'))
+  fse.removeSync(path.join(dirPath, 'favicon.ico.acl'))
+  fse.removeSync(path.join(dirPath, 'index.html'))
+  fse.removeSync(path.join(dirPath, 'index.html.acl'))
+  fse.removeSync(path.join(dirPath, 'robots.txt'))
+  fse.removeSync(path.join(dirPath, 'robots.txt.acl'))
 }
 
 export function write (text, file) {
-  return fs.writeFileSync(path.join(__dirname, '../test/resources/' + file), text)
+  return fse.writeFileSync(path.join(__dirname, '../test-esm/resources/' + file), text)
 }
 
 export function cp (src, dest) {
-  return fs.copySync(
-    path.join(__dirname, '../test/resources/' + src),
-    path.join(__dirname, '../test/resources/' + dest))
+  return fse.copySync(
+    path.join(__dirname, '../test-esm/resources/' + src),
+    path.join(__dirname, '../test-esm/resources/' + dest))
 }
 
 export function read (file) {
-  return fs.readFileSync(path.join(__dirname, '../test/resources/' + file), {
+  return fse.readFileSync(path.join(__dirname, '../test-esm/resources/' + file), {
     encoding: 'utf8'
   })
 }

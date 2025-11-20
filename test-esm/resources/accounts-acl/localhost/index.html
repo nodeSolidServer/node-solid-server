@@ -1,47 +1,35 @@
 <!doctype html>
-<html>
-  <head>
-  <meta charset="utf-8"/>
-  <link rel="stylesheet" href="/common/css/solid.css">
-  </head>
-<body class="index-page">
-  <div class="header">
-    <div class="header-left">
-    </div>
-    <div class="header-center">
-      <h1 class="title">Welcome to Solid prototype</h1>
-    </div>
-    <div class="header-right" id="loginStatusArea"></div>
-  </div>
-
-  <div class="container" id="prototype">
-
-    <h3 style="display:none" id="loggedIn" class="webId"></h3>
-
-    <div class="content">
-
-      <p class="lead">
-        This is a prototype implementation of a Solid server.
-        It is a fully functional server, but there are no security or stability guarantees.
-        If you have not already done so, please register.
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Welcome to Solid</title>
+  <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+  <h3>Welcome to Solid</h3>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      <p style="margin-top: 3em; margin-bottom: 3em;">
+        If you have not already done so, please create an account.
       </p>
-    
-      <section>
-        <h2>Server info</h2>
-        <dl>
-          <dt>Name</dt>
-          <dd>localhost</dd>
-          <dt>Details</dt>
-          <dd>Running on <a href="https://github.com/solid/node-solid-server/releases/tag/v5.8.8">Node Solid Server 5.8.8</a></dd>
-        </dl>
-      </section>
-
-    </div> <!-- end content-->
-
-  </div> <!-- end container-->
-
-  <script src="/mashlib.js"></script>
-  <script src="/common/js/index-buttons.js"></script>
-
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2">
+      <form method="get" action="/register">
+        <button type="submit" class="btn btn-primary" id="register">Register</button>
+      </form>
+    </div>
+    <div class="col-md-10">
+      <form method="get" action="/login">
+        <button type="submit" class="btn btn-primary" id="login">Login</button>
+      </form>
+    </div>
+  </div>
+</div>
 </body>
-</html> 
+</html>

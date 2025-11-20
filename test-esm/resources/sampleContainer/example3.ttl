@@ -1,0 +1,7 @@
+@prefix : <http://example.org/stuff/1.0/> .
+
+:a :b "The first line\nThe second line\n  more" .
+
+:a :b """The first line
+The second line
+  more""" .

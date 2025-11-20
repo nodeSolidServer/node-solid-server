@@ -1,0 +1,7 @@
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+
+<#Owner> a acl:Authorization;
+  acl:accessTo </>;
+  acl:default </>;
+  acl:agent <https://tim.localhost:7777/profile/card#me>;
+  acl:mode acl:Read, acl:Write, acl:Control.

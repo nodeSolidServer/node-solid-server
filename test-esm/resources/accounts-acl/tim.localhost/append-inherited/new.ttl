@@ -1,0 +1,4 @@
+@prefix : <#>.
+
+:test :hello 789 .
+

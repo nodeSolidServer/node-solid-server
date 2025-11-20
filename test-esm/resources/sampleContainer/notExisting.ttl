@@ -1,4 +1,0 @@
-@prefix : </notExisting.ttl#>.
-
-:test :hello 456 .
-

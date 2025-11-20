@@ -3,10 +3,11 @@ import { expect } from 'chai'
 import supertest from 'supertest'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
+import { setupSupertestServer } from '../../test-esm/utils.mjs'
 
-const require = createRequire(import.meta.url)
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const { setupSupertestServer } = require('../../test/utils')
+// const require = createRequire(import.meta.url)
+const __dirname = import.meta.dirname // dirname(fileURLToPath(import.meta.url))
+// const { setupSupertestServer } = require('../../test/utils')
 
 describe('Header handler', () => {
   let request
@@ -14,7 +15,7 @@ describe('Header handler', () => {
   before(function () {
     this.timeout(20000)
     request = setupSupertestServer({
-      root: join(__dirname, '../../test/resources/headers'),
+      root: join(__dirname, '../../test-esm/resources/headers'),
       multiuser: false,
       webid: true,
       sslKey: join(__dirname, '../../test/keys/key.pem'),

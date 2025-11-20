@@ -1,0 +1,12 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix schema: <http://schema.org/> .
+@prefix profile: <http://ogp.me/ns/profile#> .
+@prefix ex: <http://example.org/vocab#> .
+
+
+#UpdateList <#> ex:preferredLanguages 1..2 ( "fr-CH" ) .
+
+WHERE { <#> schema:performerIn ?event. ?event schema:url  <https://www.w3.org/2012/ldp/wiki/F2F5> } 
+
+INSERT { ?event rdf:type schema:Event }
+

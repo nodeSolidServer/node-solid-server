@@ -1,0 +1,25 @@
+Host: example.org
+Content-Length: 478
+Content-Type: text/ldpatch
+If-Match: "abc123"
+
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix schema: <http://schema.org/> .
+@prefix profile: <http://ogp.me/ns/profile#> .
+@prefix ex: <http://example.org/vocab#> .
+
+Delete <#> profile:first_name "Tim" .
+Add    <#> profile:first_name "Timothy" .
+
+UpdateList <#> ex:preferredLanguages 1..2 ( "fr-CH" ) .
+
+Bind ?event <#> /schema:performerIn[/schema:url = <https://www.w3.org/2012/ldp/wiki/F2F5>]  .
+Add ?event rdf:type schema:Event .
+
+Bind ?ted <http://conferences.ted.com/TED2009/> /^schema:url! .
+Delete ?ted schema:startDate "2009-02-04".
+Add ?ted schema:location _:loc .
+Add _:loc schema:name "Long Beach, California" .
+Add _:loc schema:geo _:geo .
+Add _:geo schema:latitude "33.7817" .
+Add _:geo schema:longitude "-118.2054" .
