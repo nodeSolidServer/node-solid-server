@@ -5,7 +5,7 @@ const { expect } = chai
 
 const require = createRequire(import.meta.url)
 const userUtils = require('../../lib/common/user-utils')
-const $rdf = require('rdflib')
+import $rdf from 'rdflib'
 
 describe('user-utils', () => {
   describe('getName', () => {

@@ -5,7 +5,7 @@ import fs from 'fs'
 
 const require = createRequire(import.meta.url)
 const li = require('li')
-const rdf = require('rdflib')
+import rdf from 'rdflib'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)

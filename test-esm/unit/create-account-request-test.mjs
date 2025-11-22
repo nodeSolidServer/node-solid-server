@@ -9,7 +9,8 @@ chai.should()
 
 const require = createRequire(import.meta.url)
 const HttpMocks = require('node-mocks-http')
-const blacklist = require('the-big-username-blacklist')
+import theBigUsernameBlacklistPkg from 'the-big-username-blacklist'
+const blacklist = theBigUsernameBlacklistPkg
 
 const LDP = require('../../lib/ldp')
 const AccountManager = require('../../lib/models/account-manager')

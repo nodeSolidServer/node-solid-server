@@ -9,6 +9,7 @@ import dns from 'dns'
 // import fetch from 'node-fetch'
 import https from 'https'
 import { createRequire } from 'module'
+import fetch from 'node-fetch'
 
 const require = createRequire(import.meta.url)
 const rimraf = require('rimraf')
@@ -16,7 +17,6 @@ const rimraf = require('rimraf')
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const fse = require('fs-extra')
-const fetch = require('node-fetch')
 const OIDCProvider = require('@solid/oidc-op')
 const supertest = require('supertest')
 

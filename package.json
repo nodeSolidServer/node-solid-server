@@ -114,7 +114,7 @@
     "the-big-username-blacklist": "^1.5.2",
     "ulid": "^2.3.0",
     "urijs": "^1.19.11",
-    "uuid": "^8.3.2",
+    "uuid": "^13.0.0",
     "valid-url": "^1.0.9",
     "validator": "^13.12.0",
     "vhost": "^3.0.2"
@@ -194,6 +194,6 @@
     "solid": "bin/solid"
   },
   "engines": {
-    "node": ">=20.19.0 <21 || >=22.14.0"
+    "node": ">=22.14.0"
   }
 }

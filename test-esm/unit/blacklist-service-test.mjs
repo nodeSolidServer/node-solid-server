@@ -4,7 +4,8 @@ import chai from 'chai'
 const { expect } = chai
 
 const require = createRequire(import.meta.url)
-const blacklist = require('the-big-username-blacklist').list
+import theBigUsernameBlacklistPkg from 'the-big-username-blacklist'
+const blacklist = theBigUsernameBlacklistPkg.list
 const blacklistService = require('../../lib/services/blacklist-service')
 
 describe('BlacklistService', () => {

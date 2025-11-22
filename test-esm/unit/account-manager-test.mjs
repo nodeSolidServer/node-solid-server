@@ -17,7 +17,7 @@ chai.use(dirtyChai)
 chai.should()
 
 // Import CommonJS modules that haven't been converted yet
-const rdf = require('rdflib')
+import rdf from 'rdflib'
 const ns = require('solid-namespace')(rdf)
 
 // Import ESM modules (assuming they exist or will be created)

@@ -11,7 +11,7 @@ const __dirname = path.dirname(__filename)
 const chai = require('chai')
 const assert = chai.assert
 chai.use(require('chai-as-promised'))
-const $rdf = require('rdflib')
+import $rdf from 'rdflib'
 const ns = require('solid-namespace')($rdf)
 const LDP = require('../../lib/ldp')
 const stringToStream = require('../../lib/utils').stringToStream

@@ -1,6 +1,7 @@
 import { describe, it } from 'mocha'
 import { assert } from 'chai'
-import { Headers } from 'node-fetch'
+import fetch from 'node-fetch'
+const { Headers } = fetch
 import { createRequire } from 'module'
 
 const require = createRequire(import.meta.url)
