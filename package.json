@@ -145,6 +145,12 @@
     "standard"
   ],
   "main": "index.js",
+  "exports": {
+    ".": {
+      "import": "./index.mjs",
+      "require": "./index.js"
+    }
+  },
   "scripts": {
     "build": "echo nothing to build",
     "solid": "node ./bin/solid",
