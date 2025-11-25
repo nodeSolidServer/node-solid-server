@@ -1,19 +1,21 @@
-import inquirer from 'inquirer';
-import fs from 'fs';
-import options from './options.mjs';
-import camelize from 'camelize';
+import inquirer from 'inquirer'
+import fs from 'fs'
+import options from './options.mjs'
+import camelize from 'camelize'
 
-let questions = options.map((option) => {
-  if (!option.type) {
-    if (option.flag) {
-      option.type = 'confirm';
-    } else {
-      option.type = 'input';
+let questions = options
+  .map((option) => {
+    if (!option.type) {
+      if (option.flag) {
+        option.type = 'confirm'
+      } else {
+        option.type = 'input'
+      }
     }
-  }
-  option.message = option.question || option.help;
-  return option;
-});
+
+    option.message = option.question || option.help
+    return option
+  })
 
 export default function (program) {
   program
@@ -21,39 +23,45 @@ export default function (program) {
     .option('--advanced', 'Ask for all the settings')
     .description('create solid server configurations')
     .action((opts) => {
-      let filteredQuestions = questions;
+      // Filter out advanced commands
+      let filtered = questions
       if (!opts.advanced) {
-        filteredQuestions = filteredQuestions.filter((option) => option.prompt);
+        filtered = filtered.filter((option) => option.prompt)
       }
-      inquirer.prompt(filteredQuestions)
+
+      // Prompt to the user
+      inquirer.prompt(filtered)
         .then((answers) => {
-          manipulateEmailSection(answers);
-          manipulateServerSection(answers);
-          cleanupAnswers(answers);
-          const config = JSON.stringify(camelize(answers), null, '  ');
-          const configPath = process.cwd() + '/config.json';
+          manipulateEmailSection(answers)
+          manipulateServerSection(answers)
+          cleanupAnswers(answers)
+
+          // write config file
+          const config = JSON.stringify(camelize(answers), null, '  ')
+          const configPath = process.cwd() + '/config.json'
+
           fs.writeFile(configPath, config, (err) => {
             if (err) {
-              return console.log('failed to write config.json');
+              return console.log('failed to write config.json')
             }
-            console.log('config created on', configPath);
-          });
+            console.log('config created on', configPath)
+          })
         })
         .catch((err) => {
-          console.log('Error:', err);
-        });
-    });
+          console.log('Error:', err)
+        })
+    })
 }
 
-function cleanupAnswers(answers) {
+function cleanupAnswers (answers) {
   Object.keys(answers).forEach((answer) => {
     if (answer.startsWith('use')) {
-      delete answers[answer];
+      delete answers[answer]
     }
-  });
+  })
 }
 
-function manipulateEmailSection(answers) {
+function manipulateEmailSection (answers) {
   if (answers.useEmail) {
     answers.email = {
       host: answers['email-host'],
@@ -63,23 +71,24 @@ function manipulateEmailSection(answers) {
         user: answers['email-auth-user'],
         pass: answers['email-auth-pass']
       }
-    };
-    delete answers['email-host'];
-    delete answers['email-port'];
-    delete answers['email-auth-user'];
-    delete answers['email-auth-pass'];
+    }
+    delete answers['email-host']
+    delete answers['email-port']
+    delete answers['email-auth-user']
+    delete answers['email-auth-pass']
   }
 }
 
-function manipulateServerSection(answers) {
+function manipulateServerSection (answers) {
   answers.server = {
     name: answers['server-info-name'],
     description: answers['server-info-description'],
     logo: answers['server-info-logo']
-  };
+  }
   Object.keys(answers).forEach((answer) => {
     if (answer.startsWith('server-info-')) {
-      delete answers[answer];
+      delete answers[answer]
     }
-  });
+  })
 }
+

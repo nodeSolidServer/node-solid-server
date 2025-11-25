@@ -1,16 +1,11 @@
-import fs from 'fs';
-import path from 'path';
-import validUrl from 'valid-url';
-import { URL } from 'url';
-import validator from 'validator';
-const { isEmail } = validator;
+import fs from 'fs'
+import path from 'path'
+import validUrl from 'valid-url'
+import { URL } from 'url'
+import validator from 'validator'
+const { isEmail } = validator
 
 const options = [
-  // {
-  //   abbr: 'v',
-  //   flag: true,
-  //   help: 'Print the logs to console\n'
-  // },
   {
     name: 'root',
     help: "Root folder to serve (default: './data')",
@@ -80,9 +75,7 @@ const options = [
     filter: (value) => {
       if (value === 'WebID-OpenID Connect') return 'oidc'
     },
-    when: (answers) => {
-      return answers.webid
-    }
+    when: (answers) => answers.webid
   },
   {
     name: 'use-owner',
@@ -150,10 +143,6 @@ const options = [
     flag: true,
     default: false
   },
-  // {
-  //   full: 'default-app',
-  //   help: 'URI to use as a default app for resources (default: https://linkeddata.github.io/warp/#/list/)'
-  // },
   {
     name: 'use-cors-proxy',
     help: 'Do you want to have a CORS proxy endpoint?',
@@ -225,11 +214,6 @@ const options = [
       return value
     }
   },
-  // {
-  //   full: 'no-error-pages',
-  //   flag: true,
-  //   help: 'Disable custom error pages (use Node.js default pages instead)'
-  // },
   {
     name: 'error-pages',
     help: 'Folder from which to look for custom error pages files (files must be named <error-code>.html -- eg. 500.html)',
@@ -259,26 +243,20 @@ const options = [
     help: 'Host of your email service',
     prompt: true,
     default: 'smtp.gmail.com',
-    when: (answers) => {
-      return answers['use-email']
-    }
+    when: (answers) => answers['use-email']
   },
   {
     name: 'email-port',
     help: 'Port of your email service',
     prompt: true,
     default: '465',
-    when: (answers) => {
-      return answers['use-email']
-    }
+    when: (answers) => answers['use-email']
   },
   {
     name: 'email-auth-user',
     help: 'User of your email service',
     prompt: true,
-    when: (answers) => {
-      return answers['use-email']
-    },
+    when: (answers) => answers['use-email'],
     validate: (value) => {
       if (!value) {
         return 'You must enter this information'
@@ -291,9 +269,7 @@ const options = [
     help: 'Password of your email service',
     type: 'password',
     prompt: true,
-    when: (answers) => {
-      return answers['use-email']
-    }
+    when: (answers) => answers['use-email']
   },
   {
     name: 'use-api-apps',
@@ -307,13 +283,11 @@ const options = [
     help: 'Path to the folder to mount on /api/apps',
     prompt: true,
     validate: validPath,
-    when: (answers) => {
-      return answers['use-api-apps']
-    }
+    when: (answers) => answers['use-api-apps']
   },
-  { // copied from name: 'owner'
+  {
     name: 'redirect-http-from',
-    help: 'HTTP port or \',\'-separated ports to redirect to the solid server port (e.g. "80,8080").',
+    help: 'HTTP port or comma-separated ports to redirect to the solid server port (e.g. "80,8080").',
     prompt: false,
     validate: function (value) {
       if (!value.match(/^[0-9]+(,[0-9]+)*$/)) {
@@ -321,28 +295,25 @@ const options = [
       }
       const list = value.split(/,/).map(v => parseInt(v))
       const bad = list.find(v => { return v < 1 || v > 65535 })
-      if (bad.length) {
+      if (bad && bad.length) {
         return 'redirect-http-from port(s) ' + bad + ' out of range'
       }
       return true
     }
   },
   {
-    // This property is packaged into an object for the server property in config.json
-    name: 'server-info-name', // All properties with prefix server-info- will be removed from the config
+    name: 'server-info-name',
     help: 'A name for your server (not required, but will be presented on your server\'s frontpage)',
     prompt: true,
     default: answers => new URL(answers['server-uri']).hostname
   },
   {
-    // This property is packaged into an object for the server property in config.json
-    name: 'server-info-description', // All properties with prefix server-info- will be removed from the config
+    name: 'server-info-description',
     help: 'A description of your server (not required)',
     prompt: true
   },
   {
-    // This property is packaged into an object for the server property in config.json
-    name: 'server-info-logo', // All properties with prefix server-info- will be removed from the config
+    name: 'server-info-logo',
     help: 'A logo that represents you, your brand, or your server (not required)',
     prompt: true
   },
@@ -381,28 +352,28 @@ const options = [
     },
     when: answers => answers.multiuser
   }
-];
+]
 
-function validPath(value) {
+function validPath (value) {
   if (value === 'default') {
-    return Promise.resolve(true);
+    return Promise.resolve(true)
   }
   if (!value) {
-    return Promise.resolve('You must enter a valid path');
+    return Promise.resolve('You must enter a valid path')
   }
   return new Promise((resolve) => {
     fs.stat(value, function (err) {
-      if (err) return resolve('Nothing found at this path');
-      return resolve(true);
-    });
-  });
+      if (err) return resolve('Nothing found at this path')
+      return resolve(true)
+    })
+  })
 }
 
-function validUri(value) {
+function validUri (value) {
   if (!validUrl.isUri(value)) {
-    return 'Enter a valid uri (with protocol)';
+    return 'Enter a valid uri (with protocol)'
   }
-  return true;
+  return true
 }
 
-export default options;
+export default options

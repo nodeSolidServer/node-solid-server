@@ -117,6 +117,7 @@ async function bin(argv, server) {
     return 1;
   }
   app.listen(argv.port, function () {
+    console.log('ESM Solid server');
     console.log(`Solid server (${argv.version}) running on \u001b[4mhttps://localhost:${argv.port}/\u001b[0m`);
     console.log('Press <ctrl>+c to stop');
   });
