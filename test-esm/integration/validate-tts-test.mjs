@@ -1,9 +1,9 @@
-import { createRequire } from 'module'
+// import { createRequire } from 'module'
 import { fileURLToPath } from 'url'
 import path from 'path'
 import fs from 'fs'
 
-const require = createRequire(import.meta.url)
+// const require = createRequire(import.meta.url)
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -14,12 +14,12 @@ import { setupSupertestServer } from '../utils.mjs'
 const server = setupSupertestServer({
   live: true,
   dataBrowserPath: 'default',
-  root: path.join(__dirname, '../../test/resources'),
+  root: path.join(__dirname, '../../test-esm/resources'),
   auth: 'oidc',
   webid: false
 })
 
-const invalidTurtleBody = fs.readFileSync(path.join(__dirname, '../../test/resources/invalid1.ttl'), {
+const invalidTurtleBody = fs.readFileSync(path.join(__dirname, '../../test-esm/resources/invalid1.ttl'), {
   encoding: 'utf8'
 })
 
@@ -52,8 +52,8 @@ describe('HTTP requests with invalid Turtle syntax', () => {
   describe('POST API (multipart)', () => {
     it('does not validate files that are posted', (done) => {
       server.post('/')
-        .attach('invalid1', path.join(__dirname, '../../test/resources/invalid1.ttl'))
-        .attach('invalid2', path.join(__dirname, '../../test/resources/invalid2.ttl'))
+        .attach('invalid1', path.join(__dirname, '../../test-esm/resources/invalid1.ttl'))
+        .attach('invalid2', path.join(__dirname, '../../test-esm/resources/invalid2.ttl'))
         .expect(200, done)
     })
   })

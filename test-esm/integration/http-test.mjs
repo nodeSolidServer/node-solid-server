@@ -1,20 +1,22 @@
-import { createRequire } from 'module'
+// import { createRequire } from 'module'
 import { fileURLToPath } from 'url'
 import path from 'path'
 import fs from 'fs'
 
-const require = createRequire(import.meta.url)
-const li = require('li')
+// const require = createRequire(import.meta.url)
+// const li = require('li')
+import li from 'li'
 import rdf from 'rdflib'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 // Import utility functions from the ESM utils
-import { setupSupertestServer } from '../utils.mjs'
+import { rm, setupSupertestServer } from '../utils.mjs'
 
-const { rm } = await import('../utils.mjs')
-const { assert, expect } = require('chai')
+// const { rm } = await import('../utils.mjs')
+// const { assert, expect } = require('chai')
+import { assert, expect } from 'chai'
 
 const suffixAcl = '.acl'
 const suffixMeta = '.meta'

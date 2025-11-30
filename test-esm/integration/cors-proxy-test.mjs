@@ -1,4 +1,4 @@
-import { createRequire } from 'module'
+// import { createRequire } from 'module'
 import { fileURLToPath } from 'url'
 import path from 'path'
 import chai from 'chai'
@@ -6,7 +6,7 @@ import nock from 'nock'
 
 const { assert } = chai
 
-const require = createRequire(import.meta.url)
+// const require = createRequire(import.meta.url)
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -16,7 +16,7 @@ import { checkDnsSettings, setupSupertestServer } from '../utils.mjs'
 
 describe('CORS Proxy', () => {
   const server = setupSupertestServer({
-    root: path.join(__dirname, '../../test/resources'),
+    root: path.join(__dirname, '../../test-esm/resources'),
     corsProxy: '/proxy',
     webid: false
   })
