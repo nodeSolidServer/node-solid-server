@@ -1,4 +1,4 @@
-// import { createRequire } from 'module'
+import { createRequire } from 'module'
 import { expect } from 'chai'
 import supertest from 'supertest'
 import { fileURLToPath } from 'url'

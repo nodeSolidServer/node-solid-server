@@ -3,8 +3,6 @@ import fs from 'fs';
 import path from 'path';
 import { loadConfig } from './cli-utils.mjs';
 import { red, bold } from 'colorette';
-import ldnode from '../../index.mjs';
-
 
 export default function (program, server) {
   const start = program
@@ -98,8 +96,7 @@ async function bin(argv, server) {
      n0:mode           n0:Read.`;
     fs.writeFileSync(rootPath, defaultAcl);
   }
-  // const solid = (await import('../../index.js')).default;
-  const solid = ldnode;
+  const solid = (await import('../../index.js')).default;
   let app;
   try {
     app = solid.createServer(argv, server);
