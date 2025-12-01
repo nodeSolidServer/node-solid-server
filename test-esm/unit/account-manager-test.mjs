@@ -7,7 +7,7 @@ import sinonChai from 'sinon-chai'
 import dirtyChai from 'dirty-chai'
 import { createRequire } from 'module'
 
-const require = createRequire(import.meta.url)
+// const require = createRequire(import.meta.url)
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -18,16 +18,17 @@ chai.should()
 
 // Import CommonJS modules that haven't been converted yet
 import rdf from 'rdflib'
-const ns = require('solid-namespace')(rdf)
+import vocab from 'solid-namespace'
+const ns = vocab(rdf)
 
 // Import ESM modules (assuming they exist or will be created)
-const LDP = require('../../lib/ldp')
-const SolidHost = require('../../lib/models/solid-host')
-const AccountManager = require('../../lib/models/account-manager')
-const UserAccount = require('../../lib/models/user-account')
-const TokenService = require('../../lib/services/token-service')
-const WebIdTlsCertificate = require('../../lib/models/webid-tls-certificate')
-const ResourceMapper = require('../../lib/resource-mapper')
+import LDP from '../../lib/ldp.mjs'
+import SolidHost from '../../lib/models/solid-host.mjs'
+import AccountManager from '../../lib/models/account-manager.mjs'
+import UserAccount from '../../lib/models/user-account.mjs'
+import TokenService from '../../lib/services/token-service.mjs'
+import WebIdTlsCertificate from '../../lib/models/webid-tls-certificate.mjs'
+import ResourceMapper from '../../lib/resource-mapper.mjs'
 
 const testAccountsDir = path.join(__dirname, '../resources/accounts')
 
