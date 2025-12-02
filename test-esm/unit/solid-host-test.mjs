@@ -1,12 +1,7 @@
 import { describe, it, before } from 'mocha'
 import { expect } from 'chai'
-import { createRequire } from 'module'
-
-const require = createRequire(import.meta.url)
-
-// Import CommonJS modules
-const SolidHost = require('../../lib/models/solid-host')
-const defaults = require('../../config/defaults')
+import SolidHost from '../../lib/models/solid-host.mjs'
+import defaults from '../../config/defaults.mjs'
 
 describe('SolidHost', () => {
   describe('from()', () => {

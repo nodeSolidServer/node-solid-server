@@ -1,11 +1,6 @@
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
-import { createRequire } from 'module'
-
-const require = createRequire(import.meta.url)
-
-// Import CommonJS modules
-const UserAccount = require('../../lib/models/user-account')
+import UserAccount from '../../lib/models/user-account.mjs'
 
 describe('UserAccount', () => {
   describe('from()', () => {

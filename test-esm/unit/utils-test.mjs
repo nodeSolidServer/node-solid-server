@@ -2,12 +2,8 @@ import { describe, it } from 'mocha'
 import { assert } from 'chai'
 import fetch from 'node-fetch'
 const { Headers } = fetch
-import { createRequire } from 'module'
 
-const require = createRequire(import.meta.url)
-
-// Import from the CommonJS version since it has the correct implementation
-const utils = require('../../lib/utils')
+import * as utils from '../../lib/utils.mjs'
 
 const { 
   pathBasename, 

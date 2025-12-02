@@ -10,14 +10,12 @@ chai.use(sinonChai)
 chai.use(dirtyChai)
 chai.should()
 
-const require = createRequire(import.meta.url)
-const __dirname = dirname(fileURLToPath(import.meta.url))
-const url = require('url')
+import url from 'url'
 
-const AuthRequest = require('../../lib/requests/auth-request')
-const SolidHost = require('../../lib/models/solid-host')
-const AccountManager = require('../../lib/models/account-manager')
-const UserAccount = require('../../lib/models/user-account')
+import AuthRequest from '../../lib/requests/auth-request.mjs'
+import SolidHost from '../../lib/models/solid-host.mjs'
+import AccountManager from '../../lib/models/account-manager.mjs'
+import UserAccount from '../../lib/models/user-account.mjs'
 
 describe('AuthRequest', () => {
   function testAuthQueryParams () {

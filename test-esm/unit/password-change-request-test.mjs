@@ -11,8 +11,10 @@ chai.use(sinonChai)
 chai.should()
 
 const require = createRequire(import.meta.url)
-const PasswordChangeRequest = require('../../lib/requests/password-change-request')
-const SolidHost = require('../../lib/models/solid-host')
+// const PasswordChangeRequest = require('../../lib/requests/password-change-request')
+// const SolidHost = require('../../lib/models/solid-host')
+import PasswordChangeRequest from '../../lib/requests/password-change-request.mjs'
+import SolidHost from '../../lib/models/solid-host.mjs'
 
 describe('PasswordChangeRequest', () => {
   sinon.spy(PasswordChangeRequest.prototype, 'error')

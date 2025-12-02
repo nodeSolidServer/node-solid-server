@@ -5,14 +5,12 @@ import sinonChai from 'sinon-chai'
 import dirtyChai from 'dirty-chai'
 import { createRequire } from 'module'
 
-const require = createRequire(import.meta.url)
 const { expect } = chai
 chai.use(sinonChai)
 chai.use(dirtyChai)
 chai.should()
 
-// Import CommonJS modules
-const errorPages = require('../../lib/handlers/error-pages')
+import * as errorPages from '../../lib/handlers/error-pages.mjs'
 
 describe('handlers/error-pages', () => {
   describe('handler()', () => {

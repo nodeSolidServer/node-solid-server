@@ -1,11 +1,9 @@
-import { createRequire } from 'module'
+import * as userUtils from '../../lib/common/user-utils.mjs'
+import $rdf from 'rdflib'
 import chai from 'chai'
 
 const { expect } = chai
 
-const require = createRequire(import.meta.url)
-const userUtils = require('../../lib/common/user-utils')
-import $rdf from 'rdflib'
 
 describe('user-utils', () => {
   describe('getName', () => {

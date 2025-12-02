@@ -1,15 +1,12 @@
 import { describe, it } from 'mocha'
 import chai from 'chai'
 import dirtyChai from 'dirty-chai'
-import { createRequire } from 'module'
+import TokenService from '../../lib/services/token-service.mjs'
 
-const require = createRequire(import.meta.url)
 const { expect } = chai
 chai.use(dirtyChai)
 chai.should()
 
-// Import CommonJS modules
-const TokenService = require('../../lib/services/token-service')
 
 describe('TokenService', () => {
   describe('constructor()', () => {

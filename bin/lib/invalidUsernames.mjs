@@ -1,13 +1,13 @@
 import fs from 'fs-extra';
 import Handlebars from 'handlebars';
 import path from 'path';
-import { getAccountManager, loadConfig, loadUsernames } from './cli-utils.js';
-import { isValidUsername } from '../../lib/common/user-utils.js';
-import blacklistService from '../../lib/services/blacklist-service.js';
-import { initConfigDir, initTemplateDirs } from '../../lib/server-config.js';
-import { fromServerConfig } from '../../lib/models/oidc-manager.js';
-import EmailService from '../../lib/services/email-service.js';
-import SolidHost from '../../lib/models/solid-host.js';
+import { getAccountManager, loadConfig, loadUsernames } from './cli-utils.mjs';
+import { isValidUsername } from '../../lib/common/user-utils.mjs';
+import blacklistService from '../../lib/services/blacklist-service.mjs';
+import { initConfigDir, initTemplateDirs } from '../../lib/server-config.mjs';
+import { fromServerConfig } from '../../lib/models/oidc-manager.mjs';
+import EmailService from '../../lib/services/email-service.mjs';
+import SolidHost from '../../lib/models/solid-host.mjs';
 
 export default function (program) {
   program
@@ -114,7 +114,7 @@ async function sendEmails(config, usernames, accountManager, dateOfRemoval, supp
     const emailService = new EmailService(templates.email, config.email);
     const sendingEmails = users
       .filter(user => !!user.emailAddress)
-      .map(user => emailService.sendWithTemplate('invalid-username', {
+      .map(user => emailService.sendWithTemplate('invalid-username.mjs', {
         to: user.emailAddress,
         accountUri: user.accountUri,
         dateOfRemoval,

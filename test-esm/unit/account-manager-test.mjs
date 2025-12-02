@@ -5,9 +5,7 @@ import chai from 'chai'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 import dirtyChai from 'dirty-chai'
-import { createRequire } from 'module'
 
-// const require = createRequire(import.meta.url)
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -437,7 +435,7 @@ describe('AccountManager', () => {
 
       const token = accountManager.generateDeleteToken(userAccount)
 
-      const tokenValue = accountManager.tokenService.verify('delete-account', token)
+      const tokenValue = accountManager.tokenService.verify('delete-account.mjs', token)
 
       expect(tokenValue.webId).to.equal(aliceWebId)
       expect(tokenValue).to.have.property('exp')
@@ -572,7 +570,7 @@ describe('AccountManager', () => {
           expect(accountManager.getAccountDeleteUrl)
             .to.have.been.calledWith(deleteToken)
           expect(emailService.sendWithTemplate)
-            .to.have.been.calledWith('delete-account', expectedEmailData)
+            .to.have.been.calledWith('delete-account.mjs', expectedEmailData)
         })
     })
 

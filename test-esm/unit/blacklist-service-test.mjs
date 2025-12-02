@@ -1,12 +1,10 @@
-import { createRequire } from 'module'
 import chai from 'chai'
 
 const { expect } = chai
 
-const require = createRequire(import.meta.url)
 import theBigUsernameBlacklistPkg from 'the-big-username-blacklist'
 const blacklist = theBigUsernameBlacklistPkg.list
-const blacklistService = require('../../lib/services/blacklist-service')
+import blacklistService from '../../lib/services/blacklist-service.mjs'
 
 describe('BlacklistService', () => {
   afterEach(() => blacklistService.reset())

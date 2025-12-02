@@ -3,20 +3,17 @@ import chai from 'chai'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 import dirtyChai from 'dirty-chai'
-import { createRequire } from 'module'
 
-const require = createRequire(import.meta.url)
 const { expect } = chai
 chai.use(sinonChai)
 chai.use(dirtyChai)
 chai.should()
 
-// Import CommonJS modules
-const HttpMocks = require('node-mocks-http')
-const AuthRequest = require('../../lib/requests/auth-request')
-const { LoginRequest } = require('../../lib/requests/login-request')
-const SolidHost = require('../../lib/models/solid-host')
-const AccountManager = require('../../lib/models/account-manager')
+import HttpMocks from 'node-mocks-http'
+import AuthRequest from '../../lib/requests/auth-request.mjs'
+import { LoginRequest } from '../../lib/requests/login-request.mjs'
+import SolidHost from '../../lib/models/solid-host.mjs'
+import AccountManager from '../../lib/models/account-manager.mjs'
 
 const mockUserStore = {
   findUser: () => { return Promise.resolve(true) },

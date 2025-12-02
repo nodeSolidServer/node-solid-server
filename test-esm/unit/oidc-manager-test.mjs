@@ -1,13 +1,15 @@
-import { createRequire } from 'module'
+// import { createRequire } from 'module'
 import { fileURLToPath } from 'url'
 import path from 'path'
 import chai from 'chai'
 
 const { expect } = chai
 
-const require = createRequire(import.meta.url)
-const OidcManager = require('../../lib/models/oidc-manager')
-const SolidHost = require('../../lib/models/solid-host')
+// const require = createRequire(import.meta.url)
+// const OidcManager = require('../../lib/models/oidc-manager')
+// const SolidHost = require('../../lib/models/solid-host')
+import * as OidcManager from '../../lib/models/oidc-manager.mjs'
+import SolidHost from '../../lib/models/solid-host.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)

@@ -14,11 +14,10 @@ const ns = solidNamespace(rdf)
 chai.use(sinonChai)
 chai.should()
 
-const require = createRequire(import.meta.url)
-const SolidHost = require('../../lib/models/solid-host')
-const AccountManager = require('../../lib/models/account-manager')
-const AddCertificateRequest = require('../../lib/requests/add-cert-request')
-const WebIdTlsCertificate = require('../../lib/models/webid-tls-certificate')
+import SolidHost from '../../lib/models/solid-host.mjs'
+import AccountManager from '../../lib/models/account-manager.mjs'
+import AddCertificateRequest from '../../lib/requests/add-cert-request.mjs'
+import WebIdTlsCertificate from '../../lib/models/webid-tls-certificate.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)

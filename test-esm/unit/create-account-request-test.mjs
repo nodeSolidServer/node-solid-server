@@ -1,4 +1,3 @@
-import { createRequire } from 'module'
 import chai from 'chai'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
@@ -7,17 +6,16 @@ const { expect } = chai
 chai.use(sinonChai)
 chai.should()
 
-const require = createRequire(import.meta.url)
-const HttpMocks = require('node-mocks-http')
+import HttpMocks from 'node-mocks-http'
 import theBigUsernameBlacklistPkg from 'the-big-username-blacklist'
 const blacklist = theBigUsernameBlacklistPkg
 
-const LDP = require('../../lib/ldp')
-const AccountManager = require('../../lib/models/account-manager')
-const SolidHost = require('../../lib/models/solid-host')
-const defaults = require('../../config/defaults')
-const { CreateAccountRequest } = require('../../lib/requests/create-account-request')
-const blacklistService = require('../../lib/services/blacklist-service')
+import LDP from '../../lib/ldp.mjs'
+import AccountManager from '../../lib/models/account-manager.mjs'
+import SolidHost from '../../lib/models/solid-host.mjs'
+import defaults from '../../config/defaults.mjs'
+import { CreateAccountRequest } from '../../lib/requests/create-account-request.mjs'
+import blacklistService from '../../lib/services/blacklist-service.mjs'
 
 describe('CreateAccountRequest', () => {
   let host, store, accountManager

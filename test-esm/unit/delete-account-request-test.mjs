@@ -1,4 +1,3 @@
-import { createRequire } from 'module'
 import chai from 'chai'
 import sinon from 'sinon'
 import dirtyChai from 'dirty-chai'
@@ -9,12 +8,11 @@ chai.use(dirtyChai)
 chai.use(sinonChai)
 chai.should()
 
-const require = createRequire(import.meta.url)
-const HttpMocks = require('node-mocks-http')
+import HttpMocks from 'node-mocks-http'
 
-const DeleteAccountRequest = require('../../lib/requests/delete-account-request')
-const AccountManager = require('../../lib/models/account-manager')
-const SolidHost = require('../../lib/models/solid-host')
+import DeleteAccountRequest from '../../lib/requests/delete-account-request.mjs'
+import AccountManager from '../../lib/models/account-manager.mjs'
+import SolidHost from '../../lib/models/solid-host.mjs'
 
 describe('DeleteAccountRequest', () => {
   describe('constructor()', () => {

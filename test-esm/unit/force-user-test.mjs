@@ -2,14 +2,11 @@ import { describe, it, before } from 'mocha'
 import chai from 'chai'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
-import { createRequire } from 'module'
 
-const require = createRequire(import.meta.url)
 const { expect } = chai
 chai.use(sinonChai)
 
-// Import CommonJS modules
-const forceUser = require('../../lib/api/authn/force-user')
+import forceUser from '../../lib/api/authn/force-user.mjs'
 
 const USER = 'https://ruben.verborgh.org/profile/#me'
 

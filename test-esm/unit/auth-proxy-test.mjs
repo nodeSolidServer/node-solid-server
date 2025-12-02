@@ -6,8 +6,7 @@ import chai from 'chai'
 
 const { expect } = chai
 
-const require = createRequire(import.meta.url)
-const authProxy = require('../../lib/handlers/auth-proxy')
+import authProxy from '../../lib/handlers/auth-proxy.mjs'
 
 const HOST = 'solid.org'
 const USER = 'https://ruben.verborgh.org/profile/#me'

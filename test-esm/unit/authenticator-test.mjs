@@ -7,7 +7,8 @@ chai.use(chaiAsPromised)
 chai.should()
 
 const require = createRequire(import.meta.url)
-const { Authenticator } = require('../../lib/models/authenticator')
+// const { Authenticator } = require('../../lib/models/authenticator')
+import { Authenticator } from '../../lib/models/authenticator.mjs'
 
 describe('Authenticator', () => {
   describe('constructor()', () => {

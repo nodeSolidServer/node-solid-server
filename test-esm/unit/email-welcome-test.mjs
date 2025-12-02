@@ -1,4 +1,3 @@
-import { createRequire } from 'module'
 import { fileURLToPath } from 'url'
 import path from 'path'
 import chai from 'chai'
@@ -9,10 +8,9 @@ const { expect } = chai
 chai.use(sinonChai)
 chai.should()
 
-const require = createRequire(import.meta.url)
-const SolidHost = require('../../lib/models/solid-host')
-const AccountManager = require('../../lib/models/account-manager')
-const EmailService = require('../../lib/services/email-service')
+import SolidHost from '../../lib/models/solid-host.mjs'
+import AccountManager from '../../lib/models/account-manager.mjs'
+import EmailService from '../../lib/services/email-service.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)

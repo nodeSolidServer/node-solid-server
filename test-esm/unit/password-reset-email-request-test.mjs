@@ -1,4 +1,3 @@
-import { createRequire } from 'module'
 import chai from 'chai'
 import sinon from 'sinon'
 import dirtyChai from 'dirty-chai'
@@ -10,11 +9,10 @@ chai.use(dirtyChai)
 chai.use(sinonChai)
 chai.should()
 
-const require = createRequire(import.meta.url)
-const PasswordResetEmailRequest = require('../../lib/requests/password-reset-email-request')
-const AccountManager = require('../../lib/models/account-manager')
-const SolidHost = require('../../lib/models/solid-host')
-const EmailService = require('../../lib/services/email-service')
+import PasswordResetEmailRequest from '../../lib/requests/password-reset-email-request.mjs'
+import AccountManager from '../../lib/models/account-manager.mjs'
+import SolidHost from '../../lib/models/solid-host.mjs'
+import EmailService from '../../lib/services/email-service.mjs'
 
 describe('PasswordResetEmailRequest', () => {
   describe('constructor()', () => {

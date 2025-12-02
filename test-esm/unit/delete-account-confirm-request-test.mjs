@@ -1,4 +1,4 @@
-import { createRequire } from 'module'
+// import { createRequire } from 'module'
 import chai from 'chai'
 import sinon from 'sinon'
 import dirtyChai from 'dirty-chai'
@@ -10,9 +10,11 @@ chai.use(dirtyChai)
 chai.use(sinonChai)
 chai.should()
 
-const require = createRequire(import.meta.url)
-const DeleteAccountConfirmRequest = require('../../lib/requests/delete-account-confirm-request')
-const SolidHost = require('../../lib/models/solid-host')
+// const require = createRequire(import.meta.url)
+// const DeleteAccountConfirmRequest = require('../../lib/requests/delete-account-confirm-request')
+// const SolidHost = require('../../lib/models/solid-host')
+import DeleteAccountConfirmRequest from '../../lib/requests/delete-account-confirm-request.mjs'
+import SolidHost from '../../lib/models/solid-host.mjs'
 
 describe('DeleteAccountConfirmRequest', () => {
   sinon.spy(DeleteAccountConfirmRequest.prototype, 'error')

@@ -3,25 +3,23 @@
 import fs from 'fs'
 import path from 'path'
 import { fileURLToPath } from 'url'
-// import OIDCProvider from '@solid/oidc-op'
 import dns from 'dns'
-// import supertest from 'supertest'
-// import fetch from 'node-fetch'
 import https from 'https'
 import { createRequire } from 'module'
 import fetch from 'node-fetch'
 
 const require = createRequire(import.meta.url)
-const rimraf = require('rimraf')
-
+import rimraf from 'rimraf'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-const fse = require('fs-extra')
-const OIDCProvider = require('@solid/oidc-op')
-const supertest = require('supertest')
+import fse from 'fs-extra'
+import * as OIDCModule from '@solid/oidc-op'
+const OIDCProvider = OIDCModule.Provider
+import supertest from 'supertest'
 
 // Import the main ldnode module (may need adjustment based on your ESM exports)
-const ldnode = require('../index.js') // or import as needed
+// const ldnode = require('../index.js') // or import as needed
+import ldnode from '../index.mjs'
 
 const TEST_HOSTS = ['nic.localhost', 'tim.localhost', 'nicola.localhost']
 
@@ -67,7 +65,7 @@ export function cp (src, dest) {
 
 export function read (file) {
   console.log('Reading from', path.join(TEST_ROOT, file))
-  return fse.readFileSync(path.join(TEST_ROOT, file), {
+  return fs.readFileSync(path.join(TEST_ROOT, file), {
     encoding: 'utf8'
   })
 }

@@ -1,14 +1,15 @@
 import { describe, it } from 'mocha'
 import chai from 'chai'
 import chaiAsPromised from 'chai-as-promised'
-import { createRequire } from 'module'
+// import { createRequire } from 'module'
 
-const require = createRequire(import.meta.url)
+// const require = createRequire(import.meta.url)
 const { expect } = chai
 chai.use(chaiAsPromised)
 
 // Import CommonJS modules
-const ResourceMapper = require('../../lib/resource-mapper')
+// const ResourceMapper = require('../../lib/resource-mapper')
+import ResourceMapper from '../../lib/resource-mapper.mjs'
 
 const rootUrl = 'http://localhost/'
 const rootPath = '/var/www/folder/'

@@ -1,22 +1,20 @@
-import { createRequire } from 'module'
 import chai from 'chai'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
+import HttpMocks from 'node-mocks-http'
+import LDP from '../../lib/ldp.mjs'
+import SolidHost from '../../lib/models/solid-host.mjs'
+import AccountManager from '../../lib/models/account-manager.mjs'
+import ResourceMapper from '../../lib/resource-mapper.mjs'
+
+import * as api from '../../lib/api/accounts/user-accounts.mjs'
 
 const { expect } = chai
 chai.should()
 
-const require = createRequire(import.meta.url)
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const HttpMocks = require('node-mocks-http')
 
-const LDP = require('../../lib/ldp')
-const SolidHost = require('../../lib/models/solid-host')
-const AccountManager = require('../../lib/models/account-manager')
 const testAccountsDir = join(__dirname, '..', '..', 'test', 'resources', 'accounts')
-const ResourceMapper = require('../../lib/resource-mapper')
-
-const api = require('../../lib/api/accounts/user-accounts')
 
 let host
 

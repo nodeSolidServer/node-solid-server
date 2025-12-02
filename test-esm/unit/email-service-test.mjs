@@ -1,4 +1,4 @@
-import { createRequire } from 'module'
+// import { createRequire } from 'module'
 import sinon from 'sinon'
 import chai from 'chai'
 import sinonChai from 'sinon-chai'
@@ -9,9 +9,10 @@ const { expect } = chai
 chai.use(sinonChai)
 chai.should()
 
-const require = createRequire(import.meta.url)
+// const require = createRequire(import.meta.url)
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const EmailService = require('../../lib/services/email-service')
+// const EmailService = require('../../lib/services/email-service')
+import EmailService from '../../lib/services/email-service.mjs'
 
 const templatePath = join(__dirname, '../../default-templates/emails')
 
@@ -107,21 +108,25 @@ describe('Email Service', function () {
   })
 
   describe('readTemplate()', () => {
-    it('should read a template if it exists', () => {
+    it('should read a template if it exists', async () => {
       const config = { host: 'databox.me', auth: {} }
       const emailService = new EmailService(templatePath, config)
 
-      const template = emailService.readTemplate('welcome')
+      const template = await emailService.readTemplate('welcome.js') // support legacy name
 
       expect(template).to.respondTo('render')
     })
 
-    it('should throw an error if a template does not exist', () => {
+    it('should throw an error if a template does not exist', async () => {
       const config = { host: 'databox.me', auth: {} }
       const emailService = new EmailService(templatePath, config)
 
-      expect(() => { emailService.readTemplate('invalid-template') })
-        .to.throw(/Cannot find email template/)
+      try {
+        await emailService.readTemplate('invalid-template')
+        throw new Error('Expected readTemplate to throw')
+      } catch (err) {
+        expect(err.message).to.match(/Cannot find email template/)
+      }
     })
   })
 
@@ -149,7 +154,7 @@ describe('Email Service', function () {
 
       const data = { webid: 'https://alice.example.com#me' }
 
-      return emailService.sendWithTemplate('welcome', data)
+      return emailService.sendWithTemplate('welcome.js', data)
         .then(renderedEmail => {
           expect(emailService.sendMail).to.be.called
 

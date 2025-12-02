@@ -6,9 +6,8 @@ const { expect } = chai
 chai.use(sinonChai)
 chai.should()
 
-const require = createRequire(import.meta.url)
-const AccountTemplate = require('../../lib/models/account-template')
-const UserAccount = require('../../lib/models/user-account')
+import AccountTemplate from '../../lib/models/account-template.mjs'
+import UserAccount from '../../lib/models/user-account.mjs'
 
 describe('AccountTemplate', () => {
   describe('isTemplate()', () => {

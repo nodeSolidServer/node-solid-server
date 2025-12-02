@@ -1,4 +1,3 @@
-import { createRequire } from 'module'
 import chai from 'chai'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
@@ -11,10 +10,9 @@ chai.use(dirtyChai)
 chai.use(chaiAsPromised)
 chai.should()
 
-const require = createRequire(import.meta.url)
-const { TlsAuthenticator } = require('../../lib/models/authenticator')
-const SolidHost = require('../../lib/models/solid-host')
-const AccountManager = require('../../lib/models/account-manager')
+import { TlsAuthenticator } from '../../lib/models/authenticator.mjs'
+import SolidHost from '../../lib/models/solid-host.mjs'
+import AccountManager from '../../lib/models/account-manager.mjs'
 
 const host = SolidHost.from({ serverUri: 'https://example.com' })
 const accountManager = AccountManager.from({ host, multiuser: true })
