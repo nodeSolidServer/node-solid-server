@@ -18,8 +18,8 @@ const OIDCProvider = OIDCModule.Provider
 import supertest from 'supertest'
 
 // Import the main ldnode module (may need adjustment based on your ESM exports)
-// const ldnode = require('../index.js') // or import as needed
-import ldnode from '../index.mjs'
+const ldnode = require('../index.js') // or import as needed
+// import ldnode from '../index.mjs'
 
 const TEST_HOSTS = ['nic.localhost', 'tim.localhost', 'nicola.localhost']
 
