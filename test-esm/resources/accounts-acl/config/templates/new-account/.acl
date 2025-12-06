@@ -1,0 +1,23 @@
+# Root ACL resource for the user account
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+
+<#owner>
+    a acl:Authorization;
+
+    acl:agent <{{webId}}> ;
+
+    # Optional owner email, to be used for account recovery:
+    {{#if email}}acl:agent <mailto:{{{email}}}>;{{/if}}
+
+    # Set the access to the root storage folder itself
+    acl:accessTo </>;
+
+    # All resources will inherit this authorization, by default
+    acl:default </>;
+
+    # The owner has all of the access modes allowed
+    acl:mode
+        acl:Read, acl:Write, acl:Control.
+
+# Data is private by default; no other agents get access unless specifically
+# authorized in other .acls

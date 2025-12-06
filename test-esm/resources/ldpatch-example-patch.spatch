@@ -1,0 +1,24 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix schema: <http://schema.org/> .
+@prefix profile: <http://ogp.me/ns/profile#> .
+@prefix ex: <http://example.org/vocab#> .
+
+DELETE { <#> profile:first_name "Tim" }
+INSERT { <#> profile:first_name "Timothy" }
+
+#UpdateList <#> ex:preferredLanguages 1..2 ( "fr-CH" ) .
+
+WHERE { <#> schema:performerIn ?event. ?event schema:url  <https://www.w3.org/2012/ldp/wiki/F2F5> } 
+
+INSERT { ?event rdf:type schema:Event }
+
+WHERE{ ?ted <http://conferences.ted.com/TED2009/> is schema:url of ?ted } 
+
+DELETE { ?ted schema:startDate "2009-02-04" }
+
+ADD { ?ted schema:location [
+    schema:name "Long Beach, California" ;
+    schema:geo [ 
+        schema:latitude "33.7817" ;
+        schema:longitude "-118.2054" ]]
+    }.

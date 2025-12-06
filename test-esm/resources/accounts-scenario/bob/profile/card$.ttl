@@ -1,0 +1,5 @@
+@prefix : <#>.
+@prefix pp: <http://paymentpointers.org/ns#>.
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+:me pp:PaymentPointer "$bob.com"^^xsd:string .

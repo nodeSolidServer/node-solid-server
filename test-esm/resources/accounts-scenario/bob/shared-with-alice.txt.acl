@@ -1,0 +1,15 @@
+<#Alice>
+ a <http://www.w3.org/ns/auth/acl#Authorization> ;
+
+ <http://www.w3.org/ns/auth/acl#accessTo> <./shared-with-alice.txt>;
+
+ # Alice web id
+ <http://www.w3.org/ns/auth/acl#agent> <https://localhost:7000/profile/card#me>;
+
+ # Bob web id
+ <http://www.w3.org/ns/auth/acl#agent> <https://localhost:7001/profile/card#me>;
+
+ <http://www.w3.org/ns/auth/acl#mode>
+   <http://www.w3.org/ns/auth/acl#Read>,
+   <http://www.w3.org/ns/auth/acl#Write>,
+   <http://www.w3.org/ns/auth/acl#Control> .

@@ -1,0 +1,8 @@
+{
+    "roles" : [
+        ["user", "hello.html", "GET"]
+    ],
+    "users" : [
+        ["https://martinmr.rww.io/profile/card#me", "user"]
+    ]
+}

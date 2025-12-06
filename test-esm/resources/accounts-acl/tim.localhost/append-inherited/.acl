@@ -1,0 +1,19 @@
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+
+<#authorization1>
+    a acl:Authorization;
+
+    acl:agent
+        <https://tim.localhost:7777/profile/card#me>;
+    acl:accessTo <./>;
+    acl:mode
+        acl:Read, acl:Write, acl:Control;
+
+    acl:default <./>.
+
+<#AppendOnly>
+    a <http://www.w3.org/ns/auth/acl#Authorization>;
+    <http://www.w3.org/ns/auth/acl#accessTo> <./>;
+    acl:default <./>;
+    <http://www.w3.org/ns/auth/acl#agentClass> <http://xmlns.com/foaf/0.1/Agent>;
+    <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Append> .

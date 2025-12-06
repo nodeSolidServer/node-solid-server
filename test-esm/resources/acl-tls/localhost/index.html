@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Welcome to Solid</title>
+  <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/common/css/solid.css">
+</head>
+<body>
+<div class="container">
+  <div class="page-header">
+    <div class="pull-right">
+      <button id="register" type="button" class="btn btn-primary">Register</button>
+      <button id="login"    type="button" class="hidden btn btn-default btn-success">Log in</button>
+      <button id="logout"   type="button" class="hidden btn btn-danger">Log out</button>
+    </div>
+
+    <h1>Welcome to the Solid Prototype</h1>
+  </div>
+
+  <p class="lead">
+    This is a prototype implementation of a Solid server.
+
+    It is a fully functional server, but there are no security or stability guarantees.
+
+    If you have not already done so, please create an account.
+  </p>
+
+  <p class="lead hidden" id="loggedIn">
+    You are logged in as
+    <a href="#" id="profileLink"></a>.
+  </p>
+
+  <section>
+    <h2>Server info</h2>
+    <dl>
+      <dt>Name</dt>
+      <dd>localhost</dd>
+      <dt>Details</dt>
+      <dd>Running on <a href="https://github.com/solid/node-solid-server/releases/tag/v5.2.3">Solid 5.2.3</a></dd>
+    </dl>
+  </section>
+</div>
+<script src="/common/js/solid-auth-client.bundle.js"></script>
+<script src="/common/js/auth-buttons.js"></script>
+</body>
+</html>

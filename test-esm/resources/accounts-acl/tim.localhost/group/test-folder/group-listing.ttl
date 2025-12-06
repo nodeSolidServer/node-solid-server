@@ -1,0 +1,14 @@
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+@prefix vcard: <http://www.w3.org/2006/vcard/ns#> .
+
+<> a acl:GroupListing.
+
+<#us>
+    a vcard:Group;
+    vcard:hasUID <urn:uuid:8831CBAD-1111-2222-8563-F0F4787EG398:ABGroup> ;
+    
+    
+
+  # Simply local and remote identity for myself
+  vcard:hasMember <https://tim.localhost:7777/profile/card#me>;
+  vcard:hasMember <https://nicola.localhost:7777/profile/card#me>.

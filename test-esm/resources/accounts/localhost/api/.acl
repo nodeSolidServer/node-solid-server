@@ -1,0 +1,10 @@
+# Root ACL resource for the root
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+
+<#public>
+    a acl:Authorization;
+    acl:agentClass foaf:Agent;  # everyone
+    acl:accessTo <./>;
+    acl:default <./>;
+    acl:mode acl:Read.

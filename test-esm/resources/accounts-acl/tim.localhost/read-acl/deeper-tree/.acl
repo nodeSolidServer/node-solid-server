@@ -1,0 +1,18 @@
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+
+<#ThisControl> a acl:Authorization ;
+    acl:accessTo <./> ;
+    acl:agent <https://tim.localhost:7777/profile/card#me> ;
+    acl:mode acl:Control .
+
+<#DirRead> a acl:Authorization ;
+    acl:accessTo <./acls-only-on-top/> ;
+    acl:agent <https://tim.localhost:7777/profile/card#me> ;
+    acl:mode acl:Read .
+
+<#FileRead> a acl:Authorization ;
+    acl:accessTo <./acls-only-on-top/example.ttl> ;
+    acl:agent <https://tim.localhost:7777/profile/card#me> ;
+    acl:mode acl:Read .
+
+

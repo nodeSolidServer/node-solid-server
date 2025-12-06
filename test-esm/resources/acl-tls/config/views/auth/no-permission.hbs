@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>No permission</title>
+  <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/common/css/solid.css">
+</head>
+<body>
+<div class="container">
+  <div class="page-header">
+    <h1>No permission to access this resource</h1>
+  </div>
+  <div class="alert alert-danger">
+    <p>
+      You are currently logged in as <code>{{webId}}</code>,
+      but do not have permission to access <code>{{currentUrl}}</code>.
+    </p>
+    <p>
+      <button id="logout" type="button" class="btn btn-danger">Log out</button>
+    </p>
+  </div>
+</div>
+</div>
+<script src="/common/js/solid-auth-client.bundle.js"></script>
+<script src="/common/js/auth-buttons.js"></script>
+</body>
+</html>

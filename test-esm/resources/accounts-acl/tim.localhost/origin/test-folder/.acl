@@ -1,0 +1,16 @@
+<#Owner> a <http://www.w3.org/ns/auth/acl#Authorization>;
+ <http://www.w3.org/ns/auth/acl#accessTo> <https://localhost:3456/origin/test-folder/.acl>;
+ <http://www.w3.org/ns/auth/acl#agent> <https://tim.localhost:7777/profile/card#me>;
+ <http://www.w3.org/ns/auth/acl#origin> <http://example.org/>;
+ <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read>, <http://www.w3.org/ns/auth/acl#Write>, <http://www.w3.org/ns/auth/acl#Control> .
+<#Public> a <http://www.w3.org/ns/auth/acl#Authorization>;
+ <http://www.w3.org/ns/auth/acl#accessTo> <./>;
+ <http://www.w3.org/ns/auth/acl#agentClass> <http://xmlns.com/foaf/0.1/Agent>;
+ <http://www.w3.org/ns/auth/acl#origin> <http://example.org/>;
+ <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Read> .
+<#Somebody> a <http://www.w3.org/ns/auth/acl#Authorization>;
+ <http://www.w3.org/ns/auth/acl#accessTo> <./>;
+ <http://www.w3.org/ns/auth/acl#agent> <https://nicola.localhost:7777/profile/card#me>;
+ <http://www.w3.org/ns/auth/acl#default> <./>;
+ <http://www.w3.org/ns/auth/acl#origin> <http://example.org/>;
+ <http://www.w3.org/ns/auth/acl#mode> <http://www.w3.org/ns/auth/acl#Write> .

@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login</title>
+  <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+  <h4>Login</h4>
+</div>
+<div class="container">
+  <form method="post" action="/login">
+    <div class="form-group">
+      {{#if error}}
+        <div class="row">
+          <div class="col-md-12">
+            <p class="text-danger"><strong>{{error}}</strong></p>
+          </div>
+        </div>
+      {{/if}}
+      <div class="row">
+        <div class="col-md-12">
+          <label for="username">Username:</label>
+          <input type="text" class="form-control" name="username" id="username" placeholder="alice" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <label for="password">Password:</label>
+          <input type="password" class="form-control" name="password" id="password" />
+        </div>
+      </div>
+      <input type="hidden" name="response_type" id="response_type" value="{{response_type}}" />
+      <input type="hidden" name="display" id="display" value="{{display}}" />
+      <input type="hidden" name="scope" id="scope" value="{{scope}}" />
+      <input type="hidden" name="client_id" id="client_id" value="{{client_id}}" />
+      <input type="hidden" name="redirect_uri" id="redirect_uri" value="{{redirect_uri}}" />
+      <input type="hidden" name="state" id="state" value="{{state}}" />
+      <input type="hidden" name="nonce" id="nonce" value="{{nonce}}" />
+    </div>
+    <button type="submit" class="btn btn-primary" id="login">Login</button>
+
+    <div>Don't have an account?
+      <a href="/register?returnToUrl={{{postRegisterUrl}}}">Register</a>
+    </div>
+  </form>
+</div>
+</body>
+</html>

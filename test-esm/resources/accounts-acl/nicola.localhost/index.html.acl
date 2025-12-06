@@ -1,0 +1,10 @@
+# This file grants everyone READ access to ./index.html
+
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+
+<#public>
+    a acl:Authorization;
+    acl:agentClass foaf:Agent;
+    acl:accessTo <./index.html>;
+    acl:mode acl:Read.

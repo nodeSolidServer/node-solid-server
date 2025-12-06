@@ -1,0 +1,14 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix schema: <http://schema.org/> .
+@prefix profile: <http://ogp.me/ns/profile#> .
+@prefix ex: <http://example.org/vocab#> .
+WHERE{ ?ted <http://conferences.ted.com/TED2009/> is schema:url of ?ted } 
+
+DELETE { ?ted schema:startDate "2009-02-04" }
+
+ADD { ?ted schema:location [
+    schema:name "Long Beach, California" ;
+    schema:geo [ 
+        schema:latitude "33.7817" ;
+        schema:longitude "-118.2054" ]]
+    }.

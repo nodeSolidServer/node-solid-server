@@ -1,0 +1,6 @@
+###
+This file is input test data for tetsing the PUT functionality of the server
+###
+UTF8 thumps up: 👍
+It is just a UTF8 text file.
+

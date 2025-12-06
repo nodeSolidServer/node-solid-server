@@ -1,0 +1,2 @@
+DELETE { :current  :temp 123 .}
+INSERT DATA { :current  :temp 456 .}

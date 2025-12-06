@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Register</title>
+  <link rel="stylesheet" href="/common/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container">
+  <h4>Register</h4>
+</div>
+<div class="container">
+  <form method="post" action="/api/accounts/new">
+    <div class="form-group">
+      {{#if error}}
+        <div class="row">
+          <div class="col-md-12">
+            <p class="text-danger"><strong>{{error}}</strong></p>
+          </div>
+        </div>
+      {{/if}}
+      <div class="row">
+        <div class="col-md-12">
+          <label for="username">Username:</label>
+          <input type="text" class="form-control" name="username" id="username" placeholder="alice" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <label for="password">Password:</label>
+          <input type="password" class="form-control" name="password" id="password" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <label for="name">Name:</label>
+          <input type="name" class="form-control" name="name" id="name" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <label for="email">Email:</label>
+          <input type="email" class="form-control" name="email" id="email" />
+        </div>
+      </div>
+      <input type="hidden" name="returnToUrl" value="{{returnToUrl}}" />
+
+    </div>
+    <button type="submit" class="btn btn-primary" id="register">Register</button>
+
+    <div>Already have an account?
+      <a href="/login?returnToUrl={{{returnToUrl}}}">Log In</a>
+    </div>
+  </form>
+</div>
+</body>
+</html>

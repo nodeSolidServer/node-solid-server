@@ -1,0 +1,10 @@
+@prefix : <#>.
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+
+:me
+    acl:trustedApp
+            [
+                acl:mode acl:Append, acl:Control, acl:Read, acl:Write;
+                acl:origin <https://trusted.app>
+            ],
+        [ acl:mode acl:Read, acl:Write; acl:origin <https://app.example.com> ].

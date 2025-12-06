@@ -1,0 +1,42 @@
+@prefix acl: <http://www.w3.org/ns/auth/acl#>.
+@prefix foaf: <http://xmlns.com/foaf/0.1/>.
+
+# All permissions on /server/a
+[
+  a acl:Authorization;
+  acl:accessTo </server/a/>;
+  acl:agent <https://ruben.verborgh.org/profile/#me>;
+  acl:mode acl:Read, acl:Write, acl:Control
+].
+
+# Only Read permissions on /server/a/r
+[
+  a acl:Authorization;
+  acl:accessTo </server/a/r>;
+  acl:agent <https://ruben.verborgh.org/profile/#me>;
+  acl:mode acl:Read
+].
+
+# No Read permissions on /server/a/wc
+[
+  a acl:Authorization;
+  acl:accessTo </server/a/wc>;
+  acl:agent <https://ruben.verborgh.org/profile/#me>;
+  acl:mode acl:Write, acl:Control
+].
+
+# Only Write permissions on /server/a/w
+[
+  a acl:Authorization;
+  acl:accessTo </server/a/w>;
+  acl:agent <https://ruben.verborgh.org/profile/#me>;
+  acl:mode acl:Write
+].
+
+# Read-Write permissions on /server/a/rw
+[
+  a acl:Authorization;
+  acl:accessTo </server/a/rw>;
+  acl:agent <https://ruben.verborgh.org/profile/#me>;
+  acl:mode acl:Read, acl:Write
+].
