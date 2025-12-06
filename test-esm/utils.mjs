@@ -25,7 +25,7 @@ const TEST_HOSTS = ['nic.localhost', 'tim.localhost', 'nicola.localhost']
 
 // Configurable test root directory
 // For custom route
-// let TEST_ROOT = path.join(__dirname, '../test-esm/resources/')
+// let TEST_ROOT = path.join(__dirname, '/resources/')
 // For default root (process.cwd()):
 let TEST_ROOT = path.join(process.cwd(), 'test-esm/resources')
 

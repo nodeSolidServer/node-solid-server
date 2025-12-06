@@ -30,7 +30,7 @@ describe('PATCH through application/sparql-update', function () {
 
   it('should create a new file if file does not exist', function (done) {
     rm('sampleContainer/notExisting.ttl')
-    const sampleContainerPath = path.join(__dirname, '../test-esm/resources/sampleContainer')
+    const sampleContainerPath = path.join(__dirname, '/resources/sampleContainer')
     // fse.ensureDirSync(sampleContainerPath);
     server.patch('/notExisting.ttl')
       .set('content-type', 'application/sparql-update')

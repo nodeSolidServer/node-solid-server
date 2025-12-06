@@ -15,7 +15,7 @@ describe('Header handler', () => {
   before(function () {
     this.timeout(20000)
     request = setupSupertestServer({
-      root: join(__dirname, '../../test-esm/resources/headers'),
+      root: join(__dirname, '../resources/headers'),
       multiuser: false,
       webid: true,
       sslKey: join(__dirname, '../../test/keys/key.pem'),

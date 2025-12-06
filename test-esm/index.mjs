@@ -16,7 +16,7 @@ const __dirname = path.dirname(__filename)
 const TEST_HOSTS = ['nic.localhost', 'tim.localhost', 'nicola.localhost']
 
 export function rm (file) {
-  return rimraf.sync(path.normalize(path.join(__dirname, '../../test-esm/resources/' + file)))
+  return rimraf.sync(path.normalize(path.join(__dirname, '../resources/' + file)))
 }
 
 export function cleanDir (dirPath) {
@@ -31,17 +31,17 @@ export function cleanDir (dirPath) {
 }
 
 export function write (text, file) {
-  return fs.writeFileSync(path.normalize(path.join(__dirname, '../../test-esm/resources/' + file)), text)
+  return fs.writeFileSync(path.normalize(path.join(__dirname, '../resources/' + file)), text)
 }
 
 export function cp (src, dest) {
   return fs.copySync(
-    path.normalize(path.join(__dirname, '../../test-esm/resources/' + src)),
-    path.normalize(path.join(__dirname, '../../test-esm/resources/' + dest)))
+    path.normalize(path.join(__dirname, '../resources/' + src)),
+    path.normalize(path.join(__dirname, '../resources/' + dest)))
 }
 
 export function read (file) {
-  return fs.readFileSync(path.normalize(path.join(__dirname, '../../test-esm/resources/' + file)), {
+  return fs.readFileSync(path.normalize(path.join(__dirname, '../resources/' + file)), {
     encoding: 'utf8'
   })
 }
