@@ -4,15 +4,15 @@ import path from 'path'
 import chai from 'chai'
 import nock from 'nock'
 
+// Import utility functions from the ESM utils
+import { checkDnsSettings, setupSupertestServer } from '../utils.mjs'
+
 const { assert } = chai
 
 const require = createRequire(import.meta.url)
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-
-// Import utility functions from the ESM utils
-import { checkDnsSettings, setupSupertestServer } from '../utils.mjs'
 
 describe('CORS Proxy', () => {
   const server = setupSupertestServer({

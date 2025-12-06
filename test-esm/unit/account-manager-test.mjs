@@ -6,18 +6,9 @@ import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 import dirtyChai from 'dirty-chai'
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
-const { expect } = chai
-chai.use(sinonChai)
-chai.use(dirtyChai)
-chai.should()
-
 // Import CommonJS modules that haven't been converted yet
 import rdf from 'rdflib'
 import vocab from 'solid-namespace'
-const ns = vocab(rdf)
 
 // Import ESM modules (assuming they exist or will be created)
 import LDP from '../../lib/ldp.mjs'
@@ -27,6 +18,15 @@ import UserAccount from '../../lib/models/user-account.mjs'
 import TokenService from '../../lib/services/token-service.mjs'
 import WebIdTlsCertificate from '../../lib/models/webid-tls-certificate.mjs'
 import ResourceMapper from '../../lib/resource-mapper.mjs'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+const { expect } = chai
+chai.use(sinonChai)
+chai.use(dirtyChai)
+chai.should()
+const ns = vocab(rdf)
 
 const testAccountsDir = path.join(__dirname, '../resources/accounts')
 

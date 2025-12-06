@@ -5,16 +5,16 @@ import dirtyChai from 'dirty-chai'
 import sinonChai from 'sinon-chai'
 import HttpMocks from 'node-mocks-http'
 
-const { expect } = chai
-chai.use(dirtyChai)
-chai.use(sinonChai)
-chai.should()
-
 // const require = createRequire(import.meta.url)
 // const DeleteAccountConfirmRequest = require('../../lib/requests/delete-account-confirm-request')
 // const SolidHost = require('../../lib/models/solid-host')
 import DeleteAccountConfirmRequest from '../../lib/requests/delete-account-confirm-request.mjs'
 import SolidHost from '../../lib/models/solid-host.mjs'
+
+const { expect } = chai
+chai.use(dirtyChai)
+chai.use(sinonChai)
+chai.should()
 
 describe('DeleteAccountConfirmRequest', () => {
   sinon.spy(DeleteAccountConfirmRequest.prototype, 'error')

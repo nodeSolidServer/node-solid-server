@@ -4,16 +4,16 @@ import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 import dirtyChai from 'dirty-chai'
 
-const { expect } = chai
-chai.use(sinonChai)
-chai.use(dirtyChai)
-chai.should()
-
 import HttpMocks from 'node-mocks-http'
 import AuthRequest from '../../lib/requests/auth-request.mjs'
 import { LoginRequest } from '../../lib/requests/login-request.mjs'
 import SolidHost from '../../lib/models/solid-host.mjs'
 import AccountManager from '../../lib/models/account-manager.mjs'
+
+const { expect } = chai
+chai.use(sinonChai)
+chai.use(dirtyChai)
+chai.should()
 
 const mockUserStore = {
   findUser: () => { return Promise.resolve(true) },

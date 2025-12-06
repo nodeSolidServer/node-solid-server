@@ -4,6 +4,9 @@ import path from 'path'
 import supertest from 'supertest'
 import chai from 'chai'
 
+// Import utility functions from the ESM utils
+import { cleanDir } from '../utils.mjs'
+
 const { expect } = chai
 
 const require = createRequire(import.meta.url)
@@ -11,9 +14,6 @@ const Solid = require('../../index')
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-
-// Import utility functions from the ESM utils
-import { cleanDir } from '../utils.mjs'
 
 describe('API', () => {
   const configPath = path.join(__dirname, '../../test/resources/config')

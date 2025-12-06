@@ -2,20 +2,18 @@ import { createRequire } from 'module'
 import chai from 'chai'
 import sinonChai from 'sinon-chai'
 import dirtyChai from 'dirty-chai'
-import { fileURLToPath } from 'url'
+import url, { fileURLToPath } from 'url'
 import { dirname } from 'path'
-
-const { expect } = chai
-chai.use(sinonChai)
-chai.use(dirtyChai)
-chai.should()
-
-import url from 'url'
 
 import AuthRequest from '../../lib/requests/auth-request.mjs'
 import SolidHost from '../../lib/models/solid-host.mjs'
 import AccountManager from '../../lib/models/account-manager.mjs'
 import UserAccount from '../../lib/models/user-account.mjs'
+
+const { expect } = chai
+chai.use(sinonChai)
+chai.use(dirtyChai)
+chai.should()
 
 describe('AuthRequest', () => {
   function testAuthQueryParams () {

@@ -1,5 +1,5 @@
-import solid from '../index.mjs';
-import path from 'path';
+import solid from '../index.mjs'
+import path from 'path'
 
 solid
   .createServer({
@@ -8,5 +8,5 @@ solid
     sslKey: path.resolve('../test/keys/key.pem')
   })
   .listen(3456, function () {
-    console.log('started ldp with webid on port ' + 3456);
-  });
+    console.log('started ldp with webid on port ' + 3456)
+  })

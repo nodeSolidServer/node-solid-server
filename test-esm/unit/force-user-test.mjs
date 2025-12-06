@@ -3,10 +3,10 @@ import chai from 'chai'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 
+import forceUser from '../../lib/api/authn/force-user.mjs'
+
 const { expect } = chai
 chai.use(sinonChai)
-
-import forceUser from '../../lib/api/authn/force-user.mjs'
 
 const USER = 'https://ruben.verborgh.org/profile/#me'
 

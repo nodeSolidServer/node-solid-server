@@ -1,10 +1,10 @@
 import chai from 'chai'
 
-const { expect } = chai
-
 import theBigUsernameBlacklistPkg from 'the-big-username-blacklist'
-const blacklist = theBigUsernameBlacklistPkg.list
 import blacklistService from '../../lib/services/blacklist-service.mjs'
+
+const { expect } = chai
+const blacklist = theBigUsernameBlacklistPkg.list
 
 describe('BlacklistService', () => {
   afterEach(() => blacklistService.reset())

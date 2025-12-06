@@ -3,16 +3,16 @@ import sinon from 'sinon'
 import dirtyChai from 'dirty-chai'
 import sinonChai from 'sinon-chai'
 
-const { expect } = chai
-chai.use(dirtyChai)
-chai.use(sinonChai)
-chai.should()
-
 import HttpMocks from 'node-mocks-http'
 
 import DeleteAccountRequest from '../../lib/requests/delete-account-request.mjs'
 import AccountManager from '../../lib/models/account-manager.mjs'
 import SolidHost from '../../lib/models/solid-host.mjs'
+
+const { expect } = chai
+chai.use(dirtyChai)
+chai.use(sinonChai)
+chai.should()
 
 describe('DeleteAccountRequest', () => {
   describe('constructor()', () => {

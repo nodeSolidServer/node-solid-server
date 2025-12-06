@@ -1,8 +1,8 @@
-import solid from '../index.mjs';
+import solid from '../index.mjs'
 
 // Starting solid server
-const ldp = solid.createServer();
+const ldp = solid.createServer()
 ldp.listen(3456, function () {
-  console.log('Starting server on port ' + 3456);
-  console.log('LDP will run on /');
-});
+  console.log('Starting server on port ' + 3456)
+  console.log('LDP will run on /')
+})

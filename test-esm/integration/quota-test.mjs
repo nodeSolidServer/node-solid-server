@@ -3,6 +3,9 @@ import { fileURLToPath } from 'url'
 import path from 'path'
 import chai from 'chai'
 
+// Import utility functions from the ESM utils
+import { read } from '../utils.mjs'
+
 const { expect } = chai
 
 const require = createRequire(import.meta.url)
@@ -10,9 +13,6 @@ const { getQuota, overQuota } = require('../../lib/utils')
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-
-// Import utility functions from the ESM utils
-import { read } from '../utils.mjs'
 
 const root = 'accounts-acl/config/templates/new-account/'
 // const $rdf = require('rdflib')

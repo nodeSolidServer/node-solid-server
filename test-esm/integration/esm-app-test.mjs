@@ -2,13 +2,13 @@ import { describe, it, beforeEach } from 'mocha'
 import { expect } from 'chai'
 import { createRequire } from 'module'
 
-const require = createRequire(import.meta.url)
-
 // Import CommonJS modules that work
 // const ldnode = require('../../index')
 import ldnode from '../../index.mjs'
 
-describe('ESM Application Integration Tests', function() {
+const require = createRequire(import.meta.url)
+
+describe('ESM Application Integration Tests', function () {
   this.timeout(15000)
 
   let app
@@ -25,28 +25,28 @@ describe('ESM Application Integration Tests', function() {
 
   describe('ESM Application Creation', () => {
     it('should create Solid app using mixed CommonJS/ESM setup', async () => {
-      app = ldnode({ 
-        webid: false,
+      app = ldnode({
+        webid: false
         // port: 0
       })
-      
+
       expect(app).to.exist
       expect(app.locals.ldp).to.exist
       expect(app.locals.host).to.exist
     })
 
     it('should have proper middleware stack', async () => {
-      app = ldnode({ 
-        webid: false,
+      app = ldnode({
+        webid: false
         // port: 0
       })
-      
+
       // Check that the app has the correct middleware stack
       const layers = app._router.stack
       expect(layers.length).to.be.greaterThan(0)
-      
+
       // Find LDP middleware layer
-      const ldpLayer = layers.find(layer => 
+      const ldpLayer = layers.find(layer =>
         layer.regexp.toString().includes('.*')
       )
       expect(ldpLayer).to.exist
@@ -62,12 +62,12 @@ describe('ESM Application Integration Tests', function() {
       })
     })
 
-    it('should handle GET requests through handlers', function() {
+    it('should handle GET requests through handlers', function () {
       this.timeout(10000)
-      
+
       const supertest = require('supertest')
       const agent = supertest(app)
-      
+
       const response = agent
         .get('/')
         .expect(200)
@@ -78,11 +78,11 @@ describe('ESM Application Integration Tests', function() {
     it('should handle OPTIONS requests with proper headers', async () => {
       const supertest = require('supertest')
       const agent = supertest(app)
-      
+
       const response = await agent
         .options('/')
         .expect(204) // OPTIONS typically returns 204, not 200
-        
+
       // Check for basic expected headers - adjust expectations based on actual implementation
       expect(response.headers.allow).to.exist
       expect(response.headers.allow).to.include('GET')
@@ -94,7 +94,7 @@ describe('ESM Application Integration Tests', function() {
       // Verify ESM-specific globals exist
       expect(import.meta).to.exist
       expect(import.meta.url).to.be.a('string')
-      
+
       // In a pure ESM context (without createRequire), these would be undefined
       // But since we're testing a mixed environment, we verify the ESM context works
       expect(import.meta.resolve).to.exist

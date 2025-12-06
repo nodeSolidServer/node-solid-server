@@ -2,12 +2,12 @@ import { createRequire } from 'module'
 import chai from 'chai'
 import sinonChai from 'sinon-chai'
 
+import AccountTemplate from '../../lib/models/account-template.mjs'
+import UserAccount from '../../lib/models/user-account.mjs'
+
 const { expect } = chai
 chai.use(sinonChai)
 chai.should()
-
-import AccountTemplate from '../../lib/models/account-template.mjs'
-import UserAccount from '../../lib/models/user-account.mjs'
 
 describe('AccountTemplate', () => {
   describe('isTemplate()', () => {

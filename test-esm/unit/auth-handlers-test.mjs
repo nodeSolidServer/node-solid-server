@@ -5,14 +5,14 @@ import sinonChai from 'sinon-chai'
 import dirtyChai from 'dirty-chai'
 import { createRequire } from 'module'
 
+// Import CommonJS modules
+// const Auth = require('../../lib/api/authn')
+import * as Auth from '../../lib/api/authn/index.mjs'
+
 const { expect } = chai
 chai.use(sinonChai)
 chai.use(dirtyChai)
 chai.should()
-
-// Import CommonJS modules
-// const Auth = require('../../lib/api/authn')
-import * as Auth from '../../lib/api/authn/index.mjs'
 
 describe('OIDC Handler', () => {
   describe('setAuthenticateHeader()', () => {

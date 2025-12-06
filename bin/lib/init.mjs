@@ -3,7 +3,7 @@ import fs from 'fs'
 import options from './options.mjs'
 import camelize from 'camelize'
 
-let questions = options
+const questions = options
   .map((option) => {
     if (!option.type) {
       if (option.flag) {
@@ -91,4 +91,3 @@ function manipulateServerSection (answers) {
     }
   })
 }
-

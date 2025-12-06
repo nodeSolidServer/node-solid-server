@@ -1,5 +1,5 @@
-import solid from '../index.mjs';
-import path from 'path';
+import solid from '../index.mjs'
+import path from 'path'
 
 solid
   .createServer({
@@ -8,8 +8,8 @@ solid
     sslKey: path.resolve('../test/keys/key.pem'),
     errorHandler: function (err, req, res, next) {
       if (err.status !== 200) {
-        console.log('Oh no! There is an error:' + err.message);
-        res.status(err.status);
+        console.log('Oh no! There is an error:' + err.message)
+        res.status(err.status)
         // Now you can send the error how you want
         // Maybe you want to render an error page
         // res.render('errorPage.ejs', {
@@ -20,10 +20,10 @@ solid
         res.json({
           title: err.status + ': This is an error!',
           message: err.message
-        });
+        })
       }
     }
   })
   .listen(3456, function () {
-    console.log('started ldp with webid on port ' + 3456);
-  });
+    console.log('started ldp with webid on port ' + 3456)
+  })

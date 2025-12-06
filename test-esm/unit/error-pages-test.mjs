@@ -5,12 +5,12 @@ import sinonChai from 'sinon-chai'
 import dirtyChai from 'dirty-chai'
 import { createRequire } from 'module'
 
+import * as errorPages from '../../lib/handlers/error-pages.mjs'
+
 const { expect } = chai
 chai.use(sinonChai)
 chai.use(dirtyChai)
 chai.should()
-
-import * as errorPages from '../../lib/handlers/error-pages.mjs'
 
 describe('handlers/error-pages', () => {
   describe('handler()', () => {

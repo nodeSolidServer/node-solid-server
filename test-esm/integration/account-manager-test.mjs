@@ -2,13 +2,13 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import fs from 'fs-extra'
 import chai from 'chai'
-const expect = chai.expect
-chai.should()
 
 import LDP from '../../lib/ldp.js'
 import SolidHost from '../../lib/models/solid-host.js'
 import AccountManager from '../../lib/models/account-manager.js'
 import ResourceMapper from '../../lib/resource-mapper.js'
+const expect = chai.expect
+chai.should()
 
 // ESM __dirname equivalent
 const __filename = fileURLToPath(import.meta.url)

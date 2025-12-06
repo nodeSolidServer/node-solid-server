@@ -1,9 +1,9 @@
-import fs from 'fs';
-import Path from 'path';
-import { promisify } from 'util';
-const readdir = promisify(fs.readdir);
-const lstat = promisify(fs.lstat);
-const rename = promisify(fs.rename);
+import fs from 'fs'
+import Path from 'path'
+import { promisify } from 'util'
+const readdir = promisify(fs.readdir)
+const lstat = promisify(fs.lstat)
+const rename = promisify(fs.rename)
 
 export default function (program) {
   program
@@ -13,52 +13,52 @@ export default function (program) {
     .option('-v, --verbose', 'Path to the data folder')
     .description('Migrate the data folder from node-solid-server 4 to node-solid-server 5')
     .action(async (opts) => {
-      const verbose = opts.verbose;
-      const suffix = opts.suffix || '$.ttl';
-      let paths = opts.path ? [opts.path] : ['data', 'config/templates'];
-      paths = paths.map(path => path.startsWith(Path.sep) ? path : Path.join(process.cwd(), path));
+      const verbose = opts.verbose
+      const suffix = opts.suffix || '$.ttl'
+      let paths = opts.path ? [opts.path] : ['data', 'config/templates']
+      paths = paths.map(path => path.startsWith(Path.sep) ? path : Path.join(process.cwd(), path))
       try {
         for (const path of paths) {
           if (verbose) {
-            console.log(`Migrating files in ${path}`);
+            console.log(`Migrating files in ${path}`)
           }
-          await migrate(path, suffix, verbose);
+          await migrate(path, suffix, verbose)
         }
       } catch (err) {
-        console.error(err);
+        console.error(err)
       }
-    });
+    })
 }
 
-async function migrate(path, suffix, verbose) {
-  const files = await readdir(path);
+async function migrate (path, suffix, verbose) {
+  const files = await readdir(path)
   for (const file of files) {
-    const fullFilePath = Path.join(path, file);
-    const stat = await lstat(fullFilePath);
+    const fullFilePath = Path.join(path, file)
+    const stat = await lstat(fullFilePath)
     if (stat.isFile()) {
       if (shouldMigrateFile(file)) {
-        const newFullFilePath = getNewFileName(fullFilePath, suffix);
+        const newFullFilePath = getNewFileName(fullFilePath, suffix)
         if (verbose) {
-          console.log(`${fullFilePath}\n  => ${newFullFilePath}`);
+          console.log(`${fullFilePath}\n  => ${newFullFilePath}`)
         }
-        await rename(fullFilePath, newFullFilePath);
+        await rename(fullFilePath, newFullFilePath)
       }
     } else {
       if (shouldMigrateFolder(file)) {
-        await migrate(fullFilePath, suffix, verbose);
+        await migrate(fullFilePath, suffix, verbose)
       }
     }
   }
 }
 
-function getNewFileName(fullFilePath, suffix) {
-  return fullFilePath + suffix;
+function getNewFileName (fullFilePath, suffix) {
+  return fullFilePath + suffix
 }
 
-function shouldMigrateFile(filename) {
-  return filename.indexOf('.') < 0;
+function shouldMigrateFile (filename) {
+  return filename.indexOf('.') < 0
 }
 
-function shouldMigrateFolder(foldername) {
-  return foldername[0] !== '.';
+function shouldMigrateFolder (foldername) {
+  return foldername[0] !== '.'
 }

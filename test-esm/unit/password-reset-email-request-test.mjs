@@ -4,15 +4,15 @@ import dirtyChai from 'dirty-chai'
 import sinonChai from 'sinon-chai'
 import HttpMocks from 'node-mocks-http'
 
-const { expect } = chai
-chai.use(dirtyChai)
-chai.use(sinonChai)
-chai.should()
-
 import PasswordResetEmailRequest from '../../lib/requests/password-reset-email-request.mjs'
 import AccountManager from '../../lib/models/account-manager.mjs'
 import SolidHost from '../../lib/models/solid-host.mjs'
 import EmailService from '../../lib/services/email-service.mjs'
+
+const { expect } = chai
+chai.use(dirtyChai)
+chai.use(sinonChai)
+chai.should()
 
 describe('PasswordResetEmailRequest', () => {
   describe('constructor()', () => {

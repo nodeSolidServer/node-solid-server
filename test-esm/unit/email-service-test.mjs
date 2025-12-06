@@ -4,6 +4,8 @@ import chai from 'chai'
 import sinonChai from 'sinon-chai'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
+// const EmailService = require('../../lib/services/email-service')
+import EmailService from '../../lib/services/email-service.mjs'
 
 const { expect } = chai
 chai.use(sinonChai)
@@ -11,8 +13,6 @@ chai.should()
 
 // const require = createRequire(import.meta.url)
 const __dirname = dirname(fileURLToPath(import.meta.url))
-// const EmailService = require('../../lib/services/email-service')
-import EmailService from '../../lib/services/email-service.mjs'
 
 const templatePath = join(__dirname, '../../default-templates/emails')
 

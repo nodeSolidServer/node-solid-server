@@ -3,10 +3,10 @@ import chai from 'chai'
 import chaiAsPromised from 'chai-as-promised'
 import { createRequire } from 'module'
 
+import ACLChecker from '../../lib/acl-checker.mjs'
+
 const { expect } = chai
 chai.use(chaiAsPromised)
-
-import ACLChecker from '../../lib/acl-checker.mjs'
 
 const options = { fetch: (url, callback) => {} }
 

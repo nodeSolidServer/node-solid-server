@@ -4,6 +4,10 @@ import sinon from 'sinon'
 import dirtyChai from 'dirty-chai'
 import sinonChai from 'sinon-chai'
 import HttpMocks from 'node-mocks-http'
+// const PasswordChangeRequest = require('../../lib/requests/password-change-request')
+// const SolidHost = require('../../lib/models/solid-host')
+import PasswordChangeRequest from '../../lib/requests/password-change-request.mjs'
+import SolidHost from '../../lib/models/solid-host.mjs'
 
 const { expect } = chai
 chai.use(dirtyChai)
@@ -11,10 +15,6 @@ chai.use(sinonChai)
 chai.should()
 
 const require = createRequire(import.meta.url)
-// const PasswordChangeRequest = require('../../lib/requests/password-change-request')
-// const SolidHost = require('../../lib/models/solid-host')
-import PasswordChangeRequest from '../../lib/requests/password-change-request.mjs'
-import SolidHost from '../../lib/models/solid-host.mjs'
 
 describe('PasswordChangeRequest', () => {
   sinon.spy(PasswordChangeRequest.prototype, 'error')

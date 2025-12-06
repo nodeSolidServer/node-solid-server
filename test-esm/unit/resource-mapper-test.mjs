@@ -1,15 +1,15 @@
 import { describe, it } from 'mocha'
 import chai from 'chai'
 import chaiAsPromised from 'chai-as-promised'
+
+// Import CommonJS modules
+// const ResourceMapper = require('../../lib/resource-mapper')
+import ResourceMapper from '../../lib/resource-mapper.mjs'
 // import { createRequire } from 'module'
 
 // const require = createRequire(import.meta.url)
 const { expect } = chai
 chai.use(chaiAsPromised)
-
-// Import CommonJS modules
-// const ResourceMapper = require('../../lib/resource-mapper')
-import ResourceMapper from '../../lib/resource-mapper.mjs'
 
 const rootUrl = 'http://localhost/'
 const rootPath = '/var/www/folder/'
@@ -25,7 +25,7 @@ function mapsUrl (it, mapper, label, options, files, expected) {
   // Shift parameters if necessary
   if (!expected) {
     expected = files
-    files = undefined  // No files array means don't mock filesystem
+    files = undefined // No files array means don't mock filesystem
   }
 
   // Mock filesystem only if files array is provided
@@ -34,16 +34,16 @@ function mapsUrl (it, mapper, label, options, files, expected) {
       mapper._readdir = async (path) => {
         // For the tests to work, we need to check if the path is in the expected range
         expect(path.startsWith(rootPath)).to.equal(true)
-        
+
         if (!files.length) {
           // When empty files array is provided, simulate directory not found
           throw new Error(`${path} Resource not found`)
         }
-        
+
         // Return just the filenames (not full paths) that are in the requested directory
         // Normalize the path to handle different slash directions
         const requestedDir = path.replace(/\\/g, '/')
-        
+
         const matchingFiles = files
           .filter(f => {
             const normalizedFile = f.replace(/\\/g, '/')
@@ -56,7 +56,7 @@ function mapsUrl (it, mapper, label, options, files, expected) {
             return filename
           })
           .filter(f => f) // Only non-empty filenames
-        
+
         return matchingFiles
       }
     }

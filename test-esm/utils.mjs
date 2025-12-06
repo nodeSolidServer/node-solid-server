@@ -7,19 +7,19 @@ import dns from 'dns'
 import https from 'https'
 import { createRequire } from 'module'
 import fetch from 'node-fetch'
-
-const require = createRequire(import.meta.url)
 import rimraf from 'rimraf'
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
 import fse from 'fs-extra'
 import * as OIDCModule from '@solid/oidc-op'
-const OIDCProvider = OIDCModule.Provider
 import supertest from 'supertest'
 
 // Import the main ldnode module (may need adjustment based on your ESM exports)
 // const ldnode = require('../index.js') // or import as needed
 import ldnode from '../index.mjs'
+
+const require = createRequire(import.meta.url)
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+const OIDCProvider = OIDCModule.Provider
 
 const TEST_HOSTS = ['nic.localhost', 'tim.localhost', 'nicola.localhost']
 
@@ -29,10 +29,10 @@ const TEST_HOSTS = ['nic.localhost', 'tim.localhost', 'nicola.localhost']
 // For default root (process.cwd()):
 let TEST_ROOT = path.join(process.cwd(), 'test-esm/resources')
 
-export function setTestRoot(rootPath) {
+export function setTestRoot (rootPath) {
   TEST_ROOT = rootPath
 }
-export function getTestRoot() {
+export function getTestRoot () {
   return TEST_ROOT
 }
 

@@ -4,15 +4,15 @@ import sinonChai from 'sinon-chai'
 import dirtyChai from 'dirty-chai'
 import chaiAsPromised from 'chai-as-promised'
 
+import { TlsAuthenticator } from '../../lib/models/authenticator.mjs'
+import SolidHost from '../../lib/models/solid-host.mjs'
+import AccountManager from '../../lib/models/account-manager.mjs'
+
 const { expect } = chai
 chai.use(sinonChai)
 chai.use(dirtyChai)
 chai.use(chaiAsPromised)
 chai.should()
-
-import { TlsAuthenticator } from '../../lib/models/authenticator.mjs'
-import SolidHost from '../../lib/models/solid-host.mjs'
-import AccountManager from '../../lib/models/account-manager.mjs'
 
 const host = SolidHost.from({ serverUri: 'https://example.com' })
 const accountManager = AccountManager.from({ host, multiuser: true })

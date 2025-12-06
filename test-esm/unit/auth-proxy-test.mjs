@@ -4,9 +4,9 @@ import request from 'supertest'
 import nock from 'nock'
 import chai from 'chai'
 
-const { expect } = chai
-
 import authProxy from '../../lib/handlers/auth-proxy.mjs'
+
+const { expect } = chai
 
 const HOST = 'solid.org'
 const USER = 'https://ruben.verborgh.org/profile/#me'

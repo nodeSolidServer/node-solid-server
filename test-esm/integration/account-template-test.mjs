@@ -4,12 +4,12 @@ import fs from 'fs-extra'
 import chai from 'chai'
 import sinonChai from 'sinon-chai'
 
+import AccountTemplate from '../../lib/models/account-template.js'
+import UserAccount from '../../lib/models/user-account.js'
+
 const { expect } = chai
 chai.use(sinonChai)
 chai.should()
-
-import AccountTemplate from '../../lib/models/account-template.js'
-import UserAccount from '../../lib/models/user-account.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)

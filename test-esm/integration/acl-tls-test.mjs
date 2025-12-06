@@ -1,13 +1,9 @@
 import { assert } from 'chai'
 import fs from 'fs-extra'
 import $rdf from 'rdflib'
-import { httpRequest as request } from '../../test/utils.js'
+import { httpRequest as request, cleanDir } from '../../test/utils.js'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { cleanDir } from '../../test/utils.js'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
 
 /**
  * Note: this test suite requires an internet connection, since it actually
@@ -22,6 +18,9 @@ import { rm } from '../../test/utils.js'
 
 import ldnode from '../../index.js'
 import solidNamespace from 'solid-namespace'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 const ns = solidNamespace($rdf)
 
 const port = 7777

@@ -9,14 +9,14 @@ import SolidAuthOIDC from '@solid/solid-auth-oidc'
 import fetch from 'node-fetch'
 import localStorage from 'localstorage-memory'
 import { URL, URLSearchParams } from 'whatwg-url'
-global.URL = URL
-global.URLSearchParams = URLSearchParams
 import { cleanDir, cp } from '../../test/utils.js'
 
 import supertest from 'supertest'
 import chai from 'chai'
-const expect = chai.expect
 import dirtyChai from 'dirty-chai'
+global.URL = URL
+global.URLSearchParams = URLSearchParams
+const expect = chai.expect
 chai.use(dirtyChai)
 
 const __filename = fileURLToPath(import.meta.url)

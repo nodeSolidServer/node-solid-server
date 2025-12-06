@@ -1,16 +1,16 @@
 import { describe, it } from 'mocha'
 import { assert } from 'chai'
 import fetch from 'node-fetch'
-const { Headers } = fetch
 
 import * as utils from '../../lib/utils.mjs'
+const { Headers } = fetch
 
-const { 
-  pathBasename, 
-  stripLineEndings, 
-  debrack, 
-  fullUrlForReq, 
-  getContentType 
+const {
+  pathBasename,
+  stripLineEndings,
+  debrack,
+  fullUrlForReq,
+  getContentType
 } = utils
 
 describe('Utility functions', function () {

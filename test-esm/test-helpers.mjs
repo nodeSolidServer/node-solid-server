@@ -8,9 +8,9 @@ export const testConfig = {
 }
 
 // Utility to create test servers with ESM modules
-export async function createTestServer(options = {}) {
+export async function createTestServer (options = {}) {
   const { default: createApp } = await import('../index.mjs')
-  
+
   const defaultOptions = {
     port: 0, // Random port
     serverUri: 'https://localhost',
@@ -18,13 +18,13 @@ export async function createTestServer(options = {}) {
     multiuser: false,
     ...options
   }
-  
+
   const app = createApp(defaultOptions)
   return app
 }
 
 // Utility to test ESM import functionality
-export async function testESMImport(modulePath) {
+export async function testESMImport (modulePath) {
   try {
     const module = await import(modulePath)
     return {
@@ -43,22 +43,22 @@ export async function testESMImport(modulePath) {
 
 // Performance measurement utilities
 export class PerformanceTimer {
-  constructor() {
+  constructor () {
     this.startTime = null
     this.endTime = null
   }
-  
-  start() {
+
+  start () {
     this.startTime = performance.now()
     return this
   }
-  
-  end() {
+
+  end () {
     this.endTime = performance.now()
     return this.duration
   }
-  
-  get duration() {
+
+  get duration () {
     return this.endTime - this.startTime
   }
 }

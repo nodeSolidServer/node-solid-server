@@ -9,15 +9,15 @@ import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 import HttpMocks from 'node-mocks-http'
 
-const { expect } = chai
-const ns = solidNamespace(rdf)
-chai.use(sinonChai)
-chai.should()
-
 import SolidHost from '../../lib/models/solid-host.mjs'
 import AccountManager from '../../lib/models/account-manager.mjs'
 import AddCertificateRequest from '../../lib/requests/add-cert-request.mjs'
 import WebIdTlsCertificate from '../../lib/models/webid-tls-certificate.mjs'
+
+const { expect } = chai
+const ns = solidNamespace(rdf)
+chai.use(sinonChai)
+chai.should()
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)

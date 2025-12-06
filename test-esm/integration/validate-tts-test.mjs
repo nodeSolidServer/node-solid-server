@@ -3,13 +3,13 @@ import { fileURLToPath } from 'url'
 import path from 'path'
 import fs from 'fs'
 
+// Import utility functions from the ESM utils
+import { setupSupertestServer } from '../utils.mjs'
+
 const require = createRequire(import.meta.url)
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-
-// Import utility functions from the ESM utils
-import { setupSupertestServer } from '../utils.mjs'
 
 const server = setupSupertestServer({
   live: true,

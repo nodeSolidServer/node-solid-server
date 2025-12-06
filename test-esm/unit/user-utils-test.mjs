@@ -4,7 +4,6 @@ import chai from 'chai'
 
 const { expect } = chai
 
-
 describe('user-utils', () => {
   describe('getName', () => {
     let ldp

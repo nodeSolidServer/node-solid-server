@@ -2,13 +2,8 @@ import chai from 'chai'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 
-const { expect } = chai
-chai.use(sinonChai)
-chai.should()
-
 import HttpMocks from 'node-mocks-http'
 import theBigUsernameBlacklistPkg from 'the-big-username-blacklist'
-const blacklist = theBigUsernameBlacklistPkg
 
 import LDP from '../../lib/ldp.mjs'
 import AccountManager from '../../lib/models/account-manager.mjs'
@@ -16,6 +11,11 @@ import SolidHost from '../../lib/models/solid-host.mjs'
 import defaults from '../../config/defaults.mjs'
 import { CreateAccountRequest } from '../../lib/requests/create-account-request.mjs'
 import blacklistService from '../../lib/services/blacklist-service.mjs'
+
+const { expect } = chai
+chai.use(sinonChai)
+chai.should()
+const blacklist = theBigUsernameBlacklistPkg
 
 describe('CreateAccountRequest', () => {
   let host, store, accountManager

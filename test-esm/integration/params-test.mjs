@@ -5,30 +5,30 @@ import { assert } from 'chai'
 import supertest from 'supertest'
 import { createRequire } from 'module'
 
-const require = createRequire(import.meta.url)
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
-
 // Import utilities from ESM version
 import { rm, write, read, cleanDir, getTestRoot, setTestRoot } from '../utils.mjs'
 
 // CommonJS modules that haven't been converted yet
 // const ldnode = require('../../index')
 import ldnode, { createServer } from '../../index.mjs'
+
+const require = createRequire(import.meta.url)
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
 console.log(getTestRoot())
 
 describe('LDNODE params', function () {
   describe('suffixMeta', function () {
     describe('not passed', function () {
-    after(function () {
+      after(function () {
       // Clean up the sampleContainer directory after tests
-      const fs = require('fs');
-      const pathModule = require('path');
-      const dirPath = pathModule.join(process.cwd(), 'sampleContainer');
-      if (fs.existsSync(dirPath)) {
-        fs.rmSync(dirPath, { recursive: true, force: true });
-      }
-    });
+        const fs = require('fs')
+        const pathModule = require('path')
+        const dirPath = pathModule.join(process.cwd(), 'sampleContainer')
+        if (fs.existsSync(dirPath)) {
+          fs.rmSync(dirPath, { recursive: true, force: true })
+        }
+      })
       it('should fallback on .meta', function () {
         const ldp = ldnode({ webid: false })
         assert.equal(ldp.locals.ldp.suffixMeta, '.meta')
@@ -52,30 +52,30 @@ describe('LDNODE params', function () {
 
       it('should fallback on current working directory', function () {
         assert.equal(path.normalize(ldp.locals.ldp.resourceMapper._rootPath), path.normalize(process.cwd()))
-        console.log('Root path is', ldp.locals.ldp.resourceMapper._rootPath);
+        console.log('Root path is', ldp.locals.ldp.resourceMapper._rootPath)
       })
 
       it('new : should find resource in correct path', function (done) {
-  const fs = require('fs');
-  const pathModule = require('path');
-  const dirPath = pathModule.join(process.cwd(), 'sampleContainer');
-  const ldp = require('../../index.js')({ dirPath, webid: false });
-  const server = require('supertest')(ldp);
-  const filePath = pathModule.join(dirPath, 'example.ttl');
-  const fileContent = '<#current> <#temp> 123 .';
-  fs.mkdirSync(dirPath, { recursive: true });
-  fs.writeFileSync(filePath, fileContent);
-  console.log('Wrote file to', filePath);
-  server.get('/sampleContainer/example.ttl')
-    .expect('Link', /http:\/\/www.w3.org\/ns\/ldp#Resource/)
-    .expect(200)
-    .end(function (err, res, body) {
-      assert.equal(fs.readFileSync(filePath, 'utf8'), fileContent);
-      fs.unlinkSync(filePath);
-      done(err);
-    });
-});
-      
+        const fs = require('fs')
+        const pathModule = require('path')
+        const dirPath = pathModule.join(process.cwd(), 'sampleContainer')
+        const ldp = require('../../index.js')({ dirPath, webid: false })
+        const server = require('supertest')(ldp)
+        const filePath = pathModule.join(dirPath, 'example.ttl')
+        const fileContent = '<#current> <#temp> 123 .'
+        fs.mkdirSync(dirPath, { recursive: true })
+        fs.writeFileSync(filePath, fileContent)
+        console.log('Wrote file to', filePath)
+        server.get('/sampleContainer/example.ttl')
+          .expect('Link', /http:\/\/www.w3.org\/ns\/ldp#Resource/)
+          .expect(200)
+          .end(function (err, res, body) {
+            assert.equal(fs.readFileSync(filePath, 'utf8'), fileContent)
+            fs.unlinkSync(filePath)
+            done(err)
+          })
+      })
+
       it.skip('initial : should find resource in correct path', function (done) {
         // Write to the default resources directory, matching the server's root
         const resourcePath = path.join('sampleContainer', 'example.ttl')
@@ -103,27 +103,27 @@ describe('LDNODE params', function () {
       })
 
       it('new : should find resource in correct path', function (done) {
-  const fs = require('fs');
-  const pathModule = require('path');
-  const ldp = require('../../index.js')({ root: './test-esm/resources/', webid: false });
-  const server = require('supertest')(ldp);
-  const dirPath = pathModule.join(__dirname, '../resources/sampleContainer');
-  const filePath = pathModule.join(dirPath, 'example.ttl');
-  const fileContent = '<#current> <#temp> 123 .';
-  fs.mkdirSync(dirPath, { recursive: true });
-  fs.writeFileSync(filePath, fileContent);
-  console.log('Wrote file to', filePath);
+        const fs = require('fs')
+        const pathModule = require('path')
+        const ldp = require('../../index.js')({ root: './test-esm/resources/', webid: false })
+        const server = require('supertest')(ldp)
+        const dirPath = pathModule.join(__dirname, '../resources/sampleContainer')
+        const filePath = pathModule.join(dirPath, 'example.ttl')
+        const fileContent = '<#current> <#temp> 123 .'
+        fs.mkdirSync(dirPath, { recursive: true })
+        fs.writeFileSync(filePath, fileContent)
+        console.log('Wrote file to', filePath)
 
-  server.get('/sampleContainer/example.ttl')
-    .expect('Link', /http:\/\/www.w3.org\/ns\/ldp#Resource/)
-    .expect(200)
-    .end(function (err, res, body) {
-      assert.equal(fs.readFileSync(filePath, 'utf8'), fileContent);
-      fs.unlinkSync(filePath);
-      done(err);
-    });
-});
-      
+        server.get('/sampleContainer/example.ttl')
+          .expect('Link', /http:\/\/www.w3.org\/ns\/ldp#Resource/)
+          .expect(200)
+          .end(function (err, res, body) {
+            assert.equal(fs.readFileSync(filePath, 'utf8'), fileContent)
+            fs.unlinkSync(filePath)
+            done(err)
+          })
+      })
+
       it.skip('initial :should find resource in correct path', function (done) {
         write(
           '<#current> <#temp> 123 .',

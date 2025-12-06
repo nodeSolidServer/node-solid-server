@@ -4,13 +4,13 @@ import chai from 'chai'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 
-const { expect } = chai
-chai.use(sinonChai)
-chai.should()
-
 import SolidHost from '../../lib/models/solid-host.mjs'
 import AccountManager from '../../lib/models/account-manager.mjs'
 import EmailService from '../../lib/services/email-service.mjs'
+
+const { expect } = chai
+chai.use(sinonChai)
+chai.should()
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)

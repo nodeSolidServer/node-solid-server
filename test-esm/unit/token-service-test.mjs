@@ -7,7 +7,6 @@ const { expect } = chai
 chai.use(dirtyChai)
 chai.should()
 
-
 describe('TokenService', () => {
   describe('constructor()', () => {
     it('should init with an empty tokens store', () => {
@@ -55,13 +54,13 @@ describe('TokenService', () => {
       const service = new TokenService()
 
       const token = service.generate('valid')
-      
+
       expect(() => service.verify('invalid', token)).to.throw('Invalid domain for tokens: invalid')
     })
 
     it('should return false for non-existent tokens', () => {
       const service = new TokenService()
-      
+
       // First create the domain
       service.generate('foo')
 
@@ -74,7 +73,7 @@ describe('TokenService', () => {
       const service = new TokenService()
 
       const token = service.generate('test')
-      
+
       service.remove('test', token)
 
       expect(service.tokens.test).to.not.have.property(token)

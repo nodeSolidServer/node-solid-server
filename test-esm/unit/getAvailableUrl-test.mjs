@@ -1,7 +1,7 @@
 import { strict as assert } from 'assert'
 import LDP from '../../lib/ldp.mjs'
 
-export async function test_noExistingResource() {
+export async function test_noExistingResource () {
   const rm = {
     resolveUrl: (hostname, containerURI) => `https://${hostname}/root${containerURI}/`,
     mapUrlToFile: async () => { throw new Error('Not found') }
@@ -11,7 +11,7 @@ export async function test_noExistingResource() {
   assert.equal(url, 'https://host.test/root/container/name.txt')
 }
 
-export async function test_existingResourcePrefixes() {
+export async function test_existingResourcePrefixes () {
   let called = 0
   const rm = {
     resolveUrl: (hostname, containerURI) => `https://${hostname}/root${containerURI}/`,
