@@ -6,10 +6,11 @@ import { dirname, join } from 'path'
 const require = createRequire(import.meta.url)
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const { setupSupertestServer } = require('../../test/utils')
+// import { setupSupertestServer } from '../utils.mjs'
 
 describe('formats', function () {
   const server = setupSupertestServer({
-    root: join(__dirname, '../../test/resources'),
+    root: join(__dirname, '../resources'),
     webid: false
   })
 

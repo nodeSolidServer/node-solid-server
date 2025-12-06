@@ -1,5 +1,5 @@
-import ldnode from './lib/create-app.mjs'
 import createServer from './lib/create-server.mjs'
+import ldnode from './lib/create-app.mjs'
 import startCli from './bin/lib/cli.mjs'
 
 // Preserve the CommonJS-style shape where the default export has

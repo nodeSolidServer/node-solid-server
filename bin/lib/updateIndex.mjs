@@ -12,7 +12,7 @@ import { initConfigDir, initTemplateDirs } from '../../lib/server-config.mjs';
 
 export default function (program) {
   program
-    .command('updateindex')
+    .command('updateindex.mjs')
     .description('Update index.html in root of all PODs that haven\'t been marked otherwise')
     .action(async (options) => {
       const config = loadConfig(program, options);

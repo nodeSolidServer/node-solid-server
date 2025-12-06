@@ -1,71 +1,47 @@
-// import fs from 'fs-extra' // see fs-extra/esm and fs-extra doc
-
-import fs from 'fs'
+import fs from 'fs-extra'
+import rimraf from 'rimraf'
 import path from 'path'
 import { fileURLToPath } from 'url'
+import OIDCProvider from '@solid/oidc-op'
 import dns from 'dns'
-import https from 'https'
-import { createRequire } from 'module'
+import ldnode from '../index.js'
+// import ldnode from '../index.mjs'
+import supertest from 'supertest'
 import fetch from 'node-fetch'
+import https from 'https'
 
-const require = createRequire(import.meta.url)
-import rimraf from 'rimraf'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-import fse from 'fs-extra'
-import * as OIDCModule from '@solid/oidc-op'
-const OIDCProvider = OIDCModule.Provider
-import supertest from 'supertest'
-
-// Import the main ldnode module (may need adjustment based on your ESM exports)
-// const ldnode = require('../index.js') // or import as needed
-import ldnode from '../index.mjs'
 
 const TEST_HOSTS = ['nic.localhost', 'tim.localhost', 'nicola.localhost']
 
-// Configurable test root directory
-// For custom route
-// let TEST_ROOT = path.join(__dirname, '../test-esm/resources/')
-// For default root (process.cwd()):
-let TEST_ROOT = path.join(process.cwd(), 'test-esm/resources')
-
-export function setTestRoot(rootPath) {
-  TEST_ROOT = rootPath
-}
-export function getTestRoot() {
-  return TEST_ROOT
-}
-
 export function rm (file) {
-  return rimraf.sync(path.join(TEST_ROOT, file))
+  return rimraf.sync(path.normalize(path.join(__dirname, '../../test-esm/resources/' + file)))
 }
 
 export function cleanDir (dirPath) {
-  fse.removeSync(path.join(dirPath, '.well-known/.acl'))
-  fse.removeSync(path.join(dirPath, '.acl'))
-  fse.removeSync(path.join(dirPath, 'favicon.ico'))
-  fse.removeSync(path.join(dirPath, 'favicon.ico.acl'))
-  fse.removeSync(path.join(dirPath, 'index.html'))
-  fse.removeSync(path.join(dirPath, 'index.html.acl'))
-  fse.removeSync(path.join(dirPath, 'robots.txt'))
-  fse.removeSync(path.join(dirPath, 'robots.txt.acl'))
+  fs.removeSync(path.normalize(path.join(dirPath, '.well-known/.acl')))
+  fs.removeSync(path.normalize(path.join(dirPath, '.acl')))
+  fs.removeSync(path.normalize(path.join(dirPath, 'favicon.ico')))
+  fs.removeSync(path.normalize(path.join(dirPath, 'favicon.ico.acl')))
+  fs.removeSync(path.normalize(path.join(dirPath, 'index.html')))
+  fs.removeSync(path.normalize(path.join(dirPath, 'index.html.acl')))
+  fs.removeSync(path.normalize(path.join(dirPath, 'robots.txt')))
+  fs.removeSync(path.normalize(path.join(dirPath, 'robots.txt.acl')))
 }
 
 export function write (text, file) {
-  console.log('Writing to', path.join(TEST_ROOT, file))
-  // fs.mkdirSync(path.dirname(path.join(TEST_ROOT, file), { recursive: true }))
-  return fs.writeFileSync(path.join(TEST_ROOT, file), text)
+  return fs.writeFileSync(path.normalize(path.join(__dirname, '../../test-esm/resources/' + file)), text)
 }
 
 export function cp (src, dest) {
-  return fse.copySync(
-    path.join(TEST_ROOT, src),
-    path.join(TEST_ROOT, dest))
+  return fs.copySync(
+    path.normalize(path.join(__dirname, '../../test-esm/resources/' + src)),
+    path.normalize(path.join(__dirname, '../../test-esm/resources/' + dest)))
 }
 
 export function read (file) {
-  console.log('Reading from', path.join(TEST_ROOT, file))
-  return fs.readFileSync(path.join(TEST_ROOT, file), {
+  return fs.readFileSync(path.normalize(path.join(__dirname, '../../test-esm/resources/' + file)), {
     encoding: 'utf8'
   })
 }
@@ -106,8 +82,8 @@ export function checkDnsSettings () {
  */
 export function loadProvider (configPath) {
   return Promise.resolve()
-    .then(() => {
-      const config = require(configPath)
+    .then(async () => {
+      const { default: config } = await import(configPath)
 
       const provider = new OIDCProvider(config)
 
@@ -115,13 +91,14 @@ export function loadProvider (configPath) {
     })
 }
 
-export function createServer (options) {
-  console.log('Creating server with root:', options.root || process.cwd())
+export { createServer }
+function createServer (options) {
   return ldnode.createServer(options)
 }
 
-export function setupSupertestServer (options) {
-  const ldpServer = createServer(options)
+export { setupSupertestServer }
+function setupSupertestServer (options) {
+  const ldpServer = ldnode.createServer(options)
   return supertest(ldpServer)
 }
 
@@ -189,19 +166,3 @@ function requestAdapter (arg1, arg2, arg3) {
 requestAdapter.del = requestAdapter.delete
 
 export const httpRequest = requestAdapter
-
-// Provide default export for compatibility
-export default {
-  rm,
-  cleanDir,
-  write,
-  cp,
-  read,
-  backup,
-  restore,
-  checkDnsSettings,
-  loadProvider,
-  createServer,
-  setupSupertestServer,
-  httpRequest
-}

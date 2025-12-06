@@ -16,7 +16,7 @@ import { checkDnsSettings, setupSupertestServer } from '../utils.mjs'
 
 describe('CORS Proxy', () => {
   const server = setupSupertestServer({
-    root: path.join(__dirname, '../../test/resources'),
+    root: path.join(__dirname, '../resources'),
     corsProxy: '/proxy',
     webid: false
   })
