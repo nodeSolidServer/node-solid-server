@@ -1,7 +1,6 @@
 import { describe, it } from 'mocha'
 import chai from 'chai'
 import chaiAsPromised from 'chai-as-promised'
-import { createRequire } from 'module'
 
 import ACLChecker from '../../lib/acl-checker.mjs'
 

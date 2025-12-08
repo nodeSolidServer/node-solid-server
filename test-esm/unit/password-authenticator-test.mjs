@@ -63,9 +63,9 @@ describe('PasswordAuthenticator', () => {
     })
 
     it('should resolve with user if credentials are valid', () => {
-      const findUserStub = sandbox.stub(mockUserStore, 'findUser')
+      sandbox.stub(mockUserStore, 'findUser')
         .resolves({ username: 'alice' })
-      const matchPasswordStub = sandbox.stub(mockUserStore, 'matchPassword')
+      sandbox.stub(mockUserStore, 'matchPassword')
         .resolves({ username: 'alice' })
 
       return pwAuth.findValidUser()
@@ -75,7 +75,7 @@ describe('PasswordAuthenticator', () => {
     })
 
     it('should reject if user is not found', () => {
-      const findUserStub = sandbox.stub(mockUserStore, 'findUser')
+      sandbox.stub(mockUserStore, 'findUser')
         .resolves(null)
 
       return pwAuth.findValidUser()
@@ -85,9 +85,9 @@ describe('PasswordAuthenticator', () => {
     })
 
     it('should reject if password does not match', () => {
-      const findUserStub = sandbox.stub(mockUserStore, 'findUser')
+      sandbox.stub(mockUserStore, 'findUser')
         .resolves({ username: 'alice' })
-      const matchPasswordStub = sandbox.stub(mockUserStore, 'matchPassword')
+      sandbox.stub(mockUserStore, 'matchPassword')
         .resolves(null)
 
       return pwAuth.findValidUser()
@@ -97,7 +97,7 @@ describe('PasswordAuthenticator', () => {
     })
 
     it('should reject with error if userStore throws', () => {
-      const findUserStub = sandbox.stub(mockUserStore, 'findUser')
+      sandbox.stub(mockUserStore, 'findUser')
         .rejects(new Error('Database error'))
 
       return pwAuth.findValidUser()

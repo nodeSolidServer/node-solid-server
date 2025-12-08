@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 import { describe, it, before } from 'mocha'
 import { expect } from 'chai'
 import SolidHost from '../../lib/models/solid-host.mjs'
@@ -112,7 +113,7 @@ describe('SolidHost', () => {
       const authUrl = host.authEndpoint
 
       expect(authUrl.host).to.equal('localhost:8443')
-      expect(authUrl.path).to.equal('/authorize')
+      expect(authUrl.pathname).to.equal('/authorize')
     })
   })
 })

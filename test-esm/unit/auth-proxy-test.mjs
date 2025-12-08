@@ -1,4 +1,3 @@
-import { createRequire } from 'module'
 import express from 'express'
 import request from 'supertest'
 import nock from 'nock'

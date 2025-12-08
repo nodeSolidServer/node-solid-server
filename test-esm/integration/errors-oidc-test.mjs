@@ -3,7 +3,7 @@ import supertest from 'supertest'
 import ldnode from '../../index.js'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { cleanDir, cp } from '../utils/index.mjs'
+import { cleanDir, cp } from '../utils.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -11,9 +11,9 @@ const __dirname = path.dirname(__filename)
 describe('OIDC error handling', function () {
   const serverUri = 'https://localhost:3457'
   let ldpHttpsServer
-  const rootPath = path.normalize(path.join(__dirname, '../../test/resources/accounts/errortests'))
-  const configPath = path.normalize(path.join(__dirname, '../../test/resources/config'))
-  const dbPath = path.normalize(path.join(__dirname, '../../test/resources/accounts/db'))
+  const rootPath = path.normalize(path.join(__dirname, '../resources/accounts/errortests'))
+  const configPath = path.normalize(path.join(__dirname, '../resources/config'))
+  const dbPath = path.normalize(path.join(__dirname, '../resources/accounts/db'))
 
   const ldp = ldnode.createServer({
     root: rootPath,

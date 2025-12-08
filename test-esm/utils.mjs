@@ -2,7 +2,6 @@
 
 import fs from 'fs'
 import path from 'path'
-import { fileURLToPath } from 'url'
 import dns from 'dns'
 import https from 'https'
 import { createRequire } from 'module'
@@ -11,14 +10,9 @@ import rimraf from 'rimraf'
 import fse from 'fs-extra'
 import * as OIDCModule from '@solid/oidc-op'
 import supertest from 'supertest'
-
-// Import the main ldnode module (may need adjustment based on your ESM exports)
-// const ldnode = require('../index.js') // or import as needed
 import ldnode from '../index.mjs'
 
 const require = createRequire(import.meta.url)
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
 const OIDCProvider = OIDCModule.Provider
 
 const TEST_HOSTS = ['nic.localhost', 'tim.localhost', 'nicola.localhost']

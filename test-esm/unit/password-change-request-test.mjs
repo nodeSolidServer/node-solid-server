@@ -1,4 +1,3 @@
-import { createRequire } from 'module'
 import chai from 'chai'
 import sinon from 'sinon'
 import dirtyChai from 'dirty-chai'
@@ -13,8 +12,6 @@ const { expect } = chai
 chai.use(dirtyChai)
 chai.use(sinonChai)
 chai.should()
-
-const require = createRequire(import.meta.url)
 
 describe('PasswordChangeRequest', () => {
   sinon.spy(PasswordChangeRequest.prototype, 'error')

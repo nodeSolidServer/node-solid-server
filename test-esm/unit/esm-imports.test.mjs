@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import { testESMImport, PerformanceTimer } from '../test-helpers.mjs'

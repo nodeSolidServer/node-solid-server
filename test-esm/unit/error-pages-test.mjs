@@ -3,8 +3,6 @@ import chai from 'chai'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 import dirtyChai from 'dirty-chai'
-import { createRequire } from 'module'
-
 import * as errorPages from '../../lib/handlers/error-pages.mjs'
 
 const { expect } = chai

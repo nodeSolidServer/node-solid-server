@@ -1,8 +1,5 @@
-import { createRequire } from 'module'
 import { expect } from 'chai'
-import supertest from 'supertest'
-import { fileURLToPath } from 'url'
-import { dirname, join } from 'path'
+import { join } from 'path'
 import { setupSupertestServer } from '../../test-esm/utils.mjs'
 
 // const require = createRequire(import.meta.url)

@@ -3,7 +3,6 @@ import chai from 'chai'
 import sinon from 'sinon'
 import sinonChai from 'sinon-chai'
 import dirtyChai from 'dirty-chai'
-import { createRequire } from 'module'
 
 // Import CommonJS modules
 // const Auth = require('../../lib/api/authn')

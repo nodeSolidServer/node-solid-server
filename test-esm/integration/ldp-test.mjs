@@ -2,6 +2,13 @@ import { createRequire } from 'module'
 import { fileURLToPath } from 'url'
 import path from 'path'
 import fs from 'fs'
+import $rdf from 'rdflib'
+// const stringToStream = require('../../lib/utils').stringToStream
+import { stringToStream } from '../../lib/utils.mjs'
+
+// Import utility functions from the ESM utils
+// const { rm, read } = await import('../utils.mjs')
+import { rm, read } from '../utils.mjs'
 
 const require = createRequire(import.meta.url)
 
@@ -11,16 +18,11 @@ const __dirname = path.dirname(__filename)
 const chai = require('chai')
 const assert = chai.assert
 chai.use(require('chai-as-promised'))
-import $rdf from 'rdflib'
 const ns = require('solid-namespace')($rdf)
 const LDP = require('../../lib/ldp')
-const stringToStream = require('../../lib/utils').stringToStream
 const randomBytes = require('randombytes')
 const ResourceMapper = require('../../lib/resource-mapper')
 const intoStream = require('into-stream')
-
-// Import utility functions from the ESM utils
-const { rm, read } = await import('../utils.mjs')
 
 describe('LDP', function () {
   const root = path.join(__dirname, '../../test/resources/ldp-test/')
@@ -362,7 +364,7 @@ describe('LDP', function () {
         fs.unlinkSync(path.join(root, 'resources/sampleContainer/basicContainerFile.ttl'))
       } catch (e) { /* ignore */ }
     })
-    
+
     /*
     it('should inherit type if file is .ttl', function (done) {
       write('@prefix dcterms: <http://purl.org/dc/terms/>.' +
@@ -423,34 +425,34 @@ describe('LDP', function () {
             graph,
             'https://localhost:8443/resources/sampleContainer',
             'text/turtle')
-            
+
           // Find the basicContainerFile.ttl resource and get its type statements
           // Use direct graph.statements filtering for maximum compatibility
           const targetFile = 'basicContainerFile.ttl'
           let basicContainerStatements = []
-          
+
           // Find the subject URL that ends with our target file
           const matchingSubjects = graph.statements
             .map(stmt => stmt.subject.value)
             .filter(subject => subject.endsWith(targetFile))
-          
+
           if (matchingSubjects.length > 0) {
             const subjectUrl = matchingSubjects[0]
-            
+
             // Get all type statements for this subject
             basicContainerStatements = graph.statements
-              .filter(stmt => 
-                stmt.subject.value === subjectUrl && 
+              .filter(stmt =>
+                stmt.subject.value === subjectUrl &&
                 stmt.predicate.value === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
               )
               .map(stmt => stmt.object.value)
           }
-          
+
           const expectedStatements = [
             'http://www.w3.org/ns/iana/media-types/text/turtle#Resource',
             'http://www.w3.org/ns/ldp#Resource'
           ]
-          
+
           assert.deepEqual(basicContainerStatements.sort(), expectedStatements)
 
           // Also check containerFile.ttl using the same robust approach
@@ -458,21 +460,21 @@ describe('LDP', function () {
           const containerMatchingSubjects = graph.statements
             .map(stmt => stmt.subject.value)
             .filter(subject => subject.endsWith(containerFile))
-            
+
           let containerStatements = []
           if (containerMatchingSubjects.length > 0) {
             const containerSubjectUrl = containerMatchingSubjects[0]
             containerStatements = graph.statements
-              .filter(stmt => 
-                stmt.subject.value === containerSubjectUrl && 
+              .filter(stmt =>
+                stmt.subject.value === containerSubjectUrl &&
                 stmt.predicate.value === 'http://www.w3.org/1999/02/22-rdf-syntax-ns#type'
               )
               .map(stmt => stmt.object.value)
           }
-          
+
           assert.deepEqual(containerStatements.sort(), expectedStatements)
 
-          // Clean up synchronously  
+          // Clean up synchronously
           try {
             fs.unlinkSync(path.join(root, 'resources/sampleContainer/containerFile.ttl'))
             fs.unlinkSync(path.join(root, 'resources/sampleContainer/basicContainerFile.ttl'))

@@ -1,6 +1,5 @@
-import { expect } from 'chai'
-
 // ESM Test Configuration
+import { performance as perf } from 'perf_hooks'
 export const testConfig = {
   timeout: 10000,
   slow: 2000,
@@ -49,12 +48,12 @@ export class PerformanceTimer {
   }
 
   start () {
-    this.startTime = performance.now()
+    this.startTime = perf.now()
     return this
   }
 
   end () {
-    this.endTime = performance.now()
+    this.endTime = perf.now()
     return this.duration
   }
 

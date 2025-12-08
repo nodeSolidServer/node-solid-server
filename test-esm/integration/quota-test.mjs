@@ -1,5 +1,5 @@
+/* eslint-disable no-unused-expressions */
 import { createRequire } from 'module'
-import { fileURLToPath } from 'url'
 import path from 'path'
 import chai from 'chai'
 
@@ -10,9 +10,6 @@ const { expect } = chai
 
 const require = createRequire(import.meta.url)
 const { getQuota, overQuota } = require('../../lib/utils')
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
 
 const root = 'accounts-acl/config/templates/new-account/'
 // const $rdf = require('rdflib')

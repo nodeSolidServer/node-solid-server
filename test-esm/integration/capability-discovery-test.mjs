@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 import { createRequire } from 'module'
 import { fileURLToPath } from 'url'
 import path from 'path'

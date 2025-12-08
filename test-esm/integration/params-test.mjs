@@ -80,7 +80,7 @@ describe('LDNODE params', function () {
         // Write to the default resources directory, matching the server's root
         const resourcePath = path.join('sampleContainer', 'example.ttl')
         console.log('initial : Writing test resource to', resourcePath)
-        setTestRoot(path.join(__dirname, '../../test-esm/resources/'))
+        setTestRoot(path.join(__dirname, '../resources/'))
         write('<#current> <#temp> 123 .', resourcePath)
 
         server.get('/test-esm/resources/sampleContainer/example.ttl')
@@ -146,7 +146,7 @@ describe('LDNODE params', function () {
     const rootPath = './test-esm/resources/'
     const ldp = ldnode({
       root: rootPath,
-      apiApps: path.join(__dirname, '../../test-esm/resources/sampleContainer'),
+      apiApps: path.join(__dirname, '../resources/sampleContainer'),
       webid: false
     })
     const server = supertest(ldp)
@@ -163,7 +163,7 @@ describe('LDNODE params', function () {
 
     const port = 7777
     const serverUri = 'https://localhost:7777'
-    const rootPath = path.join(__dirname, '../../test-esm/resources/accounts-acl')
+    const rootPath = path.join(__dirname, '../resources/accounts-acl')
     const dbPath = path.join(rootPath, 'db')
     const configPath = path.join(rootPath, 'config')
 

@@ -1,7 +1,7 @@
 import { assert } from 'chai'
 import fs from 'fs-extra'
 import $rdf from 'rdflib'
-import { httpRequest as request, cleanDir } from '../../test/utils.js'
+import { httpRequest as request, cleanDir, rm } from '../utils.mjs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 
@@ -11,12 +11,12 @@ import { fileURLToPath } from 'url'
  */
 
 // Helper functions for the FS
-import { rm } from '../../test/utils.js'
+// import { rm } from '../../test/utils.js'
 // var write = require('./utils').write
 // var cp = require('./utils').cp
 // var read = require('./utils').read
 
-import ldnode from '../../index.js'
+import ldnode from '../../index.mjs'
 import solidNamespace from 'solid-namespace'
 
 const __filename = fileURLToPath(import.meta.url)

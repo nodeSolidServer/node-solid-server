@@ -1,7 +1,7 @@
 import { fileURLToPath } from 'url'
 import fs from 'fs'
 import path from 'path'
-import { v4 as uuidv4, validate as uuidValidate } from 'uuid'
+import { validate as uuidValidate } from 'uuid'
 import { expect } from 'chai'
 import { parseDictionary } from 'structured-headers'
 import prepFetch from 'prep-fetch'

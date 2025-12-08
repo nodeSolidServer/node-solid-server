@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-escape */
 // ESM version of integration test for PATCH with application/sparql-update
 import { describe, it, after } from 'mocha'
 import { strict as assert } from 'assert'
@@ -13,10 +14,8 @@ const ldnode = require('../../index.js')
 const supertest = require('supertest')
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-const fse = require('fs-extra')
 
 before(function () {
-  // fse.ensureDirSync(path.join(__dirname, '../test/resources/sampleContainer'));
 })
 
 describe('PATCH through application/sparql-update', function () {
@@ -30,7 +29,7 @@ describe('PATCH through application/sparql-update', function () {
 
   it('should create a new file if file does not exist', function (done) {
     rm('sampleContainer/notExisting.ttl')
-    const sampleContainerPath = path.join(__dirname, '/resources/sampleContainer')
+    // const sampleContainerPath = path.join(__dirname, '/resources/sampleContainer')
     // fse.ensureDirSync(sampleContainerPath);
     server.patch('/notExisting.ttl')
       .set('content-type', 'application/sparql-update')

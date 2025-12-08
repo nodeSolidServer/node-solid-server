@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 import { fileURLToPath } from 'url'
 import path from 'path'
 import chai from 'chai'
@@ -10,7 +11,7 @@ const { expect } = chai
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const dbPath = path.join(__dirname, '../../test/resources/.db')
+const dbPath = path.join(__dirname, '../resources/.db')
 
 describe('OidcManager', () => {
   beforeEach(() => {
@@ -19,8 +20,8 @@ describe('OidcManager', () => {
 
   describe('fromServerConfig()', () => {
     it('should result in an initialized oidc object', () => {
-      const serverUri = 'https://localhost:8443'
-      const host = SolidHost.from({ serverUri })
+      const providerUri = 'https://localhost:8443'
+      const host = SolidHost.from({ providerUri })
 
       const saltRounds = 5
       const argv = {
@@ -33,7 +34,7 @@ describe('OidcManager', () => {
 
       expect(oidc.rs.defaults.query).to.be.true
       expect(oidc.clients.store.backend.path.endsWith('db/oidc/rp/clients'))
-      expect(oidc.provider.issuer).to.equal(serverUri)
+      expect(oidc.provider.issuer).to.equal(providerUri)
       expect(oidc.users.backend.path.endsWith('db/oidc/users'))
       expect(oidc.users.saltRounds).to.equal(saltRounds)
     })

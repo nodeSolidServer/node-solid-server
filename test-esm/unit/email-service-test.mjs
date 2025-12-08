@@ -1,10 +1,9 @@
-// import { createRequire } from 'module'
+/* eslint-disable no-unused-expressions */
 import sinon from 'sinon'
 import chai from 'chai'
 import sinonChai from 'sinon-chai'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
-// const EmailService = require('../../lib/services/email-service')
 import EmailService from '../../lib/services/email-service.mjs'
 
 const { expect } = chai

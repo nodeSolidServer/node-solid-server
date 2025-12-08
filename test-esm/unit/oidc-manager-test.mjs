@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 // import { createRequire } from 'module'
 import { fileURLToPath } from 'url'
 import path from 'path'
@@ -35,9 +36,14 @@ describe('OidcManager', () => {
       const oidc = OidcManager.fromServerConfig(argv)
 
       expect(oidc.rs.defaults.query).to.be.true
-      expect(oidc.clients.store.backend.path.endsWith('db/rp/clients'))
+      const clientsPath = oidc.clients.store.backend.path
+      const usersPath = oidc.users.backend.path
+      // Check that the clients path contains an 'rp' segment (or 'clients') to handle layout differences
+      const clientsSegments = clientsPath.split(path.sep)
+      expect(clientsSegments.includes('rp') || clientsSegments.includes('clients')).to.be.true
       expect(oidc.provider.issuer).to.equal(serverUri)
-      expect(oidc.users.backend.path.endsWith('db/users'))
+      const usersSegments = usersPath.split(path.sep)
+      expect(usersSegments.includes('users')).to.be.true
       expect(oidc.users.saltRounds).to.equal(saltRounds)
     })
   })

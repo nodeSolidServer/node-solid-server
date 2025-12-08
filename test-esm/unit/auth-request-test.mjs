@@ -1,9 +1,6 @@
-import { createRequire } from 'module'
 import chai from 'chai'
 import sinonChai from 'sinon-chai'
 import dirtyChai from 'dirty-chai'
-import url, { fileURLToPath } from 'url'
-import { dirname } from 'path'
 
 import AuthRequest from '../../lib/requests/auth-request.mjs'
 import SolidHost from '../../lib/models/solid-host.mjs'
@@ -73,11 +70,10 @@ describe('AuthRequest', () => {
 
       const authUrl = request.authorizeUrl()
 
-      const parseQueryString = true
-      const parsedUrl = url.parse(authUrl, parseQueryString)
+      const parsedUrl = new URL(authUrl)
 
       for (const param in body) {
-        expect(body[param]).to.equal(parsedUrl.query[param])
+        expect(body[param]).to.equal(parsedUrl.searchParams.get(param))
       }
     })
   })

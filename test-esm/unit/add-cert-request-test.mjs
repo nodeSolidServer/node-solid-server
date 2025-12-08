@@ -1,4 +1,4 @@
-import { createRequire } from 'module'
+/* eslint-disable no-unused-expressions */
 import { fileURLToPath } from 'url'
 import fs from 'fs-extra'
 import path from 'path'
