@@ -1,12 +1,9 @@
-import { createRequire } from 'module'
 import { assert } from 'chai'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
+import { setupSupertestServer } from '../utils.mjs'
 
-const require = createRequire(import.meta.url)
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const { setupSupertestServer } = require('../../test/utils')
-// import { setupSupertestServer } from '../utils.mjs'
 
 describe('formats', function () {
   const server = setupSupertestServer({

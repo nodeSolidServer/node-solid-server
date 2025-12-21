@@ -1,15 +1,13 @@
-import { createRequire } from 'module'
 import { fileURLToPath } from 'url'
 import path from 'path'
 import fs from 'fs'
 // Import utility functions from the ESM utils
 import { read, rm, backup, restore } from '../utils.mjs'
-// const { assert } = require('chai')
 import { assert } from 'chai'
 import supertest from 'supertest'
 
-const require = createRequire(import.meta.url)
-const ldnode = require('../../index')
+import ldnode from '../../index.mjs'
+// import ldnode from '../../index.mjs';
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -39,6 +37,12 @@ describe('PATCH through text/n3', () => {
     server = ldnode.createServer(serverOptions)
     server.listen(port, done)
     request = supertest(serverUri)
+    // console.log('Server started at ' + serverUri)
+  })
+
+  // Stop the server
+  after(() => {
+    server.close()
   })
 
   after(() => {

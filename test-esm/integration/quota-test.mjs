@@ -1,18 +1,14 @@
 /* eslint-disable no-unused-expressions */
-import { createRequire } from 'module'
 import path from 'path'
 import chai from 'chai'
 
 // Import utility functions from the ESM utils
 import { read } from '../utils.mjs'
+import { getQuota, overQuota } from '../../lib/utils.mjs'
 
 const { expect } = chai
 
-const require = createRequire(import.meta.url)
-const { getQuota, overQuota } = require('../../lib/utils')
-
 const root = 'accounts-acl/config/templates/new-account/'
-// const $rdf = require('rdflib')
 
 describe('Get Quota', function () {
   const prefs = read(path.join(root, 'settings/serverSide.ttl'))

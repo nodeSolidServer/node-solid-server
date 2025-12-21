@@ -5,13 +5,10 @@ import { strict as assert } from 'assert'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { rm, write, read } from '../utils.mjs'
-// import supertest from 'supertest';
-// import ldnode from '../../index.js';
-import { createRequire } from 'module'
 
-const require = createRequire(import.meta.url)
-const ldnode = require('../../index.js')
-const supertest = require('supertest')
+import ldnode from '../../index.mjs'
+// import ldnode, { createServer } from '../../index.mjs'
+import supertest from 'supertest'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
@@ -20,6 +17,8 @@ before(function () {
 
 describe('PATCH through application/sparql-update', function () {
   // Starting LDP
+  // const ldp = ldnode.createServer({
+  console.log('root: ' + path.join(__dirname, '../resources/sampleContainer'))
   const ldp = ldnode({
     root: path.join(__dirname, '../resources/sampleContainer'),
     mount: '/test-esm',

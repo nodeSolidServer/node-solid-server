@@ -1,10 +1,8 @@
 import { expect } from 'chai'
 import { join } from 'path'
-import { setupSupertestServer } from '../../test-esm/utils.mjs'
+import { setupSupertestServer } from '../utils.mjs'
 
-// const require = createRequire(import.meta.url)
 const __dirname = import.meta.dirname // dirname(fileURLToPath(import.meta.url))
-// const { setupSupertestServer } = require('../../test/utils')
 
 describe('Header handler', () => {
   let request

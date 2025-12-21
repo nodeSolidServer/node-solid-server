@@ -1,4 +1,3 @@
-import { createRequire } from 'module'
 import { fileURLToPath } from 'url'
 import path from 'path'
 import fs from 'fs'
@@ -6,14 +5,13 @@ import chai from 'chai'
 
 // Import utility functions from the ESM utils
 import { httpRequest as request, rm } from '../utils.mjs'
-
-const { assert } = chai
-
-const require = createRequire(import.meta.url)
-const solidServer = require('../../index')
+import ldnode from '../../index.mjs'
+const solidServer = ldnode.default || ldnode
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
+
+const { assert } = chai
 
 describe('HTTP COPY API', function () {
   this.timeout(10000) // Set timeout for this test suite to 10 seconds

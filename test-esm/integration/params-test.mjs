@@ -1,18 +1,14 @@
 import { describe, it, before, after } from 'mocha'
 import { fileURLToPath } from 'url'
+import fs from 'fs'
 import path from 'path'
 import { assert } from 'chai'
 import supertest from 'supertest'
-import { createRequire } from 'module'
 
 // Import utilities from ESM version
 import { rm, write, read, cleanDir, getTestRoot, setTestRoot } from '../utils.mjs'
-
-// CommonJS modules that haven't been converted yet
-// const ldnode = require('../../index')
 import ldnode, { createServer } from '../../index.mjs'
 
-const require = createRequire(import.meta.url)
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 console.log(getTestRoot())
@@ -22,9 +18,7 @@ describe('LDNODE params', function () {
     describe('not passed', function () {
       after(function () {
       // Clean up the sampleContainer directory after tests
-        const fs = require('fs')
-        const pathModule = require('path')
-        const dirPath = pathModule.join(process.cwd(), 'sampleContainer')
+        const dirPath = path.join(process.cwd(), 'sampleContainer')
         if (fs.existsSync(dirPath)) {
           fs.rmSync(dirPath, { recursive: true, force: true })
         }
@@ -56,12 +50,10 @@ describe('LDNODE params', function () {
       })
 
       it('new : should find resource in correct path', function (done) {
-        const fs = require('fs')
-        const pathModule = require('path')
-        const dirPath = pathModule.join(process.cwd(), 'sampleContainer')
-        const ldp = require('../../index.js')({ dirPath, webid: false })
-        const server = require('supertest')(ldp)
-        const filePath = pathModule.join(dirPath, 'example.ttl')
+        const dirPath = path.join(process.cwd(), 'sampleContainer')
+        const ldp = ldnode({ dirPath, webid: false })
+        const server = supertest(ldp)
+        const filePath = path.join(dirPath, 'example.ttl')
         const fileContent = '<#current> <#temp> 123 .'
         fs.mkdirSync(dirPath, { recursive: true })
         fs.writeFileSync(filePath, fileContent)
@@ -103,12 +95,10 @@ describe('LDNODE params', function () {
       })
 
       it('new : should find resource in correct path', function (done) {
-        const fs = require('fs')
-        const pathModule = require('path')
-        const ldp = require('../../index.js')({ root: './test-esm/resources/', webid: false })
-        const server = require('supertest')(ldp)
-        const dirPath = pathModule.join(__dirname, '../resources/sampleContainer')
-        const filePath = pathModule.join(dirPath, 'example.ttl')
+        const ldp = createServer({ root: './test-esm/resources/', webid: false })
+        const server = supertest(ldp)
+        const dirPath = path.join(__dirname, '../resources/sampleContainer')
+        const filePath = path.join(dirPath, 'example.ttl')
         const fileContent = '<#current> <#temp> 123 .'
         fs.mkdirSync(dirPath, { recursive: true })
         fs.writeFileSync(filePath, fileContent)

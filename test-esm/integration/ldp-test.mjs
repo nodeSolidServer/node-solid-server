@@ -1,28 +1,26 @@
-import { createRequire } from 'module'
 import { fileURLToPath } from 'url'
 import path from 'path'
 import fs from 'fs'
 import $rdf from 'rdflib'
-// const stringToStream = require('../../lib/utils').stringToStream
 import { stringToStream } from '../../lib/utils.mjs'
 
 // Import utility functions from the ESM utils
 // const { rm, read } = await import('../utils.mjs')
 import { rm, read } from '../utils.mjs'
-
-const require = createRequire(import.meta.url)
+import chai from 'chai'
+import chaiAsPromised from 'chai-as-promised'
+import LDP from '../../lib/ldp.mjs'
+import { randomBytes } from 'node:crypto'
+import ResourceMapper from '../../lib/resource-mapper.mjs'
+import intoStream from 'into-stream'
+import nsImport from 'solid-namespace'
+const ns = nsImport($rdf)
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
-const chai = require('chai')
+chai.use(chaiAsPromised)
 const assert = chai.assert
-chai.use(require('chai-as-promised'))
-const ns = require('solid-namespace')($rdf)
-const LDP = require('../../lib/ldp')
-const randomBytes = require('randombytes')
-const ResourceMapper = require('../../lib/resource-mapper')
-const intoStream = require('into-stream')
 
 describe('LDP', function () {
   const root = path.join(__dirname, '../../test/resources/ldp-test/')
