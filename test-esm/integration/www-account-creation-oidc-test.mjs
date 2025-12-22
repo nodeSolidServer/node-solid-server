@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-expressions */
 import supertest from 'supertest'
 import rdf from 'rdflib'
-import ldnode from '../../index.js'
+import ldnode from '../../index.mjs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import fs from 'fs-extra'
@@ -13,20 +13,20 @@ const $rdf = rdf
 
 // FIXME: #1502
 describe('AccountManager (OIDC account creation tests)', function () {
-  const port = 3457
+  const port = 7457
   const serverUri = `https://localhost:${port}`
   const host = `localhost:${port}`
-  const root = path.normalize(path.join(__dirname, '../../test/resources/accounts/'))
-  const configPath = path.normalize(path.join(__dirname, '../../test/resources/config'))
-  const dbPath = path.normalize(path.join(__dirname, '../../test/resources/accounts/db'))
+  const root = path.normalize(path.join(__dirname, '../resources/accounts/'))
+  const configPath = path.normalize(path.join(__dirname, '../resources/config'))
+  const dbPath = path.normalize(path.join(__dirname, '../resources/accounts/db'))
 
   let ldpHttpsServer
 
   const ldp = ldnode.createServer({
     root,
     configPath,
-    sslKey: path.normalize(path.join(__dirname, '../../test/keys/key.pem')),
-    sslCert: path.normalize(path.join(__dirname, '../../test/keys/cert.pem')),
+    sslKey: path.normalize(path.join(__dirname, '../keys/key.pem')),
+    sslCert: path.normalize(path.join(__dirname, '../keys/cert.pem')),
     auth: 'oidc',
     webid: true,
     multiuser: true,
@@ -233,14 +233,14 @@ describe('Single User signup page', () => {
   const port = 7457
   let ldpHttpsServer
   rm('resources/accounts/single-user/')
-  const rootDir = path.normalize(path.join(__dirname, '../../test/resources/accounts/single-user/'))
-  const configPath = path.normalize(path.join(__dirname, '../../test/resources/config'))
+  const rootDir = path.normalize(path.join(__dirname, '../resources/accounts/single-user/'))
+  const configPath = path.normalize(path.join(__dirname, '../resources/config'))
   const ldp = ldnode.createServer({
     port,
     root: rootDir,
     configPath,
-    sslKey: path.normalize(path.join(__dirname, '../../test/keys/key.pem')),
-    sslCert: path.normalize(path.join(__dirname, '../../test/keys/cert.pem')),
+    sslKey: path.normalize(path.join(__dirname, '../keys/key.pem')),
+    sslCert: path.normalize(path.join(__dirname, '../keys/cert.pem')),
     webid: true,
     multiuser: false,
     strictOrigin: true
@@ -270,15 +270,15 @@ describe('Single User signup page', () => {
 describe('Signup page where Terms & Conditions are not being enforced', () => {
   const port = 3457
   const host = `localhost:${port}`
-  const root = path.normalize(path.join(__dirname, '../../test/resources/accounts/'))
-  const configPath = path.normalize(path.join(__dirname, '../../test/resources/config'))
-  const dbPath = path.normalize(path.join(__dirname, '../../test/resources/accounts/db'))
+  const root = path.normalize(path.join(__dirname, '../resources/accounts/'))
+  const configPath = path.normalize(path.join(__dirname, '../resources/config'))
+  const dbPath = path.normalize(path.join(__dirname, '../resources/accounts/db'))
   const ldp = ldnode.createServer({
     port,
     root,
     configPath,
-    sslKey: path.normalize(path.join(__dirname, '../../test/keys/key.pem')),
-    sslCert: path.normalize(path.join(__dirname, '../../test/keys/cert.pem')),
+    sslKey: path.normalize(path.join(__dirname, '../keys/key.pem')),
+    sslCert: path.normalize(path.join(__dirname, '../keys/cert.pem')),
     auth: 'oidc',
     webid: true,
     multiuser: true,
