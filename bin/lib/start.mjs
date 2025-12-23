@@ -96,7 +96,7 @@ async function bin (argv, server) {
      n0:mode           n0:Read.`
     fs.writeFileSync(rootPath, defaultAcl)
   }
-  const solid = (await import('../../index.js')).default
+  const solid = (await import('../../index.mjs')).default
   let app
   try {
     app = solid.createServer(argv, server)
