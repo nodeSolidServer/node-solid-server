@@ -20,9 +20,9 @@ describe('HTTP COPY API', function () {
 
   let ldpHttpsServer
   const ldp = solidServer.createServer({
-    root: path.join(__dirname, '../../test/resources/accounts/localhost/'),
-    sslKey: path.join(__dirname, '../../test/keys/key.pem'),
-    sslCert: path.join(__dirname, '../../test/keys/cert.pem'),
+    root: path.join(__dirname, '../resources/accounts/localhost/'),
+    sslKey: path.join(__dirname, '../keys/key.pem'),
+    sslCert: path.join(__dirname, '../keys/cert.pem'),
     serverUri: 'https://localhost:8443',
     webid: false
   })
@@ -41,12 +41,12 @@ describe('HTTP COPY API', function () {
 
   const userCredentials = {
     user1: {
-      cert: fs.readFileSync(path.join(__dirname, '../../test/keys/user1-cert.pem')),
-      key: fs.readFileSync(path.join(__dirname, '../../test/keys/user1-key.pem'))
+      cert: fs.readFileSync(path.join(__dirname, '../keys/user1-cert.pem')),
+      key: fs.readFileSync(path.join(__dirname, '../keys/user1-key.pem'))
     },
     user2: {
-      cert: fs.readFileSync(path.join(__dirname, '../../test/keys/user2-cert.pem')),
-      key: fs.readFileSync(path.join(__dirname, '../../test/keys/user2-key.pem'))
+      cert: fs.readFileSync(path.join(__dirname, '../keys/user2-cert.pem')),
+      key: fs.readFileSync(path.join(__dirname, '../keys/user2-key.pem'))
     }
   }
 
@@ -74,7 +74,7 @@ describe('HTTP COPY API', function () {
       }
       assert.equal(response.statusCode, 201)
       assert.equal(response.headers.location, copyTo)
-      const destinationPath = path.join(__dirname, '../../test/resources/accounts/localhost', copyTo)
+      const destinationPath = path.join(__dirname, '../resources/accounts/localhost', copyTo)
       assert.ok(fs.existsSync(destinationPath),
         'Resource created via COPY should exist')
       done()

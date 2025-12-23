@@ -8,7 +8,7 @@ import { dirname, join } from 'path'
 const require = createRequire(import.meta.url)
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const ldnode = require('../../index')
-const { rm } = require('../../test/utils')
+const { rm } = require('../utils.mjs')
 
 const USER = 'https://ruben.verborgh.org/profile/#me'
 
@@ -24,8 +24,8 @@ describe('Auth Proxy', () => {
 
       // Set up Solid server
       server = ldnode({
-        root: join(__dirname, '../../test/resources/auth-proxy'),
-        configPath: join(__dirname, '../../test/resources/config'),
+        root: join(__dirname, '../resources/auth-proxy'),
+        configPath: join(__dirname, '../resources/config'),
         authProxy: {
           '/server/a': 'http://server-a.org'
         },

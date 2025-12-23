@@ -25,7 +25,7 @@ const ns = solidNamespace($rdf)
 
 const port = 7777
 const serverUri = 'https://localhost:7777'
-const rootPath = path.normalize(path.join(__dirname, '../../test/resources/acl-tls'))
+const rootPath = path.normalize(path.join(__dirname, '../resources/acl-tls'))
 const dbPath = path.join(rootPath, 'db')
 const configPath = path.join(rootPath, 'config')
 
@@ -48,12 +48,12 @@ const user2 = 'https://nicola.localhost:7777/profile/card#me'
 const address = 'https://tim.localhost:7777'
 const userCredentials = {
   user1: {
-    cert: fs.readFileSync(path.normalize(path.join(__dirname, '../../test/keys/user1-cert.pem'))),
-    key: fs.readFileSync(path.normalize(path.join(__dirname, '../../test/keys/user1-key.pem')))
+    cert: fs.readFileSync(path.normalize(path.join(__dirname, '../keys/user1-cert.pem'))),
+    key: fs.readFileSync(path.normalize(path.join(__dirname, '../keys/user1-key.pem')))
   },
   user2: {
-    cert: fs.readFileSync(path.normalize(path.join(__dirname, '../../test/keys/user2-cert.pem'))),
-    key: fs.readFileSync(path.normalize(path.join(__dirname, '../../test/keys/user2-key.pem')))
+    cert: fs.readFileSync(path.normalize(path.join(__dirname, '../keys/user2-cert.pem'))),
+    key: fs.readFileSync(path.normalize(path.join(__dirname, '../keys/user2-key.pem')))
   }
 }
 
@@ -72,8 +72,8 @@ describe.skip('ACL with WebID+TLS', function () {
     dbPath,
     port,
     configPath,
-    sslKey: path.normalize(path.join(__dirname, '../../test/keys/key.pem')),
-    sslCert: path.normalize(path.join(__dirname, '../../test/keys/cert.pem')),
+    sslKey: path.normalize(path.join(__dirname, '../keys/key.pem')),
+    sslCert: path.normalize(path.join(__dirname, '../keys/cert.pem')),
     webid: true,
     multiuser: true,
     auth: 'tls',
@@ -489,7 +489,7 @@ describe.skip('ACL with WebID+TLS', function () {
   })
 
   describe('Read-only', function () {
-    const body = fs.readFileSync(path.join(__dirname, '../../test/resources/acl-tls/tim.localhost/read-acl/.acl'))
+    const body = fs.readFileSync(path.join(__dirname, '../resources/acl-tls/tim.localhost/read-acl/.acl'))
     it('user1 should be able to access ACL file', function (done) {
       const options = createOptions('/acl-tls/read-acl/.acl', 'user1')
       request.head(options, function (error, response, body) {
@@ -947,14 +947,14 @@ describe.skip('ACL with WebID+TLS', function () {
     it('should remove all files and dirs created', function (done) {
       try {
         // must remove the ACLs in sync
-        fs.unlinkSync(path.join(__dirname, '../../test/resources/' + testDir + '/dir1/dir2/abcd.ttl'))
-        fs.rmdirSync(path.join(__dirname, '../../test/resources/' + testDir + '/dir1/dir2/'))
-        fs.rmdirSync(path.join(__dirname, '../../test/resources/' + testDir + '/dir1/'))
-        fs.unlinkSync(path.join(__dirname, '../../test/resources/' + abcFile))
-        fs.unlinkSync(path.join(__dirname, '../../test/resources/' + testDirAclFile))
-        fs.unlinkSync(path.join(__dirname, '../../test/resources/' + testDirMetaFile))
-        fs.rmdirSync(path.join(__dirname, '../../test/resources/' + testDir))
-        fs.rmdirSync(path.join(__dirname, '../../test/resources/acl-tls/'))
+        fs.unlinkSync(path.join(__dirname, '../resources/' + testDir + '/dir1/dir2/abcd.ttl'))
+        fs.rmdirSync(path.join(__dirname, '../resources/' + testDir + '/dir1/dir2/'))
+        fs.rmdirSync(path.join(__dirname, '../resources/' + testDir + '/dir1/'))
+        fs.unlinkSync(path.join(__dirname, '../resources/' + abcFile))
+        fs.unlinkSync(path.join(__dirname, '../resources/' + testDirAclFile))
+        fs.unlinkSync(path.join(__dirname, '../resources/' + testDirMetaFile))
+        fs.rmdirSync(path.join(__dirname, '../resources/' + testDir))
+        fs.rmdirSync(path.join(__dirname, '../resources/acl-tls/'))
         done()
       } catch (e) {
         done(e)

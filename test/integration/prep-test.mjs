@@ -5,14 +5,14 @@ import { validate as uuidValidate } from 'uuid'
 import { expect } from 'chai'
 import { parseDictionary } from 'structured-headers'
 import prepFetch from 'prep-fetch'
-import { createServer } from '../../test/utils.js'
+import { createServer } from '../utils.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 const dateTimeRegex = /^-?\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(?:\.\d{3})?(?:Z|(?:\+|-)\d{2}:\d{2})$/
 
-const samplePath = path.join(__dirname, '../../test/resources', 'sampleContainer')
+const samplePath = path.join(__dirname, '../resources', 'sampleContainer')
 const sampleFile = fs.readFileSync(path.join(samplePath, 'example1.ttl'))
 
 describe('Per Resource Events Protocol', function () {
@@ -22,7 +22,7 @@ describe('Per Resource Events Protocol', function () {
     server = createServer({
       live: true,
       dataBrowserPath: 'default',
-      root: path.join(__dirname, '../../test/resources'),
+      root: path.join(__dirname, '../resources'),
       auth: 'oidc',
       webid: false,
       prep: true
@@ -258,7 +258,7 @@ solid:inserts { <u> <v> <z>. }.`
         const blob = await representation.blob()
         expect(function (done) {
           const size = fs.statSync(path.join(__dirname,
-            '../../test/resources/sampleContainer/example-prep.ttl')).size
+            '../resources/sampleContainer/example-prep.ttl')).size
           if (blob.size !== size) {
             return done(new Error('files are not of the same size'))
           }

@@ -1,4 +1,4 @@
-import Solid from '../../index.js'
+import ldnode from '../../index.mjs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import fs from 'fs-extra'
@@ -9,7 +9,7 @@ import SolidAuthOIDC from '@solid/solid-auth-oidc'
 import fetch from 'node-fetch'
 import localStorage from 'localstorage-memory'
 import { URL, URLSearchParams } from 'whatwg-url'
-import { cleanDir, cp } from '../../test/utils.js'
+import { cleanDir, cp } from '../utils.mjs'
 
 import supertest from 'supertest'
 import chai from 'chai'
@@ -30,21 +30,21 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
   const aliceServerPort = 7010
   const aliceServerUri = `https://localhost:${aliceServerPort}`
   const aliceWebId = `https://localhost:${aliceServerPort}/profile/card#me`
-  const configPath = path.normalize(path.join(__dirname, '../../test/resources/config'))
-  const aliceDbPath = path.normalize(path.join(__dirname, '../../test/resources/accounts-strict-origin-off/alice/db'))
+  const configPath = path.normalize(path.join(__dirname, '../resources/config'))
+  const aliceDbPath = path.normalize(path.join(__dirname, '../resources/accounts-strict-origin-off/alice/db'))
   const userStorePath = path.join(aliceDbPath, 'oidc/users')
   const aliceUserStore = UserStore.from({ path: userStorePath, saltRounds: 1 })
   aliceUserStore.initCollections()
 
   const bobServerPort = 7011
   const bobServerUri = `https://localhost:${bobServerPort}`
-  const bobDbPath = path.normalize(path.join(__dirname, '../../test/resources/accounts-strict-origin-off/bob/db'))
+  const bobDbPath = path.normalize(path.join(__dirname, '../resources/accounts-strict-origin-off/bob/db'))
 
   const trustedAppUri = 'https://trusted.app'
 
   const serverConfig = {
-    sslKey: path.normalize(path.join(__dirname, '../../test/keys/key.pem')),
-    sslCert: path.normalize(path.join(__dirname, '../../test/keys/cert.pem')),
+    sslKey: path.normalize(path.join(__dirname, '../keys/key.pem')),
+    sslCert: path.normalize(path.join(__dirname, '../keys/cert.pem')),
     auth: 'oidc',
     dataBrowser: false,
     webid: true,
@@ -53,16 +53,16 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
     strictOrigin: false
   }
 
-  const aliceRootPath = path.normalize(path.join(__dirname, '../../test/resources/accounts-strict-origin-off/alice'))
-  const alicePod = Solid.createServer(
+  const aliceRootPath = path.normalize(path.join(__dirname, '../resources/accounts-strict-origin-off/alice'))
+  const alicePod = ldnode.createServer(
     Object.assign({
       root: aliceRootPath,
       serverUri: aliceServerUri,
       dbPath: aliceDbPath
     }, serverConfig)
   )
-  const bobRootPath = path.normalize(path.join(__dirname, '../../test/resources/accounts-strict-origin-off/bob'))
-  const bobPod = Solid.createServer(
+  const bobRootPath = path.normalize(path.join(__dirname, '../resources/accounts-strict-origin-off/bob'))
+  const bobPod = ldnode.createServer(
     Object.assign({
       root: bobRootPath,
       serverUri: bobServerUri,

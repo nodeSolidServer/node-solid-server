@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 import supertest from 'supertest'
-import ldnode from '../../index.js'
+import ldnode from '../../index.mjs'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { cleanDir, cp } from '../utils.mjs'
@@ -18,8 +18,8 @@ describe('OIDC error handling', function () {
   const ldp = ldnode.createServer({
     root: rootPath,
     configPath,
-    sslKey: path.normalize(path.join(__dirname, '../../test/keys/key.pem')),
-    sslCert: path.normalize(path.join(__dirname, '../../test/keys/cert.pem')),
+    sslKey: path.normalize(path.join(__dirname, '../keys/key.pem')),
+    sslCert: path.normalize(path.join(__dirname, '../keys/cert.pem')),
     auth: 'oidc',
     webid: true,
     multiuser: false,

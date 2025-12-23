@@ -8,20 +8,24 @@ import { createRequire } from 'module'
 import fetch from 'node-fetch'
 import rimraf from 'rimraf'
 import fse from 'fs-extra'
-import * as OIDCModule from '@solid/oidc-op'
+import Provider from '@solid/oidc-op'
 import supertest from 'supertest'
 import ldnode from '../index.mjs'
+import { fileURLToPath } from 'url'
 
 const require = createRequire(import.meta.url)
-const OIDCProvider = OIDCModule.Provider
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+const OIDCProvider = Provider
 
 const TEST_HOSTS = ['nic.localhost', 'tim.localhost', 'nicola.localhost']
 
 // Configurable test root directory
 // For custom route
-// let TEST_ROOT = path.join(__dirname, '/resources/')
+let TEST_ROOT = path.join(__dirname, '/resources/')
 // For default root (process.cwd()):
-let TEST_ROOT = path.join(process.cwd(), 'test-esm/resources')
+// let TEST_ROOT = path.join(process.cwd(), 'test-esm/resources')
 
 export function setTestRoot (rootPath) {
   TEST_ROOT = rootPath

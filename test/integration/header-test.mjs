@@ -13,8 +13,8 @@ describe('Header handler', () => {
       root: join(__dirname, '../resources/headers'),
       multiuser: false,
       webid: true,
-      sslKey: join(__dirname, '../../test/keys/key.pem'),
-      sslCert: join(__dirname, '../../test/keys/cert.pem'),
+      sslKey: join(__dirname, '../keys/key.pem'),
+      sslCert: join(__dirname, '../keys/cert.pem'),
       forceUser: 'https://ruben.verborgh.org/profile/#me'
     })
   })

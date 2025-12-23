@@ -16,11 +16,11 @@ const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 
 describe('API', () => {
-  const configPath = path.join(__dirname, '../../test/resources/config')
+  const configPath = path.join(__dirname, '../resources/config')
 
   const serverConfig = {
-    sslKey: path.join(__dirname, '../../test/keys/key.pem'),
-    sslCert: path.join(__dirname, '../../test/keys/cert.pem'),
+    sslKey: path.join(__dirname, '../keys/key.pem'),
+    sslCert: path.join(__dirname, '../keys/cert.pem'),
     auth: 'oidc',
     dataBrowser: false,
     webid: true,
@@ -38,8 +38,8 @@ describe('API', () => {
     let alice
     const aliceServerUri = 'https://localhost:5000'
     const aliceDbPath = path.join(__dirname,
-      '../../test/resources/accounts-scenario/alice/db')
-    const aliceRootPath = path.join(__dirname, '../../test/resources/accounts-scenario/alice')
+      '../resources/accounts-scenario/alice/db')
+    const aliceRootPath = path.join(__dirname, '../resources/accounts-scenario/alice')
 
     const alicePod = Solid.createServer(
       Object.assign({
@@ -88,8 +88,8 @@ describe('API', () => {
     let bob
     const bobServerUri = 'https://localhost:5001'
     const bobDbPath = path.join(__dirname,
-      '../../test/resources/accounts-scenario/bob/db')
-    const bobRootPath = path.join(__dirname, '../../test/resources/accounts-scenario/bob')
+      '../resources/accounts-scenario/bob/db')
+    const bobRootPath = path.join(__dirname, '../resources/accounts-scenario/bob')
     const bobPod = Solid.createServer(
       Object.assign({
         root: bobRootPath,
@@ -124,8 +124,8 @@ describe('API', () => {
     let charlie
     const charlieServerUri = 'https://localhost:5002'
     const charlieDbPath = path.join(__dirname,
-      '../../test/resources/accounts-scenario/charlie/db')
-    const charlieRootPath = path.join(__dirname, '../../test/resources/accounts-scenario/charlie')
+      '../resources/accounts-scenario/charlie/db')
+    const charlieRootPath = path.join(__dirname, '../resources/accounts-scenario/charlie')
     const charliePod = Solid.createServer(
       Object.assign({
         root: charlieRootPath,

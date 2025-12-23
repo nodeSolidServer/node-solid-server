@@ -3,10 +3,10 @@ import fs from 'fs-extra'
 import fetch from 'node-fetch'
 import path from 'path'
 import { fileURLToPath } from 'url'
-import { loadProvider, rm, checkDnsSettings, cleanDir } from '../../test/utils.js'
+import { loadProvider, rm, checkDnsSettings, cleanDir } from '../utils.mjs'
 import IDToken from '@solid/oidc-op/src/IDToken.js'
 // import { clearAclCache } from '../../lib/acl-checker.js'
-import ldnode from '../../index.js'
+import ldnode from '../../index.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -57,7 +57,7 @@ request.del = request.delete
 
 const port = 7777
 const serverUri = 'https://localhost:7777'
-const rootPath = path.normalize(path.join(__dirname, '../../test/resources/accounts-acl'))
+const rootPath = path.normalize(path.join(__dirname, '../resources/accounts-acl'))
 const dbPath = path.join(rootPath, 'db')
 const oidcProviderPath = path.join(dbPath, 'oidc', 'op', 'provider.json')
 const configPath = path.join(rootPath, 'config')
@@ -95,8 +95,8 @@ const argv = {
   dbPath,
   port,
   configPath,
-  sslKey: path.normalize(path.join(__dirname, '../../test/keys/key.pem')),
-  sslCert: path.normalize(path.join(__dirname, '../../test/keys/cert.pem')),
+  sslKey: path.normalize(path.join(__dirname, '../keys/key.pem')),
+  sslCert: path.normalize(path.join(__dirname, '../keys/cert.pem')),
   webid: true,
   multiuser: true,
   auth: 'oidc',

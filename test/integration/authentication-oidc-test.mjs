@@ -1,15 +1,15 @@
-import Solid from '../../index.js'
-import path from 'path'
-import { fileURLToPath } from 'url'
+import ldnode from '../../index.mjs'
+import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import fs from 'fs-extra'
 import { UserStore } from '@solid/oidc-auth-manager'
-import UserAccount from '../../lib/models/user-account.js'
+import UserAccount from '../../lib/models/user-account.mjs'
 import SolidAuthOIDC from '@solid/solid-auth-oidc'
 
 import fetch from 'node-fetch'
 import localStorage from 'localstorage-memory'
 import { URL, URLSearchParams } from 'whatwg-url'
-import { cleanDir, cp } from '../../test/utils.js'
+import { cleanDir, cp } from '../utils.mjs'
 
 import supertest from 'supertest'
 import chai from 'chai'
@@ -30,54 +30,100 @@ describe('Authentication API (OIDC)', () => {
 
   const aliceServerUri = 'https://localhost:7000'
   const aliceWebId = 'https://localhost:7000/profile/card#me'
-  const configPath = path.normalize(path.join(__dirname, '../../test/resources/config'))
+  const configPath = path.normalize(path.join(__dirname, '../resources/config'))
   const aliceDbPath = path.normalize(path.join(__dirname,
-    '../../test/resources/accounts-scenario/alice/db'))
+    '../resources/accounts-scenario/alice/db'))
   const userStorePath = path.join(aliceDbPath, 'oidc/users')
   const aliceUserStore = UserStore.from({ path: userStorePath, saltRounds: 1 })
   aliceUserStore.initCollections()
 
   const bobServerUri = 'https://localhost:7001'
   const bobDbPath = path.normalize(path.join(__dirname,
-    '../../test/resources/accounts-scenario/bob/db'))
+    '../resources/accounts-scenario/bob/db'))
 
   const trustedAppUri = 'https://trusted.app'
 
   const serverConfig = {
-    sslKey: path.normalize(path.join(__dirname, '../../test/keys/key.pem')),
-    sslCert: path.normalize(path.join(__dirname, '../../test/keys/cert.pem')),
+    sslKey: path.normalize(path.join(__dirname, '../keys/key.pem')),
+    sslCert: path.normalize(path.join(__dirname, '../keys/cert.pem')),
     auth: 'oidc',
     dataBrowser: false,
     webid: true,
     multiuser: false,
     configPath,
-    trustedOrigins: ['https://apps.solid.invalid', 'https://trusted.app']
+    trustedOrigins: ['https://apps.solid.invalid', 'https://trusted.app'],
+    saltRounds: 1
   }
 
-  const aliceRootPath = path.normalize(path.join(__dirname, '../../test/resources/accounts-scenario/alice'))
-  const alicePod = Solid.createServer(
-    Object.assign({
-      root: aliceRootPath,
-      serverUri: aliceServerUri,
-      dbPath: aliceDbPath
-    }, serverConfig)
-  )
-  const bobRootPath = path.normalize(path.join(__dirname, '../../test/resources/accounts-scenario/bob'))
-  const bobPod = Solid.createServer(
-    Object.assign({
-      root: bobRootPath,
-      serverUri: bobServerUri,
-      dbPath: bobDbPath
-    }, serverConfig)
-  )
+  const aliceRootPath = path.normalize(path.join(__dirname, '../resources/accounts-scenario/alice'))
+  const bobRootPath = path.normalize(path.join(__dirname, '../resources/accounts-scenario/bob'))
+  let alicePod
+  let bobPod
+  
+  async function createPods() {
+    alicePod = await ldnode.createServer(
+      Object.assign({
+        root: aliceRootPath,
+        serverUri: aliceServerUri,
+        dbPath: aliceDbPath
+      }, serverConfig)
+    )
+    
+    bobPod = await ldnode.createServer(
+      Object.assign({
+        root: bobRootPath,
+        serverUri: bobServerUri,
+        dbPath: bobDbPath
+      }, serverConfig)
+    )
+  }
 
   function startServer (pod, port) {
-    return new Promise((resolve) => {
-      pod.listen(port, () => { resolve() })
+    return new Promise((resolve, reject) => {
+      pod.on('error', (err) => {
+        console.error(`Server on port ${port} error:`, err)
+        reject(err)
+      })
+      
+      const server = pod.listen(port, () => {
+        console.log(`Server started on port ${port}`)
+        resolve()
+      })
+      
+      server.on('error', (err) => {
+        console.error(`Server listen error on port ${port}:`, err)
+        reject(err)
+      })
     })
   }
 
-  before(async () => {
+  before(async function () {
+    this.timeout(60000) // 60 second timeout for server startup with OIDC initialization
+    
+    // Clean and recreate OIDC database directories to ensure fresh state
+    const aliceOidcPath = path.join(aliceDbPath, 'oidc')
+    const bobOidcPath = path.join(bobDbPath, 'oidc')
+    
+    // Remove any existing OIDC data to prevent corruption
+    console.log('Cleaning OIDC directories...')
+    fs.removeSync(aliceOidcPath)
+    fs.removeSync(bobOidcPath)
+    
+    // Create fresh directory structure
+    fs.ensureDirSync(path.join(aliceOidcPath, 'op/clients'))
+    fs.ensureDirSync(path.join(aliceOidcPath, 'op/tokens'))
+    fs.ensureDirSync(path.join(aliceOidcPath, 'op/codes'))
+    fs.ensureDirSync(path.join(aliceOidcPath, 'users'))
+    fs.ensureDirSync(path.join(aliceOidcPath, 'rp/clients'))
+    
+    fs.ensureDirSync(path.join(bobOidcPath, 'op/clients'))
+    fs.ensureDirSync(path.join(bobOidcPath, 'op/tokens'))
+    fs.ensureDirSync(path.join(bobOidcPath, 'op/codes'))
+    fs.ensureDirSync(path.join(bobOidcPath, 'users'))
+    fs.ensureDirSync(path.join(bobOidcPath, 'rp/clients'))
+    
+    await createPods()
+    
     await Promise.all([
       startServer(alicePod, 7000),
       startServer(bobPod, 7001)
@@ -536,7 +582,9 @@ describe('Authentication API (OIDC)', () => {
     let cookie
     let postSharingUri
 
-    before(() => {
+    before(function () {
+      this.timeout(50000) // Long timeout for OIDC initialization
+      
       auth = new SolidAuthOIDC({ store: localStorage, window: { location: {} } })
       const appOptions = {
         redirectUri: 'https://app.example.com/callback'
@@ -557,9 +605,11 @@ describe('Authentication API (OIDC)', () => {
       fs.removeSync(path.join(aliceDbPath, 'users/users'))
       fs.removeSync(path.join(aliceDbPath, 'oidc/op/tokens'))
 
-      const clientId = auth.currentClient.registration.client_id
-      const registration = `_key_${clientId}.json`
-      fs.removeSync(path.join(aliceDbPath, 'oidc/op/clients', registration))
+      if (auth.currentClient && auth.currentClient.registration) {
+        const clientId = auth.currentClient.registration.client_id
+        const registration = `_key_${clientId}.json`
+        fs.removeSync(path.join(aliceDbPath, 'oidc/op/clients', registration))
+      }
     })
 
     // Step 1: An app makes a GET request and receives a 401

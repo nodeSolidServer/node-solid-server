@@ -1,22 +1,20 @@
-import { createRequire } from 'module'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
+import { read, setupSupertestServer } from '../utils.mjs'
 
-const require = createRequire(import.meta.url)
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const { read, setupSupertestServer } = require('../../test/utils')
 
 describe('Error pages', function () {
   // LDP with error pages
   const errorServer = setupSupertestServer({
-    root: join(__dirname, '../../test/resources'),
-    errorPages: join(__dirname, '../../test/resources/errorPages'),
+    root: join(__dirname, '../resources'),
+    errorPages: join(__dirname, '../resources/errorPages'),
     webid: false
   })
 
   // LDP with no error pages
   const noErrorServer = setupSupertestServer({
-    root: join(__dirname, '../../test/resources'),
+    root: join(__dirname, '../resources'),
     noErrorPages: true,
     webid: false
   })

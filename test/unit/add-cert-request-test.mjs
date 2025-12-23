@@ -22,7 +22,7 @@ chai.should()
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const exampleSpkac = fs.readFileSync(
-  path.join(__dirname, '../../test/resources/example_spkac.cnf'), 'utf8'
+  path.join(__dirname, '../resources/example_spkac.cnf'), 'utf8'
 )
 
 let host

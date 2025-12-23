@@ -18,6 +18,7 @@ describe('Get Quota', function () {
   })
   it('and check it', async function () {
     const quota = await getQuota(path.join('test/resources/', root), 'https://localhost')
+    console.log('Quota is', quota)
     expect(quota).to.equal(2000)
   })
   it('with wrong size', async function () {

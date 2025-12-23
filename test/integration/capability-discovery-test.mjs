@@ -1,20 +1,13 @@
 /* eslint-disable no-unused-expressions */
-import { createRequire } from 'module'
 import { fileURLToPath } from 'url'
 import path from 'path'
 import supertest from 'supertest'
 import chai from 'chai'
-
-// Import utility functions from the ESM utils
 import { cleanDir } from '../utils.mjs'
-
-const { expect } = chai
-
-const require = createRequire(import.meta.url)
-const Solid = require('../../index')
-
+import * as Solid from '../../index.mjs'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
+const { expect } = chai
 
 // In this test we always assume that we are Alice
 
@@ -22,14 +15,14 @@ describe('API', () => {
   let alice
 
   const aliceServerUri = 'https://localhost:5000'
-  const configPath = path.join(__dirname, '../../test/resources/config')
+  const configPath = path.join(__dirname, '../resources/config')
   const aliceDbPath = path.join(__dirname,
-    '../../test/resources/accounts-scenario/alice/db')
-  const aliceRootPath = path.join(__dirname, '../../test/resources/accounts-scenario/alice')
+    '../resources/accounts-scenario/alice/db')
+  const aliceRootPath = path.join(__dirname, '../resources/accounts-scenario/alice')
 
   const serverConfig = {
-    sslKey: path.join(__dirname, '../../test/keys/key.pem'),
-    sslCert: path.join(__dirname, '../../test/keys/cert.pem'),
+    sslKey: path.join(__dirname, '../keys/key.pem'),
+    sslCert: path.join(__dirname, '../keys/cert.pem'),
     auth: 'oidc',
     dataBrowser: false,
     webid: true,
@@ -90,7 +83,7 @@ describe('API', () => {
           },
           webid: false
         }
-        const solid = Solid(config)
+        const solid = Solid.createServer(config)
         const server = supertest(solid)
         server.get('/.well-known/solid')
           .end(function (err, req) {

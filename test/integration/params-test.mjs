@@ -75,7 +75,7 @@ describe('LDNODE params', function () {
         setTestRoot(path.join(__dirname, '../resources/'))
         write('<#current> <#temp> 123 .', resourcePath)
 
-        server.get('/test-esm/resources/sampleContainer/example.ttl')
+        server.get('/test/resources/sampleContainer/example.ttl')
           .expect('Link', /http:\/\/www.w3.org\/ns\/ldp#Resource/)
           .expect(200)
           .end(function (err, res, body) {
@@ -87,15 +87,15 @@ describe('LDNODE params', function () {
     })
 
     describe('passed', function () {
-      const ldp = ldnode({ root: './test-esm/resources/', webid: false })
+      const ldp = ldnode({ root: './test/resources/', webid: false })
       const server = supertest(ldp)
 
       it('should fallback on current working directory', function () {
-        assert.equal(path.normalize(ldp.locals.ldp.resourceMapper._rootPath), path.normalize(path.resolve('./test-esm/resources')))
+        assert.equal(path.normalize(ldp.locals.ldp.resourceMapper._rootPath), path.normalize(path.resolve('./test/resources')))
       })
 
       it('new : should find resource in correct path', function (done) {
-        const ldp = createServer({ root: './test-esm/resources/', webid: false })
+        const ldp = createServer({ root: './test/resources/', webid: false })
         const server = supertest(ldp)
         const dirPath = path.join(__dirname, '../resources/sampleContainer')
         const filePath = path.join(dirPath, 'example.ttl')
@@ -133,7 +133,7 @@ describe('LDNODE params', function () {
   })
 
   describe('ui-path', function () {
-    const rootPath = './test-esm/resources/'
+    const rootPath = './test/resources/'
     const ldp = ldnode({
       root: rootPath,
       apiApps: path.join(__dirname, '../resources/sampleContainer'),
@@ -165,8 +165,8 @@ describe('LDNODE params', function () {
       serverUri,
       port,
       root: rootPath,
-      sslKey: path.join(__dirname, '../../test/keys/key.pem'),
-      sslCert: path.join(__dirname, '../../test/keys/cert.pem'),
+      sslKey: path.join(__dirname, '../keys/key.pem'),
+      sslCert: path.join(__dirname, '../keys/cert.pem'),
       webid: true,
       host: 'localhost:3457',
       rejectUnauthorized: false
