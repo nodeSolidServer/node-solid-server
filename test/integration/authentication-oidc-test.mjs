@@ -59,8 +59,8 @@ describe('Authentication API (OIDC)', () => {
   const bobRootPath = path.normalize(path.join(__dirname, '../resources/accounts-scenario/bob'))
   let alicePod
   let bobPod
-  
-  async function createPods() {
+
+  async function createPods () {
     alicePod = await ldnode.createServer(
       Object.assign({
         root: aliceRootPath,
@@ -68,7 +68,7 @@ describe('Authentication API (OIDC)', () => {
         dbPath: aliceDbPath
       }, serverConfig)
     )
-    
+
     bobPod = await ldnode.createServer(
       Object.assign({
         root: bobRootPath,
@@ -84,12 +84,12 @@ describe('Authentication API (OIDC)', () => {
         console.error(`Server on port ${port} error:`, err)
         reject(err)
       })
-      
+
       const server = pod.listen(port, () => {
         console.log(`Server started on port ${port}`)
         resolve()
       })
-      
+
       server.on('error', (err) => {
         console.error(`Server listen error on port ${port}:`, err)
         reject(err)
@@ -99,31 +99,31 @@ describe('Authentication API (OIDC)', () => {
 
   before(async function () {
     this.timeout(60000) // 60 second timeout for server startup with OIDC initialization
-    
+
     // Clean and recreate OIDC database directories to ensure fresh state
     const aliceOidcPath = path.join(aliceDbPath, 'oidc')
     const bobOidcPath = path.join(bobDbPath, 'oidc')
-    
+
     // Remove any existing OIDC data to prevent corruption
     console.log('Cleaning OIDC directories...')
     fs.removeSync(aliceOidcPath)
     fs.removeSync(bobOidcPath)
-    
+
     // Create fresh directory structure
     fs.ensureDirSync(path.join(aliceOidcPath, 'op/clients'))
     fs.ensureDirSync(path.join(aliceOidcPath, 'op/tokens'))
     fs.ensureDirSync(path.join(aliceOidcPath, 'op/codes'))
     fs.ensureDirSync(path.join(aliceOidcPath, 'users'))
     fs.ensureDirSync(path.join(aliceOidcPath, 'rp/clients'))
-    
+
     fs.ensureDirSync(path.join(bobOidcPath, 'op/clients'))
     fs.ensureDirSync(path.join(bobOidcPath, 'op/tokens'))
     fs.ensureDirSync(path.join(bobOidcPath, 'op/codes'))
     fs.ensureDirSync(path.join(bobOidcPath, 'users'))
     fs.ensureDirSync(path.join(bobOidcPath, 'rp/clients'))
-    
+
     await createPods()
-    
+
     await Promise.all([
       startServer(alicePod, 7000),
       startServer(bobPod, 7001)
@@ -584,7 +584,7 @@ describe('Authentication API (OIDC)', () => {
 
     before(function () {
       this.timeout(50000) // Long timeout for OIDC initialization
-      
+
       auth = new SolidAuthOIDC({ store: localStorage, window: { location: {} } })
       const appOptions = {
         redirectUri: 'https://app.example.com/callback'
