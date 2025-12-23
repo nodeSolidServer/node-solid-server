@@ -1,3 +1,0 @@
-User-agent: *
-# Allow all crawling (subject to ACLs as usual, of course)
-Disallow:

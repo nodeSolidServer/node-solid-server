@@ -1,9 +1,0 @@
-{
-  "type": "module",
-  "scripts": {
-    "test-esm": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 mocha --recursive test-esm/ --loader=esmock",
-    "test-esm-unit": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 mocha test-esm/unit/**/*.mjs",
-    "test-esm-integration": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 mocha test-esm/integration/**/*.mjs",
-    "test-esm-performance": "cross-env NODE_TLS_REJECT_UNAUTHORIZED=0 mocha test-esm/performance/**/*.mjs"
-  }
-}

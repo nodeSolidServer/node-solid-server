@@ -1,9 +1,0 @@
-@prefix : </write-only.ttl#>.
-@prefix tim: </>.
-
-tim:a tim:b tim:c.
-
-tim:d tim:e tim:f.
-
-tim:x tim:y tim:z.
-
