@@ -1,0 +1,6 @@
+ALICE_WEBID=https://thirdparty/profile/card#me
+SERVER_ROOT=https://thirdparty
+USERNAME=alice
+PASSWORD=123
+ACL_CACHE_TIME=5
+
