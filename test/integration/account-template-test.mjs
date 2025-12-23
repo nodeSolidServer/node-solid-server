@@ -5,8 +5,8 @@ import fs from 'fs-extra'
 import chai from 'chai'
 import sinonChai from 'sinon-chai'
 
-import AccountTemplate from '../../lib/models/account-template.js'
-import UserAccount from '../../lib/models/user-account.js'
+import AccountTemplate from '../../lib/models/account-template.mjs'
+import UserAccount from '../../lib/models/user-account.mjs'
 
 const { expect } = chai
 chai.use(sinonChai)

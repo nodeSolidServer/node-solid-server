@@ -4,10 +4,10 @@ import supertest from 'supertest'
 import nock from 'nock'
 import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
+import ldnode from '../../index.mjs'
 
 const require = createRequire(import.meta.url)
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const ldnode = require('../../index')
 const { rm } = require('../utils.mjs')
 
 const USER = 'https://ruben.verborgh.org/profile/#me'

@@ -3,8 +3,8 @@ import { fileURLToPath } from 'url'
 import path from 'path'
 import chai from 'chai'
 import fs from 'fs-extra'
-import OidcManager from '../../lib/models/oidc-manager.js'
-import SolidHost from '../../lib/models/solid-host.js'
+import { fromServerConfig } from '../../lib/models/oidc-manager.mjs'
+import SolidHost from '../../lib/models/solid-host.mjs'
 
 const { expect } = chai
 
@@ -30,7 +30,7 @@ describe('OidcManager', () => {
         saltRounds
       }
 
-      const oidc = OidcManager.fromServerConfig(argv)
+      const oidc = fromServerConfig(argv)
 
       expect(oidc.rs.defaults.query).to.be.true
       expect(oidc.clients.store.backend.path.endsWith('db/oidc/rp/clients'))

@@ -3,7 +3,7 @@ import path from 'path'
 import { fileURLToPath } from 'url'
 import fs from 'fs-extra'
 import { UserStore } from '@solid/oidc-auth-manager'
-import UserAccount from '../../lib/models/user-account.js'
+import UserAccount from '../../lib/models/user-account.mjs'
 import SolidAuthOIDC from '@solid/solid-auth-oidc'
 
 import fetch from 'node-fetch'

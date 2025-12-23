@@ -1,4 +1,3 @@
-import { createRequire } from 'module'
 import { fileURLToPath } from 'url'
 import path from 'path'
 import supertest from 'supertest'
@@ -6,11 +5,9 @@ import chai from 'chai'
 
 // Import utility functions from the ESM utils
 import { cleanDir } from '../utils.mjs'
+import * as Solid from '../../index.mjs'
 
 const { expect } = chai
-
-const require = createRequire(import.meta.url)
-const Solid = require('../../index')
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)

@@ -4,10 +4,10 @@ import { fileURLToPath } from 'url'
 import fs from 'fs-extra'
 import chai from 'chai'
 
-import LDP from '../../lib/ldp.js'
-import SolidHost from '../../lib/models/solid-host.js'
-import AccountManager from '../../lib/models/account-manager.js'
-import ResourceMapper from '../../lib/resource-mapper.js'
+import LDP from '../../lib/ldp.mjs'
+import SolidHost from '../../lib/models/solid-host.mjs'
+import AccountManager from '../../lib/models/account-manager.mjs'
+import ResourceMapper from '../../lib/resource-mapper.mjs'
 const expect = chai.expect
 chai.should()
 
