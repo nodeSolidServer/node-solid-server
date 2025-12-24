@@ -69,7 +69,7 @@ jobs:
 
   test-suite:
     needs: build
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     steps:
     # Run the Solid test-suite
     - run: bash test/surface/run-solid-test-suite.sh $BRANCH_NAME $REPO_NAME
