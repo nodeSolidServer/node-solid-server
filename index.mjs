@@ -8,15 +8,15 @@ import startCli from './bin/lib/cli.mjs'
 let exported
 const canAttach = (ldnode && (typeof ldnode === 'object' || typeof ldnode === 'function'))
 if (canAttach) {
-	try {
-		if (!ldnode.createServer) ldnode.createServer = createServer
-		if (!ldnode.startCli) ldnode.startCli = startCli
-		exported = ldnode
-	} catch (e) {
-		exported = { default: ldnode, createServer, startCli }
-	}
+  try {
+    if (!ldnode.createServer) ldnode.createServer = createServer
+    if (!ldnode.startCli) ldnode.startCli = startCli
+    exported = ldnode
+  } catch (e) {
+    exported = { default: ldnode, createServer, startCli }
+  }
 } else {
-	exported = { default: ldnode, createServer, startCli }
+  exported = { default: ldnode, createServer, startCli }
 }
 
 export default exported

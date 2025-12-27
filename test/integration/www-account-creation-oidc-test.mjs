@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-expressions */
 import supertest from 'supertest'
 import rdf from 'rdflib'
 import ldnode from '../../index.mjs'

@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-expressions */
 import { describe, it } from 'mocha'
 import { expect } from 'chai'
 import UserAccount from '../../lib/models/user-account.mjs'

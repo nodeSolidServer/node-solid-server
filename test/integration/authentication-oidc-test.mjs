@@ -25,7 +25,7 @@ const __dirname = path.dirname(__filename)
 
 // FIXME #1502
 describe('Authentication API (OIDC)', () => {
-  let alice, bob // eslint-disable-line no-unused-vars
+  let alice, bob
 
   const aliceServerUri = 'https://localhost:7000'
   const aliceWebId = 'https://localhost:7000/profile/card#me'
