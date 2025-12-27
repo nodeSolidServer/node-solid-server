@@ -412,6 +412,350 @@
         }
       }
     },
-    "jwkSet": "{\"keys\":[{\"kid\":\"IEugrGmoVhE\",\"kty\":\"RSA\",\"alg\":\"RS256\",\"key_ops\":[\"verify\"],\"ext\":true,\"n\":\"slOIKREoQE-tkYExh3PsIY6ZUb26RkFky630zDd19VLcTBbhy75Re2-zS6-kOg5oaaNDYyhmUlzBSMwE4Gmijg5tzJDF7rGxVZ4ssSC_Qnm20q4letTpH7Z2rm1-f2pl6HQ22HmIe2AFKGIgq1rc3Wog_ZcCTAhct9TYWGXd8qigE7XvtisdlMgsaYoteotRFeuJAp5h0If0uJzKiPBHDKubAuHcUVRtBGzPet0mEi8--rr5TluTRzZ2M4JwBir1DElkp9r35pjAkHkhycdY8R4fSyD0ZwLoSHPY9JImuIJvv3ydJBgfZv6JPdf8tuOzrc7y6enr8v2_dkZJmmV3rQ\",\"e\":\"AQAB\"},{\"kid\":\"kil_mOY0JHc\",\"kty\":\"RSA\",\"alg\":\"RS384\",\"key_ops\":[\"verify\"],\"ext\":true,\"n\":\"0GqTqfwKoOGcY1MuvRQpUm8dwhfu6aUcpmfrPQNlu8Xa9AnBkC6alt8XEc3MXLguIxwHAML0ED0qe0rwP0RrhAyD3cunnMUUmIF32wp5dfg95f9YwiJMUZ0xp2ZlOdEmYoo4eGypyZWgO_qDCmxU9OHXQZhs3Cz97CIV5nsJT7bnjdS_I89TURYoNX4X01mCLBTyj_hPlzx11BYpqQR-q2mjCVvNDWWCpRaxm8HyzRIGOsaKcl_BErYzBgWa4F78KjX_clOzYdOjCr7ApUqbDgym4I-1wiyhD3gEmw5w9SUxM8C5XUouZYpUOhGlLlxjIwiWvH9OHOIeDlO8wgoW2Q\",\"e\":\"AQAB\"},{\"kid\":\"6zO-vPfHW14\",\"kty\":\"RSA\",\"alg\":\"RS512\",\"key_ops\":[\"verify\"],\"ext\":true,\"n\":\"jenKPnEdaE_jZjTILrcqk2asKf3BmORh2zcKGDr__ty0TLj5jkTnK96Mc4Vbs2GiDLj_k34Kx_BpiHT7u-Lu3tDQN2__DnVC3Q7YKMeiLcSmKE5v_uqC1PIlnDdlHjSYbrxjQx1HEExqoqefuSJLxmIPRJOLNA7FKnI88Xa3QF7xd9yOizVhCUby8QTAtq-7a0CqcY6itlY2kLLfmdvnOVdwKYlffdAbmvHn-oFCwn8m7w4On23m14n4GnkryH_39Rb9kIhQAmJgxIVsPsucimrGB6NL8MKaPqrQXQXCQsLJGg3Dcf6fDN7cEUaFnSIx9h3jkHQXkp5YbZ5OwIURCw\",\"e\":\"AQAB\"},{\"kid\":\"pFKYrVuwZdQ\",\"kty\":\"RSA\",\"alg\":\"RS256\",\"key_ops\":[\"verify\"],\"ext\":true,\"n\":\"sCA1rGY58hQPiDZmEb3zfv5-be9rQM13ibh75mPenR57uX-pqlntcXnn1xLj6radqE9wukyKHZ42AZP5ZjzkrqjsJgLH90PwdPc_yICbvSEHKPG6rc9J3hyZ1P1wRB5pPW2CL_rx4uuBWTSGnQr39vhuU5UhBSXo56_73H9ciDbL0JLBVZayjRGR4_soEX2Vhv0C_iakfbJTZWdcVYKKWgeQzg1gwJFa5ma0ucCxckN9_5Lt__4aBDWjAr8pymKV64hQrUh5gWYLiw2_-8yIMCfZObwn-mBmA7qbNdmLGUPSv9iEA9gJBxTb_ocmSFpvkoVYnv6Qvit-1_uxu_4icw\",\"e\":\"AQAB\"},{\"kid\":\"b-2kLic6p78\",\"kty\":\"RSA\",\"alg\":\"RS384\",\"key_ops\":[\"verify\"],\"ext\":true,\"n\":\"nQ1uvwF1fNvj9ByNluGPyqurgXaEIuJw3jbxz2C_U9XI8wj-fknHFRfev6SgBQ5dp-Dq0A90dTmDTKYVKi4OAZu8Owq_-dvA2bodFxu6ZPfkzqOrfSi3fyRVIdzabwchR2_Kfn-JeZyjascSHQ0MbONiydyDwU_OJqBjLn4oodCL3TOd-1EJd5LPApmxLK6bmjANTV4DDud-xf7Bsu0K1p7jAy81EywHMj6GS14xTxYD2BnRfgfrwbiCVmOsRNmswLatWfBnm6jEPxLIN_s9dMRRjspL3xyGts4ePrNoFGhfDP7gaLRNcY-gqy3NTKhYr31Pm4r4Db6hWKS-MzJzwQ\",\"e\":\"AQAB\"},{\"kid\":\"hWkCdNoLtbE\",\"kty\":\"RSA\",\"alg\":\"RS512\",\"key_ops\":[\"verify\"],\"ext\":true,\"n\":\"peXPdx-67ojnNPB_LiYv3fCIRJ0ayDo0IZtfXvvnIThr7Ai6Q24YsTCQ_XHUL9dcxEpFiccUqDTkO5t0FMHFKNsnOClnwDznPpidbApRrQMto9j1k25ISi3AkEEVO6l7pfM19GJghmE78Aw_OlQrB5i_dR2fkSLYydOXN-LT3rXcE-GtWqrZkKmcyVbvKiTKRra5sVrvMIlHXK0C-qXJz28BbhvIagHMoJinTOLHXXfYE3-ZJ3dpmtcuMjEj2DJPZi49ebfDHjR_dnsZd8f0tEde6J0_OIhsXsNs7XXvMQh5A2Ii7UhXDq_hv9-NIatbH2_cTjUoK_mFhjXip-EzQw\",\"e\":\"AQAB\"},{\"kid\":\"bkuONxzFN3c\",\"kty\":\"RSA\",\"alg\":\"RS256\",\"key_ops\":[\"verify\"],\"ext\":true,\"n\":\"jOZ8e_qd-rflLN2cS_Mp8NXUl54CsiRaHvZbLW2YXTppLri6mVzKRRliDVKDsI3u6KtEa7B_UrqfEbgRyN_lcZGd3EcVpdWSdrtbfd4dEYjKzgH71OF1zRY-OE1ukIsyWC49yyf4AIUY1jf93LuMQa5iUh9_khwDtycjvYd5g_QuES6ifHy3fn7Nmu9Wd45a_FCfR35kaJAwg-rJnrpB9Y2kf4TKBLXfKwGhEFzZPYTtpcx44DxVSdJdowMugBdpNErILjiV0DhwmOra6P8eHBBXodM9BMyWFdsQki2W6YOo5cCmdvgz4MKmp5K0fRGAv0Qnnr89NZnvxoTCGNsyFw\",\"e\":\"AQAB\"}]}"
+    "jwkSet": "{\"keys\":[{\"kid\":\"IEugrGmoVhE\",\"kty\":\"RSA\",\"alg\":\"RS256\",\"key_ops\":[\"verify\"],\"ext\":true,\"n\":\"slOIKREoQE-tkYExh3PsIY6ZUb26RkFky630zDd19VLcTBbhy75Re2-zS6-kOg5oaaNDYyhmUlzBSMwE4Gmijg5tzJDF7rGxVZ4ssSC_Qnm20q4letTpH7Z2rm1-f2pl6HQ22HmIe2AFKGIgq1rc3Wog_ZcCTAhct9TYWGXd8qigE7XvtisdlMgsaYoteotRFeuJAp5h0If0uJzKiPBHDKubAuHcUVRtBGzPet0mEi8--rr5TluTRzZ2M4JwBir1DElkp9r35pjAkHkhycdY8R4fSyD0ZwLoSHPY9JImuIJvv3ydJBgfZv6JPdf8tuOzrc7y6enr8v2_dkZJmmV3rQ\",\"e\":\"AQAB\"},{\"kid\":\"kil_mOY0JHc\",\"kty\":\"RSA\",\"alg\":\"RS384\",\"key_ops\":[\"verify\"],\"ext\":true,\"n\":\"0GqTqfwKoOGcY1MuvRQpUm8dwhfu6aUcpmfrPQNlu8Xa9AnBkC6alt8XEc3MXLguIxwHAML0ED0qe0rwP0RrhAyD3cunnMUUmIF32wp5dfg95f9YwiJMUZ0xp2ZlOdEmYoo4eGypyZWgO_qDCmxU9OHXQZhs3Cz97CIV5nsJT7bnjdS_I89TURYoNX4X01mCLBTyj_hPlzx11BYpqQR-q2mjCVvNDWWCpRaxm8HyzRIGOsaKcl_BErYzBgWa4F78KjX_clOzYdOjCr7ApUqbDgym4I-1wiyhD3gEmw5w9SUxM8C5XUouZYpUOhGlLlxjIwiWvH9OHOIeDlO8wgoW2Q\",\"e\":\"AQAB\"},{\"kid\":\"6zO-vPfHW14\",\"kty\":\"RSA\",\"alg\":\"RS512\",\"key_ops\":[\"verify\"],\"ext\":true,\"n\":\"jenKPnEdaE_jZjTILrcqk2asKf3BmORh2zcKGDr__ty0TLj5jkTnK96Mc4Vbs2GiDLj_k34Kx_BpiHT7u-Lu3tDQN2__DnVC3Q7YKMeiLcSmKE5v_uqC1PIlnDdlHjSYbrxjQx1HEExqoqefuSJLxmIPRJOLNA7FKnI88Xa3QF7xd9yOizVhCUby8QTAtq-7a0CqcY6itlY2kLLfmdvnOVdwKYlffdAbmvHn-oFCwn8m7w4On23m14n4GnkryH_39Rb9kIhQAmJgxIVsPsucimrGB6NL8MKaPqrQXQXCQsLJGg3Dcf6fDN7cEUaFnSIx9h3jkHQXkp5YbZ5OwIURCw\",\"e\":\"AQAB\"},{\"kid\":\"pFKYrVuwZdQ\",\"kty\":\"RSA\",\"alg\":\"RS256\",\"key_ops\":[\"verify\"],\"ext\":true,\"n\":\"sCA1rGY58hQPiDZmEb3zfv5-be9rQM13ibh75mPenR57uX-pqlntcXnn1xLj6radqE9wukyKHZ42AZP5ZjzkrqjsJgLH90PwdPc_yICbvSEHKPG6rc9J3hyZ1P1wRB5pPW2CL_rx4uuBWTSGnQr39vhuU5UhBSXo56_73H9ciDbL0JLBVZayjRGR4_soEX2Vhv0C_iakfbJTZWdcVYKKWgeQzg1gwJFa5ma0ucCxckN9_5Lt__4aBDWjAr8pymKV64hQrUh5gWYLiw2_-8yIMCfZObwn-mBmA7qbNdmLGUPSv9iEA9gJBxTb_ocmSFpvkoVYnv6Qvit-1_uxu_4icw\",\"e\":\"AQAB\"},{\"kid\":\"b-2kLic6p78\",\"kty\":\"RSA\",\"alg\":\"RS384\",\"key_ops\":[\"verify\"],\"ext\":true,\"n\":\"nQ1uvwF1fNvj9ByNluGPyqurgXaEIuJw3jbxz2C_U9XI8wj-fknHFRfev6SgBQ5dp-Dq0A90dTmDTKYVKi4OAZu8Owq_-dvA2bodFxu6ZPfkzqOrfSi3fyRVIdzabwchR2_Kfn-JeZyjascSHQ0MbONiydyDwU_OJqBjLn4oodCL3TOd-1EJd5LPApmxLK6bmjANTV4DDud-xf7Bsu0K1p7jAy81EywHMj6GS14xTxYD2BnRfgfrwbiCVmOsRNmswLatWfBnm6jEPxLIN_s9dMRRjspL3xyGts4ePrNoFGhfDP7gaLRNcY-gqy3NTKhYr31Pm4r4Db6hWKS-MzJzwQ\",\"e\":\"AQAB\"},{\"kid\":\"hWkCdNoLtbE\",\"kty\":\"RSA\",\"alg\":\"RS512\",\"key_ops\":[\"verify\"],\"ext\":true,\"n\":\"peXPdx-67ojnNPB_LiYv3fCIRJ0ayDo0IZtfXvvnIThr7Ai6Q24YsTCQ_XHUL9dcxEpFiccUqDTkO5t0FMHFKNsnOClnwDznPpidbApRrQMto9j1k25ISi3AkEEVO6l7pfM19GJghmE78Aw_OlQrB5i_dR2fkSLYydOXN-LT3rXcE-GtWqrZkKmcyVbvKiTKRra5sVrvMIlHXK0C-qXJz28BbhvIagHMoJinTOLHXXfYE3-ZJ3dpmtcuMjEj2DJPZi49ebfDHjR_dnsZd8f0tEde6J0_OIhsXsNs7XXvMQh5A2Ii7UhXDq_hv9-NIatbH2_cTjUoK_mFhjXip-EzQw\",\"e\":\"AQAB\"},{\"kid\":\"bkuONxzFN3c\",\"kty\":\"RSA\",\"alg\":\"RS256\",\"key_ops\":[\"verify\"],\"ext\":true,\"n\":\"jOZ8e_qd-rflLN2cS_Mp8NXUl54CsiRaHvZbLW2YXTppLri6mVzKRRliDVKDsI3u6KtEa7B_UrqfEbgRyN_lcZGd3EcVpdWSdrtbfd4dEYjKzgH71OF1zRY-OE1ukIsyWC49yyf4AIUY1jf93LuMQa5iUh9_khwDtycjvYd5g_QuES6ifHy3fn7Nmu9Wd45a_FCfR35kaJAwg-rJnrpB9Y2kf4TKBLXfKwGhEFzZPYTtpcx44DxVSdJdowMugBdpNErILjiV0DhwmOra6P8eHBBXodM9BMyWFdsQki2W6YOo5cCmdvgz4MKmp5K0fRGAv0Qnnr89NZnvxoTCGNsyFw\",\"e\":\"AQAB\"}]}",
+    "_crypto": {
+      "subtle": {
+        "providers": {
+          "items": {
+            "aes-cbc": {
+              "name": "AES-CBC",
+              "usages": [
+                "encrypt",
+                "decrypt",
+                "wrapKey",
+                "unwrapKey"
+              ]
+            },
+            "aes-ctr": {
+              "name": "AES-CTR",
+              "usages": [
+                "encrypt",
+                "decrypt",
+                "wrapKey",
+                "unwrapKey"
+              ]
+            },
+            "aes-gcm": {
+              "name": "AES-GCM",
+              "usages": [
+                "encrypt",
+                "decrypt",
+                "wrapKey",
+                "unwrapKey"
+              ]
+            },
+            "aes-cmac": {
+              "name": "AES-CMAC",
+              "usages": [
+                "sign",
+                "verify"
+              ]
+            },
+            "aes-kw": {
+              "name": "AES-KW",
+              "usages": [
+                "wrapKey",
+                "unwrapKey"
+              ]
+            },
+            "aes-ecb": {
+              "name": "AES-ECB",
+              "usages": [
+                "encrypt",
+                "decrypt",
+                "wrapKey",
+                "unwrapKey"
+              ]
+            },
+            "des-ede3-cbc": {
+              "usages": [
+                "encrypt",
+                "decrypt",
+                "wrapKey",
+                "unwrapKey"
+              ],
+              "keySizeBits": 192,
+              "ivSize": 8,
+              "name": "DES-EDE3-CBC"
+            },
+            "rsassa-pkcs1-v1_5": {
+              "hashAlgorithms": [
+                "SHA-1",
+                "SHA-256",
+                "SHA-384",
+                "SHA-512",
+                "shake128",
+                "shake256",
+                "SHA3-256",
+                "SHA3-384",
+                "SHA3-512"
+              ],
+              "name": "RSASSA-PKCS1-v1_5",
+              "usages": {
+                "privateKey": [
+                  "sign"
+                ],
+                "publicKey": [
+                  "verify"
+                ]
+              }
+            },
+            "rsa-pss": {
+              "hashAlgorithms": [
+                "SHA-1",
+                "SHA-256",
+                "SHA-384",
+                "SHA-512",
+                "shake128",
+                "shake256",
+                "SHA3-256",
+                "SHA3-384",
+                "SHA3-512"
+              ],
+              "name": "RSA-PSS",
+              "usages": {
+                "privateKey": [
+                  "sign"
+                ],
+                "publicKey": [
+                  "verify"
+                ]
+              }
+            },
+            "rsa-oaep": {
+              "hashAlgorithms": [
+                "SHA-1",
+                "SHA-256",
+                "SHA-384",
+                "SHA-512"
+              ],
+              "name": "RSA-OAEP",
+              "usages": {
+                "privateKey": [
+                  "decrypt",
+                  "unwrapKey"
+                ],
+                "publicKey": [
+                  "encrypt",
+                  "wrapKey"
+                ]
+              }
+            },
+            "rsaes-pkcs1-v1_5": {
+              "name": "RSAES-PKCS1-v1_5",
+              "usages": {
+                "publicKey": [
+                  "encrypt",
+                  "wrapKey"
+                ],
+                "privateKey": [
+                  "decrypt",
+                  "unwrapKey"
+                ]
+              }
+            },
+            "ecdsa": {
+              "name": "ECDSA",
+              "hashAlgorithms": [
+                "SHA-1",
+                "SHA-256",
+                "SHA-384",
+                "SHA-512",
+                "shake128",
+                "shake256",
+                "SHA3-256",
+                "SHA3-384",
+                "SHA3-512"
+              ],
+              "usages": {
+                "privateKey": [
+                  "sign"
+                ],
+                "publicKey": [
+                  "verify"
+                ]
+              },
+              "namedCurves": [
+                "P-256",
+                "P-384",
+                "P-521",
+                "K-256",
+                "brainpoolP160r1",
+                "brainpoolP160t1",
+                "brainpoolP192r1",
+                "brainpoolP192t1",
+                "brainpoolP224r1",
+                "brainpoolP224t1",
+                "brainpoolP256r1",
+                "brainpoolP256t1",
+                "brainpoolP320r1",
+                "brainpoolP320t1",
+                "brainpoolP384r1",
+                "brainpoolP384t1",
+                "brainpoolP512r1",
+                "brainpoolP512t1"
+              ]
+            },
+            "ecdh": {
+              "name": "ECDH",
+              "usages": {
+                "privateKey": [
+                  "deriveBits",
+                  "deriveKey"
+                ],
+                "publicKey": []
+              },
+              "namedCurves": [
+                "P-256",
+                "P-384",
+                "P-521",
+                "K-256",
+                "brainpoolP160r1",
+                "brainpoolP160t1",
+                "brainpoolP192r1",
+                "brainpoolP192t1",
+                "brainpoolP224r1",
+                "brainpoolP224t1",
+                "brainpoolP256r1",
+                "brainpoolP256t1",
+                "brainpoolP320r1",
+                "brainpoolP320t1",
+                "brainpoolP384r1",
+                "brainpoolP384t1",
+                "brainpoolP512r1",
+                "brainpoolP512t1"
+              ]
+            },
+            "sha-1": {
+              "name": "SHA-1",
+              "usages": []
+            },
+            "sha-256": {
+              "name": "SHA-256",
+              "usages": []
+            },
+            "sha-384": {
+              "name": "SHA-384",
+              "usages": []
+            },
+            "sha-512": {
+              "name": "SHA-512",
+              "usages": []
+            },
+            "pbkdf2": {
+              "name": "PBKDF2",
+              "hashAlgorithms": [
+                "SHA-1",
+                "SHA-256",
+                "SHA-384",
+                "SHA-512"
+              ],
+              "usages": [
+                "deriveBits",
+                "deriveKey"
+              ]
+            },
+            "hmac": {
+              "name": "HMAC",
+              "hashAlgorithms": [
+                "SHA-1",
+                "SHA-256",
+                "SHA-384",
+                "SHA-512"
+              ],
+              "usages": [
+                "sign",
+                "verify"
+              ]
+            },
+            "hkdf": {
+              "name": "HKDF",
+              "hashAlgorithms": [
+                "SHA-1",
+                "SHA-256",
+                "SHA-384",
+                "SHA-512"
+              ],
+              "usages": [
+                "deriveKey",
+                "deriveBits"
+              ]
+            },
+            "shake128": {
+              "usages": [],
+              "defaultLength": 16,
+              "name": "shake128"
+            },
+            "shake256": {
+              "usages": [],
+              "defaultLength": 32,
+              "name": "shake256"
+            },
+            "sha3-256": {
+              "name": "SHA3-256",
+              "usages": []
+            },
+            "sha3-384": {
+              "name": "SHA3-384",
+              "usages": []
+            },
+            "sha3-512": {
+              "name": "SHA3-512",
+              "usages": []
+            },
+            "eddsa": {
+              "name": "EdDSA",
+              "usages": {
+                "privateKey": [
+                  "sign"
+                ],
+                "publicKey": [
+                  "verify"
+                ]
+              },
+              "namedCurves": [
+                "Ed25519",
+                "Ed448"
+              ]
+            },
+            "ecdh-es": {
+              "name": "ECDH-ES",
+              "usages": {
+                "privateKey": [
+                  "deriveBits",
+                  "deriveKey"
+                ],
+                "publicKey": []
+              },
+              "namedCurves": [
+                "X25519",
+                "X448"
+              ]
+            },
+            "ed25519": {
+              "name": "Ed25519",
+              "usages": {
+                "privateKey": [
+                  "sign"
+                ],
+                "publicKey": [
+                  "verify"
+                ]
+              }
+            },
+            "x25519": {
+              "name": "X25519",
+              "usages": {
+                "privateKey": [
+                  "deriveKey",
+                  "deriveBits"
+                ],
+                "publicKey": []
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
