@@ -1,6 +1,5 @@
 import { assert } from 'chai'
 import fs from 'fs-extra'
-import fetch from 'node-fetch'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { loadProvider, rm, checkDnsSettings, cleanDir } from '../utils.mjs'
@@ -33,7 +32,7 @@ function fetchRequest (method, options, callback) {
       callback(null, {
         statusCode: res.status,
         headers: Object.fromEntries(res.headers.entries()),
-        body: body,
+        body,
         statusMessage: res.statusText
       }, body)
     })
