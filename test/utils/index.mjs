@@ -1,5 +1,5 @@
 import fs from 'fs-extra'
-import rimraf from 'rimraf'
+import { rimrafSync } from 'rimraf'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import OIDCProvider from '@solid/oidc-op'
@@ -14,7 +14,7 @@ const __dirname = path.dirname(__filename)
 const TEST_HOSTS = ['nic.localhost', 'tim.localhost', 'nicola.localhost']
 
 export function rm (file) {
-  return rimraf.sync(path.normalize(path.join(__dirname, '../resources/' + file)))
+  return rimrafSync(path.normalize(path.join(__dirname, '../resources/' + file)))
 }
 
 export function cleanDir (dirPath) {

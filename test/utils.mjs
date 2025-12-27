@@ -5,7 +5,7 @@ import path from 'path'
 import dns from 'dns'
 import https from 'https'
 import { createRequire } from 'module'
-import rimraf from 'rimraf'
+import { rimrafSync } from 'rimraf'
 import fse from 'fs-extra'
 import Provider from '@solid/oidc-op'
 import supertest from 'supertest'
@@ -34,7 +34,7 @@ export function getTestRoot () {
 }
 
 export function rm (file) {
-  return rimraf.sync(path.join(TEST_ROOT, file))
+  return rimrafSync(path.join(TEST_ROOT, file))
 }
 
 export function cleanDir (dirPath) {
