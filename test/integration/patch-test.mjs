@@ -93,7 +93,8 @@ describe('PATCH through text/n3', () => {
     }, { // expected:
       status: 201,
       text: 'Patch applied successfully',
-      result: '@prefix : </new.ttl#>.\n@prefix tim: </>.\n\ntim:x tim:y tim:z.\n\n'
+      // result: '@prefix : </new.ttl#>.\n@prefix tim: </>.\n\ntim:x tim:y tim:z.\n\n'
+      result: '@prefix : </new.ttl#>.\n\n</x> </y> </z>.\n\n'
     }))
 
     describe('on a non-existent JSON-LD file', describePatch({
@@ -105,13 +106,19 @@ describe('PATCH through text/n3', () => {
       status: 201,
       text: 'Patch applied successfully',
       // result: '{\n  "@id": "/x",\n  "/y": {\n    "@id": "/z"\n  }\n}'
-      result: `{
+      /* result: `{
   "@context": {
     "tim": "https://tim.localhost:7777/"
   },
   "@id": "tim:x",
   "tim:y": {
     "@id": "tim:z"
+  }
+}` */
+      result: `{
+  "@id": "https://tim.localhost:7777/x",
+  "https://tim.localhost:7777/y": {
+    "@id": "https://tim.localhost:7777/z"
   }
 }`
     }))
@@ -140,7 +147,8 @@ describe('PATCH through text/n3', () => {
     }, { // expected:
       status: 201,
       text: 'Patch applied successfully',
-      result: '@prefix : </new.n3#>.\n@prefix tim: </>.\n\ntim:x tim:y tim:z.\n\n'
+      // result: '@prefix : </new.n3#>.\n@prefix tim: </>.\n\ntim:x tim:y tim:z.\n\n'
+      result: '@prefix : </new.n3#>.\n\n</x> </y> </z>.\n\n'
     }))
 
     describe('on an N3 file that has an invalid uri (*.acl)', describePatch({
@@ -179,7 +187,8 @@ describe('PATCH through text/n3', () => {
     }, { // expected:
       status: 200,
       text: 'Patch applied successfully',
-      result: '@prefix : </append-only.ttl#>.\n@prefix tim: </>.\n\ntim:a tim:b tim:c.\n\ntim:d tim:e tim:f.\n\ntim:x tim:y tim:z.\n\n'
+      // result: '@prefix : </append-only.ttl#>.\n@prefix tim: </>.\n\ntim:a tim:b tim:c.\n\ntim:d tim:e tim:f.\n\ntim:x tim:y tim:z.\n\n'
+      result: '@prefix : </append-only.ttl#>.\n\n</a> </b> </c>.\n\n</d> </e> </f>.\n\n</x> </y> </z>.\n\n'
     }))
 
     describe('on a resource with write-only access', describePatch({
@@ -189,7 +198,8 @@ describe('PATCH through text/n3', () => {
     }, { // expected:
       status: 200,
       text: 'Patch applied successfully',
-      result: '@prefix : </write-only.ttl#>.\n@prefix tim: </>.\n\ntim:a tim:b tim:c.\n\ntim:d tim:e tim:f.\n\ntim:x tim:y tim:z.\n\n'
+      // result: '@prefix : </write-only.ttl#>.\n@prefix tim: </>.\n\ntim:a tim:b tim:c.\n\ntim:d tim:e tim:f.\n\ntim:x tim:y tim:z.\n\n'
+      result: '@prefix : </write-only.ttl#>.\n\n</a> </b> </c>.\n\n</d> </e> </f>.\n\n</x> </y> </z>.\n\n'
     }))
 
     describe('on a resource with parent folders that do not exist', describePatch({
@@ -200,7 +210,8 @@ describe('PATCH through text/n3', () => {
     }, {
       status: 201,
       text: 'Patch applied successfully',
-      result: '@prefix : <#>.\n@prefix fol: <./>.\n\nfol:x fol:y fol:z.\n\n'
+      // result: '@prefix : <#>.\n@prefix fol: <./>.\n\nfol:x fol:y fol:z.\n\n'
+      result: '@prefix : <#>.\n\n<x> <y> <z>.\n\n'
     }))
   })
 
@@ -258,7 +269,8 @@ describe('PATCH through text/n3', () => {
       }, { // expected:
         status: 200,
         text: 'Patch applied successfully',
-        result: '@prefix : </read-append.ttl#>.\n@prefix tim: </>.\n\ntim:a tim:b tim:c; tim:y tim:z.\n\ntim:d tim:e tim:f.\n\n'
+        // result: '@prefix : </read-append.ttl#>.\n@prefix tim: </>.\n\ntim:a tim:b tim:c; tim:y tim:z.\n\ntim:d tim:e tim:f.\n\n'
+        result: '@prefix : </read-append.ttl#>.\n\n</a> </b> </c>; </y> </z>.\n\n</d> </e> </f>.\n\n'
       }))
 
       describe('with a non-matching WHERE clause', describePatch({
@@ -281,7 +293,8 @@ describe('PATCH through text/n3', () => {
       }, { // expected:
         status: 200,
         text: 'Patch applied successfully',
-        result: '@prefix : </read-write.ttl#>.\n@prefix tim: </>.\n\ntim:a tim:b tim:c; tim:y tim:z.\n\ntim:d tim:e tim:f.\n\n'
+        // result: '@prefix : </read-write.ttl#>.\n@prefix tim: </>.\n\ntim:a tim:b tim:c; tim:y tim:z.\n\ntim:d tim:e tim:f.\n\n'
+        result: '@prefix : </read-write.ttl#>.\n\n</a> </b> </c>; </y> </z>.\n\n</d> </e> </f>.\n\n'
       }))
 
       describe('with a non-matching WHERE clause', describePatch({
@@ -354,7 +367,8 @@ describe('PATCH through text/n3', () => {
       }, { // expected:
         status: 200,
         text: 'Patch applied successfully',
-        result: '@prefix : </read-write.ttl#>.\n@prefix tim: </>.\n\ntim:d tim:e tim:f.\n\n'
+        // result: '@prefix : </read-write.ttl#>.\n@prefix tim: </>.\n\ntim:d tim:e tim:f.\n\n'
+        result: '@prefix : </read-write.ttl#>.\n\n</d> </e> </f>.\n\n'
       }))
 
       describe('with a patch for non-existing data', describePatch({
@@ -374,7 +388,8 @@ describe('PATCH through text/n3', () => {
       }, { // expected:
         status: 200,
         text: 'Patch applied successfully',
-        result: '@prefix : </read-write.ttl#>.\n@prefix tim: </>.\n\ntim:d tim:e tim:f.\n\n'
+        // result: '@prefix : </read-write.ttl#>.\n@prefix tim: </>.\n\ntim:d tim:e tim:f.\n\n'
+        result: '@prefix : </read-write.ttl#>.\n\n</d> </e> </f>.\n\n'
       }))
 
       describe('with a non-matching WHERE clause', describePatch({
@@ -463,7 +478,8 @@ describe('PATCH through text/n3', () => {
       }, { // expected:
         status: 200,
         text: 'Patch applied successfully',
-        result: '@prefix : </read-write.ttl#>.\n@prefix tim: </>.\n\ntim:d tim:e tim:f.\n\ntim:x tim:y tim:z.\n\n'
+        // result: '@prefix : </read-write.ttl#>.\n@prefix tim: </>.\n\ntim:d tim:e tim:f.\n\ntim:x tim:y tim:z.\n\n'
+        result: '@prefix : </read-write.ttl#>.\n\n</d> </e> </f>.\n\n</x> </y> </z>.\n\n'
       }))
 
       describe('with a patch for non-existing data', describePatch({
@@ -485,7 +501,8 @@ describe('PATCH through text/n3', () => {
       }, { // expected:
         status: 200,
         text: 'Patch applied successfully',
-        result: '@prefix : </read-write.ttl#>.\n@prefix tim: </>.\n\ntim:a tim:y tim:z.\n\ntim:d tim:e tim:f.\n\n'
+        // result: '@prefix : </read-write.ttl#>.\n@prefix tim: </>.\n\ntim:a tim:y tim:z.\n\ntim:d tim:e tim:f.\n\n'
+        result: '@prefix : </read-write.ttl#>.\n\n</a> </y> </z>.\n\n</d> </e> </f>.\n\n'
       }))
 
       describe('with a non-matching WHERE clause', describePatch({
