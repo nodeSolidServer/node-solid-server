@@ -51,7 +51,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
     # test code
-    - run: npm run standard
+    - run: npm run lint
     - run: npm run validate
     - run: npm run c8
     # Test global install of the package
