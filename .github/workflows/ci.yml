@@ -51,17 +51,67 @@ jobs:
         node-version: ${{ matrix.node-version }}
     - run: npm ci
     # test code
-    - run: npm run standard
+    - run: npm run lint
     - run: npm run validate
-    - run: npm run nyc
+    - run: npm run c8
     # Test global install of the package
     - run: npm pack .
     - run: npm install -g solid-server-*.tgz
     # Run the Solid test-suite
     - run: bash test/surface/run-solid-test-suite.sh $BRANCH_NAME $REPO_NAME
+    - name: Save build
+      # if: matrix.node-version == '20.x'
+      uses: actions/upload-artifact@v5
+      with:
+        name: build
+        path: |
+          .
+          !node_modules
+        retention-days: 1
 
-  # TODO: The pipeline should automate publication to npm, so that the docker build gets the correct version
-  #       This job will only dockerize solid-server@latest / solid-server@<tag-name> from npmjs.com!
+  # The pipeline automate publication to npm, so that the docker build gets the correct version
+  npm-publish-build:
+    needs: [build]
+    name: Publish to npm  
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v6
+        with:
+          name: build
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 22.x
+      - uses: rlespinasse/github-slug-action@v3.x
+      - name: Append commit hash to package version
+        run: 'sed -i -E "s/(\"version\": *\"[^\"]+)/\1-${GITHUB_SHA_SHORT}/" package.json'
+      - name: Disable pre- and post-publish actions
+        run: 'sed -i -E "s/\"((pre|post)publish)/\"ignore:\1/" package.json'
+      - uses: JS-DevTools/npm-publish@v4.1.0
+        if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          tag: ${{ env.GITHUB_REF_SLUG }}
+
+  npm-publish-latest:
+    needs: [build, npm-publish-build]
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/download-artifact@v6
+        with:
+          name: build
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 20.x
+      - name: Disable pre- and post-publish actions
+        run: 'sed -i -E "s/\"((pre|post)publish)/\"ignore:\1/" package.json'
+      - uses: JS-DevTools/npm-publish@v4.1.0
+        if: github.actor != 'dependabot[bot]' && github.actor != 'dependabot-preview[bot]'
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
+          tag: latest  
+
+  # This job will only dockerize solid-server@latest / solid-server@<tag-name> from npmjs.com!
   docker-hub:
     needs: build
     name: Publish to docker hub
