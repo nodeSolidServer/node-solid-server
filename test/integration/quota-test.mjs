@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-expressions */
 import path from 'path'
 import chai from 'chai'
 

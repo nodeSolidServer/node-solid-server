@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-expressions */
 import { describe, it, before } from 'mocha'
 import { expect } from 'chai'
 import SolidHost from '../../lib/models/solid-host.mjs'

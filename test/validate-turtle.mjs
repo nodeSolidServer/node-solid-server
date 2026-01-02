@@ -1,4 +1,3 @@
-
 import { fileURLToPath } from 'url'
 import fs from 'node:fs'
 import Handlebars from 'handlebars'

@@ -2,25 +2,25 @@
 // global: owaspPasswordStrengthTest, TextEncoder, crypto, fetch
 
 (function () {
-  'use strict';
+  'use strict'
 
   const PasswordValidator = function (passwordField, repeatedPasswordField) {
     if (
       passwordField === null || passwordField === undefined ||
       repeatedPasswordField === null || repeatedPasswordField === undefined
     ) {
-      return;
+      return
     }
 
-    this.passwordField = passwordField;
-    this.repeatedPasswordField = repeatedPasswordField;
+    this.passwordField = passwordField
+    this.repeatedPasswordField = repeatedPasswordField
 
-    this.fetchDomNodes();
-    this.bindEvents();
+    this.fetchDomNodes()
+    this.bindEvents()
 
-    this.currentStrengthLevel = 0;
-    this.errors = [];
-  };
+    this.currentStrengthLevel = 0
+    this.errors = []
+  }
 
   const FEEDBACK_SUCCESS = 'success'
   const FEEDBACK_WARNING = 'warning'
@@ -452,5 +452,5 @@
   new PasswordValidator(
     document.getElementById('password'),
     document.getElementById('repeat_password')
-  );
-})();
+  )
+})()

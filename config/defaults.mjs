@@ -19,4 +19,4 @@ export default {
   //   "host": "proxy.example.com",
   //   "port": 12345
   // }
-};
+}
