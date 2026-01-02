@@ -1,6 +1,5 @@
 import { assert } from 'chai'
 import fs from 'fs-extra'
-import fetch from 'node-fetch'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import { loadProvider, rm, checkDnsSettings, cleanDir } from '../utils.mjs'

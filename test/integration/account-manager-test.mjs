@@ -51,7 +51,7 @@ describe('AccountManager', () => {
         // Note: test/resources/accounts/tim.localhost/ exists in this repo
         return accountManager.accountExists('tim')
           .then(exists => {
-            console.log('DEBUG tim exists:', exists, typeof exists)
+            // console.log('DEBUG tim exists:', exists, typeof exists)
             expect(exists).to.not.be.false
           })
       })
@@ -60,7 +60,7 @@ describe('AccountManager', () => {
         // Note: test/resources/accounts/alice.localhost/ does NOT exist
         return accountManager.accountExists('alice')
           .then(exists => {
-            console.log('DEBUG alice exists:', exists, typeof exists)
+            // console.log('DEBUG alice exists:', exists, typeof exists)
             expect(exists).to.not.be.false
           })
       })
