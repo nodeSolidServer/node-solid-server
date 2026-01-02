@@ -59,7 +59,7 @@
   "homepage": "https://github.com/solid/node-solid-server",
   "bugs": "https://github.com/solid/node-solid-server/issues",
   "dependencies": {
-    "@fastify/busboy": "^1.2.1",
+    "@fastify/busboy": "^3.2.0",
     "@fastify/pre-commit": "^2.2.1",
     "@solid/acl-check": "^0.4.5",
     "@solid/oidc-auth-manager": "^0.25.2",
