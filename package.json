@@ -85,7 +85,7 @@
     "express-session": "^1.18.2",
     "extend": "^3.0.2",
     "from2": "^2.3.0",
-    "fs-extra": "^10.1.0",
+    "fs-extra": "^11.3.3",
     "get-folder-size": "^2.0.1",
     "glob": "^7.2.3",
     "global-tunnel-ng": "^2.7.1",
