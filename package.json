@@ -87,7 +87,7 @@
     "from2": "^2.3.0",
     "fs-extra": "^11.3.3",
     "get-folder-size": "^2.0.1",
-    "glob": "^7.2.3",
+    "glob": "^13.0.0",
     "global-tunnel-ng": "^2.7.1",
     "handlebars": "^4.7.8",
     "http-proxy-middleware": "^2.0.9",
