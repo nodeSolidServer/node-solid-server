@@ -73,7 +73,7 @@
     "camelize": "^1.0.1",
     "cheerio": "^1.1.2",
     "colorette": "^2.0.20",
-    "commander": "^8.3.0",
+    "commander": "^14.0.2",
     "cors": "^2.8.5",
     "debug": "^4.4.3",
     "eslint": "^9.39.2",
