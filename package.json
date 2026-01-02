@@ -112,7 +112,7 @@
     "solid-ws": "^0.4.3",
     "text-encoder-lite": "^2.0.0",
     "the-big-username-blacklist": "^1.5.2",
-    "ulid": "^2.4.0",
+    "ulid": "^3.0.2",
     "urijs": "^1.19.11",
     "uuid": "^13.0.0",
     "valid-url": "^1.0.9",
@@ -138,7 +138,7 @@
     "sinon": "12.0.1",
     "sinon-chai": "3.7.0",
     "snyk": "^1.1301.2",
-    "supertest": "^6.3.4",
+    "supertest": "^7.1.4",
     "turtle-validator": "1.1.1",
     "whatwg-url": "^15.1.0"
   },
