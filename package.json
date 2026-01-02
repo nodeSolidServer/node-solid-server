@@ -140,7 +140,7 @@
     "snyk": "^1.1301.2",
     "supertest": "^6.3.4",
     "turtle-validator": "1.1.1",
-    "whatwg-url": "11.0.0"
+    "whatwg-url": "^15.1.0"
   },
   "pre-commit": [
     "lint"
