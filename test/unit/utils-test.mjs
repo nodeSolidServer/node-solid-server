@@ -1,9 +1,7 @@
 import { describe, it } from 'mocha'
 import { assert } from 'chai'
-import fetch from 'node-fetch'
 
 import * as utils from '../../lib/utils.mjs'
-const { Headers } = fetch
 
 const {
   pathBasename,

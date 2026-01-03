@@ -5,7 +5,6 @@ import path from 'path'
 import dns from 'dns'
 import https from 'https'
 import { createRequire } from 'module'
-import fetch from 'node-fetch'
 import rimraf from 'rimraf'
 import fse from 'fs-extra'
 import Provider from '@solid/oidc-op'
@@ -50,7 +49,7 @@ export function cleanDir (dirPath) {
 }
 
 export function write (text, file) {
-  console.log('Writing to', path.join(TEST_ROOT, file))
+  // console.log('Writing to', path.join(TEST_ROOT, file))
   // fs.mkdirSync(path.dirname(path.join(TEST_ROOT, file), { recursive: true }))
   return fs.writeFileSync(path.join(TEST_ROOT, file), text)
 }
@@ -62,7 +61,7 @@ export function cp (src, dest) {
 }
 
 export function read (file) {
-  console.log('Reading from', path.join(TEST_ROOT, file))
+  // console.log('Reading from', path.join(TEST_ROOT, file))
   return fs.readFileSync(path.join(TEST_ROOT, file), {
     encoding: 'utf8'
   })
@@ -114,7 +113,7 @@ export function loadProvider (configPath) {
 }
 
 export function createServer (options) {
-  console.log('Creating server with root:', options.root || process.cwd())
+  // console.log('Creating server with root:', options.root || process.cwd())
   return ldnode.createServer(options)
 }
 

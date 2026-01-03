@@ -11,7 +11,7 @@ import ldnode, { createServer } from '../../index.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
-console.log(getTestRoot())
+// console.log(getTestRoot())
 
 describe('LDNODE params', function () {
   describe('suffixMeta', function () {
@@ -46,7 +46,7 @@ describe('LDNODE params', function () {
 
       it('should fallback on current working directory', function () {
         assert.equal(path.normalize(ldp.locals.ldp.resourceMapper._rootPath), path.normalize(process.cwd()))
-        console.log('Root path is', ldp.locals.ldp.resourceMapper._rootPath)
+        // console.log('Root path is', ldp.locals.ldp.resourceMapper._rootPath)
       })
 
       it('new : should find resource in correct path', function (done) {
@@ -57,7 +57,7 @@ describe('LDNODE params', function () {
         const fileContent = '<#current> <#temp> 123 .'
         fs.mkdirSync(dirPath, { recursive: true })
         fs.writeFileSync(filePath, fileContent)
-        console.log('Wrote file to', filePath)
+        // console.log('Wrote file to', filePath)
         server.get('/sampleContainer/example.ttl')
           .expect('Link', /http:\/\/www.w3.org\/ns\/ldp#Resource/)
           .expect(200)
@@ -71,7 +71,7 @@ describe('LDNODE params', function () {
       it.skip('initial : should find resource in correct path', function (done) {
         // Write to the default resources directory, matching the server's root
         const resourcePath = path.join('sampleContainer', 'example.ttl')
-        console.log('initial : Writing test resource to', resourcePath)
+        // console.log('initial : Writing test resource to', resourcePath)
         setTestRoot(path.join(__dirname, '../resources/'))
         write('<#current> <#temp> 123 .', resourcePath)
 
@@ -102,7 +102,7 @@ describe('LDNODE params', function () {
         const fileContent = '<#current> <#temp> 123 .'
         fs.mkdirSync(dirPath, { recursive: true })
         fs.writeFileSync(filePath, fileContent)
-        console.log('Wrote file to', filePath)
+        // console.log('Wrote file to', filePath)
 
         server.get('/sampleContainer/example.ttl')
           .expect('Link', /http:\/\/www.w3.org\/ns\/ldp#Resource/)

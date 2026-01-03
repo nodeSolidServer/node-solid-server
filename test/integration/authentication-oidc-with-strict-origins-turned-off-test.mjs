@@ -6,7 +6,6 @@ import { UserStore } from '@solid/oidc-auth-manager'
 import UserAccount from '../../lib/models/user-account.mjs'
 import SolidAuthOIDC from '@solid/solid-auth-oidc'
 
-import fetch from 'node-fetch'
 import localStorage from 'localstorage-memory'
 import { URL, URLSearchParams } from 'whatwg-url'
 import { cleanDir, cp } from '../utils.mjs'
@@ -463,7 +462,7 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
           // Since user is not logged in, /authorize redirects to /login
           expect(res.status).to.equal(302)
 
-          loginUri = new URL(res.headers.get('location'))
+          loginUri = new URL(res.headers.get('location'), aliceServerUri)
           expect(loginUri.toString().startsWith(aliceServerUri + '/login'))
             .to.be.true()
 
@@ -507,8 +506,11 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
       })
         .then(res => {
           expect(res.status).to.equal(302)
-          postLoginUri = res.headers.get('location')
-          cookie = res.headers.get('set-cookie')
+          const location = res.headers.get('location')
+          postLoginUri = new URL(location, aliceServerUri).toString()
+          // Native fetch: get first set-cookie header
+          const setCookieHeaders = res.headers.getSetCookie ? res.headers.getSetCookie() : [res.headers.get('set-cookie')]
+          cookie = setCookieHeaders[0]
 
           // Successful login gets redirected back to /authorize and then
           // back to app
@@ -533,20 +535,23 @@ describe('Authentication API (OIDC) - With strict origins turned off', () => {
       })
         .then(res => {
           expect(res.status).to.equal(302)
-          const postLoginUri = res.headers.get('location')
-          const cookie = res.headers.get('set-cookie')
+          const location = res.headers.get('location')
+          const postSharingUri = new URL(location, aliceServerUri).toString()
+          const setCookieHeaders = res.headers.getSetCookie ? res.headers.getSetCookie() : [res.headers.get('set-cookie')]
+          const cookieFromSharing = setCookieHeaders[0] || cookie
 
           // Successful login gets redirected back to /authorize and then
           // back to app
-          expect(postLoginUri.startsWith(aliceServerUri + '/authorize'))
+          expect(postSharingUri.startsWith(aliceServerUri + '/authorize'))
             .to.be.true()
 
-          return fetch(postLoginUri, { redirect: 'manual', headers: { cookie } })
+          return fetch(postSharingUri, { redirect: 'manual', headers: { cookie: cookieFromSharing } })
         })
         .then(res => {
         // User gets redirected back to original app
           expect(res.status).to.equal(302)
-          callbackUri = res.headers.get('location')
+          const location = res.headers.get('location')
+          callbackUri = location.startsWith('http') ? location : new URL(location, aliceServerUri).toString()
           expect(callbackUri.startsWith('https://app.example.com#'))
         })
     })
