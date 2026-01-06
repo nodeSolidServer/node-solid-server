@@ -1,4 +1,5 @@
 // ESM version of index-buttons.js
+/* global SolidLogic */
 'use strict'
 const keyname = 'SolidServerRootRedirectLink'
 /* function register () {
@@ -6,8 +7,8 @@ const keyname = 'SolidServerRootRedirectLink'
   window.location.href = '/register'
 } */
 document.addEventListener('DOMContentLoaded', async function () {
-  const authn = UI.authn
-  const authSession = UI.authn.authSession
+  const authn = SolidLogic.authn
+  const authSession = SolidLogic.authSession
 
   if (!authn.currentUser()) await authn.checkUser()
   const user = authn.currentUser()
