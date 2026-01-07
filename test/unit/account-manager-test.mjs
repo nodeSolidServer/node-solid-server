@@ -497,7 +497,7 @@ describe('AccountManager', () => {
           expect(accountManager.passwordResetUrl)
             .to.have.been.calledWith(resetToken, returnToUrl)
           expect(emailService.sendWithTemplate)
-            .to.have.been.calledWith('reset-password', expectedEmailData)
+            .to.have.been.calledWith('reset-password.mjs', expectedEmailData)
         })
     })
 

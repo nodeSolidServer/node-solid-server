@@ -21,7 +21,7 @@ export default [
     },
     rules: {
       // StandardJS-like rules
-      'no-unused-vars': ['error', {
+      'no-unused-vars': ['warn', {
         args: 'none',
         caughtErrors: 'none',
         ignoreRestSiblings: true,

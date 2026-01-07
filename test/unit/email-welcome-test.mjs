@@ -73,7 +73,7 @@ describe('Account Creation Welcome Email', () => {
 
       return accountManager.sendWelcomeEmail(newUser)
         .then(result => {
-          expect(sendWithTemplate).to.be.calledWith('welcome', expectedEmailData)
+          expect(sendWithTemplate).to.be.calledWith('welcome.mjs', expectedEmailData)
         })
     })
   })

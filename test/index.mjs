@@ -7,7 +7,6 @@ import dns from 'dns'
 import ldnode from '../../index.mjs'
 // import ldnode from '../index.mjs'
 import supertest from 'supertest'
-import fetch from 'node-fetch'
 import https from 'https'
 
 const __filename = fileURLToPath(import.meta.url)
