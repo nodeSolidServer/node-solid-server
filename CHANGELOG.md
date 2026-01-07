@@ -1,4 +1,20 @@
 # History
+## 6.0.0
+- CommonJs to ESM (.mjs)
+- support for mashlib >= 2.0.0
+- support solid-OIDC with WebID scope, es256, and rfc9702
+
+## 6.0.0 Upgrade Notes
+
+1.0 Automatically recreated
+- delete `.db/oidc/op/provider.json`
+- delete `config/templates/emails`
+  If not recreated then copy from `default-emails`
+  If there was some personalisation these need to be redone
+
+2.0 Manuel update the `index.html` in server root `data/<serverOrigin>/index.html`
+  edit `common/js/index-buttons.js` to `index-buttons.mjs`
+  
 ## 5.3.0
 - Support for webid-oidc with DPop tokens
 
