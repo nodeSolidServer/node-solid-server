@@ -53,6 +53,7 @@ jobs:
     # test code
     - run: npm run lint
     - run: npm run validate
+    - name : rm file
     - run: npm run c8
     # Test global install of the package
     - run: npm pack .
