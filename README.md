@@ -146,6 +146,9 @@ also add to `config.json`
   "emailAuthPass": "gmailPass"
 ```
 
+### Upgrading from version <6.0.0
+Please take into account the [v6.0.0 upgrade notes](https://github.com/solid/node-solid-server/blob/master/CHANGELOG.md#600-upgrade-notes).
+
 ### Upgrading from version <5.3
 Please take into account the [v5.3 upgrade notes](https://github.com/solid/node-solid-server/blob/master/CHANGELOG.md#530-upgrade-notes).
 
