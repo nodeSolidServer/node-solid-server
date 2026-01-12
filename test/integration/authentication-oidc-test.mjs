@@ -5,6 +5,7 @@ import fs from 'fs-extra'
 import { UserStore } from '@solid/oidc-auth-manager'
 import UserAccount from '../../lib/models/user-account.mjs'
 import SolidAuthOIDC from '@solid/solid-auth-oidc'
+import { WebSocket } from 'ws'
 
 import localStorage from 'localstorage-memory'
 import { URL, URLSearchParams } from 'whatwg-url'
@@ -51,7 +52,8 @@ describe('Authentication API (OIDC)', () => {
     multiuser: false,
     configPath,
     trustedOrigins: ['https://apps.solid.invalid', 'https://trusted.app'],
-    saltRounds: 1
+    saltRounds: 1,
+    live: true // Enable WebSocket support
   }
 
   const aliceRootPath = path.normalize(path.join(__dirname, '../resources/accounts-scenario/alice'))
@@ -806,12 +808,379 @@ describe('Authentication API (OIDC)', () => {
           expect(res.status).to.equal(403)
         })
     })
+
+    it('should allow Bearer token WebSocket subscription to private resource', function (done) {
+      this.timeout(15000)
+
+      // Issue a PoP token for Alice's server
+      let aliceBearerToken
+
+      auth.issuePoPTokenFor(aliceServerUri, auth.session)
+        .then(popToken => {
+          aliceBearerToken = popToken
+
+          // Now connect to WebSocket with Bearer token
+          const wsUrl = aliceServerUri.replace('https:', 'wss:') + '/.websocket'
+          let completed = false
+
+          const ws = new WebSocket(wsUrl, {
+            rejectUnauthorized: false,
+            headers: {
+              Authorization: 'Bearer ' + aliceBearerToken
+            }
+          })
+
+          ws.on('open', () => {
+            ws.send('sub ' + aliceServerUri + '/private-for-alice.txt')
+          })
+
+          ws.on('message', (data) => {
+            const message = data.toString()
+
+            if (message.startsWith('ack ')) {
+              expect(message).to.equal('ack ' + aliceServerUri + '/private-for-alice.txt')
+              completed = true
+              ws.close()
+              done()
+            } else if (message.startsWith('err ')) {
+              completed = true
+              ws.close()
+              done(new Error('Bearer token authentication should allow access: ' + message))
+            }
+          })
+
+          ws.on('error', (err) => {
+            if (!completed) {
+              completed = true
+              done(err)
+            }
+          })
+
+          ws.on('close', (code) => {
+            if (!completed && code !== 1000) {
+              completed = true
+              done(new Error('WebSocket closed with error code: ' + code))
+            }
+          })
+        })
+        .catch(err => {
+          done(err)
+        })
+    })
+
+    it('should allow Bearer token WebSocket subscription to public resource', function (done) {
+      this.timeout(15000)
+
+      // Issue a PoP token for Alice's server
+      let aliceBearerToken
+
+      auth.issuePoPTokenFor(aliceServerUri, auth.session)
+        .then(popToken => {
+          aliceBearerToken = popToken
+
+          // Now connect to WebSocket with Bearer token
+          const wsUrl = aliceServerUri.replace('https:', 'wss:') + '/.websocket'
+          let completed = false
+
+          const ws = new WebSocket(wsUrl, {
+            rejectUnauthorized: false,
+            headers: {
+              Authorization: 'Bearer ' + aliceBearerToken
+            }
+          })
+
+          ws.on('open', () => {
+            // Subscribe to public root resource
+            ws.send('sub ' + aliceServerUri + '/')
+          })
+
+          ws.on('message', (data) => {
+            const message = data.toString()
+
+            if (message.startsWith('ack ')) {
+              expect(message).to.equal('ack ' + aliceServerUri + '/')
+              completed = true
+              ws.close()
+              done()
+            } else if (message.startsWith('err ')) {
+              completed = true
+              ws.close()
+              done(new Error('Bearer token should allow access to public resource: ' + message))
+            }
+          })
+
+          ws.on('error', (err) => {
+            if (!completed) {
+              completed = true
+              done(err)
+            }
+          })
+
+          ws.on('close', (code) => {
+            if (!completed && code !== 1000) {
+              completed = true
+              done(new Error('WebSocket closed with error code: ' + code))
+            }
+          })
+        })
+        .catch(err => {
+          done(err)
+        })
+    })
+
+    it('should degrade gracefully with invalid Bearer token', function (done) {
+      this.timeout(10000)
+
+      const wsUrl = aliceServerUri.replace('https:', 'wss:') + '/.websocket'
+      let completed = false
+
+      const ws = new WebSocket(wsUrl, {
+        rejectUnauthorized: false,
+        headers: {
+          Authorization: 'Bearer invalid-token-xyz123'
+        }
+      })
+
+      ws.on('open', () => {
+        // Try to subscribe to private resource (should be denied like anonymous)
+        ws.send('sub ' + aliceServerUri + '/private-for-alice.txt')
+      })
+
+      ws.on('message', (data) => {
+        const message = data.toString()
+
+        if (message.startsWith('err ') && message.includes('forbidden')) {
+          // Should be denied access like an anonymous user
+          expect(message).to.include(aliceServerUri + '/private-for-alice.txt')
+          completed = true
+          ws.close()
+          done()
+        } else if (message.startsWith('ack ')) {
+          completed = true
+          ws.close()
+          done(new Error('Invalid Bearer token should not grant access: ' + message))
+        }
+      })
+
+      ws.on('error', (err) => {
+        if (!completed) {
+          completed = true
+          done(err)
+        }
+      })
+
+      ws.on('close', (code) => {
+        if (!completed && code !== 1000) {
+          completed = true
+          done(new Error('WebSocket closed with error code: ' + code))
+        }
+      })
+    })
   })
 
   describe('Post-logout page (GET /goodbye)', () => {
     it('should load the post-logout page', () => {
       return alice.get('/goodbye')
         .expect(200)
+    })
+  })
+
+  describe('WebSocket Authentication', () => {
+    const aliceAccount = UserAccount.from({ webId: aliceWebId })
+    const alicePassword = '12345'
+    let cookie
+
+    before(function (done) {
+      this.timeout(10000)
+
+      aliceUserStore.initCollections()
+      aliceUserStore.createUser(aliceAccount, alicePassword)
+        .then(() => {
+          alice.post('/login/password')
+            .type('form')
+            .send({ username: 'alice' })
+            .send({ password: alicePassword })
+            .end((err, res) => {
+              if (err) return done(err)
+              cookie = res.headers['set-cookie'][0]
+              done()
+            })
+        })
+        .catch(done)
+    })
+
+    after(() => {
+      fs.removeSync(path.join(aliceDbPath, 'users/users'))
+    })
+
+    it('should allow authenticated WebSocket subscription to private resource', function (done) {
+      this.timeout(10000)
+
+      const wsUrl = aliceServerUri.replace('https:', 'wss:') + '/.websocket'
+
+      const ws = new WebSocket(wsUrl, {
+        rejectUnauthorized: false,
+        headers: {
+          Cookie: cookie // Pass session cookie
+        }
+      })
+
+      let completed = false
+
+      ws.on('open', () => {
+        // Subscribe to Alice's private resource immediately after connection
+        ws.send('sub ' + aliceServerUri + '/private-for-alice.txt')
+      })
+
+      ws.on('message', (data) => {
+        const message = data.toString()
+
+        if (message.startsWith('ack ')) {
+          // Subscription acknowledged - authenticated user has access
+          expect(message).to.equal('ack ' + aliceServerUri + '/private-for-alice.txt')
+          completed = true
+          ws.close()
+          done()
+        } else if (message.startsWith('err ')) {
+          // Subscription denied
+          completed = true
+          ws.close()
+          done(new Error('Subscription should be allowed for authenticated user: ' + message))
+        }
+      })
+
+      ws.on('error', (err) => {
+        if (!completed) {
+          completed = true
+          done(err)
+        }
+      })
+
+      ws.on('close', (code) => {
+        if (!completed && code !== 1000) {
+          completed = true
+          done(new Error('WebSocket closed with error code: ' + code))
+        }
+      })
+    })
+
+    it('should deny anonymous WebSocket subscription to private resource', function (done) {
+      this.timeout(10000)
+
+      const wsUrl = aliceServerUri.replace('https:', 'wss:') + '/.websocket'
+
+      const ws = new WebSocket(wsUrl, {
+        rejectUnauthorized: false
+        // No cookie - anonymous connection
+      })
+
+      let completed = false
+
+      ws.on('open', () => {
+        // Try to subscribe to private resource without auth
+        ws.send('sub ' + aliceServerUri + '/private-for-alice.txt')
+      })
+
+      ws.on('message', (data) => {
+        const message = data.toString()
+
+        if (message.startsWith('err ')) {
+          // Should be denied
+          expect(message).to.match(/err .+ forbidden/)
+          completed = true
+          ws.close()
+          done()
+        } else if (message.startsWith('ack ')) {
+          // Should NOT be acknowledged
+          completed = true
+          ws.close()
+          done(new Error('Anonymous user should not have access to private resource'))
+        }
+      })
+
+      ws.on('error', (err) => {
+        if (!completed) {
+          completed = true
+          done(err)
+        }
+      })
+
+      ws.on('close', (code) => {
+        if (!completed && code !== 1000) {
+          completed = true
+          done(new Error('WebSocket closed with error code: ' + code))
+        }
+      })
+    })
+
+    it('should allow authenticated subscription to public resource', function (done) {
+      this.timeout(10000)
+
+      const wsUrl = aliceServerUri.replace('https:', 'wss:') + '/.websocket'
+
+      const ws = new WebSocket(wsUrl, {
+        rejectUnauthorized: false,
+        headers: {
+          Cookie: cookie
+        }
+      })
+
+      ws.on('open', () => {
+        // Subscribe to public root immediately after connection
+        ws.send('sub ' + aliceServerUri + '/')
+      })
+
+      ws.on('message', (data) => {
+        const message = data.toString()
+
+        if (message.startsWith('ack ')) {
+          // Should be acknowledged
+          expect(message).to.equal('ack ' + aliceServerUri + '/')
+          ws.close()
+          done()
+        } else if (message.startsWith('err ')) {
+          ws.close()
+          done(new Error('Public resource should be accessible: ' + message))
+        }
+      })
+
+      ws.on('error', (err) => {
+        done(err)
+      })
+    })
+
+    it('should allow anonymous subscription to public resource', function (done) {
+      this.timeout(10000)
+
+      const wsUrl = aliceServerUri.replace('https:', 'wss:') + '/.websocket'
+
+      const ws = new WebSocket(wsUrl, {
+        rejectUnauthorized: false
+        // No cookie - anonymous
+      })
+
+      ws.on('open', () => {
+        // Subscribe to public root immediately after connection
+        ws.send('sub ' + aliceServerUri + '/')
+      })
+
+      ws.on('message', (data) => {
+        const message = data.toString()
+
+        if (message.startsWith('ack ')) {
+          // Should be acknowledged even for anonymous
+          expect(message).to.equal('ack ' + aliceServerUri + '/')
+          ws.close()
+          done()
+        } else if (message.startsWith('err ')) {
+          ws.close()
+          done(new Error('Public resource should be accessible to anonymous: ' + message))
+        }
+      })
+
+      ws.on('error', (err) => {
+        done(err)
+      })
     })
   })
 })
