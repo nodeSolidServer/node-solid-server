@@ -61,6 +61,8 @@
   "dependencies": {
     "@fastify/busboy": "^3.2.0",
     "@fastify/pre-commit": "^2.2.1",
+    "@noble/curves": "^1.8.1",
+    "@noble/hashes": "^1.7.1",
     "@solid/acl-check": "^0.4.5",
     "@solid/oidc-auth-manager": "^0.25.2",
     "@solid/oidc-op": "^0.12.1",
