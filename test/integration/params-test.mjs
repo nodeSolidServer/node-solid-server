@@ -6,7 +6,7 @@ import { assert } from 'chai'
 import supertest from 'supertest'
 
 // Import utilities from ESM version
-import { rm, write, read, cleanDir, getTestRoot, setTestRoot } from '../utils.mjs'
+import { rm, write, read, cleanDir, setTestRoot } from '../utils.mjs'
 import ldnode, { createServer } from '../../index.mjs'
 
 const __filename = fileURLToPath(import.meta.url)
