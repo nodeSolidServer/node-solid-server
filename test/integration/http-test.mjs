@@ -260,6 +260,13 @@ describe('HTTP APIs', function () {
         .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Resource>; rel="type"/)
         .expect(200, done)
     })
+    it('should have set Last-Modified for resource', function (done) {
+      const modified = fs.statSync(path.join(__dirname,
+        '../resources/sampleContainer2/example1.ttl')).mtime.toUTCString()
+      server.get('/sampleContainer2/example1.ttl')
+        .expect('Last-Modified', modified)
+        .expect(200, done)
+    })
     it('should have set Updates-Via to use WebSockets', function (done) {
       server.get('/sampleContainer2/example1.ttl')
         .expect('updates-via', /wss?:\/\//)
@@ -278,6 +285,13 @@ describe('HTTP APIs', function () {
         .expect('content-type', /text\/turtle/)
         .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#BasicContainer>; rel="type"/)
         .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Container>; rel="type"/)
+        .expect(200, done)
+    })
+    it('should have set Last-Modified for container', function (done) {
+      const modified = fs.statSync(path.join(__dirname,
+        '../resources/sampleContainer2')).mtime.toUTCString()
+      server.get('/sampleContainer2/')
+        .expect('Last-Modified', modified)
         .expect(200, done)
     })
     it('should load skin (mashlib) if resource was requested as text/html', function (done) {
@@ -510,6 +524,13 @@ describe('HTTP APIs', function () {
         .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Resource>; rel="type"/)
         .expect(200, done)
     })
+    it('should have set Last-Modified for resource', function (done) {
+      const modified = fs.statSync(path.join(__dirname,
+        '../resources/sampleContainer2/example1.ttl')).mtime.toUTCString()
+      server.head('/sampleContainer2/example1.ttl')
+        .expect('Last-Modified', modified)
+        .expect(200, done)
+    })
     it('should have set acl and describedBy Links for resource',
       function (done) {
         server.head('/sampleContainer2/example1.ttl')
@@ -530,6 +551,13 @@ describe('HTTP APIs', function () {
           .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Container>; rel="type"/)
           .expect(200, done)
       })
+    it('should have set Last-Modified for container', function (done) {
+      const modified = fs.statSync(path.join(__dirname,
+        '../resources/sampleContainer2')).mtime.toUTCString()
+      server.head('/sampleContainer2/')
+        .expect('Last-Modified', modified)
+        .expect(200, done)
+    })
     it('should have set acl and describedBy Links for container',
       function (done) {
         server.head('/sampleContainer2/')
