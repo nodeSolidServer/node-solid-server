@@ -9,6 +9,8 @@
 
 `solid-server` lets you run a Solid server on top of the file-system. You can use it as a [command-line tool](https://github.com/solid/node-solid-server/blob/master/README.md#command-line-usage) (easy) or as a [library](https://github.com/solid/node-solid-server/blob/master/README.md#library-usage) (advanced).
 
+> **Disclaimer**: This is a prototype implementation of a Solid server. It is a fully functional server, but there are no security or stability guarantees. Do not use it with production data.
+
 The [solid test suite](https://github.com/nodeSolidServer/node-solid-server/blob/main/test/surface/run-solid-test-suite.sh) runs as part of GitHub Actions on this repository, ensuring that this server is always (to the best of our knowledge) fully spec compliant.
 
 ## Solid Features supported
