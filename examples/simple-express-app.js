@@ -1,5 +1,5 @@
-const express = require('express')
-const solid = require('../') // or require('solid')
+import express from 'express'
+import solid from '../index.js'
 
 // Starting our express app
 const app = express()

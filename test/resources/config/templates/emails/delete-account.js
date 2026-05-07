@@ -1,19 +1,4 @@
-'use strict'
-
-/**
- * Returns a partial Email object (minus the `to` and `from` properties),
- * suitable for sending with Nodemailer.
- *
- * Used to send a Delete Account email, upon user request
- *
- * @param data {Object}
- *
- * @param data.deleteUrl {string}
- * @param data.webId {string}
- *
- * @return {Object}
- */
-function render (data) {
+export function render (data) {
   return {
     subject: 'Delete Solid-account request',
 
@@ -41,9 +26,6 @@ If you did not mean to delete your account, ignore this email.`,
 
 <p><a href="${data.deleteUrl}">${data.deleteUrl}</a></p>
 
-<p>If you did not mean to delete your account, ignore this email.</p>
-`
+<p>If you did not mean to delete your account, ignore this email.</p>`
   }
 }
-
-module.exports.render = render

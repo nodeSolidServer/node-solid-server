@@ -1,4 +1,3 @@
-/* global owaspPasswordStrengthTest, TextEncoder, crypto, fetch */
 (function () {
   'use strict'
 

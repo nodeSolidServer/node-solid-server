@@ -1,5 +1,5 @@
-const solid = require('../') // or require('solid')
-const path = require('path')
+import solid from '../index.js'
+import path from 'path'
 
 solid
   .createServer({
