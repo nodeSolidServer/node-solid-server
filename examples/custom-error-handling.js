@@ -1,5 +1,5 @@
-const solid = require('../')
-const path = require('path')
+import solid from '../index.js'
+import path from 'path'
 
 solid
   .createServer({
@@ -10,7 +10,6 @@ solid
       if (err.status !== 200) {
         console.log('Oh no! There is an error:' + err.message)
         res.status(err.status)
-
         // Now you can send the error how you want
         // Maybe you want to render an error page
         // res.render('errorPage.ejs', {
@@ -18,7 +17,6 @@ solid
         //   message: err.message
         // })
         // Or you want to respond in JSON?
-
         res.json({
           title: err.status + ': This is an error!',
           message: err.message

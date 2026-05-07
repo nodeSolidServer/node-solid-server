@@ -1,6 +1,4 @@
-module.exports.render = render
-
-function render (data) {
+export function render (data) {
   return {
     subject: `Invalid username for account ${data.accountUri}`,
 
@@ -24,7 +22,6 @@ ${data.supportEmail ? `Please contact ${data.supportEmail} if you want to move y
 
 <p>This account has been set to be deleted at ${data.dateOfRemoval}.</p>
 
-${data.supportEmail ? `<p>Please contact ${data.supportEmail} if you want to move your account.</p>` : ''}
-`
+${data.supportEmail ? `<p>Please contact ${data.supportEmail} if you want to move your account.</p>` : ''}`
   }
 }
