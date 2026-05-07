@@ -64,7 +64,7 @@ const userCredentials = {
 // a webid-tls client certificate can still use their certificate (and not a
 // username/password pair or other login method) to "bridge" from webid-tls to
 // webid-oidc.
-describe.skip('ACL with WebID+TLS', function () {
+describe('ACL with WebID+TLS', function () {
   let ldpHttpsServer
   const serverConfig = {
     root: rootPath,
@@ -131,7 +131,7 @@ describe.skip('ACL with WebID+TLS', function () {
       })
     })
 
-    it.skip('should return a 401 and WWW-Authenticate header without credentials', (done) => {
+    it('should return a 401 and WWW-Authenticate header without credentials', (done) => {
       rm('.acl')
       const options = {
         url: address + '/acl-tls/no-acl/',
@@ -568,7 +568,7 @@ describe.skip('ACL with WebID+TLS', function () {
     })
   })
 
-  describe.skip('Glob', function () {
+  describe('Glob', function () {
     it('user2 should be able to send glob request', function (done) {
       const options = createOptions(globFile, 'user2')
       request.get(options, function (error, response, body) {
@@ -613,7 +613,7 @@ describe.skip('ACL with WebID+TLS', function () {
         done()
       })
     })
-    it.skip('user1 should be able to PATCH a resource', function (done) {
+    it('user1 should be able to PATCH a resource', function (done) {
       const options = createOptions('/acl-tls/append-inherited/test.ttl', 'user1')
       options.headers = {
         'content-type': 'application/sparql-update'
@@ -943,7 +943,7 @@ describe.skip('ACL with WebID+TLS', function () {
     // })
   })
 
-  describe.skip('Cleanup', function () {
+  describe('Cleanup', function () {
     it('should remove all files and dirs created', function (done) {
       try {
         // must remove the ACLs in sync
