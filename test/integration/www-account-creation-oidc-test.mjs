@@ -231,7 +231,6 @@ describe('Single User signup page', () => {
   const serverUri = 'https://localhost:7457'
   const port = 7457
   let ldpHttpsServer
-  rm('resources/accounts/single-user/')
   const rootDir = path.normalize(path.join(__dirname, '../resources/accounts/single-user/'))
   const configPath = path.normalize(path.join(__dirname, '../resources/config'))
   const ldp = ldnode.createServer({
@@ -247,6 +246,7 @@ describe('Single User signup page', () => {
   const server = supertest(serverUri)
 
   before(function (done) {
+    fs.removeSync(rootDir)
     ldpHttpsServer = ldp.listen(port, () => server.post('/api/accounts/new')
       .send('username=foo&password=12345&acceptToc=true')
       .end(done))
