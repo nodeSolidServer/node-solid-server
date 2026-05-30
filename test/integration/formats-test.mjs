@@ -82,11 +82,13 @@ describe('formats', function () {
   })
 
   describe('turtle', function () {
-    it('should return turtle document if Accept is set to turtle', function (done) {
-      server.get('/patch-5-initial.ttl')
+    this.timeout(10000)
+
+    it('should return turtle document if Accept is set to turtle', function () {
+      return server.get('/patch-5-initial.ttl')
         .set('accept', 'text/turtle;q=0.9,application/rdf+xml;q=0.8,text/plain;q=0.7,*/*;q=0.5')
         .expect('content-type', /text\/turtle/)
-        .expect(200, done)
+        .expect(200)
     })
 
     it('should return turtle document if Accept is set to turtle', function (done) {

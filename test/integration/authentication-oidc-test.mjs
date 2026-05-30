@@ -532,6 +532,41 @@ describe('Authentication API (OIDC)', () => {
 
           it('should return a 200', () => expect(response).to.have.property('status', 200))
         })
+
+        describe('after logging out', () => {
+          let logoutResponse
+
+          before(done => {
+            alice.get('/logout')
+              .set('Cookie', cookie)
+              .end((err, res) => {
+                logoutResponse = res
+                done(err)
+              })
+          })
+
+          it('should redirect to the post-logout flow', () => {
+            expect(logoutResponse).to.have.property('status', 302)
+          })
+
+          it('should invalidate the previous session cookie', (done) => {
+            alice.get('/private-for-alice.txt')
+              .set('Cookie', cookie)
+              .end((err, res) => {
+                expect(res).to.have.property('status', 401)
+                done(err)
+              })
+          })
+
+          it('should also accept the well-known logout endpoint used by solid-auth-client', (done) => {
+            alice.get('/.well-known/solid/logout')
+              .set('Cookie', cookie)
+              .end((err, res) => {
+                expect(res).to.have.property('status', 302)
+                done(err)
+              })
+          })
+        })
       })
     })
 

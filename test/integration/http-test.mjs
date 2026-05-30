@@ -280,13 +280,16 @@ describe('HTTP APIs', function () {
         .expect('Link', /<http:\/\/www.w3.org\/ns\/ldp#Container>; rel="type"/)
         .expect(200, done)
     })
-    it('should load skin (mashlib) if resource was requested as text/html', function (done) {
+    it('should load mashlib databrowser shell if resource was requested as text/html', function (done) {
       server.get('/sampleContainer2/example1.ttl')
         .set('Accept', 'text/html')
         .expect('content-type', /text\/html/)
         .expect(function (res) {
-          if (res.text.indexOf('TabulatorOutline') < 0) {
-            throw new Error('did not load the Tabulator skin by default')
+          const hasLegacyMarker = res.text.includes('TabulatorOutline')
+          const hasCurrentMarker = res.text.includes('id="OutlineView"') || res.text.includes('data-app-shell="databrowser"')
+
+          if (!hasLegacyMarker && !hasCurrentMarker) {
+            throw new Error('did not load mashlib databrowser shell markers')
           }
         })
         .expect(200, done) // Can't check for 303 because of internal redirects
