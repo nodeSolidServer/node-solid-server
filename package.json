@@ -89,7 +89,7 @@
     "get-folder-size": "^2.0.1",
     "glob": "^13.0.0",
     "global-tunnel-ng": "^2.7.1",
-    "handlebars": "^4.7.8",
+    "handlebars": "^4.7.9",
     "http-proxy-middleware": "^2.0.9",
     "inquirer": "^8.2.7",
     "into-stream": "^9.0.0",
