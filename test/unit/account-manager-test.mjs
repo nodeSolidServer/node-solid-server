@@ -382,6 +382,30 @@ describe('AccountManager', () => {
         })
     })
 
+    it('decodes encoded plus signs in the agent mailto from the root acl', () => {
+      const userAccount = UserAccount.from({ username: 'solidgold' })
+
+      const rootAclGraph = rdf.graph()
+      rootAclGraph.add(
+        rdf.namedNode('https://solidgold.example.com/.acl#owner'),
+        ns.acl('agent'),
+        rdf.namedNode('mailto:jon%2Bsolidtest@snap.com')
+      )
+
+      const store = {
+        suffixAcl: '.acl',
+        getGraph: sinon.stub().resolves(rootAclGraph)
+      }
+
+      const options = { host, multiuser: true, store }
+      const accountManager = AccountManager.from(options)
+
+      return accountManager.loadAccountRecoveryEmail(userAccount)
+        .then(recoveryEmail => {
+          expect(recoveryEmail).to.equal('jon+solidtest@snap.com')
+        })
+    })
+
     it('should return undefined when agent mailto is missing', () => {
       const userAccount = UserAccount.from({ username: 'alice' })
 

@@ -54,5 +54,18 @@ describe('AccountTemplate', () => {
       expect(substitutions.email).to.equal('alice@example.com')
       expect(substitutions.webId).to.equal('/profile/card#me')
     })
+
+    it('encodes plus signs in email addresses for mailto templates', () => {
+      const userOptions = {
+        username: 'solidgold',
+        webId: 'https://solidgold.example.com/profile/card#me',
+        name: 'Solid Gold',
+        email: 'jon+solidtest@snap.com'
+      }
+      const userAccount = UserAccount.from(userOptions)
+
+      const substitutions = AccountTemplate.templateSubstitutionsFor(userAccount)
+      expect(substitutions.email).to.equal('jon%2Bsolidtest@snap.com')
+    })
   })
 })
