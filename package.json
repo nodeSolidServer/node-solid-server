@@ -68,7 +68,6 @@
     "@solid/solid-multi-rp-client": "^0.7.2",
     "async-lock": "^1.4.1",
     "body-parser": "^1.20.4",
-    "bootstrap": "^3.4.1",
     "cached-path-relative": "^1.1.0",
     "camelize": "^1.0.1",
     "cheerio": "^1.1.2",
