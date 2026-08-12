@@ -57,13 +57,39 @@ const userCredentials = {
   }
 }
 
-// TODO Remove skip. TLS is currently broken, but is not a priority to fix since
-// the current Solid spec does not require supporting webid-tls on the resource
-// server. The current spec only requires the resource server to support webid-oidc,
-// and it requires the IDP to support webid-tls as a log in method, so that users of
-// a webid-tls client certificate can still use their certificate (and not a
-// username/password pair or other login method) to "bridge" from webid-tls to
-// webid-oidc.
+// SKIPPED: Tests timeout due to self-signed certificate verification loop.
+//
+// The WebID-TLS authentication code (lib/api/authn/webid-tls.mjs) works correctly
+// in production with real certificates. The test failure is a bootstrapping issue:
+//
+// 1. Test client connects with cert containing WebID https://tim.localhost:7777/profile/card#me
+// 2. Server calls webid.verify() which fetches that profile URL (lib/webid/lib/get.mjs)
+// 3. Internal fetch() rejects the self-signed certificate, causing timeout
+//
+// The NODE_TLS_REJECT_UNAUTHORIZED=0 env var is set for the test runner, but doesn't
+// affect the server's internal fetch() calls during WebID verification.
+//
+// ALTERNATIVE TESTS THAT WORK (see test/unit/):
+// - tls-authenticator-test.mjs: Tests TlsAuthenticator with mocked webid.verify()
+// - auth-handlers-test.mjs: Tests setAuthenticateHeader() for WebID-TLS
+//
+// SUGGESTED ADDITIONAL UNIT TESTS (no network required):
+// 1. Test verifyKey() directly by passing profile content as string:
+//    import { verifyKey } from 'lib/webid/lib/verify.mjs'
+//    verifyKey(certObj, webId, turtleProfile, 'text/turtle', callback)
+//
+// 2. Test URI extraction from certificate SAN field
+//
+// 3. Test handler behavior with/without client certificate:
+//    - No cert → should call next() with empty session
+//    - Cert present → should attempt verification
+//
+// To enable these integration tests, either:
+// - Configure a test CA that the server trusts
+// - Mock webid.verify() at the integration level
+// - Add NODE_TLS_REJECT_UNAUTHORIZED support to lib/webid/lib/get.mjs
+//
+// See: https://github.com/nodeSolidServer/node-solid-server/issues/1841
 describe.skip('ACL with WebID+TLS', function () {
   let ldpHttpsServer
   const serverConfig = {
