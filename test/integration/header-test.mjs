@@ -68,6 +68,23 @@ describe('Header handler', () => {
     })
   })
 
+  describe('Last-Modified', () => {
+    describeHeaderTest('read/append for the public', {
+      resource: '/public-ra',
+      headers: {
+        'Last-Modified': /^\w{3}, \d{2} \w{3} \d{4} \d{2}:\d{2}:\d{2} GMT$/
+      }
+    })
+
+    describe('on a HEAD request', () => {
+      it('has a Last-Modified header', async () => {
+        const { headers } = await request.head('/public-ra')
+        expect(headers).to.have.property('last-modified')
+        expect(headers['last-modified']).to.match(/^\w{3}, \d{2} \w{3} \d{4} \d{2}:\d{2}:\d{2} GMT$/)
+      })
+    })
+  })
+
   function describeHeaderTest (label, { resource, headers }) {
     describe(`a resource that is ${label}`, () => {
       // Retrieve the response headers
