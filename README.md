@@ -106,7 +106,7 @@ accidentally commit your certificates to `solid` while you're developing.
 If you would like to get rid of the browser warnings, import your fullchain.pem certificate into your 'Trusted Root Certificate' store.
 
 ### Running Solid behind a reverse proxy (such as NGINX)
-See [Running Solid behind a reverse proxy](https://github.com/solid/node-solid-server/wiki/Running-Solid-behind-a-reverse-proxy).
+See [Running Solid behind a reverse proxy](docs/reverse-proxy.md) for how to set `port` and `serverUri` in `config.json`, and for example NGINX and Apache configurations.
 
 ### Run multi-user server (intermediate)
 
